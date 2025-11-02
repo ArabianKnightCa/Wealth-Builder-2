@@ -35,6 +35,43 @@ function Register({ onLogin }) {
     { value: 5, label: 'Expert - Deep understanding of finance' }
   ];
 
+  const occupationOptions = [
+    'Middle / High School Student',
+    'College / University Student',
+    'Part-Time Worker / Student',
+    'Full-Time Employee',
+    'Self-Employed / Freelancer',
+    'Parent / Guardian',
+    'Educator / Mentor / Advisor',
+    'Unemployed / In Transition'
+  ];
+
+  const studentRoles = ['Middle / High School Student', 'College / University Student'];
+
+  const calculateAge = (dob) => {
+    if (!dob) return null;
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const handleOccupationChange = (occupation) => {
+    setFormData({ ...formData, occupation });
+    setShowSchoolCapture(studentRoles.includes(occupation));
+  };
+
+  const handleDOBChange = (dob) => {
+    setFormData({ ...formData, date_of_birth: dob });
+    const age = calculateAge(dob);
+    setUserAge(age);
+    setShowParentConsent(age !== null && age < 18);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
