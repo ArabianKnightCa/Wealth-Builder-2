@@ -43,6 +43,7 @@ class UserCreate(BaseModel):
     date_of_birth: str
     language: str = "en"
     experience_level: int = Field(ge=1, le=5)
+    user_type: str = "POC"  # POC, BETA1, BETA2, COMM, EDU
 
 class UserLogin(BaseModel):
     email: EmailStr
