@@ -226,7 +226,7 @@ function Welcome() {
           </h2>
           <p className="text-xl text-gray-300 mb-10">
             Join thousands of learners who are taking control of their finances. 
-            Start your journey today—completely free, forever.
+            Start your journey today—100% free for POC testers.
           </p>
           <button 
             onClick={() => navigate('/register')} 
@@ -235,7 +235,7 @@ function Welcome() {
             Start Learning Now
           </button>
           <p className="text-gray-400 mt-6">
-            No credit card required • Takes less than 2 minutes to begin
+            No credit card required • Quick registration
           </p>
         </div>
       </div>
