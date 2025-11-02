@@ -212,7 +212,7 @@ function AdminPanel({ onLogin }) {
 
             <div className="mt-6 p-4 bg-gray-100 rounded text-left text-sm">
               <p className="font-semibold text-navy-900 mb-2">📝 Master Code Hint:</p>
-              <p className="text-gray-600">FINTEST + Current Year</p>
+              <p className="text-gray-600">Think: Building prosperity together</p>
             </div>
           </div>
         </div>
