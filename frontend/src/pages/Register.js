@@ -14,8 +14,16 @@ function Register({ onLogin }) {
     date_of_birth: '',
     language: 'en',
     experience_level: 3,
-    user_type: 'POC'
+    user_type: 'POC',
+    occupation: '',
+    school_name: '',
+    school_city: '',
+    school_state: '',
+    parent_email: ''
   });
+  const [showSchoolCapture, setShowSchoolCapture] = useState(false);
+  const [showParentConsent, setShowParentConsent] = useState(false);
+  const [userAge, setUserAge] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
