@@ -55,6 +55,9 @@ function Dashboard({ user, token, onLogout }) {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold" data-testid="dashboard-title">Financial Education</h1>
           <div className="flex items-center gap-4">
+            <span className="bg-gold/20 text-gold px-3 py-1 rounded-full text-sm font-semibold" data-testid="user-code">
+              {user.user_code}
+            </span>
             <span data-testid="user-name">Welcome, {user.first_name}!</span>
             <button 
               onClick={() => navigate('/settings')} 
