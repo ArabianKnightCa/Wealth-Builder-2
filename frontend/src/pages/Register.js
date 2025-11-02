@@ -13,7 +13,8 @@ function Register({ onLogin }) {
     first_name: '',
     date_of_birth: '',
     language: 'en',
-    experience_level: 3
+    experience_level: 3,
+    user_type: 'POC'
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
