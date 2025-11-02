@@ -52,6 +52,8 @@ class UserLogin(BaseModel):
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_code: str  # POC-001, BETA1-001, etc.
+    user_type: str  # POC, BETA1, BETA2, COMM, EDU
     email: EmailStr
     first_name: str
     date_of_birth: str
