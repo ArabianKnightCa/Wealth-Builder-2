@@ -45,7 +45,12 @@ class UserCreate(BaseModel):
     date_of_birth: str
     language: str = "en"
     experience_level: int = Field(ge=1, le=5)
-    user_type: str = "POC"  # POC, BETA1, BETA2, COMM, EDU
+    user_type: str = "POC"  # POC, B1, B2, B3, COMM
+    occupation: str  # Role selector
+    school_name: Optional[str] = None
+    school_city: Optional[str] = None
+    school_state: Optional[str] = None
+    parent_email: Optional[EmailStr] = None  # For minors
 
 class UserLogin(BaseModel):
     email: EmailStr
