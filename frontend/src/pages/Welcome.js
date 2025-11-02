@@ -56,6 +56,15 @@ function Welcome() {
             Sign In
           </button>
         </div>
+        
+        <div className="mt-8">
+          <button 
+            onClick={() => navigate('/admin')} 
+            className="text-gray-500 hover:text-gold text-sm transition-colors"
+          >
+            🧪 Testing Panel
+          </button>
+        </div>
       </div>
     </div>
   );
