@@ -165,6 +165,9 @@ async def register(user_data: UserCreate):
     if age < 8:
         raise HTTPException(status_code=400, detail="User must be at least 8 years old")
     
+    # Generate user code
+    user_code = await generate_user_code(user_data.user_type)
+    
     hashed_password = hash_password(user_data.password)
     user = User(
         email=user_data.email,
@@ -172,6 +175,8 @@ async def register(user_data: UserCreate):
         date_of_birth=user_data.date_of_birth,
         language=user_data.language,
         experience_level=user_data.experience_level,
+        user_code=user_code,
+        user_type=user_data.user_type,
         age_verified=True
     )
     
