@@ -228,12 +228,14 @@ function Welcome() {
             Join thousands of learners who are taking control of their finances. 
             Start your journey today—100% free for POC testers.
           </p>
-          <button 
-            onClick={() => navigate('/register')} 
-            className="btn-primary text-lg px-10 py-5 text-xl"
-          >
-            Start Learning Now
-          </button>
+          <div className="flex justify-center">
+            <button 
+              onClick={() => navigate('/register')} 
+              className="btn-primary text-lg px-10 py-5 text-xl"
+            >
+              Start Learning Now
+            </button>
+          </div>
           <p className="text-gray-400 mt-6">
             No credit card required • Quick registration
           </p>
