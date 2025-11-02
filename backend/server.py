@@ -59,14 +59,23 @@ class UserLogin(BaseModel):
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_code: str  # POC-001, BETA1-001, etc.
-    user_type: str  # POC, BETA1, BETA2, COMM, EDU
+    person_key: str  # PK-XXXXXXXX
+    user_code: str  # UID-ENV-COHORT-SEQ-TIMESTAMP
+    user_type: str  # POC, B1, B2, B3, COMM
+    cohort: str  # EDU or GEN
     email: EmailStr
     first_name: str
-    date_of_birth: str
+    dob_month: int
+    dob_year: int
     language: str = "en"
     experience_level: int
+    occupation: str
+    school_name: Optional[str] = None
+    school_city: Optional[str] = None
+    school_state: Optional[str] = None
+    school_verified: bool = False
     age_verified: bool = True
+    account_status: str = "active"  # active, restricted
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
 
