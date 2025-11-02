@@ -123,6 +123,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
 def calculate_age(date_of_birth: str) -> int:
+    """Calculate age from date of birth string (YYYY-MM-DD)"""
     try:
         dob = datetime.strptime(date_of_birth, "%Y-%m-%d")
         today = datetime.now()
@@ -130,6 +131,13 @@ def calculate_age(date_of_birth: str) -> int:
         return age
     except:
         return 0
+
+async def generate_user_code(user_type: str) -> str:
+    """Generate sequential user code like POC-001, BETA1-001, etc."""
+    # Count existing users of this type
+    count = await db.users.count_documents({"user_type": user_type})
+    next_number = count + 1
+    return f"{user_type}-{str(next_number).zfill(3)}"
 
 # ===========================
 # API Endpoints
