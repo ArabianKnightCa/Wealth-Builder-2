@@ -87,7 +87,7 @@ function Welcome() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Feature 1 */}
           <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100 hover:shadow-xl transition-all">
-            <div className="w-16 h-16 bg-gradient-to-br from-navy-700 to-navy-900 rounded-2xl flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-navy-700 to-navy-900 rounded-2xl flex items-center justify-center mb-6 mx-auto">
               <span className="text-3xl">📊</span>
             </div>
             <h3 className="text-2xl font-bold text-navy-900 mb-3">Personal Financial Profile</h3>
@@ -95,7 +95,7 @@ function Welcome() {
               Begin with a 20-question assessment that identifies your unique learning style, 
               financial personality, and current knowledge level.
             </p>
-            <div className="flex items-center text-gold font-semibold">
+            <div className="flex items-center justify-center text-gold font-semibold">
               <span>Discover Your Style</span>
               <span className="ml-2">→</span>
             </div>
@@ -103,7 +103,7 @@ function Welcome() {
 
           {/* Feature 2 */}
           <div className="bg-gradient-to-br from-amber-50 to-white p-8 rounded-2xl border border-amber-100 hover:shadow-xl transition-all">
-            <div className="w-16 h-16 bg-gradient-to-br from-gold to-yellow-600 rounded-2xl flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-gold to-yellow-600 rounded-2xl flex items-center justify-center mb-6 mx-auto">
               <span className="text-3xl">📚</span>
             </div>
             <h3 className="text-2xl font-bold text-navy-900 mb-3">10 Expert-Crafted Chapters</h3>
@@ -111,7 +111,7 @@ function Welcome() {
               Master essential concepts from budgeting basics to investment strategies. 
               Each chapter includes engaging lessons and knowledge-check quizzes.
             </p>
-            <div className="flex items-center text-gold font-semibold">
+            <div className="flex items-center justify-center text-gold font-semibold">
               <span>Start Learning</span>
               <span className="ml-2">→</span>
             </div>
@@ -119,7 +119,7 @@ function Welcome() {
 
           {/* Feature 3 */}
           <div className="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100 hover:shadow-xl transition-all">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl flex items-center justify-center mb-6 mx-auto">
               <span className="text-3xl">🎯</span>
             </div>
             <h3 className="text-2xl font-bold text-navy-900 mb-3">Track Your Progress</h3>
@@ -127,7 +127,7 @@ function Welcome() {
               Unlock chapters as you master concepts. Visual progress tracking keeps you 
               motivated and shows exactly how far you've come.
             </p>
-            <div className="flex items-center text-gold font-semibold">
+            <div className="flex items-center justify-center text-gold font-semibold">
               <span>See Your Growth</span>
               <span className="ml-2">→</span>
             </div>
