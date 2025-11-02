@@ -215,25 +215,85 @@ async def register(user_data: UserCreate):
     if age < 8:
         raise HTTPException(status_code=400, detail="User must be at least 8 years old")
     
-    # Generate user code
-    user_code = await generate_user_code(user_data.user_type)
+    # Determine cohort from occupation
+    cohort = determine_cohort(user_data.occupation)
+    
+    # Check if minor (< 18)
+    is_minor = age < 18
+    account_status = "restricted" if (is_minor and not user_data.parent_email) else "active"
+    
+    # Generate keys and codes
+    person_key = generate_person_key()
+    created_at = datetime.now(timezone.utc)
+    user_code = await generate_user_code(user_data.user_type, cohort, created_at)
+    
+    # Extract DOB parts
+    dob = datetime.strptime(user_data.date_of_birth, "%Y-%m-%d")
     
     hashed_password = hash_password(user_data.password)
     user = User(
         email=user_data.email,
         first_name=user_data.first_name,
-        date_of_birth=user_data.date_of_birth,
+        dob_month=dob.month,
+        dob_year=dob.year,
         language=user_data.language,
         experience_level=user_data.experience_level,
+        person_key=person_key,
         user_code=user_code,
         user_type=user_data.user_type,
-        age_verified=True
+        cohort=cohort,
+        occupation=user_data.occupation,
+        school_name=user_data.school_name,
+        school_city=user_data.school_city,
+        school_state=user_data.school_state,
+        school_verified=False if user_data.school_name else True,
+        age_verified=True,
+        account_status=account_status
     )
     
     user_dict = user.model_dump()
     user_dict['password'] = hashed_password
     user_dict['created_at'] = user_dict['created_at'].isoformat()
     await db.users.insert_one(user_dict)
+    
+    # If minor with parent email, create parent and family link
+    if is_minor and user_data.parent_email:
+        # Check if parent already exists
+        parent = await db.parents.find_one({"emails": user_data.parent_email})
+        if not parent:
+            parent_key = generate_parent_key()
+            parent = {
+                "parent_key": parent_key,
+                "emails": [user_data.parent_email],
+                "phones": [],
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.parents.insert_one(parent)
+        else:
+            parent_key = parent['parent_key']
+        
+        # Create family link
+        link_token = generate_link_token()
+        family_link = {
+            "parent_key": parent_key,
+            "child_person_key": person_key,
+            "link_token": link_token,
+            "status": "pending",  # Will be 'active' after verification
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "revoked_at": None
+        }
+        await db.family_links.insert_one(family_link)
+        
+        # TODO: Send verification email to parent
+        # For now, we'll auto-activate for testing
+        await db.family_links.update_one(
+            {"link_token": link_token},
+            {"$set": {"status": "active"}}
+        )
+        await db.users.update_one(
+            {"person_key": person_key},
+            {"$set": {"account_status": "active"}}
+        )
     
     progress = Progress(user_id=user.id, current_module="ppi", current_step="start")
     progress_dict = progress.model_dump()
