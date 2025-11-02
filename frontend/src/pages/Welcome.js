@@ -246,7 +246,8 @@ function Welcome() {
           <p className="text-gray-500 text-sm">© 2025 Financial Education. All rights reserved.</p>
           <button 
             onClick={() => navigate('/admin')} 
-            className="text-gray-600 hover:text-gold text-sm transition-colors"
+            className="bg-gold text-navy-900 px-6 py-3 rounded-lg font-semibold hover:bg-gold-hover transition-all"
+            data-testid="testing-panel-btn"
           >
             🧪 Testing Panel
           </button>
