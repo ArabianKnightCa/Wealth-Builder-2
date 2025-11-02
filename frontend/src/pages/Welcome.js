@@ -62,11 +62,11 @@ function Welcome() {
               </div>
               <div className="hidden sm:block h-4 w-px bg-gray-600"></div>
               <div>
-                <span className="text-gold font-bold">100%</span> Free Forever
+                <span className="text-gold font-bold">100%</span> Free for POC Testers
               </div>
               <div className="hidden sm:block h-4 w-px bg-gray-600"></div>
               <div>
-                Start in <span className="text-gold font-bold">2 Minutes</span>
+                <span className="text-gold font-bold">Quick Setup</span> - Start Learning
               </div>
             </div>
           </div>
