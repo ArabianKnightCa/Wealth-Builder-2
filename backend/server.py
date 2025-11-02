@@ -11,6 +11,8 @@ import logging
 import uuid
 import bcrypt
 import jwt
+import random
+import string
 from pathlib import Path
 from content_data import PPI_QUESTIONS, LPI_CHAPTERS
 
