@@ -68,6 +68,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={!user ? <Welcome /> : <Navigate to="/dashboard" />} />
+        <Route path="/admin" element={<AdminPanel onLogin={handleLogin} />} />
         <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
         <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
         <Route path="/onboarding" element={user ? <Onboarding user={user} token={token} /> : <Navigate to="/login" />} />
