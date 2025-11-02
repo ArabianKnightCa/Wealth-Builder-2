@@ -12,6 +12,7 @@ import uuid
 import bcrypt
 import jwt
 from pathlib import Path
+from content_data import PPI_QUESTIONS, LPI_CHAPTERS
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
