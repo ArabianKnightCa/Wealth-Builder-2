@@ -12,7 +12,7 @@ function AdminPanel({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const MASTER_CODE = 'FINTEST2025';
+  const MASTER_CODE = 'WEALTHBUILDER';
 
   const testProfiles = [
     {
