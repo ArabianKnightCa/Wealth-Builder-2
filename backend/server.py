@@ -136,6 +136,14 @@ def calculate_age(date_of_birth: str) -> int:
 async def root():
     return {"message": "Financial Education App API", "version": "3.0"}
 
+@api_router.get("/content/ppi")
+async def get_ppi_questions():
+    return {"questions": PPI_QUESTIONS}
+
+@api_router.get("/content/lpi")
+async def get_lpi_chapters():
+    return {"chapters": LPI_CHAPTERS}
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
