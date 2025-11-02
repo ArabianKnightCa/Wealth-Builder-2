@@ -148,12 +148,46 @@ def calculate_age(date_of_birth: str) -> int:
     except:
         return 0
 
-async def generate_user_code(user_type: str) -> str:
-    """Generate sequential user code like POC-001, BETA1-001, etc."""
-    # Count existing users of this type
-    count = await db.users.count_documents({"user_type": user_type})
-    next_number = count + 1
-    return f"{user_type}-{str(next_number).zfill(3)}"
+def generate_person_key() -> str:
+    """Generate Person Key: PK-[A-Z0-9]{8}"""
+    chars = string.ascii_uppercase + string.digits
+    random_part = ''.join(random.choices(chars, k=8))
+    return f"PK-{random_part}"
+
+def generate_parent_key() -> str:
+    """Generate Parent Person Key: PPK-[A-Z0-9]{8}"""
+    chars = string.ascii_uppercase + string.digits
+    random_part = ''.join(random.choices(chars, k=8))
+    return f"PPK-{random_part}"
+
+def generate_link_token() -> str:
+    """Generate Family Link Token: FLK-[A-Z0-9]{6}"""
+    chars = string.ascii_uppercase + string.digits
+    random_part = ''.join(random.choices(chars, k=6))
+    return f"FLK-{random_part}"
+
+def determine_cohort(occupation: str) -> str:
+    """Determine cohort (EDU or GEN) based on occupation"""
+    edu_roles = [
+        "Middle / High School Student",
+        "College / University Student",
+        "Part-Time Worker / Student",
+        "Educator / Mentor / Advisor"
+    ]
+    return "EDU" if occupation in edu_roles else "GEN"
+
+async def generate_user_code(user_type: str, cohort: str, created_at: datetime) -> str:
+    """Generate UID: UID-[ENV]-[COHORT]-[SEQ]-[TIMESTAMP]
+    Example: UID-POC-EDU-9-110720251428
+    """
+    # Count existing users of this type and cohort
+    count = await db.users.count_documents({"user_type": user_type, "cohort": cohort})
+    seq = count + 1
+    
+    # Generate timestamp part: MMDDYYYYHHMM
+    timestamp_part = created_at.strftime("%m%d%Y%H%M")
+    
+    return f"UID-{user_type}-{cohort}-{seq}-{timestamp_part}"
 
 # ===========================
 # API Endpoints
