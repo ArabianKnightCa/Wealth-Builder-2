@@ -187,7 +187,7 @@ function Welcome() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-navy-700 to-navy-900 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-green-800 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
               1
             </div>
             <h3 className="text-2xl font-bold text-navy-900 mb-3">Take the Assessment</h3>
@@ -197,7 +197,7 @@ function Welcome() {
           </div>
 
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-gold to-yellow-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-green-800 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
               2
             </div>
             <h3 className="text-2xl font-bold text-navy-900 mb-3">Learn & Progress</h3>
