@@ -242,15 +242,15 @@ function Welcome() {
 
       {/* Footer with Testing Link */}
       <div className="bg-navy-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <p className="text-gray-500 text-sm">© 2025 Financial Education. All rights reserved.</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <button 
             onClick={() => navigate('/admin')} 
-            className="bg-gold text-navy-900 px-6 py-3 rounded-lg font-semibold hover:bg-gold-hover transition-all"
+            className="bg-gold text-navy-900 px-6 py-3 rounded-lg font-semibold hover:bg-gold-hover transition-all mb-4"
             data-testid="testing-panel-btn"
           >
             🧪 Testing Panel
           </button>
+          <p className="text-gray-500 text-sm">© 2025 Financial Education. All rights reserved.</p>
         </div>
       </div>
     </div>
