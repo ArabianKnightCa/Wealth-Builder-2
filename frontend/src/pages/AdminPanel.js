@@ -113,7 +113,8 @@ function AdminPanel({ onLogin }) {
         first_name: profile.first_name,
         date_of_birth: profile.date_of_birth,
         language: 'en',
-        experience_level: profile.experience_level
+        experience_level: profile.experience_level,
+        user_type: 'POC'  // All test users are POC type
       });
 
       const { user, access_token } = registerResponse.data;
