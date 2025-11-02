@@ -74,6 +74,17 @@ function Register({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.occupation) {
+      setError('Please select your current role');
+      return;
+    }
+    
+    if (showParentConsent && !formData.parent_email) {
+      setError('Parent/Guardian email is required for users under 18');
+      return;
+    }
+    
     setError('');
     setLoading(true);
 
