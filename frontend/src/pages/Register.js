@@ -266,28 +266,6 @@ function Register({ onLogin }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">User Type</label>
-              <select
-                className="input-field"
-                value={formData.user_type}
-                onChange={(e) => setFormData({ ...formData, user_type: e.target.value })}
-                data-testid="user-type-select"
-              >
-                <option value="POC">POC - Proof of Concept Tester</option>
-                <option value="BETA1">BETA1 - Beta Version 1</option>
-                <option value="BETA2">BETA2 - Beta Version 2</option>
-                <option value="COMM">COMM - Commercial User</option>
-                <option value="EDU">EDU - Educational User</option>
-              </select>
-              <p className="text-sm text-gray-500 mt-2">
-                {formData.user_type === 'POC' && '🎁 POC testers get exclusive early access rewards!'}
-                {formData.user_type === 'EDU' && '🎓 EDU users enter lottery for $200 educational supplies!'}
-                {formData.user_type.startsWith('BETA') && '🚀 Beta testers get special features and rewards!'}
-                {formData.user_type === 'COMM' && '💼 Commercial users get full access and support!'}
-              </p>
-            </div>
-
             <button 
               type="submit" 
               className="btn-primary w-full" 
