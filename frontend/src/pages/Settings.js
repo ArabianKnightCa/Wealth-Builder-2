@@ -23,6 +23,17 @@ function Settings({ user, token }) {
     { value: 5, label: 'Expert' }
   ];
 
+  const languageOptions = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español (Spanish)' },
+    { code: 'zh', name: '中文 (Chinese)' },
+    { code: 'hi', name: 'हिन्दी (Hindi)' },
+    { code: 'ar', name: 'العربية (Arabic)' },
+    { code: 'pt', name: 'Português (Portuguese)' },
+    { code: 'ja', name: '日本語 (Japanese)' },
+    { code: 'ko', name: '한국어 (Korean)' }
+  ];
+
   const handleSave = async () => {
     setLoading(true);
     setMessage('');
