@@ -268,7 +268,7 @@ LPI_CHAPTERS = [
             {
                 "id": "lesson_1",
                 "title": "The 3-Bucket Plan",
-                "text": "Split income into three buckets: Essentials (needs), Future You (savings/investing), and Flex (wants). A starter ratio many people use is 60/20/20. Your habits will help you find a ratio that fits your age, goals, and income.",
+                "text": "Split income into three buckets: Essentials (needs), Future You (savings/investing), and Flex (wants). A starter ratio many people use is 75/15/10. Your habits will help you find a ratio that fits your age, goals, and income.",
                 "takeaway": "Buckets make choices visible so adjustments feel easier."
             },
             {
