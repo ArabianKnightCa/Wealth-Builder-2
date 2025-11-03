@@ -114,8 +114,13 @@ function Register({ onLogin }) {
       };
       
       const response = await axios.post(`${API}/auth/register`, cleanData);
+      console.log('Registration success:', response.data);
       onLogin(response.data.user, response.data.access_token);
-      navigate('/ppi');
+      
+      // Force navigation to PPI
+      setTimeout(() => {
+        navigate('/ppi', { replace: true });
+      }, 100);
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
       console.error('Registration error:', err.response?.data);
