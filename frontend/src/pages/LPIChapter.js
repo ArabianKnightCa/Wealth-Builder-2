@@ -9,7 +9,8 @@ function LPIChapter({ token }) {
   const { chapterId } = useParams();
   const navigate = useNavigate();
   const [chapter, setChapter] = useState(null);
-  const [currentView, setCurrentView] = useState('lessons'); // 'lessons' or 'quiz'
+  const [currentView, setCurrentView] = useState('lesson'); // 'lesson', 'takeaway', or 'quiz'
+  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResult, setQuizResult] = useState(null);
   const [loading, setLoading] = useState(true);
