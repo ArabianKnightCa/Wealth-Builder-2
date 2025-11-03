@@ -18,6 +18,17 @@ function Welcome() {
 
         {/* Hero Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          {/* Testing Panel Link at Top */}
+          <div className="absolute top-4 right-4">
+            <button 
+              onClick={() => navigate('/admin')} 
+              className="bg-gold text-navy-900 px-4 py-2 rounded-lg font-semibold hover:bg-gold-hover transition-all text-sm"
+              data-testid="testing-panel-top-btn"
+            >
+              🧪 Testing Panel
+            </button>
+          </div>
+
           <div className="text-center">
             {/* Badge */}
             <div className="inline-flex items-center px-4 py-2 bg-gold/20 rounded-full mb-8">
