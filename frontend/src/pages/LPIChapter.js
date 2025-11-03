@@ -90,7 +90,9 @@ function LPIChapter({ token }) {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-navy-900 text-white p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold" data-testid="chapter-title">Wealth Builder - {chapter.title}</h1>
+          <h1 className="text-2xl font-bold" data-testid="chapter-title">
+            Chapter {chapterId.replace('CH', '').replace(/^0+/, '')}: {chapter.title}
+          </h1>
           <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate('/dashboard')} 
@@ -100,48 +102,100 @@ function LPIChapter({ token }) {
             >
               ?
             </button>
-            <button 
-              onClick={() => navigate('/dashboard')} 
-              className="text-gold hover:underline"
-              data-testid="back-to-dashboard-btn"
-            >
-              Back to Dashboard
-            </button>
           </div>
         </div>
       </nav>
 
       <div className="max-w-4xl mx-auto p-8">
-        {!quizResult && currentView === 'lessons' && (
+        {!quizResult && currentView === 'lesson' && (
           <div>
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-navy-900 mb-6">Lessons</h2>
-              <div className="space-y-6">
-                {chapter.lessons.map((lesson, index) => (
-                  <div key={lesson.id} className="card" data-testid={`lesson-${index + 1}`}>
-                    <h3 className="text-xl font-semibold text-navy-900 mb-3">
-                      Lesson {index + 1}
-                    </h3>
-                    <p className="text-gray-700 text-lg leading-relaxed">{lesson.text}</p>
+            <div className="mb-6">
+              <p className="text-sm text-gray-500 mb-2">
+                Lesson {currentLessonIndex + 1} of {chapter.lessons.length}
+              </p>
+              <div className="progress-bar mb-4">
+                <div 
+                  className="progress-fill" 
+                  style={{ width: `${((currentLessonIndex + 1) / chapter.lessons.length) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="card" data-testid={`lesson-${currentLessonIndex + 1}`}>
+              <h2 className="text-3xl font-bold text-navy-900 mb-6">
+                {chapter.lessons[currentLessonIndex].title}
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                {chapter.lessons[currentLessonIndex].text}
+              </p>
+              {chapter.lessons[currentLessonIndex].takeaway && (
+                <div className="bg-gold/10 border-l-4 border-gold p-4 rounded">
+                  <p className="font-semibold text-navy-900">
+                    <span className="text-gold">💡 Takeaway:</span> {chapter.lessons[currentLessonIndex].takeaway}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between mt-8">
+              <button
+                onClick={() => {
+                  if (currentLessonIndex > 0) {
+                    setCurrentLessonIndex(currentLessonIndex - 1);
+                  }
+                }}
+                disabled={currentLessonIndex === 0}
+                className="btn-secondary"
+                data-testid="prev-lesson-btn"
+              >
+                ← Previous
+              </button>
+              <button
+                onClick={() => {
+                  if (currentLessonIndex < chapter.lessons.length - 1) {
+                    setCurrentLessonIndex(currentLessonIndex + 1);
+                  } else {
+                    setCurrentView('takeaway');
+                  }
+                }}
+                className="btn-primary"
+                data-testid="next-lesson-btn"
+              >
+                {currentLessonIndex === chapter.lessons.length - 1 ? 'Continue to Quiz' : 'Next →'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!quizResult && currentView === 'takeaway' && (
+          <div>
+            <div className="card text-center bg-gradient-to-br from-gold/10 to-yellow-50">
+              <div className="text-6xl mb-6">📝</div>
+              <h2 className="text-3xl font-bold text-navy-900 mb-6">Chapter Takeaway</h2>
+              <div className="text-left space-y-4">
+                {chapter.lessons.map((lesson, idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-lg">
+                    <h4 className="font-bold text-navy-900 mb-2">{lesson.title}</h4>
+                    <p className="text-gray-700">{lesson.takeaway}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-between mt-8">
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => setCurrentView('lesson')}
                 className="btn-secondary"
-                data-testid="back-to-dashboard-btn"
+                data-testid="back-to-lessons-btn"
               >
-                Back to Dashboard
+                ← Review Lessons
               </button>
               <button
                 onClick={() => setCurrentView('quiz')}
                 className="btn-primary"
                 data-testid="start-quiz-btn"
               >
-                Start Quiz
+                Start Quiz →
               </button>
             </div>
           </div>
