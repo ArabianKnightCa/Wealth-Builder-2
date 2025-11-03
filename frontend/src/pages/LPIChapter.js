@@ -117,7 +117,14 @@ function LPIChapter({ token }) {
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="btn-secondary"
+                data-testid="back-to-dashboard-btn"
+              >
+                Back to Dashboard
+              </button>
               <button
                 onClick={() => setCurrentView('quiz')}
                 className="btn-primary"
