@@ -133,16 +133,9 @@ function LPIChapter({ token }) {
               <h2 className="text-3xl font-bold text-navy-900 mb-6">
                 {chapter.lessons[currentLessonIndex].title}
               </h2>
-              <p className="text-gray-700 text-lg leading-relaxed mb-6">
+              <p className="text-gray-700 text-lg leading-relaxed">
                 {chapter.lessons[currentLessonIndex].text}
               </p>
-              {chapter.lessons[currentLessonIndex].takeaway && (
-                <div className="bg-gold/10 border-l-4 border-gold p-4 rounded">
-                  <p className="font-semibold text-navy-900">
-                    <span className="text-gold">💡 Takeaway:</span> {chapter.lessons[currentLessonIndex].takeaway}
-                  </p>
-                </div>
-              )}
             </div>
 
             <div className="flex justify-between mt-8">
