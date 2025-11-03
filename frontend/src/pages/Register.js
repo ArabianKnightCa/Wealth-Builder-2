@@ -76,16 +76,16 @@ function Register({ onLogin }) {
     setShowParentConsent(age !== null && age < 18);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePage1Next = () => {
+    setError('');
     
-    if (!formData.occupation) {
-      setError('Please select your current role');
+    if (!formData.first_name.trim()) {
+      setError('Please enter your first name');
       return;
     }
     
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    if (!formData.email.trim()) {
+      setError('Please enter your email');
       return;
     }
     
@@ -94,20 +94,46 @@ function Register({ onLogin }) {
       return;
     }
     
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
+    setCurrentPage(2);
+  };
+
+  const handlePage2Next = async () => {
+    setError('');
+    
+    if (!formData.date_of_birth) {
+      setError('Please enter your date of birth');
+      return;
+    }
+    
+    if (!formData.occupation) {
+      setError('Please select your current role');
+      return;
+    }
+    
+    if (!formData.experience_level) {
+      setError('Please select your financial experience level');
+      return;
+    }
+    
     if (showParentConsent && !formData.parent_email) {
       setError('Parent/Guardian email is required for users under 18');
       return;
     }
     
-    setError('');
+    // Register the user
     setLoading(true);
-
     try {
       const { confirmPassword, ...submitData } = formData;
       
-      // Clean up empty optional fields
+      // Clean up empty optional fields and convert experience_level to int
       const cleanData = {
         ...submitData,
+        experience_level: parseInt(submitData.experience_level),
         school_name: submitData.school_name || null,
         school_city: submitData.school_city || null,
         school_state: submitData.school_state || null,
@@ -118,14 +144,11 @@ function Register({ onLogin }) {
       console.log('Registration success:', response.data);
       onLogin(response.data.user, response.data.access_token);
       
-      // Force navigation to PPI
-      setTimeout(() => {
-        navigate('/ppi', { replace: true });
-      }, 100);
+      // Navigate to PPI (which is page 3)
+      navigate('/ppi', { replace: true });
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
       console.error('Registration error:', err.response?.data);
-    } finally {
       setLoading(false);
     }
   };
