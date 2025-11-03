@@ -389,19 +389,40 @@ async def delete_user_account(email: str):
         user_id = user['id']
         
         # Delete from all collections
-        await db.users.delete_one({"email": email})
-        await db.progress.delete_many({"user_id": user_id})
-        await db.ppi_answers.delete_many({"user_id": user_id})
-        await db.lpi_progress.delete_many({"user_id": user_id})
-        await db.parents.delete_many({"child_email": email})
-        await db.family_links.delete_many({"child_user_id": user_id})
+        deleted_users = await db.users.delete_one({"email": email})
+        deleted_progress = await db.progress.delete_many({"user_id": user_id})
+        deleted_ppi = await db.ppi_answers.delete_many({"user_id": user_id})
+        deleted_lpi = await db.lpi_progress.delete_many({"user_id": user_id})
+        deleted_parents = await db.parents.delete_many({"child_email": email})
+        deleted_family = await db.family_links.delete_many({"child_user_id": user_id})
         
         return {
             "message": f"Account {email} and all associated data deleted successfully",
-            "user_id": user_id
+            "user_id": user_id,
+            "deleted": {
+                "users": deleted_users.deleted_count,
+                "progress": deleted_progress.deleted_count,
+                "ppi_answers": deleted_ppi.deleted_count,
+                "lpi_progress": deleted_lpi.deleted_count,
+                "parents": deleted_parents.deleted_count,
+                "family_links": deleted_family.deleted_count
+            }
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting account: {str(e)}")
+
+@api_router.post("/auth/delete-account")
+async def delete_user_account_post(data: dict):
+    """
+    POST version of delete account for easier testing
+    Expects: {"email": "user@example.com"}
+    """
+    email = data.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+    
+    return await delete_user_account(email)
+
 
 @api_router.post("/lpi/quiz/submit")
 async def submit_quiz(quiz_data: QuizSubmit, user_id: str = Depends(get_current_user)):
