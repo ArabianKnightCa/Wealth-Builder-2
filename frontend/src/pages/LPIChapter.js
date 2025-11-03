@@ -152,7 +152,7 @@ function LPIChapter({ token }) {
                 className={`px-6 py-3 rounded-lg font-semibold transition-all ${
                   currentLessonIndex === 0 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-navy-900 text-white hover:bg-navy-800'
+                    : 'bg-gold text-navy-900 hover:bg-gold-dark'
                 }`}
                 data-testid="prev-lesson-btn"
               >
