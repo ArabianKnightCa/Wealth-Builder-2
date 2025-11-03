@@ -423,7 +423,7 @@ function Register({ onLogin }) {
                   required
                   data-testid="experience-select"
                 >
-                  <option value="">What's your level of financial experience?</option>
+                  <option value="">Choose your level of financial experience</option>
                   {experienceLevels.map(level => (
                     <option key={level.value} value={level.value}>{level.label}</option>
                   ))}
