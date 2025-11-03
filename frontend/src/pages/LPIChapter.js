@@ -89,7 +89,7 @@ function LPIChapter({ token }) {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-navy-900 text-white p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold" data-testid="chapter-title">{chapter.title}</h1>
+          <h1 className="text-2xl font-bold" data-testid="chapter-title">Wealth Builder - {chapter.title}</h1>
           <button 
             onClick={() => navigate('/dashboard')} 
             className="text-gold hover:underline"
