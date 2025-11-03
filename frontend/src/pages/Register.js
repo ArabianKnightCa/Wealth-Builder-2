@@ -343,6 +343,22 @@ function Register({ onLogin }) {
               </div>
 
               <div>
+                <label className="block text-gray-700 font-semibold mb-2">State (Where are you from?)</label>
+                <select
+                  className="input-field"
+                  value={formData.state}
+                  onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                  required
+                  data-testid="state-select"
+                >
+                  <option value="">Select your state...</option>
+                  {usStates.map(state => (
+                    <option key={state} value={state}>{state}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-gray-700 font-semibold mb-2">Which best describes your current role?</label>
                 <select
                   className="input-field"
