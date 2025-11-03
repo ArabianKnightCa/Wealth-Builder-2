@@ -42,13 +42,20 @@ function Register({ onLogin }) {
 
   const languageOptions = [
     { code: 'en', name: 'English' },
-    { code: 'es', name: 'Español (Spanish)' },
-    { code: 'zh', name: '中文 (Chinese)' },
-    { code: 'hi', name: 'हिन्दी (Hindi)' },
     { code: 'ar', name: 'العربية (Arabic)' },
-    { code: 'pt', name: 'Português (Portuguese)' },
-    { code: 'ja', name: '日本語 (Japanese)' },
-    { code: 'ko', name: '한국어 (Korean)' }
+    { code: 'es', name: 'Español (Spanish)' },
+    { code: 'zh', name: '中文 (Mandarin)' },
+    { code: 'yue', name: '廣東話 (Cantonese)' },
+    { code: 'hi', name: 'हिन्दी (Hindi)' },
+    { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)' },
+    { code: 'gu', name: 'ગુજરાતી (Gujarati)' },
+    { code: 'ml', name: 'മലയാളം (Malayalam)' },
+    { code: 'tl', name: 'Tagalog' },
+    { code: 'ru', name: 'Русский (Russian)' },
+    { code: 'arz', name: 'مصرى (Egyptian Arabic)' },
+    { code: 'ur', name: 'اردو (Urdu)' },
+    { code: 'rw', name: 'Kinyarwanda' },
+    { code: 'uk', name: 'Українська (Ukrainian)' }
   ];
 
   const usStates = [
