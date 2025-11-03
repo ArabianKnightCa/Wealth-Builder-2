@@ -46,13 +46,23 @@ function Settings({ user, token }) {
       <nav className="bg-navy-900 text-white p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold" data-testid="settings-title">Wealth Builder - Settings</h1>
-          <button 
-            onClick={() => navigate('/dashboard')} 
-            className="text-gold hover:underline"
-            data-testid="back-btn"
-          >
-            Back to Dashboard
-          </button>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="text-gold hover:text-white text-2xl font-bold transition-colors"
+              title="Help - Return to Dashboard"
+              data-testid="help-btn"
+            >
+              ?
+            </button>
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="text-gold hover:underline"
+              data-testid="back-btn"
+            >
+              Back to Dashboard
+            </button>
+          </div>
         </div>
       </nav>
 
