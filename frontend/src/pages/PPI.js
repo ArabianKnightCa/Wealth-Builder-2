@@ -79,21 +79,28 @@ function PPI({ token }) {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 p-4">
-        <div className="max-w-3xl mx-auto py-8">
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-3xl mx-auto py-12">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-navy-900 mb-4" data-testid="ppi-intro-title">
+              Personality Profile
+            </h1>
+            <p className="text-lg text-gray-600">
+              Help us understand your unique financial learning style
+            </p>
+          </div>
+
           <div className="card">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <div className="text-6xl mb-4">🎯</div>
-              <h2 className="text-3xl font-bold text-navy-900 mb-4">Personal Financial Inventory (PPI)</h2>
-              <p className="text-xl text-gray-700 mb-6">Let's understand your financial personality</p>
             </div>
 
             <div className="space-y-6 text-left">
               <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <h3 className="font-bold text-navy-900 mb-2">What is the PPI?</h3>
+                <h3 className="font-bold text-navy-900 mb-2">What is the Personality Profile (PPI)?</h3>
                 <p className="text-gray-700">
                   The Personal Financial Inventory helps us understand your unique learning style, 
-                  financial personality, and current relationship with money. There are no right or wrong answers!
+                  financial personality, and current relationship with money. There are no right or wrong answers—just answer honestly so we can personalize your experience!
                 </p>
               </div>
 
@@ -118,7 +125,7 @@ function PPI({ token }) {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-center gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
               <button 
                 onClick={() => navigate('/dashboard')} 
                 className="btn-secondary"
