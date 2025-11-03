@@ -326,6 +326,7 @@ function Register({ onLogin }) {
                 onChange={(e) => setFormData({ ...formData, experience_level: parseInt(e.target.value) })}
                 data-testid="experience-select"
               >
+                <option value="">What's your level of financial experience?</option>
                 {experienceLevels.map(level => (
                   <option key={level.value} value={level.value}>{level.label}</option>
                 ))}
