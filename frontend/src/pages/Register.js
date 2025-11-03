@@ -255,15 +255,51 @@ function Register({ onLogin }) {
 
             <div>
               <label className="block text-gray-700 font-semibold mb-2">Password (min 8 characters)</label>
-              <input
-                type="password"
-                className="input-field"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                minLength={8}
-                required
-                data-testid="password-input"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="input-field pr-12"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  minLength={8}
+                  required
+                  data-testid="password-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  data-testid="toggle-password"
+                >
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  className="input-field pr-12"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  minLength={8}
+                  required
+                  data-testid="confirm-password-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  data-testid="toggle-confirm-password"
+                >
+                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                </button>
+              </div>
+              {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                <p className="text-sm text-red-600 mt-1">⚠️ Passwords do not match</p>
+              )}
             </div>
 
             <div>
