@@ -181,6 +181,10 @@ function LPIChapter({ token }) {
               <div className="text-6xl mb-6">📝</div>
               <h2 className="text-3xl font-bold text-navy-900 mb-6">Chapter Summary</h2>
               <div className="text-left bg-white p-6 rounded-lg border-l-4 border-gold">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-2xl">💡</span>
+                  <p className="text-sm font-semibold text-gold uppercase tracking-wide">Key Takeaway</p>
+                </div>
                 <p className="text-lg text-gray-700 leading-relaxed">
                   {chapter.lessons.map((lesson, idx) => lesson.takeaway).join(' ')}
                 </p>
@@ -193,7 +197,7 @@ function LPIChapter({ token }) {
                   setCurrentView('lesson');
                   setCurrentLessonIndex(chapter.lessons.length - 1);
                 }}
-                className="btn-secondary"
+                className="px-6 py-3 border-2 border-navy-900 text-navy-900 rounded-lg font-semibold hover:bg-navy-900 hover:text-white transition-all"
                 data-testid="back-btn"
               >
                 ← Go Back
