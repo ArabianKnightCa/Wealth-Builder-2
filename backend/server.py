@@ -375,6 +375,34 @@ async def get_ppi_answers(user_id: str = Depends(get_current_user)):
     answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
     return {"answers": answers}
 
+@api_router.delete("/auth/delete-account/{email}")
+async def delete_user_account(email: str):
+    """
+    Delete a user account and all associated data (for testing purposes)
+    """
+    try:
+        # Find user
+        user = await db.users.find_one({"email": email})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        user_id = user['id']
+        
+        # Delete from all collections
+        await db.users.delete_one({"email": email})
+        await db.progress.delete_many({"user_id": user_id})
+        await db.ppi_answers.delete_many({"user_id": user_id})
+        await db.lpi_progress.delete_many({"user_id": user_id})
+        await db.parents.delete_many({"child_email": email})
+        await db.family_links.delete_many({"child_user_id": user_id})
+        
+        return {
+            "message": f"Account {email} and all associated data deleted successfully",
+            "user_id": user_id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting account: {str(e)}")
+
 @api_router.post("/lpi/quiz/submit")
 async def submit_quiz(quiz_data: QuizSubmit, user_id: str = Depends(get_current_user)):
     chapter_id = quiz_data.chapter_id
