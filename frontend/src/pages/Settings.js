@@ -15,12 +15,22 @@ function Settings({ user, token }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const experienceLevels = [
-    { value: 1, label: 'Beginner' },
-    { value: 2, label: 'Novice' },
-    { value: 3, label: 'Intermediate' },
-    { value: 4, label: 'Advanced' },
-    { value: 5, label: 'Expert' }
+  const languageOptions = [
+    { code: 'en', name: 'English' },
+    { code: 'ar', name: 'العربية (Arabic)' },
+    { code: 'es', name: 'Español (Spanish)' },
+    { code: 'zh', name: '中文 (Mandarin)' },
+    { code: 'yue', name: '廣東話 (Cantonese)' },
+    { code: 'hi', name: 'हिन्दी (Hindi)' },
+    { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)' },
+    { code: 'gu', name: 'ગુજરાતી (Gujarati)' },
+    { code: 'ml', name: 'മലയാളം (Malayalam)' },
+    { code: 'tl', name: 'Tagalog' },
+    { code: 'ru', name: 'Русский (Russian)' },
+    { code: 'arz', name: 'مصرى (Egyptian Arabic)' },
+    { code: 'ur', name: 'اردو (Urdu)' },
+    { code: 'rw', name: 'Kinyarwanda' },
+    { code: 'uk', name: 'Українська (Ukrainian)' }
   ];
 
   const languageOptions = [
