@@ -83,6 +83,16 @@ function Register({ onLogin }) {
       return;
     }
     
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+    
     if (showParentConsent && !formData.parent_email) {
       setError('Parent/Guardian email is required for users under 18');
       return;
@@ -92,7 +102,8 @@ function Register({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API}/auth/register`, formData);
+      const { confirmPassword, ...submitData } = formData;
+      const response = await axios.post(`${API}/auth/register`, submitData);
       onLogin(response.data.user, response.data.access_token);
       navigate('/ppi');
     } catch (err) {
