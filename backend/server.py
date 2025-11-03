@@ -429,21 +429,8 @@ async def delete_user_account_post(data: dict):
 
 @api_router.post("/lpi/quiz/submit")
 async def submit_quiz(quiz_data: QuizSubmit, user_id: str = Depends(get_current_user)):
+    from content_data import LPI_ANSWER_KEY
     chapter_id = quiz_data.chapter_id
-    
-    # Quiz answer key from content
-    answer_key = {
-        "CH01_Q01": "B", "CH01_Q02": "B", "CH01_Q03": "C",
-        "CH02_Q01": "B", "CH02_Q02": "B", "CH02_Q03": "B",
-        "CH03_Q01": "B", "CH03_Q02": "C", "CH03_Q03": "B",
-        "CH04_Q01": "B", "CH04_Q02": "B", "CH04_Q03": "C",
-        "CH05_Q01": "A", "CH05_Q02": "B", "CH05_Q03": "B",
-        "CH06_Q01": "B", "CH06_Q02": "B", "CH06_Q03": "B",
-        "CH07_Q01": "B", "CH07_Q02": "B", "CH07_Q03": "B",
-        "CH08_Q01": "B", "CH08_Q02": "B", "CH08_Q03": "C",
-        "CH09_Q01": "B", "CH09_Q02": "B", "CH09_Q03": "C",
-        "CH10_Q01": "B", "CH10_Q02": "C", "CH10_Q03": "C"
-    }
     
     correct_count = 0
     total_questions = len(quiz_data.answers)
