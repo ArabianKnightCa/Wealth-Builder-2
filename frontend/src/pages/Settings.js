@@ -33,15 +33,12 @@ function Settings({ user, token }) {
     { code: 'uk', name: 'Українська (Ukrainian)' }
   ];
 
-  const languageOptions = [
-    { code: 'en', name: 'English' },
-    { code: 'es', name: 'Español (Spanish)' },
-    { code: 'zh', name: '中文 (Chinese)' },
-    { code: 'hi', name: 'हिन्दी (Hindi)' },
-    { code: 'ar', name: 'العربية (Arabic)' },
-    { code: 'pt', name: 'Português (Portuguese)' },
-    { code: 'ja', name: '日本語 (Japanese)' },
-    { code: 'ko', name: '한국어 (Korean)' }
+  const experienceLevels = [
+    { value: 1, label: 'Beginner' },
+    { value: 2, label: 'Novice' },
+    { value: 3, label: 'Intermediate' },
+    { value: 4, label: 'Advanced' },
+    { value: 5, label: 'Expert' }
   ];
 
   const handleSave = async () => {
