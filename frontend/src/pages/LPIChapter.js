@@ -150,17 +150,14 @@ function LPIChapter({ token }) {
                 onClick={() => {
                   if (currentLessonIndex > 0) {
                     setCurrentLessonIndex(currentLessonIndex - 1);
+                  } else {
+                    navigate('/dashboard');
                   }
                 }}
-                disabled={currentLessonIndex === 0}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                  currentLessonIndex === 0 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'btn-primary'
-                }`}
+                className="btn-primary"
                 data-testid="prev-lesson-btn"
               >
-                ← Go Back
+                ← {currentLessonIndex === 0 ? 'Back to Dashboard' : 'Go Back'}
               </button>
               <button
                 onClick={() => {
