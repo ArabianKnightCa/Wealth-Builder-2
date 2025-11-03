@@ -128,7 +128,7 @@ function PPI({ token }) {
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
               <button 
                 onClick={() => navigate('/dashboard')} 
-                className="btn-secondary"
+                className="px-6 py-3 border-2 border-navy-900 text-navy-900 rounded-lg font-semibold hover:bg-navy-900 hover:text-white transition-all"
                 data-testid="skip-btn"
               >
                 Skip for Now
