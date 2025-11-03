@@ -80,7 +80,7 @@ function Dashboard({ user, token, onLogout }) {
             </button>
             <button 
               onClick={onLogout} 
-              className="text-gold hover:underline"
+              className="bg-gold text-navy-900 px-4 py-2 rounded-lg font-semibold hover:bg-gold-dark transition-all"
               data-testid="logout-btn"
             >
               Logout
@@ -88,6 +88,49 @@ function Dashboard({ user, token, onLogout }) {
           </div>
         </div>
       </nav>
+
+      {/* Progress HUD */}
+      <div className="bg-white shadow-md border-b border-gray-200">
+        <div className="max-w-7xl mx-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Overall Progress */}
+            <div>
+              <p className="text-sm text-gray-600 mb-2">Overall Progress</p>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${(progress.filter(p => p.quiz_completed_at).length / chapters.length) * 100}%` }}
+                    data-testid="overall-progress-bar"
+                  ></div>
+                </div>
+                <span className="text-sm font-semibold text-navy-900">
+                  {progress.filter(p => p.quiz_completed_at).length} / {chapters.length} Chapters
+                </span>
+              </div>
+            </div>
+
+            {/* Average Quiz Score */}
+            <div>
+              <p className="text-sm text-gray-600 mb-2">Average Quiz Score</p>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl font-bold text-gold" data-testid="average-score">
+                  {progress.filter(p => p.quiz_score !== null && p.quiz_score !== undefined).length > 0
+                    ? Math.round(
+                        progress.filter(p => p.quiz_score !== null && p.quiz_score !== undefined)
+                          .reduce((sum, p) => sum + p.quiz_score, 0) / 
+                        progress.filter(p => p.quiz_score !== null && p.quiz_score !== undefined).length
+                      )
+                    : 0}%
+                </span>
+                <span className="text-sm text-gray-600">
+                  across {progress.filter(p => p.quiz_score !== null && p.quiz_score !== undefined).length} completed quizzes
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="max-w-7xl mx-auto p-8">
         <div className="mb-8">
