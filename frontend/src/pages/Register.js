@@ -103,11 +103,22 @@ function Register({ onLogin }) {
 
     try {
       const { confirmPassword, ...submitData } = formData;
-      const response = await axios.post(`${API}/auth/register`, submitData);
+      
+      // Clean up empty optional fields
+      const cleanData = {
+        ...submitData,
+        school_name: submitData.school_name || null,
+        school_city: submitData.school_city || null,
+        school_state: submitData.school_state || null,
+        parent_email: submitData.parent_email || null
+      };
+      
+      const response = await axios.post(`${API}/auth/register`, cleanData);
       onLogin(response.data.user, response.data.access_token);
       navigate('/ppi');
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
+      console.error('Registration error:', err.response?.data);
     } finally {
       setLoading(false);
     }
