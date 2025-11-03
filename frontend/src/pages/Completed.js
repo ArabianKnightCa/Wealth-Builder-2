@@ -51,7 +51,7 @@ function Completed({ onLogout }) {
             </button>
             <button 
               onClick={onLogout} 
-              className="btn-secondary"
+              className="bg-gold text-navy-900 px-6 py-3 rounded-lg font-semibold hover:bg-gold-dark transition-all"
               data-testid="logout-btn"
             >
               Logout
