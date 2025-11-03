@@ -12,6 +12,7 @@ function PPI({ token }) {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     fetchQuestions();
