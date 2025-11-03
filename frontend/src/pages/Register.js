@@ -314,7 +314,7 @@ function Register({ onLogin }) {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">Financial Experience Level</label>
+              <label className="block text-gray-700 font-semibold mb-2">What is your level of financial experience?</label>
               <select
                 className="input-field"
                 value={formData.experience_level}
