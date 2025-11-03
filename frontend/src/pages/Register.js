@@ -316,6 +316,21 @@ function Register({ onLogin }) {
               </div>
 
               <div>
+                <label className="block text-gray-700 font-semibold mb-2">Preferred Language</label>
+                <select
+                  className="input-field"
+                  value={formData.language}
+                  onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                  required
+                  data-testid="language-select"
+                >
+                  {languageOptions.map(lang => (
+                    <option key={lang.code} value={lang.code}>{lang.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-gray-700 font-semibold mb-2">Which best describes your current role?</label>
                 <select
                   className="input-field"
