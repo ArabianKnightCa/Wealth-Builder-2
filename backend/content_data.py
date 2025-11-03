@@ -220,6 +220,18 @@ LPI_CHAPTERS = [
                 "title": "Choices: Needs vs. Wants",
                 "text": "A need keeps you safe, healthy, or able to earn (food, rent, internet for school/work). A want is extra—nice to have, not required right now. A simple rule: Cover needs first, set aside savings second, enjoy wants last. This order creates freedom instead of short-term pressure.",
                 "takeaway": "Needs first, savings second, wants last."
+            },
+            {
+                "id": "lesson_3",
+                "title": "The Habit Loop",
+                "text": "Small daily choices become automatic habits. When money habits are healthy, you build wealth without constant willpower. Start tiny: save $1 daily, track one expense, or pause 10 seconds before impulse buys. These micro-habits compound into major results.",
+                "takeaway": "Tiny habits create massive momentum over time."
+            },
+            {
+                "id": "lesson_4",
+                "title": "Your Money Story",
+                "text": "Everyone has a money story shaped by family, culture, and experience. Understanding your story helps you write a better next chapter. Ask yourself: What did I learn about money growing up? What do I want to change? Awareness is the first step to transformation.",
+                "takeaway": "Knowing your money story empowers you to rewrite it."
             }
         ],
         "quiz": [
