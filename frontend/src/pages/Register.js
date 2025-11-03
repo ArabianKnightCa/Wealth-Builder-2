@@ -7,6 +7,7 @@ const API = `${BACKEND_URL}/api`;
 
 function Register({ onLogin }) {
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1); // 1, 2, or 3 (PPI is page 3)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,7 +15,7 @@ function Register({ onLogin }) {
     first_name: '',
     date_of_birth: '',
     language: 'en',
-    experience_level: 3,
+    experience_level: '',
     user_type: 'POC',
     occupation: '',
     school_name: '',
