@@ -27,7 +27,7 @@ function Welcome() {
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight" data-testid="welcome-title">
               Master Your Money,<br />
-              <span className="text-gold">Build Your Future</span>
+              <span className="text-gold">Build Your Wealth</span>
             </h1>
 
             {/* Subheadline */}
