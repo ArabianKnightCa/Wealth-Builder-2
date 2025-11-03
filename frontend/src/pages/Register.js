@@ -18,6 +18,7 @@ function Register({ onLogin }) {
     experience_level: '',
     user_type: 'POC',
     occupation: '',
+    state: '',
     school_name: '',
     school_city: '',
     school_state: '',
