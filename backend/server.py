@@ -177,20 +177,14 @@ def determine_cohort(occupation: str) -> str:
     return "EDU" if occupation in edu_roles else "GEN"
 
 async def generate_user_code(user_type: str, cohort: str, created_at: datetime) -> str:
-    """Generate UID: UID-[ENV]-[COHORT]-[SEQ]-[TIMESTAMP]
-    Example: UID-PST-EDU-9-110720251428
-    Uses PST timezone for timestamp
+    """Generate UID: UID-[ENV]-[COHORT]-[SEQ]
+    Example: UID-PST-EDU-1
     """
     # Count existing users of this type and cohort
     count = await db.users.count_documents({"user_type": user_type, "cohort": cohort})
     seq = count + 1
     
-    # Generate timestamp part in PST: MMDDYYYYHHMM
-    # PST is UTC-8
-    pst_time = created_at - timedelta(hours=8)
-    timestamp_part = pst_time.strftime("%m%d%Y%H%M")
-    
-    return f"UID-PST-{cohort}-{seq}-{timestamp_part}"
+    return f"UID-PST-{cohort}-{seq}"
 
 # ===========================
 # API Endpoints
