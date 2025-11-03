@@ -434,7 +434,7 @@ function Register({ onLogin }) {
                 <button 
                   type="button"
                   onClick={() => setCurrentPage(1)}
-                  className="px-6 py-3 border-2 border-navy-900 text-navy-900 rounded-lg font-semibold hover:bg-navy-900 hover:text-white transition-all"
+                  className="px-6 py-3 bg-white border-2 border-gold text-navy-900 rounded-lg font-semibold hover:bg-gold hover:border-gold transition-all"
                   data-testid="back-btn"
                 >
                   ← Back
