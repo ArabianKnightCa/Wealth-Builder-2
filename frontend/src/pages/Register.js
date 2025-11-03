@@ -39,6 +39,17 @@ function Register({ onLogin }) {
     { value: 5, label: 'Expert - Deep understanding of finance' }
   ];
 
+  const languageOptions = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español (Spanish)' },
+    { code: 'zh', name: '中文 (Chinese)' },
+    { code: 'hi', name: 'हिन्दी (Hindi)' },
+    { code: 'ar', name: 'العربية (Arabic)' },
+    { code: 'pt', name: 'Português (Portuguese)' },
+    { code: 'ja', name: '日本語 (Japanese)' },
+    { code: 'ko', name: '한국어 (Korean)' }
+  ];
+
   const occupationOptions = [
     'Middle / High School Student',
     'College / University Student',
