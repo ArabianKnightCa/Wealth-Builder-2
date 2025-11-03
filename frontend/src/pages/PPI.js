@@ -208,10 +208,14 @@ function PPI({ token }) {
               <button
                 onClick={handleBack}
                 disabled={currentIndex === 0}
-                className="btn-secondary"
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  currentIndex === 0 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                    : 'bg-navy-900 text-white hover:bg-navy-800'
+                }`}
                 data-testid="back-btn"
               >
-                Back
+                ← Back
               </button>
               <button
                 onClick={handleNext}
@@ -219,7 +223,7 @@ function PPI({ token }) {
                 className="btn-primary"
                 data-testid="next-btn"
               >
-                {currentIndex === questions.length - 1 ? (submitting ? 'Submitting...' : 'Submit') : 'Next'}
+                {currentIndex === questions.length - 1 ? (submitting ? 'Submitting...' : 'Submit') : 'Next →'}
               </button>
             </div>
           </div>
