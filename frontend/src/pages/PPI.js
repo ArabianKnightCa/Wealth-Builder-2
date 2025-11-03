@@ -167,7 +167,9 @@ function PPI({ token }) {
       <div className="max-w-3xl mx-auto py-8">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-white text-2xl font-bold" data-testid="ppi-title">Wealth Builder - Personal Financial Inventory</h2>
+            <span className="text-gold font-semibold" data-testid="progress-text">
+              {currentIndex + 1} / {questions.length}
+            </span>
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => navigate('/dashboard')} 
@@ -177,11 +179,9 @@ function PPI({ token }) {
               >
                 ?
               </button>
-              <span className="text-gold font-semibold" data-testid="progress-text">
-                {currentIndex + 1} / {questions.length}
-              </span>
             </div>
           </div>
+          <h2 className="text-white text-2xl font-bold text-center mb-4" data-testid="ppi-title">Wealth Builder - Personal Financial Inventory</h2>
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${progress}%` }} data-testid="progress-bar"></div>
           </div>
