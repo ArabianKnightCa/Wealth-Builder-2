@@ -343,13 +343,15 @@ function LPIChapter({ token }) {
                             })}
                           </div>
 
-                          {/* Explanation */}
-                          <div className={`p-4 rounded ${isCorrect ? 'bg-green-100' : 'bg-blue-50'} border-l-4 ${isCorrect ? 'border-green-500' : 'border-blue-500'}`}>
-                            <p className="font-semibold text-navy-900 mb-2">
-                              {isCorrect ? '✓ Correct!' : 'Why this is wrong:'}
-                            </p>
-                            <p className="text-gray-700">{question.rationale}</p>
-                          </div>
+                          {/* Explanation - ONLY for incorrect answers */}
+                          {!isCorrect && (
+                            <div className="p-4 rounded bg-yellow-50 border-l-4 border-yellow-500">
+                              <p className="font-semibold text-navy-900 mb-2">
+                                Why this is incorrect:
+                              </p>
+                              <p className="text-gray-700">{question.rationale}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
