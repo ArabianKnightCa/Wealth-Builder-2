@@ -296,7 +296,7 @@ LPI_CHAPTERS = [
                 "text": "A helpful starting ratio many use is…",
                 "options": {
                     "A": "80/10/10",
-                    "B": "60/20/20",
+                    "B": "75/15/10",
                     "C": "30/30/40",
                     "D": "50/25/25"
                 },
