@@ -436,7 +436,7 @@ async def submit_quiz(quiz_data: QuizSubmit, user_id: str = Depends(get_current_
     total_questions = len(quiz_data.answers)
     
     for answer in quiz_data.answers:
-        if answer_key.get(answer['question_id']) == answer['selected_option']:
+        if LPI_ANSWER_KEY.get(answer['question_id']) == answer['selected_option']:
             correct_count += 1
     
     score = (correct_count / total_questions) * 100 if total_questions > 0 else 0
