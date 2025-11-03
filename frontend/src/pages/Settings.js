@@ -45,7 +45,7 @@ function Settings({ user, token }) {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-navy-900 text-white p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold" data-testid="settings-title">Settings</h1>
+          <h1 className="text-2xl font-bold" data-testid="settings-title">Wealth Builder - Settings</h1>
           <button 
             onClick={() => navigate('/dashboard')} 
             className="text-gold hover:underline"
@@ -57,6 +57,32 @@ function Settings({ user, token }) {
       </nav>
 
       <div className="max-w-2xl mx-auto p-8">
+        <div className="card mb-6 bg-gradient-to-r from-navy-900 to-navy-700 text-white">
+          <h2 className="text-2xl font-bold mb-4">Your Account</h2>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">User ID:</span>
+              <span className="bg-gold/20 text-gold px-3 py-1 rounded-full font-semibold" data-testid="user-id-display">
+                {user.user_code}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">Person Key:</span>
+              <span className="font-mono text-sm text-gray-300">{user.person_key}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">Email:</span>
+              <span className="text-gray-300">{user.email}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">Cohort:</span>
+              <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm font-semibold">
+                {user.cohort}
+              </span>
+            </div>
+          </div>
+        </div>
+
         <div className="card">
           <h2 className="text-2xl font-bold text-navy-900 mb-6">Your Preferences</h2>
 
