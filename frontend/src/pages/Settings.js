@@ -122,11 +122,11 @@ function Settings({ user, token }) {
                 onChange={(e) => setSettings({ ...settings, language: e.target.value })}
                 data-testid="language-select"
               >
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
+                {languageOptions.map(lang => (
+                  <option key={lang.code} value={lang.code}>{lang.name}</option>
+                ))}
               </select>
+              <p className="text-sm text-gray-500 mt-1">Language setting saves successfully but UI translation is not yet implemented in this POC version.</p>
             </div>
 
             <div>
