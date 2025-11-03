@@ -71,6 +71,7 @@ class User(BaseModel):
     language: str = "en"
     experience_level: int
     occupation: str
+    state: Optional[str] = None
     school_name: Optional[str] = None
     school_city: Optional[str] = None
     school_state: Optional[str] = None
