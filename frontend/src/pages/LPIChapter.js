@@ -416,7 +416,7 @@ function LPIChapter({ token }) {
                 </>
               )}
               <button
-                onClick={handleContinue}
+                onClick={handleBackToDashboard}
                 className="bg-navy-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-800 transition-all"
                 data-testid="back-dashboard-btn"
               >
