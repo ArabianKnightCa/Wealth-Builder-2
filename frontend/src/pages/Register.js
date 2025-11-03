@@ -287,5 +287,153 @@ function Register({ onLogin }) {
 
           <div className="card">
             <div className="space-y-6">
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" data-testid="error-message">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Date of Birth</label>
+                <input
+                  type="date"
+                  className="input-field"
+                  value={formData.date_of_birth}
+                  onChange={(e) => handleDOBChange(e.target.value)}
+                  required
+                  data-testid="dob-input"
+                />
+                {userAge !== null && userAge < 18 && (
+                  <p className="text-sm text-blue-600 mt-1">⚠️ Parental consent required for users under 18</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Which best describes your current role?</label>
+                <select
+                  className="input-field"
+                  value={formData.occupation}
+                  onChange={(e) => handleOccupationChange(e.target.value)}
+                  required
+                  data-testid="occupation-select"
+                >
+                  <option value="">Select your role...</option>
+                  {occupationOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+
+              {showSchoolCapture && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-navy-900 mb-3">School Information</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">School Name</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={formData.school_name}
+                        onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
+                        placeholder="Enter your school name"
+                        data-testid="school-name-input"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-gray-700 mb-2">City (Optional)</label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={formData.school_city}
+                          onChange={(e) => setFormData({ ...formData, school_city: e.target.value })}
+                          placeholder="City"
+                          data-testid="school-city-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 mb-2">State (Optional)</label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={formData.school_state}
+                          onChange={(e) => setFormData({ ...formData, school_state: e.target.value })}
+                          placeholder="State"
+                          data-testid="school-state-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {showParentConsent && (
+                <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
+                  <h4 className="font-semibold text-navy-900 mb-2">🛡️ Parental Consent Required</h4>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Since you're under 18, we need a parent or guardian's permission. They'll receive a verification email.
+                  </p>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">Parent/Guardian Email</label>
+                    <input
+                      type="email"
+                      className="input-field"
+                      value={formData.parent_email}
+                      onChange={(e) => setFormData({ ...formData, parent_email: e.target.value })}
+                      placeholder="parent@example.com"
+                      required={showParentConsent}
+                      data-testid="parent-email-input"
+                    />
+                    <p className="text-xs text-gray-600 mt-1">
+                      Your parent will receive a verification link to approve your account.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Financial Experience Level</label>
+                <select
+                  className="input-field"
+                  value={formData.experience_level}
+                  onChange={(e) => setFormData({ ...formData, experience_level: e.target.value })}
+                  required
+                  data-testid="experience-select"
+                >
+                  <option value="">What's your level of financial experience?</option>
+                  {experienceLevels.map(level => (
+                    <option key={level.value} value={level.value}>{level.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex gap-4">
+                <button 
+                  type="button"
+                  onClick={() => setCurrentPage(1)}
+                  className="px-6 py-3 border-2 border-navy-900 text-navy-900 rounded-lg font-semibold hover:bg-navy-900 hover:text-white transition-all"
+                  data-testid="back-btn"
+                >
+                  ← Back
+                </button>
+                <button 
+                  type="button"
+                  onClick={handlePage2Next}
+                  className="btn-primary flex-1" 
+                  disabled={loading}
+                  data-testid="create-account-btn"
+                >
+                  {loading ? 'Creating Account...' : 'Create Account'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
 
 export default Register;
