@@ -362,7 +362,7 @@ function LPIChapter({ token }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-end">
               {quizResult.passed ? (
                 <>
                   {quizResult.next_chapter && (
