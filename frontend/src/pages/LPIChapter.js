@@ -153,10 +153,14 @@ function LPIChapter({ token }) {
                   }
                 }}
                 disabled={currentLessonIndex === 0}
-                className="btn-secondary"
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  currentLessonIndex === 0 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                    : 'bg-navy-900 text-white hover:bg-navy-800'
+                }`}
                 data-testid="prev-lesson-btn"
               >
-                ← Previous
+                ← Go Back
               </button>
               <button
                 onClick={() => {
@@ -169,7 +173,7 @@ function LPIChapter({ token }) {
                 className="btn-primary"
                 data-testid="next-lesson-btn"
               >
-                {currentLessonIndex === chapter.lessons.length - 1 ? 'Continue to Quiz' : 'Next →'}
+                {currentLessonIndex === chapter.lessons.length - 1 ? 'Continue to Summary →' : 'Next →'}
               </button>
             </div>
           </div>
