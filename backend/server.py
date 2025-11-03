@@ -178,13 +178,13 @@ def determine_cohort(occupation: str) -> str:
 
 async def generate_user_code(user_type: str, cohort: str, created_at: datetime) -> str:
     """Generate UID: UID-[ENV]-[COHORT]-[SEQ]
-    Example: UID-PST-EDU-1
+    Example: UID-POC-EDU-1
     """
     # Count existing users of this type and cohort
     count = await db.users.count_documents({"user_type": user_type, "cohort": cohort})
     seq = count + 1
     
-    return f"UID-PST-{cohort}-{seq}"
+    return f"UID-{user_type}-{cohort}-{seq}"
 
 # ===========================
 # API Endpoints
