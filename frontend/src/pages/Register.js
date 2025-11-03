@@ -153,16 +153,19 @@ function Register({ onLogin }) {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-white mb-2" data-testid="register-title">Start Your Journey</h2>
-          <p className="text-gray-300">Create an account to begin learning</p>
-        </div>
+  // PAGE 1: Name, Email, Password
+  if (currentPage === 1) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-white mb-2" data-testid="register-title">Start Your Journey</h2>
+            <p className="text-gray-300">Create an account to begin learning</p>
+            <p className="text-gold mt-2">Step 1 of 2</p>
+          </div>
 
-        <div className="card">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="card">
+            <div className="space-y-6">
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" data-testid="error-message">
                 {error}
