@@ -86,7 +86,7 @@ function Dashboard({ user, token, onLogout }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {chapters.map((chapter, index) => {
             const chapterProgress = getChapterProgress(chapter.id);
-            const isUnlocked = isChapterUnlocked(chapter.id);
+            const isUnlocked = isChapterUnlocked(chapter.id) || index === 0; // Chapter 1 always unlocked
             const isCompleted = chapterProgress?.quiz_score >= 50;
 
             return (
@@ -113,7 +113,7 @@ function Dashboard({ user, token, onLogout }) {
                   </div>
                 )}
                 
-                {!isUnlocked && (
+                {!isUnlocked && index !== 0 && (
                   <p className="text-sm text-gray-500 mt-2">Complete previous chapter to unlock</p>
                 )}
               </div>
