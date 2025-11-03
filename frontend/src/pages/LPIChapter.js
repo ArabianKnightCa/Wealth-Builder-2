@@ -171,12 +171,12 @@ function LPIChapter({ token }) {
           <div>
             <div className="card text-center bg-gradient-to-br from-gold/10 to-yellow-50">
               <div className="text-6xl mb-6">📝</div>
-              <h2 className="text-3xl font-bold text-navy-900 mb-6">Chapter Takeaway</h2>
-              <div className="text-left space-y-4">
+              <h2 className="text-3xl font-bold text-navy-900 mb-6">Chapter Summary</h2>
+              <p className="text-lg text-gray-700 mb-6">Here are the key takeaways from this chapter:</p>
+              <div className="text-left space-y-3">
                 {chapter.lessons.map((lesson, idx) => (
-                  <div key={idx} className="bg-white p-4 rounded-lg">
-                    <h4 className="font-bold text-navy-900 mb-2">{lesson.title}</h4>
-                    <p className="text-gray-700">{lesson.takeaway}</p>
+                  <div key={idx} className="bg-white p-4 rounded-lg border-l-4 border-gold">
+                    <p className="text-gray-700"><span className="font-bold text-navy-900">•</span> {lesson.takeaway}</p>
                   </div>
                 ))}
               </div>
@@ -184,11 +184,14 @@ function LPIChapter({ token }) {
 
             <div className="flex justify-between mt-8">
               <button
-                onClick={() => setCurrentView('lesson')}
+                onClick={() => {
+                  setCurrentView('lesson');
+                  setCurrentLessonIndex(chapter.lessons.length - 1);
+                }}
                 className="btn-secondary"
-                data-testid="back-to-lessons-btn"
+                data-testid="back-btn"
               >
-                ← Review Lessons
+                ← Go Back
               </button>
               <button
                 onClick={() => setCurrentView('quiz')}
