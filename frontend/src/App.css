@@ -147,9 +147,12 @@ body {
 
 .quiz-option.selected {
   border-color: var(--gold);
-  background: #fef5e7;
+  background: #fbbf24;
+  color: #1a202c;
   font-weight: 600;
+  box-shadow: 0 4px 6px rgba(251, 191, 36, 0.3);
 }
+
 
 .fireworks {
   animation: fireworks 2s ease-in-out infinite;
