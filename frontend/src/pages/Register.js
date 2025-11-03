@@ -153,7 +153,8 @@ function Register({ onLogin }) {
       console.log('Registration success:', response.data);
       onLogin(response.data.user, response.data.access_token);
       
-      navigate('/ppi', { replace: true });
+      // Force navigation to PPI - use window.location for hard redirect
+      window.location.href = '/ppi';
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
       console.error('Registration error:', err.response?.data);
