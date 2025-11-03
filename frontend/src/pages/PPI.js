@@ -95,7 +95,7 @@ function PPI({ token }) {
 
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-navy-900 mb-4" data-testid="ppi-intro-title">
-              Personality Profile
+              Personality Profile Questionnaire
             </h1>
             <p className="text-lg text-gray-600">
               Help us understand your unique financial learning style
@@ -109,9 +109,9 @@ function PPI({ token }) {
 
             <div className="space-y-6 text-left">
               <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <h3 className="font-bold text-navy-900 mb-2">What is the Personality Profile (PPI)?</h3>
+                <h3 className="font-bold text-navy-900 mb-2">About This Questionnaire</h3>
                 <p className="text-gray-700">
-                  The Personal Financial Inventory helps us understand your unique learning style, 
+                  The Personality Profile Questionnaire helps us understand your unique learning style, 
                   financial personality, and current relationship with money. There are no right or wrong answers—just answer honestly so we can personalize your experience!
                 </p>
               </div>
