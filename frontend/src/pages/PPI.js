@@ -81,6 +81,18 @@ function PPI({ token }) {
     return (
       <div className="min-h-screen bg-gray-50 p-4">
         <div className="max-w-3xl mx-auto py-12">
+          {/* Help button at top */}
+          <div className="flex justify-end mb-4">
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="text-gold hover:text-navy-900 text-3xl font-bold transition-colors bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg"
+              title="Help - Return to Dashboard"
+              data-testid="help-btn"
+            >
+              ?
+            </button>
+          </div>
+
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-navy-900 mb-4" data-testid="ppi-intro-title">
               Personality Profile
