@@ -263,60 +263,159 @@ function LPIChapter({ token }) {
         )}
 
         {quizResult && (
-          <div className="card text-center" data-testid="quiz-result">
-            <div className="mb-6">
-              {quizResult.passed ? (
-                <div className="text-6xl mb-4">🎉</div>
-              ) : (
-                <div className="text-6xl mb-4">💪</div>
-              )}
-              <h2 className="text-3xl font-bold text-navy-900 mb-2">
-                {quizResult.passed ? 'Congratulations!' : 'Keep Learning!'}
-              </h2>
-              <p className="text-xl text-gray-700 mb-4">
-                Your Score: <span className="font-bold text-gold" data-testid="quiz-score">{quizResult.score.toFixed(0)}%</span>
-              </p>
-              <p className="text-gray-600">
-                You got {quizResult.correct_count} out of {quizResult.total_questions} questions correct
-              </p>
+          <div>
+            {/* Score Summary */}
+            <div className="card text-center mb-8" data-testid="quiz-result">
+              <div className="mb-6">
+                {quizResult.passed ? (
+                  <div className="text-6xl mb-4">🎉</div>
+                ) : (
+                  <div className="text-6xl mb-4">💪</div>
+                )}
+                <h2 className="text-3xl font-bold text-navy-900 mb-2">
+                  {quizResult.passed ? 'Congratulations!' : 'Keep Learning!'}
+                </h2>
+                <p className="text-xl text-gray-700 mb-4">
+                  Your Score: <span className="font-bold text-gold" data-testid="quiz-score">{quizResult.score.toFixed(0)}%</span>
+                </p>
+                <p className="text-gray-600">
+                  You got {quizResult.correct_count} out of {quizResult.total_questions} questions correct
+                </p>
+              </div>
             </div>
 
-            {quizResult.passed ? (
-              <div>
-                <p className="text-lg text-navy-900 mb-6">
-                  {quizResult.next_chapter ? 'Great job! The next chapter is now unlocked.' : 'You\'ve completed all chapters!'}
-                </p>
-                <button
-                  onClick={handleContinue}
-                  className="btn-primary"
-                  data-testid="continue-btn"
-                >
-                  {quizResult.next_chapter ? 'Continue to Next Chapter' : 'Complete Journey'}
-                </button>
+            {/* Detailed Results */}
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold text-navy-900 mb-4">Quiz Review</h3>
+              <div className="space-y-6">
+                {quizResult.questions.map((question, idx) => {
+                  const userAnswer = quizResult.userAnswers[question.id];
+                  const isCorrect = userAnswer === question.correct;
+                  
+                  return (
+                    <div key={question.id} className={`card border-l-4 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                      <div className="flex items-start gap-3 mb-4">
+                        <span className={`text-2xl ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                          {isCorrect ? '✓' : '✗'}
+                        </span>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-navy-900 mb-3">
+                            Question {idx + 1}: {question.text}
+                          </h4>
+
+                          {/* Show all options with highlighting */}
+                          <div className="space-y-2 mb-4">
+                            {Object.entries(question.options).map(([key, value]) => {
+                              const isUserAnswer = userAnswer === key;
+                              const isCorrectAnswer = question.correct === key;
+                              
+                              let bgColor = 'bg-white';
+                              let borderColor = 'border-gray-200';
+                              let textColor = 'text-gray-700';
+                              
+                              if (isCorrectAnswer) {
+                                bgColor = 'bg-green-100';
+                                borderColor = 'border-green-500';
+                                textColor = 'text-green-900';
+                              }
+                              
+                              if (isUserAnswer && !isCorrect) {
+                                bgColor = 'bg-red-100';
+                                borderColor = 'border-red-500';
+                                textColor = 'text-red-900';
+                              }
+                              
+                              return (
+                                <div 
+                                  key={key} 
+                                  className={`p-3 rounded border-2 ${borderColor} ${bgColor}`}
+                                >
+                                  <span className={`font-semibold ${textColor}`}>{key}.</span> 
+                                  <span className={textColor}> {value}</span>
+                                  {isCorrectAnswer && (
+                                    <span className="ml-2 text-green-600 font-bold">✓ Correct Answer</span>
+                                  )}
+                                  {isUserAnswer && !isCorrect && (
+                                    <span className="ml-2 text-red-600 font-bold">✗ Your Answer</span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Explanation */}
+                          <div className={`p-4 rounded ${isCorrect ? 'bg-green-100' : 'bg-blue-50'} border-l-4 ${isCorrect ? 'border-green-500' : 'border-blue-500'}`}>
+                            <p className="font-semibold text-navy-900 mb-2">
+                              {isCorrect ? '✓ Correct!' : 'Why this is wrong:'}
+                            </p>
+                            <p className="text-gray-700">{question.rationale}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ) : (
-              <div>
-                <p className="text-lg text-navy-900 mb-6">
-                  You need 50% or higher to unlock the next chapter. Review the lessons and try again!
-                </p>
-                <div className="flex gap-4 justify-center">
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {quizResult.passed ? (
+                <>
+                  {quizResult.next_chapter && (
+                    <button
+                      onClick={handleContinue}
+                      className="btn-primary"
+                      data-testid="continue-btn"
+                    >
+                      Continue to Next Chapter →
+                    </button>
+                  )}
+                  {!quizResult.next_chapter && (
+                    <button
+                      onClick={handleContinue}
+                      className="btn-primary"
+                      data-testid="complete-btn"
+                    >
+                      Complete Journey 🎉
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
                   <button
-                    onClick={() => { setCurrentView('lessons'); setQuizResult(null); setQuizAnswers({}); }}
+                    onClick={() => { 
+                      setCurrentView('lesson'); 
+                      setCurrentLessonIndex(0);
+                      setQuizResult(null); 
+                      setQuizAnswers({}); 
+                    }}
                     className="btn-secondary"
                     data-testid="review-lessons-btn"
                   >
-                    Review Lessons
+                    ← Review Lessons
                   </button>
                   <button
-                    onClick={handleContinue}
+                    onClick={() => {
+                      setQuizResult(null);
+                      setQuizAnswers({});
+                      setCurrentView('quiz');
+                    }}
                     className="btn-primary"
-                    data-testid="back-dashboard-btn"
+                    data-testid="retake-quiz-btn"
                   >
-                    Back to Dashboard
+                    Retake Quiz
                   </button>
-                </div>
-              </div>
-            )}
+                </>
+              )}
+              <button
+                onClick={handleContinue}
+                className="btn-secondary"
+                data-testid="back-dashboard-btn"
+              >
+                Back to Dashboard
+              </button>
+            </div>
           </div>
         )}
       </div>
