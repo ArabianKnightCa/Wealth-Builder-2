@@ -77,6 +77,69 @@ function PPI({ token }) {
     );
   }
 
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 p-4">
+        <div className="max-w-3xl mx-auto py-8">
+          <div className="card">
+            <div className="text-center mb-8">
+              <div className="text-6xl mb-4">🎯</div>
+              <h2 className="text-3xl font-bold text-navy-900 mb-4">Personal Financial Inventory (PPI)</h2>
+              <p className="text-xl text-gray-700 mb-6">Let's understand your financial personality</p>
+            </div>
+
+            <div className="space-y-6 text-left">
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <h3 className="font-bold text-navy-900 mb-2">What is the PPI?</h3>
+                <p className="text-gray-700">
+                  The Personal Financial Inventory helps us understand your unique learning style, 
+                  financial personality, and current relationship with money. There are no right or wrong answers!
+                </p>
+              </div>
+
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                <h3 className="font-bold text-navy-900 mb-2">What you'll do:</h3>
+                <ul className="list-disc list-inside text-gray-700 space-y-2">
+                  <li>Answer 20 quick questions about yourself</li>
+                  <li>Choose the option that feels most natural to you</li>
+                  <li>Takes about 5-7 minutes to complete</li>
+                  <li>Your responses help personalize your learning journey</li>
+                </ul>
+              </div>
+
+              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                <h3 className="font-bold text-navy-900 mb-2">Tips:</h3>
+                <ul className="list-disc list-inside text-gray-700 space-y-2">
+                  <li>Go with your first instinct - don't overthink it</li>
+                  <li>Be honest - this helps us serve you better</li>
+                  <li>You can navigate back and forth between questions</li>
+                  <li>Your progress is automatically saved</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-center gap-4">
+              <button 
+                onClick={() => navigate('/dashboard')} 
+                className="btn-secondary"
+                data-testid="skip-btn"
+              >
+                Skip for Now
+              </button>
+              <button 
+                onClick={() => setShowIntro(false)} 
+                className="btn-primary"
+                data-testid="start-ppi-btn"
+              >
+                Let's Begin
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestion = questions[currentIndex];
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
