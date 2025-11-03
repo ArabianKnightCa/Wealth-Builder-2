@@ -234,13 +234,13 @@ function LPIChapter({ token }) {
               ))}
             </div>
 
-            <div className="flex justify-center gap-4 mt-8">
+            <div className="flex justify-between gap-4 mt-8">
               <button
-                onClick={() => setCurrentView('lessons')}
+                onClick={() => setCurrentView('takeaway')}
                 className="btn-secondary"
-                data-testid="back-to-lessons-btn"
+                data-testid="back-to-summary-btn"
               >
-                Back to Lessons
+                ← Go Back
               </button>
               <button
                 onClick={handleSubmitQuiz}
