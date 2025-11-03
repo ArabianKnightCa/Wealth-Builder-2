@@ -50,7 +50,15 @@ function LPIChapter({ token }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setQuizResult(response.data);
+      // Store quiz result with detailed breakdown
+      const result = response.data;
+      const detailedResult = {
+        ...result,
+        userAnswers: quizAnswers,
+        questions: chapter.quiz
+      };
+      
+      setQuizResult(detailedResult);
     } catch (error) {
       console.error('Failed to submit quiz:', error);
       alert('Failed to submit quiz. Please try again.');
