@@ -242,6 +242,7 @@ async def register(user_data: UserCreate):
         user_type=user_data.user_type,
         cohort=cohort,
         occupation=user_data.occupation,
+        state=user_data.state,
         school_name=user_data.school_name,
         school_city=user_data.school_city,
         school_state=user_data.school_state,
