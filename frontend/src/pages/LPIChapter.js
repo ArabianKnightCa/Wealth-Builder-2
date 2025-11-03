@@ -201,7 +201,7 @@ function LPIChapter({ token }) {
                   setCurrentView('lesson');
                   setCurrentLessonIndex(chapter.lessons.length - 1);
                 }}
-                className="px-6 py-3 border-2 border-navy-900 text-navy-900 rounded-lg font-semibold hover:bg-navy-900 hover:text-white transition-all"
+                className="btn-primary"
                 data-testid="back-btn"
               >
                 ← Go Back
