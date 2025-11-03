@@ -271,7 +271,7 @@ function Register({ onLogin }) {
                 className="btn-primary w-full" 
                 data-testid="next-btn"
               >
-                Continue →
+                Continue
               </button>
             </div>
 
