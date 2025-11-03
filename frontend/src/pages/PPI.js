@@ -167,21 +167,19 @@ function PPI({ token }) {
       <div className="max-w-3xl mx-auto py-8">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-gold font-semibold" data-testid="progress-text">
+            <span className="text-gold font-semibold text-xl" data-testid="progress-text">
               {currentIndex + 1} / {questions.length}
             </span>
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={() => navigate('/dashboard')} 
-                className="text-gold hover:text-white text-3xl font-bold transition-colors"
-                title="Help - Return to Dashboard"
-                data-testid="help-btn"
-              >
-                ?
-              </button>
-            </div>
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="text-gold hover:text-white text-3xl font-bold transition-colors"
+              title="Help - Return to Dashboard"
+              data-testid="help-btn"
+            >
+              ?
+            </button>
           </div>
-          <h2 className="text-white text-2xl font-bold text-center mb-4" data-testid="ppi-title">Wealth Builder - Personal Financial Inventory</h2>
+          <h2 className="text-white text-2xl font-bold text-center mb-4" data-testid="ppi-title">Wealth Builder - Personality Profile Questionnaire</h2>
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${progress}%` }} data-testid="progress-bar"></div>
           </div>
@@ -211,7 +209,7 @@ function PPI({ token }) {
                 className={`px-6 py-3 rounded-lg font-semibold transition-all ${
                   currentIndex === 0 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-navy-900 text-white hover:bg-navy-800'
+                    : 'bg-gold text-navy-900 hover:bg-gold-dark'
                 }`}
                 data-testid="back-btn"
               >
