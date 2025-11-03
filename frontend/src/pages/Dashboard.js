@@ -153,10 +153,10 @@ function Dashboard({ user, token, onLogout }) {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-navy-900 mb-2">
+                    <p className="text-sm text-gold font-semibold mb-1">Chapter {index + 1}</p>
+                    <h3 className="text-xl font-bold text-navy-900">
                       {chapter.title}
                     </h3>
-                    <p className="text-sm text-gray-600">Chapter {index + 1}</p>
                   </div>
                   {isCompleted && <span className="text-2xl">✓</span>}
                   {!isUnlocked && <span className="text-2xl">🔒</span>}
