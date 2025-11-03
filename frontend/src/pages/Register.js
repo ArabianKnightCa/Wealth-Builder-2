@@ -10,6 +10,7 @@ function Register({ onLogin }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
     first_name: '',
     date_of_birth: '',
     language: 'en',
@@ -24,6 +25,8 @@ function Register({ onLogin }) {
   const [showSchoolCapture, setShowSchoolCapture] = useState(false);
   const [showParentConsent, setShowParentConsent] = useState(false);
   const [userAge, setUserAge] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
