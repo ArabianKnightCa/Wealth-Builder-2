@@ -17,6 +17,17 @@ function Dashboard({ user, token, onLogout }) {
 
   const fetchData = async () => {
     try {
+      // Check if PPI is completed first
+      const progressCheck = await axios.get(`${API}/progress`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // If PPI not completed, redirect to PPI
+      if (!progressCheck.data.ppi_completed) {
+        navigate('/ppi');
+        return;
+      }
+
       const [chaptersRes, progressRes] = await Promise.all([
         axios.get(`${API}/content/lpi`),
         axios.get(`${API}/lpi/progress`, {
