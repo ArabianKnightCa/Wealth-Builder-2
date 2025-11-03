@@ -47,6 +47,7 @@ class UserCreate(BaseModel):
     experience_level: int = Field(ge=1, le=5)
     user_type: str = "POC"  # POC, B1, B2, B3, COMM
     occupation: str  # Role selector
+    state: Optional[str] = None  # US state
     school_name: Optional[str] = None
     school_city: Optional[str] = None
     school_state: Optional[str] = None
