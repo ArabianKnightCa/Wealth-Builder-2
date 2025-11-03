@@ -166,13 +166,13 @@ function Register({ onLogin }) {
 
           <div className="card">
             <div className="space-y-6">
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" data-testid="error-message">
-                {error}
-              </div>
-            )}
+            <div className="space-y-6">
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" data-testid="error-message">
+                  {error}
+                </div>
+              )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">First Name</label>
                 <input
@@ -186,206 +186,106 @@ function Register({ onLogin }) {
               </div>
 
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Date of Birth</label>
+                <label className="block text-gray-700 font-semibold mb-2">Email</label>
                 <input
-                  type="date"
+                  type="email"
                   className="input-field"
-                  value={formData.date_of_birth}
-                  onChange={(e) => handleDOBChange(e.target.value)}
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  data-testid="dob-input"
+                  data-testid="email-input"
                 />
-                {userAge !== null && userAge < 18 && (
-                  <p className="text-sm text-blue-600 mt-1">⚠️ Parental consent required for users under 18</p>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Password (min 8 characters)</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="input-field pr-12"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    minLength={8}
+                    required
+                    data-testid="password-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    data-testid="toggle-password"
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Confirm Password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="input-field pr-12"
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    minLength={8}
+                    required
+                    data-testid="confirm-password-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    data-testid="toggle-confirm-password"
+                  >
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                  <p className="text-sm text-red-600 mt-1">⚠️ Passwords do not match</p>
                 )}
               </div>
-            </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Which best describes your current role?</label>
-              <select
-                className="input-field"
-                value={formData.occupation}
-                onChange={(e) => handleOccupationChange(e.target.value)}
-                required
-                data-testid="occupation-select"
-              >
-                <option value="">Select your role...</option>
-                {occupationOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-
-            {showSchoolCapture && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-navy-900 mb-3">School Information</h4>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">School Name</label>
-                    <input
-                      type="text"
-                      className="input-field"
-                      value={formData.school_name}
-                      onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
-                      placeholder="Enter your school name"
-                      data-testid="school-name-input"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-gray-700 mb-2">City (Optional)</label>
-                      <input
-                        type="text"
-                        className="input-field"
-                        value={formData.school_city}
-                        onChange={(e) => setFormData({ ...formData, school_city: e.target.value })}
-                        placeholder="City"
-                        data-testid="school-city-input"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 mb-2">State (Optional)</label>
-                      <input
-                        type="text"
-                        className="input-field"
-                        value={formData.school_state}
-                        onChange={(e) => setFormData({ ...formData, school_state: e.target.value })}
-                        placeholder="State"
-                        data-testid="school-state-input"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {showParentConsent && (
-              <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
-                <h4 className="font-semibold text-navy-900 mb-2">🛡️ Parental Consent Required</h4>
-                <p className="text-sm text-gray-700 mb-3">
-                  Since you're under 18, we need a parent or guardian's permission. They'll receive a verification email.
-                </p>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">Parent/Guardian Email</label>
-                  <input
-                    type="email"
-                    className="input-field"
-                    value={formData.parent_email}
-                    onChange={(e) => setFormData({ ...formData, parent_email: e.target.value })}
-                    placeholder="parent@example.com"
-                    required={showParentConsent}
-                    data-testid="parent-email-input"
-                  />
-                  <p className="text-xs text-gray-600 mt-1">
-                    Your parent will receive a verification link to approve your account.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Email</label>
-              <input
-                type="email"
-                className="input-field"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                data-testid="email-input"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Password (min 8 characters)</label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="input-field pr-12"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  minLength={8}
-                  required
-                  data-testid="password-input"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  data-testid="toggle-password"
-                >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Confirm Password</label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  className="input-field pr-12"
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  minLength={8}
-                  required
-                  data-testid="confirm-password-input"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  data-testid="toggle-confirm-password"
-                >
-                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-              {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                <p className="text-sm text-red-600 mt-1">⚠️ Passwords do not match</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">What is your level of financial experience?</label>
-              <select
-                className="input-field"
-                value={formData.experience_level}
-                onChange={(e) => setFormData({ ...formData, experience_level: parseInt(e.target.value) })}
-                data-testid="experience-select"
-              >
-                <option value="">What's your level of financial experience?</option>
-                {experienceLevels.map(level => (
-                  <option key={level.value} value={level.value}>{level.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <button 
-              type="submit" 
-              className="btn-primary w-full" 
-              disabled={loading}
-              data-testid="submit-btn"
-            >
-              {loading ? 'Creating Account...' : 'Create Account'}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              Already have an account?{' '}
               <button 
-                onClick={() => navigate('/login')} 
-                className="text-gold font-semibold hover:underline"
-                data-testid="login-link"
+                type="button"
+                onClick={handlePage1Next}
+                className="btn-primary w-full" 
+                data-testid="next-btn"
               >
-                Sign In
+                Continue →
               </button>
-            </p>
+            </div>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                Already have an account?{' '}
+                <button 
+                  onClick={() => navigate('/login')} 
+                  className="text-gold font-semibold hover:underline"
+                  data-testid="login-link"
+                >
+                  Sign In
+                </button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
+  // PAGE 2: Age, Role, Financial Experience
+  if (currentPage === 2) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-white mb-2">Tell Us About You</h2>
+            <p className="text-gray-300">Help us personalize your experience</p>
+            <p className="text-gold mt-2">Step 2 of 2</p>
+          </div>
+
+          <div className="card">
+            <div className="space-y-6">
 
 export default Register;
