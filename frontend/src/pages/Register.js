@@ -7,7 +7,7 @@ const API = `${BACKEND_URL}/api`;
 
 function Register({ onLogin }) {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1); // 1, 2, or 3 (PPI is page 3)
+  const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -125,12 +125,10 @@ function Register({ onLogin }) {
       return;
     }
     
-    // Register the user
     setLoading(true);
     try {
       const { confirmPassword, ...submitData } = formData;
       
-      // Clean up empty optional fields and convert experience_level to int
       const cleanData = {
         ...submitData,
         experience_level: parseInt(submitData.experience_level),
@@ -144,7 +142,6 @@ function Register({ onLogin }) {
       console.log('Registration success:', response.data);
       onLogin(response.data.user, response.data.access_token);
       
-      // Navigate to PPI (which is page 3)
       navigate('/ppi', { replace: true });
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
@@ -165,7 +162,6 @@ function Register({ onLogin }) {
           </div>
 
           <div className="card">
-            <div className="space-y-6">
             <div className="space-y-6">
               {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" data-testid="error-message">
