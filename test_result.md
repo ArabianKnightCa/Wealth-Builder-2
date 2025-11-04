@@ -109,11 +109,11 @@ user_problem_statement: |
 backend:
   - task: "Delete Account Endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -122,6 +122,16 @@ backend:
           Accepts {"email": "user@example.com"}.
           Deletes user and all associated data from multiple collections.
           Need to test if endpoint is actually working.
+      - working: true
+        agent: "testing"
+        comment: |
+          TESTED: Backend delete account endpoint is working correctly.
+          ✅ Successfully deletes user and all associated data from database
+          ✅ Returns proper deletion counts for all collections (users, progress, ppi_answers, lpi_progress, parents, family_links)
+          ✅ Deleted user cannot login afterwards (proper cleanup)
+          ✅ Validates missing email (returns 400)
+          Minor: Non-existent user returns 500 instead of 404 (error handling issue in exception wrapper)
+          Core functionality works perfectly for valid delete operations.
 
 frontend:
   - task: "Reset Account Button on Settings Page"
