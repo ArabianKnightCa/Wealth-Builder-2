@@ -242,7 +242,10 @@ function Settings({ user, token }) {
                   Deleting your account will permanently remove all your data, progress, and quiz results. This action cannot be undone.
                 </p>
                 <button
-                  onClick={handleDeleteAccount}
+                  onClick={(e) => {
+                    console.log('🟢 Button click event fired!', e);
+                    handleDeleteAccount();
+                  }}
                   disabled={isDeleting}
                   type="button"
                   className={`w-full px-4 py-3 rounded-lg font-semibold transition-all ${
@@ -251,8 +254,9 @@ function Settings({ user, token }) {
                       : 'bg-red-600 hover:bg-red-700 text-white'
                   }`}
                   data-testid="delete-account-btn"
+                  style={{ pointerEvents: 'auto' }}
                 >
-                  {isDeleting ? '⏳ Deleting...' : '🗑️ Delete My Account Permanently'}
+                  {isDeleting ? '⏳ Deleting...' : '🗑️ DELETE ACCOUNT [v2.0]'}
                 </button>
               </div>
             </div>
