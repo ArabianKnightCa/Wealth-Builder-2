@@ -133,6 +133,95 @@ backend:
           Minor: Non-existent user returns 500 instead of 404 (error handling issue in exception wrapper)
           Core functionality works perfectly for valid delete operations.
 
+  - task: "Adaptive Engine (AE) Personalized PPI Endpoint"
+    implemented: true
+    working: false
+    file: "/app/backend/ae_engine_v2.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Implemented GET /api/content/ppi/personalized endpoint using AE_FN_COMPOSE_PPI.
+          Should return 20 personalized PPI questions based on user age and experience level.
+          Uses deterministic selection with user_id as seed.
+      - working: false
+        agent: "testing"
+        comment: |
+          CRITICAL ISSUE: PPI Bank severely under-populated.
+          ❌ Expected 20 questions, but only 8 questions available in ppi_bank_poc_v1_1.json
+          ❌ Age 10 user gets only 3 questions (filtered by age/experience constraints)
+          ❌ Age 25 user gets only 2 questions 
+          ❌ Age 40 user gets only 2 questions
+          ✅ API endpoint structure works correctly
+          ✅ Age detection and experience mapping working
+          ✅ Deterministic behavior confirmed (same user gets same questions)
+          ✅ Question structure is correct (question_id, bank_id, type, prompt, options)
+          
+          ROOT CAUSE: ppi_bank_poc_v1_1.json contains only 8 questions but system requires 20.
+          The filtering by age bands and experience levels further reduces available questions.
+
+  - task: "Adaptive Engine (AE) Financial DNA Generation"
+    implemented: true
+    working: false
+    file: "/app/backend/ae_engine_v2.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Implemented POST /api/ppi/submit endpoint using AE_FN_GENERATE_PLAN.
+          Should generate Financial DNA profile and personalized LPI chapter order.
+          Calculates discipline, impulse, confidence weights and tempo.
+      - working: false
+        agent: "testing"
+        comment: |
+          BLOCKED BY PPI QUESTION SHORTAGE: Cannot test Financial DNA generation properly.
+          ❌ Insufficient PPI questions (only 3 available for test user) prevents meaningful DNA calculation
+          ❌ Cannot test different answer patterns with so few questions
+          ❌ Learning map not saved to progress collection
+          
+          PARTIAL VERIFICATION (based on limited questions):
+          ✅ API endpoint accepts PPI answers correctly
+          ✅ Financial DNA structure is correct (profile, weights with discipline/impulse/confidence/tempo)
+          ✅ LPI plan structure is correct (version, chapters, tempo, profile)
+          ✅ Weight ranges are valid (0.0-1.0 for numeric, tempo is string)
+          ✅ Chapter count is correct (10 chapters)
+          
+          DEPENDENCY: Requires PPI bank expansion to 20+ questions for proper testing.
+
+  - task: "Adaptive Engine (AE) Chapter Personalization"
+    implemented: true
+    working: false
+    file: "/app/backend/ae_engine_v2.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Implemented personalized chapter ordering based on Financial DNA profile.
+          Should unlock first chapter in personalized order and save learning_map to progress.
+      - working: false
+        agent: "testing"
+        comment: |
+          BLOCKED BY UPSTREAM ISSUES: Cannot test chapter personalization properly.
+          ❌ Learning map not found in progress data (PPI submission incomplete due to question shortage)
+          ❌ Cannot verify personalized chapter order without successful PPI completion
+          ❌ First chapter unlock verification failed
+          
+          ARCHITECTURE VERIFIED:
+          ✅ Chapter ordering logic exists in ae_engine_v2.py
+          ✅ Different profiles have different chapter orders defined
+          ✅ LPI progress collection structure is correct
+          
+          DEPENDENCY: Requires successful PPI completion for testing.
+
 frontend:
   - task: "Reset Account Button on Settings Page"
     implemented: true
