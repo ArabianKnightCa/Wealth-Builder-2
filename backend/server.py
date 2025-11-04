@@ -14,7 +14,8 @@ import jwt
 import random
 import string
 from pathlib import Path
-from content_data import PPI_QUESTIONS, LPI_CHAPTERS
+from content_data import PPI_QUESTIONS, LPI_CHAPTERS, LPI_ANSWER_KEY
+from ae_engine import get_adaptive_engine
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
