@@ -1,208 +1,189 @@
 [
   {
-    "test": "Test 1 - Age-Based Question Filtering",
+    "test": "Context Differentiation - Different Outcomes",
     "success": true,
-    "message": "Different question counts: Young=18, Adult=20",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:47.221942"
-  },
-  {
-    "test": "Test 1 - Different DNA Profiles",
-    "success": true,
-    "message": "Age/experience created different profiles: Cautious Learner vs Balanced Builder",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:47.304893"
-  },
-  {
-    "test": "Test 1 - Different Chapter Orders",
-    "success": true,
-    "message": "Age/experience created different chapter orders",
+    "message": "Same answers produce different outcomes with different contexts",
     "details": {
-      "Young (15yr)": [
-        1,
-        2,
-        8,
-        3,
-        7,
-        9,
-        4,
-        6,
-        5,
-        10
-      ],
-      "Adult (25yr)": [
-        1,
-        2,
-        3,
-        4,
-        8,
-        7,
-        6,
-        9,
-        5,
-        10
-      ]
+      "User A (15yr, beginner)": "Profile: Cautious Learner, Weights: {'discipline': 0.01, 'impulse': 0.28, 'confidence': 0.0, 'tempo': 'steady'}",
+      "User B (30yr, intermediate)": "Profile: Balanced Builder, Weights: {'discipline': 0.07, 'impulse': 0.25, 'confidence': 0.15, 'tempo': 'steady'}",
+      "Profiles Different": true,
+      "Weights Different": true,
+      "Chapter Orders Different": true
     },
-    "timestamp": "2025-11-04T15:41:47.304922"
+    "timestamp": "2025-11-04T15:51:52.479798"
   },
   {
-    "test": "Test 1 - Age-Based DNA Modifiers",
+    "test": "Archetype Variety - All A (disciplined)",
     "success": true,
-    "message": "Age influenced DNA weights (confidence diff: 0.15)",
+    "message": "Generated profile: Analytical Planner",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:52.874757"
+  },
+  {
+    "test": "Archetype Variety - All B (balanced/moderate)",
+    "success": true,
+    "message": "Generated profile: Balanced Builder",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:52.922282"
+  },
+  {
+    "test": "Archetype Variety - All C (cautious/learning)",
+    "success": true,
+    "message": "Generated profile: Spontaneous Explorer",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:52.968774"
+  },
+  {
+    "test": "Archetype Variety - All D (spontaneous/needs support)",
+    "success": true,
+    "message": "Generated profile: Guided Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:53.013961"
+  },
+  {
+    "test": "Archetype Variety - Mixed (50% A, 50% D)",
+    "success": true,
+    "message": "Generated profile: Guided Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:53.065976"
+  },
+  {
+    "test": "Archetype Variety - Unique Profiles",
+    "success": true,
+    "message": "Generated 4 different archetypes",
     "details": {
-      "Young confidence": 0.0,
-      "Adult confidence": 0.15
-    },
-    "timestamp": "2025-11-04T15:41:47.304943"
-  },
-  {
-    "test": "Test 2 - Experience-Based Profile Differences",
-    "success": false,
-    "message": "Same profile despite different experience: Analytical Planner",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:48.032096"
-  },
-  {
-    "test": "Test 2 - Experience-Based Chapter Orders",
-    "success": true,
-    "message": "Experience level created different chapter orders",
-    "details": {
-      "Beginner": [
-        1,
-        2,
-        4,
-        3,
-        8,
-        6,
-        7,
-        5,
-        9,
-        10
-      ],
-      "Advanced": [
-        1,
-        2,
-        4,
-        5,
-        6,
-        3,
-        8,
-        7,
-        9,
-        10
-      ]
-    },
-    "timestamp": "2025-11-04T15:41:48.032125"
-  },
-  {
-    "test": "Test 2 - Experience-Based Confidence Boost",
-    "success": true,
-    "message": "Advanced user has higher confidence: 0.45 vs 0.15",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:48.032142"
-  },
-  {
-    "test": "Test 3 - All A Answers Profile",
-    "success": true,
-    "message": "All A answers produced disciplined profile: Analytical Planner",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:48.736801"
-  },
-  {
-    "test": "Test 3 - All D Answers Profile",
-    "success": true,
-    "message": "All D answers produced spontaneous profile: Guided Learner",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:48.736829"
-  },
-  {
-    "test": "Test 3 - Weight Differentiation",
-    "success": true,
-    "message": "Clear weight differences: E discipline=0.87, F impulse=0.40",
-    "details": {
-      "User E (All A)": "discipline=0.87, impulse=0.00",
-      "User F (All D)": "discipline=0.02, impulse=0.40"
-    },
-    "timestamp": "2025-11-04T15:41:48.736839"
-  },
-  {
-    "test": "Test 3 - Trait-Based Chapter Orders",
-    "success": true,
-    "message": "Different traits produced different chapter orders",
-    "details": {
-      "Disciplined (All A)": [
-        1,
-        2,
-        4,
-        5,
-        3,
-        8,
-        6,
-        7,
-        9,
-        10
-      ],
-      "Spontaneous (All D)": [
-        1,
-        2,
-        8,
-        7,
-        3,
-        4,
-        9,
-        6,
-        5,
-        10
-      ]
-    },
-    "timestamp": "2025-11-04T15:41:48.736847"
-  },
-  {
-    "test": "Test 4 - Guided Learner Archetype",
-    "success": false,
-    "message": "Did not trigger Guided Learner, got: Cautious Learner",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:49.430620"
-  },
-  {
-    "test": "Test 4 - Strategic Planner Archetype",
-    "success": false,
-    "message": "Did not trigger Strategic Planner, got: Analytical Planner",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:49.430644"
-  },
-  {
-    "test": "Test 4 - Specialized Archetypes Available",
-    "success": false,
-    "message": "Limited specialized archetypes found: ['Analytical Planner']",
-    "details": {},
-    "timestamp": "2025-11-04T15:41:49.430657"
-  },
-  {
-    "test": "Archetype Diversity - Expected Count",
-    "success": true,
-    "message": "Enhanced engine supports 10 archetypes",
-    "details": {
-      "Expected archetypes": [
-        "Disciplined Planner",
+      "Unique Profiles": [
         "Analytical Planner",
-        "Strategic Planner",
+        "Balanced Builder",
         "Spontaneous Explorer",
-        "Dynamic Adventurer",
-        "Confident Builder",
-        "Cautious Learner",
-        "Guided Learner",
-        "Steady Achiever",
-        "Balanced Builder"
+        "Guided Learner"
+      ],
+      "All Results": [
+        {
+          "pattern": "All A (disciplined)",
+          "profile": "Analytical Planner"
+        },
+        {
+          "pattern": "All B (balanced/moderate)",
+          "profile": "Balanced Builder"
+        },
+        {
+          "pattern": "All C (cautious/learning)",
+          "profile": "Spontaneous Explorer"
+        },
+        {
+          "pattern": "All D (spontaneous/needs support)",
+          "profile": "Guided Learner"
+        },
+        {
+          "pattern": "Mixed (50% A, 50% D)",
+          "profile": "Guided Learner"
+        }
       ]
     },
-    "timestamp": "2025-11-04T15:41:49.430704"
+    "timestamp": "2025-11-04T15:51:53.066019"
   },
   {
-    "test": "Archetype Diversity - Test Coverage",
-    "success": false,
-    "message": "Limited profile diversity in tests: []",
+    "test": "Chapter Order - Beginner (age 10) Ch5 Delay",
+    "success": true,
+    "message": "Chapter 5 delayed to position 9 for beginner",
     "details": {},
-    "timestamp": "2025-11-04T15:41:49.430715"
+    "timestamp": "2025-11-04T15:51:53.945024"
+  },
+  {
+    "test": "Chapter Order - Beginner (age 10) Generated",
+    "success": true,
+    "message": "Chapter order: [1, 8, 7, 2, 3, 6, 4, 9, 5, 10]",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:53.945060"
+  },
+  {
+    "test": "Chapter Order - Intermediate (age 25) Generated",
+    "success": true,
+    "message": "Chapter order: [1, 2, 3, 4, 8, 7, 6, 9, 5, 10]",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:54.036605"
+  },
+  {
+    "test": "Chapter Order - Advanced (age 40) Ch5&6 Priority",
+    "success": true,
+    "message": "Ch5 at pos 4, Ch6 at pos 5 (prioritized for advanced)",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:54.134128"
+  },
+  {
+    "test": "Chapter Order - Advanced (age 40) Generated",
+    "success": true,
+    "message": "Chapter order: [1, 2, 3, 5, 6, 4, 8, 7, 9, 10]",
+    "details": {},
+    "timestamp": "2025-11-04T15:51:54.134161"
+  },
+  {
+    "test": "Chapter Order - Personalization Verified",
+    "success": true,
+    "message": "All experience levels produce different chapter orders",
+    "details": {
+      "Beginner (age 10)": [
+        1,
+        8,
+        7,
+        2,
+        3,
+        6,
+        4,
+        9,
+        5,
+        10
+      ],
+      "Intermediate (age 25)": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        7,
+        6,
+        9,
+        5,
+        10
+      ],
+      "Advanced (age 40)": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        4,
+        8,
+        7,
+        9,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:51:54.134172"
+  },
+  {
+    "test": "Trait Analysis - Guided Learner Profile",
+    "success": true,
+    "message": "Successfully triggered 'Guided Learner' profile with needs_support trait",
+    "details": {
+      "Profile": "Guided Learner",
+      "Needs Support Count": 5,
+      "Dominant Traits": [
+        [
+          "needs_support",
+          5
+        ],
+        [
+          "moderate",
+          4
+        ],
+        [
+          "impulse",
+          2
+        ]
+      ]
+    },
+    "timestamp": "2025-11-04T15:51:54.494422"
   }
 ]
