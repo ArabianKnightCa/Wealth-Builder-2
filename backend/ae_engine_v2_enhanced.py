@@ -293,17 +293,17 @@ class AdaptiveEngineV2Enhanced:
         # Apply age/experience modifiers with base adjustments
         if age and age < 18:
             # Youth: slightly lower confidence, prefer slower tempo
-            confidence_score = confidence_score * 0.9 - 0.05  # Reduce confidence for youth
+            confidence_score = max(0.0, confidence_score * 0.9 - 0.05)  # Reduce confidence for youth
             if tempo == "fast":
                 tempo = "steady"
         
         if financial_experience == "beginner":
             # Beginners: lower confidence and discipline
-            confidence_score = confidence_score * 0.8 - 0.1
+            confidence_score = max(0.0, confidence_score * 0.8 - 0.05)
             discipline_score = discipline_score * 0.9
         elif financial_experience == "advanced":
             # Advanced: boost confidence and discipline
-            confidence_score = confidence_score * 1.2 + 0.1
+            confidence_score = confidence_score * 1.2 + 0.15
             discipline_score = discipline_score * 1.1
         
         # Normalize to 0.0-1.0
