@@ -58,37 +58,6 @@ function Dashboard({ user, token, onLogout }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-navy-900 text-white p-4 shadow-lg">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold" data-testid="dashboard-title">Wealth Builder</h1>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => navigate('/dashboard')} 
-              className="text-gold hover:text-white text-2xl transition-colors"
-              title="Help - Return to Dashboard"
-              data-testid="help-btn"
-            >
-              ?
-            </button>
-            <span data-testid="user-name">Welcome, {user.first_name}!</span>
-            <button 
-              onClick={() => navigate('/settings')} 
-              className="text-gold hover:underline"
-              data-testid="settings-btn"
-            >
-              Settings
-            </button>
-            <button 
-              onClick={onLogout} 
-              className="bg-gold text-navy-900 px-4 py-2 rounded-lg font-semibold hover:bg-gold-dark transition-all"
-              data-testid="logout-btn"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* Progress HUD */}
       <div className="bg-white shadow-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto p-4">
