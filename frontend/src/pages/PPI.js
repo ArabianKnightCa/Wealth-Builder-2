@@ -201,7 +201,7 @@ function PPI({ token }) {
                 className={`px-6 py-3 rounded-lg font-semibold transition-all ${
                   currentIndex === 0 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-gold text-navy-900 hover:bg-gold-dark'
+                    : 'btn-primary'
                 }`}
                 data-testid="back-btn"
               >
