@@ -1,0 +1,110 @@
+[
+  {
+    "test": "Create Test User",
+    "success": true,
+    "message": "Test user created successfully",
+    "details": {
+      "user_id": "461e9f2b-eb3a-4980-9145-04e6411d7b76",
+      "email": "testuser_49f704d7@example.com"
+    },
+    "timestamp": "2025-11-04T05:31:26.011702"
+  },
+  {
+    "test": "Backend API - Missing Email Validation",
+    "success": true,
+    "message": "Correctly rejected request with missing email",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:26.054759"
+  },
+  {
+    "test": "Backend API - Non-existent User",
+    "success": false,
+    "message": "Expected 404, got 500",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:26.100402"
+  },
+  {
+    "test": "Backend Delete API - User Deletion",
+    "success": true,
+    "message": "User successfully deleted from database",
+    "details": {
+      "deleted_counts": {
+        "users": 1,
+        "progress": 1,
+        "ppi_answers": 0,
+        "lpi_progress": 0,
+        "parents": 0,
+        "family_links": 0
+      }
+    },
+    "timestamp": "2025-11-04T05:31:26.156731"
+  },
+  {
+    "test": "Backend Delete API - Login Verification",
+    "success": true,
+    "message": "Deleted user cannot login (expected behavior)",
+    "details": {
+      "login_status": 401
+    },
+    "timestamp": "2025-11-04T05:31:26.199259"
+  },
+  {
+    "test": "Create Test User",
+    "success": true,
+    "message": "Test user created successfully",
+    "details": {
+      "user_id": "c2e70820-11cb-4589-8759-6b73415bcb4e",
+      "email": "testuser_49f704d7@example.com"
+    },
+    "timestamp": "2025-11-04T05:31:26.468692"
+  },
+  {
+    "test": "Frontend E2E - Page Load",
+    "success": true,
+    "message": "Frontend page loaded successfully",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:28.919340"
+  },
+  {
+    "test": "Frontend E2E - Settings Page",
+    "success": true,
+    "message": "Settings page loaded successfully",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:29.643564"
+  },
+  {
+    "test": "Frontend E2E - Delete Button",
+    "success": true,
+    "message": "Delete account button found",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:29.650669"
+  },
+  {
+    "test": "Frontend E2E - Button State",
+    "success": true,
+    "message": "Delete button is enabled and clickable",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:29.657083"
+  },
+  {
+    "test": "Frontend E2E - Confirmation Dialogs",
+    "success": true,
+    "message": "Both confirmation dialogs appeared (3 dialogs)",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:31.744614"
+  },
+  {
+    "test": "Frontend E2E - Redirect",
+    "success": true,
+    "message": "Successfully redirected to home page after deletion",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:31.746455"
+  },
+  {
+    "test": "Frontend E2E - LocalStorage Cleanup",
+    "success": true,
+    "message": "LocalStorage cleared successfully",
+    "details": {},
+    "timestamp": "2025-11-04T05:31:31.753108"
+  }
+]
