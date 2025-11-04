@@ -239,10 +239,7 @@ function Settings({ user, token }) {
                   Deleting your account will permanently remove all your data, progress, and quiz results. This action cannot be undone.
                 </p>
                 <button
-                  onClick={(e) => {
-                    console.log('🟢 Button click event fired!', e);
-                    handleDeleteAccount();
-                  }}
+                  onClick={handleDeleteAccount}
                   disabled={isDeleting}
                   type="button"
                   className={`w-full px-4 py-3 rounded-lg font-semibold transition-all ${
@@ -251,15 +248,79 @@ function Settings({ user, token }) {
                       : 'bg-red-600 hover:bg-red-700 text-white'
                   }`}
                   data-testid="delete-account-btn"
-                  style={{ pointerEvents: 'auto' }}
                 >
-                  {isDeleting ? '⏳ Deleting...' : '🗑️ DELETE ACCOUNT [v2.0]'}
+                  {isDeleting ? '⏳ Deleting...' : '🗑️ Delete My Account Permanently'}
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl">
+            {deleteStep === 1 ? (
+              <>
+                <h2 className="text-2xl font-bold text-red-600 mb-4">⚠️ Delete Your Account?</h2>
+                <div className="text-gray-700 mb-6">
+                  <p className="mb-3">This will permanently delete:</p>
+                  <ul className="list-disc list-inside space-y-1 mb-4">
+                    <li>All your progress</li>
+                    <li>Quiz results</li>
+                    <li>PPI responses</li>
+                    <li>All account data</li>
+                  </ul>
+                  <p className="font-bold text-red-600">This action CANNOT be undone!</p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleCancelDelete}
+                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmStep1}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold text-red-600 mb-4">⚠️⚠️ FINAL WARNING ⚠️⚠️</h2>
+                <p className="text-gray-700 mb-6">
+                  You are about to <span className="font-bold text-red-600">PERMANENTLY DELETE</span> your account.
+                  <br /><br />
+                  Are you absolutely sure?
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleCancelDelete}
+                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300"
+                  >
+                    Go Back
+                  </button>
+                  <button
+                    onClick={handleConfirmStep2}
+                    disabled={isDeleting}
+                    className={`flex-1 px-4 py-2 rounded-lg font-semibold ${
+                      isDeleting 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-red-600 hover:bg-red-700 text-white'
+                    }`}
+                  >
+                    {isDeleting ? 'Deleting...' : 'DELETE FOREVER'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
