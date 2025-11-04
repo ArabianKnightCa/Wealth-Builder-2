@@ -41,40 +41,6 @@ function GlobalHUD({ user, token, onLogout }) {
     }
   };
 
-  const handleReset = async () => {
-    try {
-      alert('TEST: Function called!');
-      
-      if (!user || !user.email) {
-        alert('ERROR: No user email found');
-        return;
-      }
-      
-      const confirmed1 = window.confirm('⚠️ This will DELETE your account and all data. Are you sure?');
-      if (!confirmed1) return;
-
-      const confirmed2 = window.confirm('⚠️⚠️ FINAL WARNING: This action CANNOT be undone. Delete account?');
-      if (!confirmed2) return;
-
-      setResetting(true);
-      alert('Sending delete request for: ' + user.email);
-      
-      const response = await axios.post(`${API}/auth/delete-account`, 
-        { email: user.email },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-      
-      alert('✅ Account deleted: ' + JSON.stringify(response.data));
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      onLogout();
-      window.location.href = '/';
-    } catch (error) {
-      alert('❌ ERROR: ' + (error.response?.data?.detail || error.message || 'Unknown'));
-      setResetting(false);
-    }
-  };
-
   return (
     <>
       <div className="bg-navy-900 text-white py-2 px-4 shadow-md border-b border-gold/30">
