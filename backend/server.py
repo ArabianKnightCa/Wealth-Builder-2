@@ -229,8 +229,8 @@ async def get_personalized_ppi(user_id: str = Depends(get_current_user)):
         exp_map = {1: 'beginner', 2: 'beginner', 3: 'intermediate', 4: 'advanced', 5: 'advanced'}
         financial_experience = exp_map.get(financial_experience, 'beginner')
     
-    # Call AE compose_ppi
-    ae_v2 = get_adaptive_engine_v2()
+    # Call AE compose_ppi (enhanced version)
+    ae_v2 = get_adaptive_engine_v2_enhanced()
     ppi_result = ae_v2.compose_ppi(
         user_id=user_id,
         age=age,
