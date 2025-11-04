@@ -6,10 +6,6 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 function Settings({ user, token }) {
-  console.log('🔵 Settings component loaded - NEW VERSION v2.0');
-  console.log('User prop:', user);
-  console.log('Token prop:', token);
-  
   const navigate = useNavigate();
   const [settings, setSettings] = useState({
     language: user.language || 'en',
@@ -17,34 +13,30 @@ function Settings({ user, token }) {
     notifications_enabled: true
   });
   const [loading, setLoading] = useState(false);
-
   const [message, setMessage] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1); // 1 = first confirm, 2 = second confirm
 
-  const handleDeleteAccount = async () => {
-    console.log('🔴 Delete button clicked - handleDeleteAccount called');
-    
-    // First confirmation
-    const confirmed1 = window.confirm(
-      '⚠️ DELETE YOUR ACCOUNT?\n\nThis will permanently delete:\n• All your progress\n• Quiz results\n• PPI responses\n• All account data\n\nThis action CANNOT be undone!\n\nClick OK to continue.'
-    );
-    
-    if (!confirmed1) {
-      console.log('User cancelled at first confirmation');
-      return;
-    }
-    
-    // Second confirmation
-    const confirmed2 = window.confirm(
-      '⚠️⚠️ FINAL WARNING ⚠️⚠️\n\nYou are about to PERMANENTLY DELETE your account.\n\nAre you absolutely sure?\n\nClick OK to DELETE FOREVER or Cancel to go back.'
-    );
-    
-    if (!confirmed2) {
-      console.log('User cancelled at second confirmation');
-      return;
-    }
+  const handleDeleteAccount = () => {
+    console.log('Delete button clicked - showing confirmation modal');
+    setShowDeleteModal(true);
+    setDeleteStep(1);
+  };
 
-    console.log('User confirmed deletion, proceeding...');
+  const handleCancelDelete = () => {
+    console.log('User cancelled deletion');
+    setShowDeleteModal(false);
+    setDeleteStep(1);
+  };
+
+  const handleConfirmStep1 = () => {
+    console.log('User confirmed step 1, showing step 2');
+    setDeleteStep(2);
+  };
+
+  const handleConfirmStep2 = async () => {
+    console.log('User confirmed step 2, proceeding with deletion');
     setIsDeleting(true);
     
     try {
@@ -64,17 +56,22 @@ function Settings({ user, token }) {
       console.log('Response data:', data);
       
       if (response.ok) {
-        alert('✅ Account deleted successfully!\n\nYou will now be logged out.');
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '/';
+        setShowDeleteModal(false);
+        // Show success message in the UI instead of alert
+        setMessage('✅ Account deleted successfully! Logging out...');
+        setTimeout(() => {
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = '/';
+        }, 2000);
       } else {
         throw new Error(data.detail || 'Failed to delete account');
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert(`❌ Error deleting account:\n\n${error.message}\n\nPlease try again or contact support.`);
+      setMessage(`❌ Error: ${error.message}`);
       setIsDeleting(false);
+      setShowDeleteModal(false);
     }
   };
 
