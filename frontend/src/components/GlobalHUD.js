@@ -14,19 +14,23 @@ function GlobalHUD({ user, token, onLogout }) {
       return;
     }
 
+    if (!window.confirm('⚠️⚠️ FINAL WARNING: This action CANNOT be undone. Delete account?')) {
+      return;
+    }
+
     setResetting(true);
     try {
-      await axios.post(`${API}/auth/delete-account`, 
-        { email: user.email },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.post(`${API}/auth/delete-account`, 
+        { email: user.email }
       );
       
+      console.log('Delete response:', response.data);
       alert('✅ Account deleted successfully. You will be logged out.');
       onLogout();
       navigate('/');
     } catch (error) {
       console.error('Reset failed:', error);
-      alert('❌ Reset failed. Please try again.');
+      alert(`❌ Reset failed: ${error.response?.data?.detail || error.message}`);
       setResetting(false);
     }
   };
