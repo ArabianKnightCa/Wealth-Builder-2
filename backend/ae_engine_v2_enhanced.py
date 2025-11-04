@@ -268,15 +268,15 @@ class AdaptiveEngineV2Enhanced:
         
         # Calculate discipline (planning, systematic, structured)
         discipline_traits = ['discipline', 'systematic', 'structured', 'analytical', 'organized']
-        discipline_score = sum(trait_counts.get(t, 0) for t in discipline_traits) / (total_answers * 2)
+        discipline_score = sum(trait_counts.get(t, 0) for t in discipline_traits) / total_answers
         
         # Calculate impulse (spontaneous, reactive, emotional)
         impulse_traits = ['impulse', 'reactive', 'emotional', 'spontaneous', 'impulse']
-        impulse_score = sum(trait_counts.get(t, 0) for t in impulse_traits) / (total_answers * 2)
+        impulse_score = sum(trait_counts.get(t, 0) for t in impulse_traits) / total_answers
         
         # Calculate confidence (confident, resilient, prepared)
         confidence_traits = ['confident', 'resilient', 'prepared', 'advanced', 'open']
-        confidence_score = sum(trait_counts.get(t, 0) for t in confidence_traits) / (total_answers * 2)
+        confidence_score = sum(trait_counts.get(t, 0) for t in confidence_traits) / total_answers
         
         # Calculate tempo based on traits
         fast_traits = ['confident', 'quick_wins', 'risk_tolerant', 'advanced']
