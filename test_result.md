@@ -185,8 +185,7 @@ test_plan:
   current_focus:
     - "Delete Account Endpoint"
     - "Reset Account Button on Settings Page"
-  stuck_tasks:
-    - "Reset Account Button on Settings Page"
+  stuck_tasks: []
   test_all: false
   test_priority: "stuck_first"
 
