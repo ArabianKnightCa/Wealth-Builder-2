@@ -13,6 +13,37 @@ function Settings({ user, token }) {
     notifications_enabled: true
   });
   const [loading, setLoading] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('⚠️ Are you ABSOLUTELY SURE you want to delete your account? All data will be lost forever.')) {
+      return;
+    }
+    if (!window.confirm('⚠️⚠️ FINAL WARNING: Click OK to permanently delete your account and all data.')) {
+      return;
+    }
+
+    try {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${BACKEND_URL}/api/auth/delete-account`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('✅ Account deleted successfully: ' + JSON.stringify(data));
+        localStorage.clear();
+        window.location.href = '/';
+      } else {
+        alert('❌ Delete failed: ' + (data.detail || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('❌ Delete failed: ' + error.message);
+      console.error('Delete error:', error);
+    }
+  };
   const [message, setMessage] = useState('');
 
   const languageOptions = [
