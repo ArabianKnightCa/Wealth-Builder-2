@@ -341,18 +341,18 @@ class AdaptiveEngineV2Enhanced:
         if trait_counts.get('analytical', 0) >= 2 and discipline > 0.6:
             return "Analytical Planner"
         
-        # Standard archetypes with tighter thresholds
-        if discipline > 0.65 and impulse < 0.35:
+        # Standard archetypes with adjusted thresholds for better differentiation
+        if discipline > 0.4 and impulse < 0.2:
             return "Disciplined Planner"
-        elif impulse > 0.65 and discipline < 0.35:
+        elif impulse > 0.3 and discipline < 0.2:
             return "Spontaneous Explorer"
-        elif confidence > 0.7:
+        elif confidence > 0.3:
             return "Confident Builder"
-        elif confidence < 0.3:
+        elif confidence < 0.15:
             return "Cautious Learner"
-        elif discipline > 0.5 and confidence > 0.5:
+        elif discipline > 0.25 and confidence > 0.2:
             return "Steady Achiever"
-        elif impulse > 0.5 and confidence > 0.5:
+        elif impulse > 0.2 and confidence > 0.2:
             return "Dynamic Adventurer"
         else:
             return "Balanced Builder"
