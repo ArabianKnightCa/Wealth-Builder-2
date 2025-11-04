@@ -8,11 +8,39 @@ const API = `${BACKEND_URL}/api`;
 function GlobalHUD({ user, token, onLogout }) {
   const navigate = useNavigate();
   const [resetting, setResetting] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
 
   // Debug: Log when component mounts
   React.useEffect(() => {
     console.log('GlobalHUD mounted with user:', user);
   }, [user]);
+
+  const handleFeedbackSubmit = async () => {
+    if (!feedback.trim()) {
+      alert('Please enter your feedback');
+      return;
+    }
+
+    setFeedbackSubmitting(true);
+    try {
+      await axios.post(`${API}/feedback`, {
+        user_id: user.id,
+        user_email: user.email,
+        feedback: feedback,
+        submitted_at: new Date().toISOString()
+      });
+      
+      alert('✅ Thank you for your feedback!');
+      setFeedback('');
+      setShowFeedback(false);
+    } catch (error) {
+      alert('❌ Failed to submit feedback. Please try again.');
+    } finally {
+      setFeedbackSubmitting(false);
+    }
+  };
 
   const handleReset = async () => {
     try {
