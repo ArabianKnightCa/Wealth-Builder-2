@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.1.1",
+  "ae_pre_adaptive_ppi": true,
+  "ae_dynamic_lpi": true
+}

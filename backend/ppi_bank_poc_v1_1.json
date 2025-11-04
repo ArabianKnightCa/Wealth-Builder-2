@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.1.1",
+  "ppi_bank_version": "POC-v1.1.1",
+  "items": [
+    {
+      "id": "BANK_Q_MOTIV_01",
+      "type": "mcq",
+      "prompt": "When you try something new, what excites you most?",
+      "options": [
+        "A Progress",
+        "B Rewards",
+        "C Mastery",
+        "D Teamwork"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "universal",
+        "tone_warm",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_HABIT_02",
+      "type": "mcq",
+      "prompt": "Which habit would help you most this month?",
+      "options": [
+        "A Automate savings",
+        "B Track spending weekly",
+        "C Reduce impulse buys",
+        "D Learn one new skill"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "habits",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_RISK_07",
+      "type": "mcq",
+      "prompt": "If an investment drops 10% in a week, you…",
+      "options": [
+        "A Sell",
+        "B Hold",
+        "C Buy more",
+        "D Ask for advice"
+      ],
+      "age_min": 14,
+      "age_max": 99,
+      "experience_levels": [
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "risk_tolerance",
+        "advanced"
+      ]
+    },
+    {
+      "id": "BANK_Q_CONF_03",
+      "type": "mcq",
+      "prompt": "When money topics feel confusing, you…",
+      "options": [
+        "A Avoid them",
+        "B Ask a trusted person",
+        "C Look up basics",
+        "D Try small practice"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "confidence",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_TEMPO_05",
+      "type": "mcq",
+      "prompt": "How fast do you like to move when learning?",
+      "options": [
+        "A Very fast",
+        "B Steady",
+        "C Slow and careful",
+        "D Depends on topic"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "tempo",
+        "universal"
+      ]
+    },
+    {
+      "id": "BANK_Q_GOALS_09",
+      "type": "mcq",
+      "prompt": "Which goal feels most important right now?",
+      "options": [
+        "A Build savings",
+        "B Pay off debt",
+        "C Learn to invest",
+        "D Earn more"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "goals",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_ADV_01",
+      "type": "mcq",
+      "prompt": "Which risk control do you prefer in a portfolio?",
+      "options": [
+        "A Stop-loss",
+        "B Diversification",
+        "C Hedging",
+        "D Factor tilts"
+      ],
+      "age_min": 18,
+      "age_max": 99,
+      "experience_levels": [
+        "advanced"
+      ],
+      "tags": [
+        "advanced",
+        "risk_management"
+      ]
+    },
+    {
+      "id": "BANK_Q_STYLE_04",
+      "type": "mcq",
+      "prompt": "Which learning style fits you best?",
+      "options": [
+        "A Read",
+        "B Watch",
+        "C Practice",
+        "D Discuss"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "style",
+        "universal"
+      ]
+    }
+  ]
+}

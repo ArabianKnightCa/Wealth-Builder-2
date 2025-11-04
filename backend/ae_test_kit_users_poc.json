@@ -1,0 +1,37 @@
+[
+  {
+    "user_id": "WB-POC-TEST-001-202511041130",
+    "age": 8,
+    "financial_experience": "beginner",
+    "occupation_bucket": "student",
+    "locale": "en-US"
+  },
+  {
+    "user_id": "WB-POC-TEST-002-202511041130",
+    "age": 12,
+    "financial_experience": "beginner",
+    "occupation_bucket": "student",
+    "locale": "en-US"
+  },
+  {
+    "user_id": "WB-POC-TEST-003-202511041130",
+    "age": 17,
+    "financial_experience": "intermediate",
+    "occupation_bucket": "student",
+    "locale": "en-US"
+  },
+  {
+    "user_id": "WB-POC-TEST-004-202511041130",
+    "age": 25,
+    "financial_experience": "advanced",
+    "occupation_bucket": "employee",
+    "locale": "en-US"
+  },
+  {
+    "user_id": "WB-POC-TEST-005-202511041130",
+    "age": 34,
+    "financial_experience": "advanced",
+    "occupation_bucket": "employee",
+    "locale": "en-GB"
+  }
+]

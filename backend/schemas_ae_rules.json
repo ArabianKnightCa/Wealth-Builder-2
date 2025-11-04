@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "rules_version",
+    "selection",
+    "constraints",
+    "lpi_generation",
+    "locale",
+    "id_format"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "rules_version": {
+      "type": "string"
+    },
+    "selection": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "lpi_generation": {
+      "type": "object"
+    },
+    "locale": {
+      "type": "object"
+    },
+    "id_format": {
+      "type": "object"
+    }
+  }
+}

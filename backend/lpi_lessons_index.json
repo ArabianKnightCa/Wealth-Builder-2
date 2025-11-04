@@ -1,0 +1,255 @@
+{
+  "version": "v3.7",
+  "chapters": [
+    {
+      "title": "Chapter 1: Foundations of Money",
+      "lessons": [
+        {
+          "title": "Lesson 1: What is Money?",
+          "objective": "Understand money as a tool for value exchange; recognize forms of money (cash, digital, credit).",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Needs vs Wants",
+          "objective": "Differentiate essential expenses from discretionary ones to improve decisions.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Earning Basics",
+          "objective": "Explore active vs. passive income and the concept of time-for-money tradeoffs.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Bank Accounts 101",
+          "objective": "Introduce checking vs savings; deposits, withdrawals, and safety.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 2: Budgeting that Works",
+      "lessons": [
+        {
+          "title": "Lesson 1: Simple Budget Framework",
+          "objective": "Set up an easy 50/30/20 or envelope approach you’ll actually use.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Tracking without Pain",
+          "objective": "Low-friction tracking (weekly snapshot).",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Cutting Waste First",
+          "objective": "Identify subscriptions and leaks; cancel or downgrade.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Automating the Basics",
+          "objective": "Automate bills and savings to reduce missed payments and friction.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 3: Debt & Credit Confidence",
+      "lessons": [
+        {
+          "title": "Lesson 1: Good vs Bad Debt",
+          "objective": "Understand productive vs. unproductive debt decisions.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Credit Score Basics",
+          "objective": "Learn factors: payment history, utilization, age, mix, inquiries.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Paying Off Debt",
+          "objective": "Snowball vs avalanche methods and automation tricks.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Avoiding Traps",
+          "objective": "Beware fees, teaser APRs, and impulse financing.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 4: Save First, Not Last",
+      "lessons": [
+        {
+          "title": "Lesson 1: Emergency Fund",
+          "objective": "Why 1–3 months (starter) then 3–6 months (core) matters.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Pay Yourself First",
+          "objective": "Automate savings before spending.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Short vs Long-Term Buckets",
+          "objective": "Segment goals so you don’t rob the future for today.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: High-Yield Accounts",
+          "objective": "How APY works; risk-free vs market risk.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 5: Investing Basics",
+      "lessons": [
+        {
+          "title": "Lesson 1: Why Invest",
+          "objective": "Beat inflation; compound growth potential.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Stocks, Bonds, Funds",
+          "objective": "Core asset types and risk profiles.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Index vs. Active",
+          "objective": "Low-cost indexing vs. picking winners.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Time in Market",
+          "objective": "Why staying invested often beats timing.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 6: Retirement Basics",
+      "lessons": [
+        {
+          "title": "Lesson 1: Accounts (401k/IRA/Roth)",
+          "objective": "Tax-advantaged accounts and differences.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: How Much to Save",
+          "objective": "Rules of thumb and adjusting to income/age.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Asset Allocation",
+          "objective": "Age-appropriate risk mix and glide paths.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Avoid Early Withdrawals",
+          "objective": "Taxes/penalties and long-term cost.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 7: Smart Spending",
+      "lessons": [
+        {
+          "title": "Lesson 1: Unit Price",
+          "objective": "Compare per-unit costs to save money.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Big Purchases",
+          "objective": "Plan, research, and cooling-off periods.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Negotiation Basics",
+          "objective": "Polite scripts and BATNA.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Subscriptions",
+          "objective": "Trial traps, reminders, and audits.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 8: Safety & Fraud Basics",
+      "lessons": [
+        {
+          "title": "Lesson 1: Phishing",
+          "objective": "Spot lookalike emails and fake links.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Secure Habits",
+          "objective": "Strong passwords, password managers, updates.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Scam Signals",
+          "objective": "Urgency, secrecy, payment via gift cards.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Device Hygiene",
+          "objective": "Lock screens, backups, lost-device steps.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 9: Earning More",
+      "lessons": [
+        {
+          "title": "Lesson 1: Skill Stacking",
+          "objective": "Stack 2–3 complementary skills for leverage.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Side Income",
+          "objective": "Small pilots, low upfront cost.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Negotiating Pay",
+          "objective": "Market research, anchors, and total comp.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Time Management",
+          "objective": "Prioritization and deep work blocks.",
+          "quiz_items": 3
+        }
+      ]
+    },
+    {
+      "title": "Chapter 10: Putting It Together",
+      "lessons": [
+        {
+          "title": "Lesson 1: Your Money System",
+          "objective": "Tie budget, saving, investing into one weekly rhythm.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 2: Personal Playbook",
+          "objective": "Write simple rules you’ll follow (if/then habits).",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 3: Review & Reset",
+          "objective": "End-of-month checkpoint; iterate goals.",
+          "quiz_items": 3
+        },
+        {
+          "title": "Lesson 4: Next Steps",
+          "objective": "Plan Beta path; commit to one habit upgrade.",
+          "quiz_items": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.1.1",
+  "contract_version": "v1.1-stable",
+  "aliases": {
+    "AE.PrePPI": "AE_FN_COMPOSE_PPI",
+    "AE.PostPPI": "AE_FN_GENERATE_PLAN"
+  },
+  "triggers": {
+    "MCC_EVT_ONBOARDING_COMPLETE": {
+      "description": "Fires after onboarding collects required fields.",
+      "requires": [
+        "user_id",
+        "age",
+        "financial_experience"
+      ],
+      "calls": "AE_FN_COMPOSE_PPI"
+    },
+    "PPI_EVT_SUBMITTED": {
+      "description": "Fires when user submits PPI answers.",
+      "requires": [
+        "user_id",
+        "answers"
+      ],
+      "calls": "AE_FN_GENERATE_PLAN"
+    }
+  },
+  "functions": {
+    "AE_FN_COMPOSE_PPI": {
+      "idempotency_key": "user_id",
+      "timeout_ms": 1500,
+      "retries": 0,
+      "input_payload": {
+        "user_id": "WB-POC-<id>-YYYYMMDDHHmm",
+        "age": "int",
+        "financial_experience": "beginner|intermediate|advanced",
+        "occupation_bucket": "optional",
+        "locale": "en-US"
+      },
+      "output_payload": {
+        "ppi_version": "POC-v1.1.1",
+        "items": "[20 items]"
+      }
+    },
+    "AE_FN_GENERATE_PLAN": {
+      "idempotency_key": "user_id",
+      "timeout_ms": 2000,
+      "retries": 0,
+      "input_payload": {
+        "user_id": "WB-POC-<id>-YYYYMMDDHHmm",
+        "answers": "[{id,value}]"
+      },
+      "output_payload": {
+        "dna": {
+          "profile": "Archetype",
+          "weights": {
+            "discipline": 0.0,
+            "impulse": 0.0,
+            "confidence": 0.0,
+            "tempo": "fast|steady|slow"
+          }
+        },
+        "lpi_plan": {
+          "version": "POC-v1.1.1",
+          "chapters": [
+            {
+              "ch": 1,
+              "lessons": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "quiz_mode": "choice_abcd"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "error_policy": {
+    "on_missing_compose_ppi": "ERR-AE-101",
+    "on_invalid_answers": "ERR-AE-201",
+    "on_rules_missing": "ERR-AE-301"
+  }
+}
