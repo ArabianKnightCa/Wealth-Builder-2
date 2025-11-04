@@ -45,6 +45,14 @@ function GlobalHUD({ user, token, onLogout }) {
 
         <div className="flex items-center gap-3">
           <button
+            onClick={() => navigate('/dashboard')}
+            className="text-gold hover:text-white text-2xl font-bold transition-colors"
+            title="Help - Return to Dashboard"
+          >
+            ?
+          </button>
+
+          <button
             onClick={() => navigate('/admin')}
             className="px-3 py-1 bg-gold/20 text-gold rounded text-sm font-semibold hover:bg-gold/30 transition-all"
             title="Testing Panel"
