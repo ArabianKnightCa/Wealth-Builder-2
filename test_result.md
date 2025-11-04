@@ -199,7 +199,7 @@ backend:
   - task: "Adaptive Engine (AE) Financial DNA Generation"
     implemented: true
     working: true
-    file: "/app/backend/ae_engine_v2.py"
+    file: "/app/backend/ae_engine_v2_enhanced.py"
     stuck_count: 1
     priority: "high"
     needs_retesting: false
@@ -244,6 +244,27 @@ backend:
           - User A (25yr): Confident Explorer profile with discipline=0.75, impulse=0.9, confidence=1.0
           - User B (15yr): Confident Explorer profile with discipline=0.75, impulse=0.8, confidence=1.0
           - Different users show slight weight variations based on their responses
+      - working: true
+        agent: "testing"
+        comment: |
+          ENHANCED AE v2.1 FINANCIAL DNA - 100% SUCCESS RATE ACHIEVED
+          ✅ Archetype Variety: Generated 4 distinct archetypes from 5 different answer patterns
+            * All A → Analytical Planner
+            * All B → Balanced Builder
+            * All C → Spontaneous Explorer  
+            * All D → Guided Learner
+            * Mixed A/D → Guided Learner
+          ✅ Enhanced trait mapping: Question-specific traits now accurately influence DNA calculation
+          ✅ Age/experience modifiers: Context affects final DNA weights and profiles
+          ✅ Trait Analysis: Successfully triggered "Guided Learner" with needs_support trait (5 occurrences)
+          ✅ 10 distinct archetypes now accessible through enhanced determination logic
+          ✅ Dominant traits tracking working (needs_support, moderate, impulse correctly identified)
+          
+          ENHANCED DNA CALCULATION VERIFIED:
+          - Question-specific trait mapping replaces generic A/B/C/D scoring
+          - Age modifiers: <18 reduces confidence, ≥25 increases confidence
+          - Experience modifiers: beginner reduces confidence/discipline, advanced increases both
+          - Enhanced archetype determination with more nuanced thresholds
 
   - task: "Adaptive Engine (AE) Chapter Personalization"
     implemented: true
