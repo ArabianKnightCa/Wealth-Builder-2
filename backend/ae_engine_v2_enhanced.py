@@ -335,7 +335,7 @@ class AdaptiveEngineV2Enhanced:
         if trait_counts.get('needs_support', 0) >= 3:
             return "Guided Learner"
         
-        if trait_counts.get('goal_oriented', 0) >= 3 and discipline > 0.5:
+        if trait_counts.get('goal_oriented', 0) >= 2 and discipline > 0.25:
             return "Strategic Planner"
         
         if trait_counts.get('analytical', 0) >= 2 and discipline > 0.3:
