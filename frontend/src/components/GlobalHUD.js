@@ -10,6 +10,7 @@ function GlobalHUD({ user, token, onLogout }) {
   const [resetting, setResetting] = useState(false);
 
   const handleReset = async () => {
+    alert('Reset button was clicked!');
     console.log('Reset button clicked');
     console.log('User:', user);
     
