@@ -348,23 +348,39 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         }
         await db.ppi_answers.insert_one(ppi_answer)
     
+    # Step 3: Process through Adaptive Engine (AE)
+    ae = get_adaptive_engine()
+    
+    # Convert answers to AE format (PPI_Q01, PPI_Q02, etc.)
+    ppi_payload = {}
+    for answer in ppi_data.answers:
+        q_id = answer['question_id']  # Format: "PPI_Q01"
+        ppi_payload[q_id] = answer['selected_option']
+    
+    # Generate personalized learning map
+    learning_map = ae.process_ppi(ppi_payload)
+    
+    # Save learning map to user progress
     await db.progress.update_one(
         {"user_id": user_id},
         {"$set": {
             "ppi_completed": True,
             "current_module": "lpi",
-            "current_step": "CH01",
+            "current_step": learning_map["lesson_order"][0],  # First chapter in personalized order
+            "learning_map": learning_map,  # Store entire AE output
             "autosaved_at": datetime.now(timezone.utc).isoformat()
         }},
         upsert=True
     )
     
-    existing_lpi = await db.lpi_progress.find_one({"user_id": user_id, "chapter_id": "CH01"})
+    # Unlock first chapter in personalized learning path
+    first_chapter = learning_map["lesson_order"][0]
+    existing_lpi = await db.lpi_progress.find_one({"user_id": user_id, "chapter_id": first_chapter})
     if not existing_lpi:
         lpi_progress = {
             "id": str(uuid.uuid4()),
             "user_id": user_id,
-            "chapter_id": "CH01",
+            "chapter_id": first_chapter,
             "lesson_completed": [],
             "quiz_score": None,
             "quiz_completed_at": None,
@@ -372,7 +388,17 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         }
         await db.lpi_progress.insert_one(lpi_progress)
     
-    return {"message": "PPI submitted successfully", "next_step": "lpi"}
+    return {
+        "message": "PPI submitted successfully",
+        "next_step": "lpi",
+        "learning_map": learning_map,
+        "personalized_path": {
+            "profile": learning_map["user_profile"],
+            "first_chapter": first_chapter,
+            "learning_style": learning_map["learning_style"],
+            "pacing": learning_map["pacing"]
+        }
+    }
 
 @api_router.get("/ppi/answers")
 async def get_ppi_answers(user_id: str = Depends(get_current_user)):
