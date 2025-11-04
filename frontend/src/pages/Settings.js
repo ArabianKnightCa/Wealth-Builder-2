@@ -15,6 +15,10 @@ function Settings({ user, token }) {
   const [loading, setLoading] = useState(false);
 
   const handleDeleteAccount = async () => {
+    alert('DELETE BUTTON CLICKED! Function is being called.');
+    console.log('handleDeleteAccount called');
+    console.log('User:', user);
+    
     if (!window.confirm('⚠️ Are you ABSOLUTELY SURE you want to delete your account? All data will be lost forever.')) {
       return;
     }
@@ -22,8 +26,12 @@ function Settings({ user, token }) {
       return;
     }
 
+    alert('About to send delete request...');
+    
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+      alert('Backend URL: ' + BACKEND_URL);
+      
       const response = await fetch(`${BACKEND_URL}/api/auth/delete-account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,16 +39,17 @@ function Settings({ user, token }) {
       });
 
       const data = await response.json();
+      alert('Response received: ' + JSON.stringify(data));
       
       if (response.ok) {
-        alert('✅ Account deleted successfully: ' + JSON.stringify(data));
+        alert('✅ Account deleted successfully!');
         localStorage.clear();
         window.location.href = '/';
       } else {
         alert('❌ Delete failed: ' + (data.detail || 'Unknown error'));
       }
     } catch (error) {
-      alert('❌ Delete failed: ' + error.message);
+      alert('❌ Exception: ' + error.message);
       console.error('Delete error:', error);
     }
   };
