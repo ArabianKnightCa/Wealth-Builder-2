@@ -290,19 +290,21 @@ class AdaptiveEngineV2Enhanced:
         tempo_scores = {"fast": fast_score, "steady": steady_score, "slow": slow_score}
         tempo = max(tempo_scores, key=tempo_scores.get)
         
-        # Apply age/experience modifiers
+        # Apply age/experience modifiers with base adjustments
         if age and age < 18:
             # Youth: slightly lower confidence, prefer slower tempo
-            confidence_score = confidence_score * 0.9
+            confidence_score = confidence_score * 0.9 - 0.05  # Reduce confidence for youth
             if tempo == "fast":
                 tempo = "steady"
         
         if financial_experience == "beginner":
-            # Beginners: lower confidence
-            confidence_score = confidence_score * 0.8
+            # Beginners: lower confidence and discipline
+            confidence_score = confidence_score * 0.8 - 0.1
+            discipline_score = discipline_score * 0.9
         elif financial_experience == "advanced":
-            # Advanced: boost confidence
-            confidence_score = min(1.0, confidence_score * 1.2)
+            # Advanced: boost confidence and discipline
+            confidence_score = confidence_score * 1.2 + 0.1
+            discipline_score = discipline_score * 1.1
         
         # Normalize to 0.0-1.0
         discipline = min(1.0, max(0.0, discipline_score))
