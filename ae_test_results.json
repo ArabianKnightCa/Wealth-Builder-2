@@ -1,0 +1,148 @@
+[
+  {
+    "test": "PPI Composition - User A (age 10, beginner) Count",
+    "success": false,
+    "message": "Expected 20 questions, got 3",
+    "details": {
+      "question_count": 3
+    },
+    "timestamp": "2025-11-04T05:56:47.315000"
+  },
+  {
+    "test": "PPI Composition - User A (age 10, beginner) Age Match",
+    "success": true,
+    "message": "Age correctly identified as 10",
+    "details": {},
+    "timestamp": "2025-11-04T05:56:47.315069"
+  },
+  {
+    "test": "PPI Composition - User A (age 10, beginner) Item Structure",
+    "success": true,
+    "message": "Question items have correct structure",
+    "details": {
+      "sample_item": {
+        "question_id": "PPI_Q01",
+        "bank_id": "BANK_Q_CONF_03",
+        "type": "mcq",
+        "prompt": "When money topics feel confusing, you\u2026",
+        "options": [
+          "A Avoid them",
+          "B Ask a trusted person",
+          "C Look up basics",
+          "D Try small practice"
+        ]
+      }
+    },
+    "timestamp": "2025-11-04T05:56:47.315076"
+  },
+  {
+    "test": "PPI Composition - User B (age 25, intermediate) Count",
+    "success": false,
+    "message": "Expected 20 questions, got 2",
+    "details": {
+      "question_count": 2
+    },
+    "timestamp": "2025-11-04T05:56:47.634058"
+  },
+  {
+    "test": "PPI Composition - User B (age 25, intermediate) Age Match",
+    "success": true,
+    "message": "Age correctly identified as 25",
+    "details": {},
+    "timestamp": "2025-11-04T05:56:47.634125"
+  },
+  {
+    "test": "PPI Composition - User B (age 25, intermediate) Item Structure",
+    "success": true,
+    "message": "Question items have correct structure",
+    "details": {
+      "sample_item": {
+        "question_id": "PPI_Q01",
+        "bank_id": "BANK_Q_HABIT_02",
+        "type": "mcq",
+        "prompt": "Which habit would help you most this month?",
+        "options": [
+          "A Automate savings",
+          "B Track spending weekly",
+          "C Reduce impulse buys",
+          "D Learn one new skill"
+        ]
+      }
+    },
+    "timestamp": "2025-11-04T05:56:47.634132"
+  },
+  {
+    "test": "PPI Composition - User C (age 40, advanced) Count",
+    "success": false,
+    "message": "Expected 20 questions, got 2",
+    "details": {
+      "question_count": 2
+    },
+    "timestamp": "2025-11-04T05:56:47.941427"
+  },
+  {
+    "test": "PPI Composition - User C (age 40, advanced) Age Match",
+    "success": true,
+    "message": "Age correctly identified as 40",
+    "details": {},
+    "timestamp": "2025-11-04T05:56:47.941487"
+  },
+  {
+    "test": "PPI Composition - User C (age 40, advanced) Item Structure",
+    "success": true,
+    "message": "Question items have correct structure",
+    "details": {
+      "sample_item": {
+        "question_id": "PPI_Q01",
+        "bank_id": "BANK_Q_RISK_07",
+        "type": "mcq",
+        "prompt": "If an investment drops 10% in a week, you\u2026",
+        "options": [
+          "A Sell",
+          "B Hold",
+          "C Buy more",
+          "D Ask for advice"
+        ]
+      }
+    },
+    "timestamp": "2025-11-04T05:56:47.941493"
+  },
+  {
+    "test": "PPI Composition - Deterministic Behavior",
+    "success": true,
+    "message": "Same user gets identical questions on repeated calls",
+    "details": {},
+    "timestamp": "2025-11-04T05:56:48.040834"
+  },
+  {
+    "test": "Financial DNA Generation - PPI Questions",
+    "success": false,
+    "message": "Insufficient PPI questions: 3",
+    "details": {},
+    "timestamp": "2025-11-04T05:56:48.085193"
+  },
+  {
+    "test": "Chapter Personalization - Learning Map Exists",
+    "success": false,
+    "message": "Learning map not found in progress data",
+    "details": {
+      "progress_keys": [
+        "id",
+        "user_id",
+        "current_module",
+        "current_step",
+        "ppi_completed",
+        "lpi_current_chapter",
+        "autosaved_at"
+      ]
+    },
+    "timestamp": "2025-11-04T05:56:48.124416"
+  },
+  {
+    "test": "Chapter Personalization",
+    "success": false,
+    "message": "Exception: cannot access local variable 'lesson_order' where it is not associated with a value",
+    "details": {},
+    "timestamp": "2025-11-04T05:56:48.124476"
+  }
+]
