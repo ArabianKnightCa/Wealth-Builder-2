@@ -14,46 +14,65 @@ function Settings({ user, token }) {
   });
   const [loading, setLoading] = useState(false);
 
+  const [message, setMessage] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const handleDeleteAccount = async () => {
-    alert('DELETE BUTTON CLICKED! Function is being called.');
-    console.log('handleDeleteAccount called');
-    console.log('User:', user);
+    console.log('Delete button clicked');
     
-    if (!window.confirm('⚠️ Are you ABSOLUTELY SURE you want to delete your account? All data will be lost forever.')) {
+    // First confirmation
+    const confirmed1 = window.confirm(
+      '⚠️ DELETE YOUR ACCOUNT?\n\nThis will permanently delete:\n• All your progress\n• Quiz results\n• PPI responses\n• All account data\n\nThis action CANNOT be undone!\n\nClick OK to continue.'
+    );
+    
+    if (!confirmed1) {
+      console.log('User cancelled at first confirmation');
       return;
     }
-    if (!window.confirm('⚠️⚠️ FINAL WARNING: Click OK to permanently delete your account and all data.')) {
+    
+    // Second confirmation
+    const confirmed2 = window.confirm(
+      '⚠️⚠️ FINAL WARNING ⚠️⚠️\n\nYou are about to PERMANENTLY DELETE your account.\n\nAre you absolutely sure?\n\nClick OK to DELETE FOREVER or Cancel to go back.'
+    );
+    
+    if (!confirmed2) {
+      console.log('User cancelled at second confirmation');
       return;
     }
 
-    alert('About to send delete request...');
+    console.log('User confirmed deletion, proceeding...');
+    setIsDeleting(true);
     
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-      alert('Backend URL: ' + BACKEND_URL);
+      console.log('Sending delete request for:', user.email);
+      console.log('Backend URL:', BACKEND_URL);
       
       const response = await fetch(`${BACKEND_URL}/api/auth/delete-account`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email: user.email })
       });
 
+      console.log('Response status:', response.status);
       const data = await response.json();
-      alert('Response received: ' + JSON.stringify(data));
+      console.log('Response data:', data);
       
       if (response.ok) {
-        alert('✅ Account deleted successfully!');
+        alert('✅ Account deleted successfully!\n\nYou will now be logged out.');
         localStorage.clear();
+        sessionStorage.clear();
         window.location.href = '/';
       } else {
-        alert('❌ Delete failed: ' + (data.detail || 'Unknown error'));
+        throw new Error(data.detail || 'Failed to delete account');
       }
     } catch (error) {
-      alert('❌ Exception: ' + error.message);
       console.error('Delete error:', error);
+      alert(`❌ Error deleting account:\n\n${error.message}\n\nPlease try again or contact support.`);
+      setIsDeleting(false);
     }
   };
-  const [message, setMessage] = useState('');
 
   const languageOptions = [
     { code: 'en', name: 'English' },
