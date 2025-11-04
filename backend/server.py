@@ -392,24 +392,8 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         }
         await db.ppi_answers.insert_one(ppi_answer)
     
-    # Get user data for context
-    user = await db.users.find_one({"id": user_id})
-    
-    # Calculate age
-    from datetime import date
-    today = date.today()
-    user_age = today.year - user['dob_year']
-    if today.month < user['dob_month']:
-        user_age -= 1
-    
-    # Get financial experience
-    user_experience = user.get('experience_level', 'beginner')
-    if isinstance(user_experience, int):
-        exp_map = {1: 'beginner', 2: 'beginner', 3: 'intermediate', 4: 'advanced', 5: 'advanced'}
-        user_experience = exp_map.get(user_experience, 'beginner')
-    
-    # Call AE V2 Enhanced generate_plan with user context
-    ae_v2 = get_adaptive_engine_v2_enhanced()
+    # Call AE V2 generate_plan
+    ae_v2 = get_adaptive_engine_v2()
     
     # Convert answers to AE V2 format
     answers_formatted = []
@@ -419,8 +403,8 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
             "value": answer['selected_option']  # "A", "B", "C", or "D"
         })
     
-    # Generate plan with age and experience context
-    plan = ae_v2.generate_plan(user_id, answers_formatted, user_age, user_experience)
+    # Generate plan
+    plan = ae_v2.generate_plan(user_id, answers_formatted)
     
     # Extract chapter order from plan
     chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
