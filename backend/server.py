@@ -200,7 +200,45 @@ async def root():
 
 @api_router.get("/content/ppi")
 async def get_ppi_questions():
+    """Legacy endpoint - returns static 20 questions"""
     return {"questions": PPI_QUESTIONS}
+
+@api_router.get("/content/ppi/personalized")
+async def get_personalized_ppi(user_id: str = Depends(get_current_user)):
+    """
+    AE_FN_COMPOSE_PPI - Trigger: MCC_EVT_ONBOARDING_COMPLETE
+    Returns personalized 20 PPI questions based on user profile
+    """
+    # Get user data
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Calculate age
+    from datetime import date
+    today = date.today()
+    age = today.year - user['dob_year']
+    if today.month < user['dob_month']:
+        age -= 1
+    
+    # Get financial experience
+    financial_experience = user.get('experience_level', 'beginner')
+    if isinstance(financial_experience, int):
+        # Map numeric to string
+        exp_map = {1: 'beginner', 2: 'beginner', 3: 'intermediate', 4: 'advanced', 5: 'advanced'}
+        financial_experience = exp_map.get(financial_experience, 'beginner')
+    
+    # Call AE compose_ppi
+    ae_v2 = get_adaptive_engine_v2()
+    ppi_result = ae_v2.compose_ppi(
+        user_id=user_id,
+        age=age,
+        financial_experience=financial_experience,
+        occupation_bucket=user.get('occupation', None),
+        locale=user.get('language', 'en-US')
+    )
+    
+    return ppi_result
 
 @api_router.get("/content/lpi")
 async def get_lpi_chapters():
