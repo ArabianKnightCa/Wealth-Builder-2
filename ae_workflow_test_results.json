@@ -1,0 +1,205 @@
+[
+  {
+    "test": "Create User - User A (age 25, intermediate)",
+    "success": true,
+    "message": "Created user: age 25, experience level 3",
+    "details": {
+      "email": "ae_workflow_25_3_53fd2f@example.com",
+      "user_id": "721ec0a5-e3ed-4b7c-9cbb-d1757e847316"
+    },
+    "timestamp": "2025-11-04T15:29:09.377471"
+  },
+  {
+    "test": "Create User - User B (age 15, beginner)",
+    "success": true,
+    "message": "Created user: age 15, experience level 1",
+    "details": {
+      "email": "ae_workflow_15_1_d6b4a6@example.com",
+      "user_id": "f2e8e6f2-36bc-4243-896b-28c6cc77afe9"
+    },
+    "timestamp": "2025-11-04T15:29:09.636917"
+  },
+  {
+    "test": "Step 1 - User A (age 25, intermediate) Question Count",
+    "success": true,
+    "message": "Adult user received 20 questions as expected",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.674410"
+  },
+  {
+    "test": "Step 1 - User A (age 25, intermediate) Age Detection",
+    "success": true,
+    "message": "Age correctly detected as 25",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.674436"
+  },
+  {
+    "test": "Step 1 - User A (age 25, intermediate) Question Structure",
+    "success": true,
+    "message": "Questions have correct structure",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.674442"
+  },
+  {
+    "test": "Step 1 - User B (age 15, beginner) Question Count",
+    "success": true,
+    "message": "Young user received 18 questions (age-filtered)",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.712637"
+  },
+  {
+    "test": "Step 1 - User B (age 15, beginner) Age Detection",
+    "success": true,
+    "message": "Age correctly detected as 15",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.712658"
+  },
+  {
+    "test": "Step 1 - User B (age 15, beginner) Question Structure",
+    "success": true,
+    "message": "Questions have correct structure",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.712664"
+  },
+  {
+    "test": "Step 1 - User B (age 15, beginner) Personalization",
+    "success": true,
+    "message": "Questions are different from other user (personalized)",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.712673"
+  },
+  {
+    "test": "Step 2 - User A (age 25, intermediate) DNA Weights Valid",
+    "success": true,
+    "message": "All DNA weights are within valid ranges",
+    "details": {
+      "profile": "Confident Explorer",
+      "discipline": 0.75,
+      "impulse": 0.9,
+      "confidence": 1.0,
+      "tempo": "slow"
+    },
+    "timestamp": "2025-11-04T15:29:09.766068"
+  },
+  {
+    "test": "Step 2 - User A (age 25, intermediate) Chapter Personalization",
+    "success": true,
+    "message": "Chapter order is personalized (not sequential 1-10)",
+    "details": {
+      "chapter_order": [
+        1,
+        2,
+        3,
+        5,
+        4,
+        6,
+        8,
+        7,
+        9,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:29:09.766112"
+  },
+  {
+    "test": "Step 2 - User A (age 25, intermediate) LPI Plan Complete",
+    "success": true,
+    "message": "LPI plan has 10 chapters with profile: Confident Explorer",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.766123"
+  },
+  {
+    "test": "Step 2 - User B (age 15, beginner) DNA Weights Valid",
+    "success": true,
+    "message": "All DNA weights are within valid ranges",
+    "details": {
+      "profile": "Confident Explorer",
+      "discipline": 0.75,
+      "impulse": 0.8,
+      "confidence": 1.0,
+      "tempo": "slow"
+    },
+    "timestamp": "2025-11-04T15:29:09.817148"
+  },
+  {
+    "test": "Step 2 - User B (age 15, beginner) Chapter Personalization",
+    "success": true,
+    "message": "Chapter order is personalized (not sequential 1-10)",
+    "details": {
+      "chapter_order": [
+        1,
+        2,
+        3,
+        5,
+        4,
+        6,
+        8,
+        7,
+        9,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:29:09.817184"
+  },
+  {
+    "test": "Step 2 - User B (age 15, beginner) LPI Plan Complete",
+    "success": true,
+    "message": "LPI plan has 10 chapters with profile: Confident Explorer",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:09.817193"
+  },
+  {
+    "test": "Step 3 - DNA Personalization",
+    "success": true,
+    "message": "Different users have different Financial DNA profiles",
+    "details": {
+      "User A (age 25, intermediate)_profile": "Confident Explorer",
+      "User B (age 15, beginner)_profile": "Confident Explorer",
+      "User A (age 25, intermediate)_weights": {
+        "discipline": 0.75,
+        "impulse": 0.9,
+        "confidence": 1.0,
+        "tempo": "slow"
+      },
+      "User B (age 15, beginner)_weights": {
+        "discipline": 0.75,
+        "impulse": 0.8,
+        "confidence": 1.0,
+        "tempo": "slow"
+      }
+    },
+    "timestamp": "2025-11-04T15:29:09.817717"
+  },
+  {
+    "test": "Step 3 - Chapter Order Personalization",
+    "success": false,
+    "message": "Different users have identical chapter orders",
+    "details": {
+      "User A (age 25, intermediate)_order": [
+        1,
+        2,
+        3,
+        5,
+        4,
+        6,
+        8,
+        7,
+        9,
+        10
+      ],
+      "User B (age 15, beginner)_order": [
+        1,
+        2,
+        3,
+        5,
+        4,
+        6,
+        8,
+        7,
+        9,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:29:09.817747"
+  }
+]
