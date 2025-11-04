@@ -10,27 +10,51 @@ function GlobalHUD({ user, token, onLogout }) {
   const [resetting, setResetting] = useState(false);
 
   const handleReset = async () => {
-    if (!window.confirm('⚠️ This will DELETE your account and all data. Are you sure?')) {
+    console.log('Reset button clicked');
+    console.log('User:', user);
+    
+    const confirmed1 = window.confirm('⚠️ This will DELETE your account and all data. Are you sure?');
+    console.log('First confirmation:', confirmed1);
+    if (!confirmed1) {
       return;
     }
 
-    if (!window.confirm('⚠️⚠️ FINAL WARNING: This action CANNOT be undone. Delete account?')) {
+    const confirmed2 = window.confirm('⚠️⚠️ FINAL WARNING: This action CANNOT be undone. Delete account?');
+    console.log('Second confirmation:', confirmed2);
+    if (!confirmed2) {
       return;
     }
 
     setResetting(true);
+    console.log('Attempting to delete account:', user.email);
+    
     try {
+      console.log('Sending DELETE request to:', `${API}/auth/delete-account`);
+      console.log('Request body:', { email: user.email });
+      
       const response = await axios.post(`${API}/auth/delete-account`, 
-        { email: user.email }
+        { email: user.email },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       console.log('Delete response:', response.data);
       alert('✅ Account deleted successfully. You will be logged out.');
+      
+      // Clear local storage
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
       onLogout();
-      navigate('/');
+      window.location.href = '/';
     } catch (error) {
-      console.error('Reset failed:', error);
-      alert(`❌ Reset failed: ${error.response?.data?.detail || error.message}`);
+      console.error('Reset failed - Full error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      alert(`❌ Reset failed: ${error.response?.data?.detail || error.message || 'Unknown error'}`);
       setResetting(false);
     }
   };
