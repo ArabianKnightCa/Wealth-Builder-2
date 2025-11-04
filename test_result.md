@@ -269,7 +269,7 @@ backend:
   - task: "Adaptive Engine (AE) Chapter Personalization"
     implemented: true
     working: true
-    file: "/app/backend/ae_engine_v2.py"
+    file: "/app/backend/ae_engine_v2_enhanced.py"
     stuck_count: 1
     priority: "high"
     needs_retesting: false
@@ -313,6 +313,26 @@ backend:
           EXTENDED TESTING VERIFIED:
           - All A answers → Planner profile → discipline=1.0, chapter order [1,2,4,3,8,7,9,6,5,10]
           - All D answers → Spontaneous profile → discipline=0.0, chapter order [1,8,2,3,7,4,6,9,5,10]
+      - working: true
+        agent: "testing"
+        comment: |
+          ENHANCED AE v2.1 CHAPTER PERSONALIZATION - 100% SUCCESS RATE ACHIEVED
+          ✅ Chapter Order Personalization: All experience levels produce different personalized orders
+            * Beginner (age 10): [1,8,7,2,3,6,4,9,5,10] - Ch5 delayed to position 9
+            * Intermediate (age 25): [1,2,3,4,8,7,6,9,5,10] - Normal progression
+            * Advanced (age 40): [1,2,3,5,6,4,8,7,9,10] - Ch5&6 prioritized early (positions 4&5)
+          ✅ Experience-based modifications working perfectly:
+            * Beginners: Chapter 5 (investing) delayed as expected
+            * Advanced: Chapters 5&6 (investing/income) prioritized early
+          ✅ Age-based modifications: Youth get mindset chapters earlier
+          ✅ Dynamic chapter reordering based on user context functioning
+          ✅ 10 expanded chapter orders for different archetypes implemented
+          
+          ENHANCED PERSONALIZATION FEATURES:
+          - Experience-level chapter modifications (beginner delays investing, advanced prioritizes it)
+          - Age-based adjustments (youth get different ordering)
+          - Expanded archetype-specific chapter orders (10 distinct patterns)
+          - Context-aware reordering maintains learning progression while personalizing sequence
 
 frontend:
   - task: "Reset Account Button on Settings Page"
