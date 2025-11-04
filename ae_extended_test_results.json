@@ -1,0 +1,70 @@
+[
+  {
+    "test": "Pattern 1 - All A Answers",
+    "success": true,
+    "message": "Profile: Planner, Discipline: 1.0",
+    "details": {
+      "profile": "Planner",
+      "weights": {
+        "discipline": 1.0,
+        "impulse": 0,
+        "confidence": 1.0,
+        "tempo": "fast"
+      },
+      "chapter_order": [
+        1,
+        2,
+        4,
+        3,
+        8,
+        7,
+        9,
+        6,
+        5,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:29:40.923274"
+  },
+  {
+    "test": "Pattern 2 - All D Answers",
+    "success": true,
+    "message": "Profile: Spontaneous, Discipline: 0",
+    "details": {
+      "profile": "Spontaneous",
+      "weights": {
+        "discipline": 0,
+        "impulse": 1.0,
+        "confidence": 0,
+        "tempo": "slow"
+      },
+      "chapter_order": [
+        1,
+        8,
+        2,
+        3,
+        7,
+        4,
+        6,
+        9,
+        5,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:29:40.966266"
+  },
+  {
+    "test": "Pattern Comparison - Profiles",
+    "success": true,
+    "message": "Different answer patterns produce different profiles: Planner vs Spontaneous",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:40.966309"
+  },
+  {
+    "test": "Pattern Comparison - Chapter Orders",
+    "success": true,
+    "message": "Different answer patterns produce different chapter orders",
+    "details": {},
+    "timestamp": "2025-11-04T15:29:40.966314"
+  }
+]
