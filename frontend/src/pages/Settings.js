@@ -238,49 +238,17 @@ function Settings({ user, token }) {
                   Deleting your account will permanently remove all your data, progress, and quiz results. This action cannot be undone.
                 </p>
                 <button
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    console.log('DELETE CLICKED - INLINE');
-                    
-                    const confirmed = window.confirm('⚠️ DELETE YOUR ACCOUNT? This cannot be undone!');
-                    if (!confirmed) {
-                      console.log('User cancelled');
-                      return;
-                    }
-                    
-                    console.log('User confirmed, proceeding...');
-                    console.log('User email:', user.email);
-                    
-                    try {
-                      const url = `${process.env.REACT_APP_BACKEND_URL}/api/auth/delete-account`;
-                      console.log('Sending to:', url);
-                      
-                      const res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: user.email })
-                      });
-                      
-                      console.log('Response status:', res.status);
-                      const data = await res.json();
-                      console.log('Response data:', data);
-                      
-                      if (res.ok) {
-                        alert('✅ Account deleted! Logging out...');
-                        localStorage.clear();
-                        window.location.href = '/';
-                      } else {
-                        alert('❌ Failed: ' + (data.detail || 'Unknown error'));
-                      }
-                    } catch (err) {
-                      console.error('Error:', err);
-                      alert('❌ Error: ' + err.message);
-                    }
-                  }}
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
                   type="button"
-                  className="w-full bg-red-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all"
+                  className={`w-full px-4 py-3 rounded-lg font-semibold transition-all ${
+                    isDeleting 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-red-600 hover:bg-red-700 text-white'
+                  }`}
+                  data-testid="delete-account-btn"
                 >
-                  🗑️ Delete My Account Permanently
+                  {isDeleting ? '⏳ Deleting...' : '🗑️ Delete My Account Permanently'}
                 </button>
               </div>
             </div>
