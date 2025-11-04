@@ -67,6 +67,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      {user && <GlobalHUD user={user} token={token} onLogout={handleLogout} />}
       <Routes>
         <Route path="/" element={!user ? <Welcome /> : <Navigate to="/dashboard" />} />
         <Route path="/admin" element={<AdminPanel onLogin={handleLogin} />} />
