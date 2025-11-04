@@ -2,18 +2,18 @@
   {
     "test": "PPI Composition - User A (age 10, beginner) Count",
     "success": false,
-    "message": "Expected 20 questions, got 3",
+    "message": "Expected 20 questions, got 10",
     "details": {
-      "question_count": 3
+      "question_count": 10
     },
-    "timestamp": "2025-11-04T05:56:47.315000"
+    "timestamp": "2025-11-04T15:28:00.589857"
   },
   {
     "test": "PPI Composition - User A (age 10, beginner) Age Match",
     "success": true,
     "message": "Age correctly identified as 10",
     "details": {},
-    "timestamp": "2025-11-04T05:56:47.315069"
+    "timestamp": "2025-11-04T15:28:00.589907"
   },
   {
     "test": "PPI Composition - User A (age 10, beginner) Item Structure",
@@ -22,34 +22,34 @@
     "details": {
       "sample_item": {
         "question_id": "PPI_Q01",
-        "bank_id": "BANK_Q_CONF_03",
+        "bank_id": "PPI_Q01",
         "type": "mcq",
-        "prompt": "When money topics feel confusing, you\u2026",
+        "prompt": "When making financial decisions, I prefer to:",
         "options": [
-          "A Avoid them",
-          "B Ask a trusted person",
-          "C Look up basics",
-          "D Try small practice"
+          "A Research extensively before deciding",
+          "B Go with my gut feeling",
+          "C Ask friends or family for advice",
+          "D Follow what experts recommend"
         ]
       }
     },
-    "timestamp": "2025-11-04T05:56:47.315076"
+    "timestamp": "2025-11-04T15:28:00.589913"
   },
   {
     "test": "PPI Composition - User B (age 25, intermediate) Count",
-    "success": false,
-    "message": "Expected 20 questions, got 2",
+    "success": true,
+    "message": "Received exactly 20 PPI questions",
     "details": {
-      "question_count": 2
+      "question_count": 20
     },
-    "timestamp": "2025-11-04T05:56:47.634058"
+    "timestamp": "2025-11-04T15:28:00.885599"
   },
   {
     "test": "PPI Composition - User B (age 25, intermediate) Age Match",
     "success": true,
     "message": "Age correctly identified as 25",
     "details": {},
-    "timestamp": "2025-11-04T05:56:47.634125"
+    "timestamp": "2025-11-04T15:28:00.885651"
   },
   {
     "test": "PPI Composition - User B (age 25, intermediate) Item Structure",
@@ -58,34 +58,34 @@
     "details": {
       "sample_item": {
         "question_id": "PPI_Q01",
-        "bank_id": "BANK_Q_HABIT_02",
+        "bank_id": "PPI_Q01",
         "type": "mcq",
-        "prompt": "Which habit would help you most this month?",
+        "prompt": "When making financial decisions, I prefer to:",
         "options": [
-          "A Automate savings",
-          "B Track spending weekly",
-          "C Reduce impulse buys",
-          "D Learn one new skill"
+          "A Research extensively before deciding",
+          "B Go with my gut feeling",
+          "C Ask friends or family for advice",
+          "D Follow what experts recommend"
         ]
       }
     },
-    "timestamp": "2025-11-04T05:56:47.634132"
+    "timestamp": "2025-11-04T15:28:00.885657"
   },
   {
     "test": "PPI Composition - User C (age 40, advanced) Count",
-    "success": false,
-    "message": "Expected 20 questions, got 2",
+    "success": true,
+    "message": "Received exactly 20 PPI questions",
     "details": {
-      "question_count": 2
+      "question_count": 20
     },
-    "timestamp": "2025-11-04T05:56:47.941427"
+    "timestamp": "2025-11-04T15:28:01.189268"
   },
   {
     "test": "PPI Composition - User C (age 40, advanced) Age Match",
     "success": true,
     "message": "Age correctly identified as 40",
     "details": {},
-    "timestamp": "2025-11-04T05:56:47.941487"
+    "timestamp": "2025-11-04T15:28:01.189328"
   },
   {
     "test": "PPI Composition - User C (age 40, advanced) Item Structure",
@@ -94,32 +94,32 @@
     "details": {
       "sample_item": {
         "question_id": "PPI_Q01",
-        "bank_id": "BANK_Q_RISK_07",
+        "bank_id": "PPI_Q01",
         "type": "mcq",
-        "prompt": "If an investment drops 10% in a week, you\u2026",
+        "prompt": "When making financial decisions, I prefer to:",
         "options": [
-          "A Sell",
-          "B Hold",
-          "C Buy more",
-          "D Ask for advice"
+          "A Research extensively before deciding",
+          "B Go with my gut feeling",
+          "C Ask friends or family for advice",
+          "D Follow what experts recommend"
         ]
       }
     },
-    "timestamp": "2025-11-04T05:56:47.941493"
+    "timestamp": "2025-11-04T15:28:01.189335"
   },
   {
     "test": "PPI Composition - Deterministic Behavior",
     "success": true,
     "message": "Same user gets identical questions on repeated calls",
     "details": {},
-    "timestamp": "2025-11-04T05:56:48.040834"
+    "timestamp": "2025-11-04T15:28:01.265070"
   },
   {
     "test": "Financial DNA Generation - PPI Questions",
     "success": false,
-    "message": "Insufficient PPI questions: 3",
+    "message": "Insufficient PPI questions: 10",
     "details": {},
-    "timestamp": "2025-11-04T05:56:48.085193"
+    "timestamp": "2025-11-04T15:28:01.303146"
   },
   {
     "test": "Chapter Personalization - Learning Map Exists",
@@ -136,13 +136,13 @@
         "autosaved_at"
       ]
     },
-    "timestamp": "2025-11-04T05:56:48.124416"
+    "timestamp": "2025-11-04T15:28:01.379477"
   },
   {
     "test": "Chapter Personalization",
     "success": false,
     "message": "Exception: cannot access local variable 'lesson_order' where it is not associated with a value",
     "details": {},
-    "timestamp": "2025-11-04T05:56:48.124476"
+    "timestamp": "2025-11-04T15:28:01.379546"
   }
 ]
