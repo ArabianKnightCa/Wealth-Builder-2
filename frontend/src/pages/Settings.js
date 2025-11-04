@@ -17,20 +17,20 @@ function Settings({ user, token }) {
 
   const languageOptions = [
     { code: 'en', name: 'English' },
-    { code: 'ar', name: 'العربية (Arabic)' },
-    { code: 'es', name: 'Español (Spanish)' },
-    { code: 'zh', name: '中文 (Mandarin)' },
-    { code: 'yue', name: '廣東話 (Cantonese)' },
-    { code: 'hi', name: 'हिन्दी (Hindi)' },
-    { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)' },
-    { code: 'gu', name: 'ગુજરાતી (Gujarati)' },
-    { code: 'ml', name: 'മലയാളം (Malayalam)' },
+    { code: 'ar', name: 'Arabic - العربية' },
+    { code: 'es', name: 'Spanish - Español' },
+    { code: 'zh', name: 'Mandarin - 中文' },
+    { code: 'yue', name: 'Cantonese - 廣東話' },
+    { code: 'hi', name: 'Hindi - हिन्दी' },
+    { code: 'pa', name: 'Punjabi - ਪੰਜਾਬੀ' },
+    { code: 'gu', name: 'Gujarati - ગુજરાતી' },
+    { code: 'ml', name: 'Malayalam - മലയാളം' },
     { code: 'tl', name: 'Tagalog' },
-    { code: 'ru', name: 'Русский (Russian)' },
-    { code: 'arz', name: 'مصرى (Egyptian Arabic)' },
-    { code: 'ur', name: 'اردو (Urdu)' },
+    { code: 'ru', name: 'Russian - Русский' },
+    { code: 'arz', name: 'Egyptian Arabic - مصرى' },
+    { code: 'ur', name: 'Urdu - اردو' },
     { code: 'rw', name: 'Kinyarwanda' },
-    { code: 'uk', name: 'Українська (Ukrainian)' }
+    { code: 'uk', name: 'Ukrainian - Українська' }
   ];
 
   const experienceLevels = [
