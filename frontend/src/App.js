@@ -12,6 +12,7 @@ import LPIChapter from './pages/LPIChapter';
 import Settings from './pages/Settings';
 import Completed from './pages/Completed';
 import AdminPanel from './pages/AdminPanel';
+import GlobalHUD from './components/GlobalHUD';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
