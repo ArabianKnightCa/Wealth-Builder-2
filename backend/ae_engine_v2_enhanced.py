@@ -290,21 +290,36 @@ class AdaptiveEngineV2Enhanced:
         tempo_scores = {"fast": fast_score, "steady": steady_score, "slow": slow_score}
         tempo = max(tempo_scores, key=tempo_scores.get)
         
-        # Apply age/experience modifiers with base adjustments
+        # Apply age/experience modifiers with meaningful base adjustments
+        age_confidence_boost = 0.0
+        experience_confidence_boost = 0.0
+        experience_discipline_boost = 0.0
+        
         if age and age < 18:
-            # Youth: slightly lower confidence, prefer slower tempo
-            confidence_score = max(0.0, confidence_score * 0.9 - 0.05)  # Reduce confidence for youth
+            # Youth: lower confidence, prefer slower tempo
+            age_confidence_boost = -0.1
             if tempo == "fast":
                 tempo = "steady"
+        elif age and age >= 25:
+            # Adults: higher confidence
+            age_confidence_boost = 0.1
         
         if financial_experience == "beginner":
             # Beginners: lower confidence and discipline
-            confidence_score = max(0.0, confidence_score * 0.8 - 0.05)
-            discipline_score = discipline_score * 0.9
+            experience_confidence_boost = -0.1
+            experience_discipline_boost = -0.05
+        elif financial_experience == "intermediate":
+            # Intermediate: moderate boost
+            experience_confidence_boost = 0.05
+            experience_discipline_boost = 0.02
         elif financial_experience == "advanced":
-            # Advanced: boost confidence and discipline
-            confidence_score = confidence_score * 1.2 + 0.15
-            discipline_score = discipline_score * 1.1
+            # Advanced: significant boost
+            experience_confidence_boost = 0.2
+            experience_discipline_boost = 0.1
+        
+        # Apply modifiers
+        confidence_score = confidence_score + age_confidence_boost + experience_confidence_boost
+        discipline_score = discipline_score + experience_discipline_boost
         
         # Normalize to 0.0-1.0
         discipline = min(1.0, max(0.0, discipline_score))
