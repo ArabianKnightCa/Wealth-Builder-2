@@ -100,26 +100,14 @@ function LPIChapter({ token }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-navy-900 text-white p-4 shadow-lg">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div>
-            <p className="text-gold text-sm font-semibold mb-1">Chapter {chapterId.replace('CH', '').replace(/^0+/, '')}</p>
-            <h1 className="text-2xl font-bold" data-testid="chapter-title">
-              {chapter.title}
-            </h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => navigate('/dashboard')} 
-              className="text-gold hover:text-white text-2xl font-bold transition-colors"
-              title="Help - Return to Dashboard"
-              data-testid="help-btn"
-            >
-              ?
-            </button>
-          </div>
+      <div className="bg-navy-900 text-white p-4 shadow-lg">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-gold text-sm font-semibold mb-1">Chapter {chapterId.replace('CH', '').replace(/^0+/, '')}</p>
+          <h1 className="text-2xl font-bold" data-testid="chapter-title">
+            {chapter.title}
+          </h1>
         </div>
-      </nav>
+      </div>
 
       <div className="max-w-4xl mx-auto p-8">
         {!quizResult && currentView === 'lesson' && (
