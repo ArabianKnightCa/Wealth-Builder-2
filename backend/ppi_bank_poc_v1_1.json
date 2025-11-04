@@ -175,6 +175,530 @@
         "style",
         "universal"
       ]
+    },
+    {
+      "id": "BANK_Q_BASE_06",
+      "type": "mcq",
+      "prompt": "What does money mean to you?",
+      "options": [
+        "A Freedom",
+        "B Security",
+        "C Opportunity",
+        "D Tool"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "universal",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_BASE_08",
+      "type": "mcq",
+      "prompt": "When you get money, what do you do first?",
+      "options": [
+        "A Save some",
+        "B Spend on needs",
+        "C Spend on wants",
+        "D Make a plan"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "base",
+        "habits",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_MOTIV_10",
+      "type": "mcq",
+      "prompt": "What motivates you to save money?",
+      "options": [
+        "A Big purchase",
+        "B Emergency fund",
+        "C Future goals",
+        "D Peace of mind"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "goals",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_HABIT_11",
+      "type": "mcq",
+      "prompt": "How often do you check your money?",
+      "options": [
+        "A Daily",
+        "B Weekly",
+        "C Monthly",
+        "D Rarely"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_RISK_12",
+      "type": "mcq",
+      "prompt": "How do you feel about taking risks with money?",
+      "options": [
+        "A Avoid risks",
+        "B Small risks okay",
+        "C Calculated risks",
+        "D Comfortable with risk"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "risk_tolerance",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_CONF_13",
+      "type": "mcq",
+      "prompt": "How confident are you with money decisions?",
+      "options": [
+        "A Not confident",
+        "B Somewhat confident",
+        "C Mostly confident",
+        "D Very confident"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "confidence",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_BASE_14",
+      "type": "mcq",
+      "prompt": "Who taught you about money?",
+      "options": [
+        "A Parents/family",
+        "B School",
+        "C Self-taught",
+        "D Still learning"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "base",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_GOALS_15",
+      "type": "mcq",
+      "prompt": "What's your biggest money challenge?",
+      "options": [
+        "A Not earning enough",
+        "B Spending too much",
+        "C Not saving",
+        "D Don't know where it goes"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "goals",
+        "habits",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_MOTIV_16",
+      "type": "mcq",
+      "prompt": "What would financial success look like for you?",
+      "options": [
+        "A No debt",
+        "B Good savings",
+        "C Comfortable lifestyle",
+        "D Financial freedom"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "goals",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_HABIT_17",
+      "type": "mcq",
+      "prompt": "Do you have a budget?",
+      "options": [
+        "A Yes, follow it strictly",
+        "B Yes, but flexible",
+        "C No, but track spending",
+        "D No budget"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_BASE_18",
+      "type": "mcq",
+      "prompt": "What's most important when making money decisions?",
+      "options": [
+        "A Price",
+        "B Value",
+        "C Timing",
+        "D Long-term impact"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_RISK_19",
+      "type": "mcq",
+      "prompt": "How do you handle unexpected expenses?",
+      "options": [
+        "A Use savings",
+        "B Use credit card",
+        "C Ask family/friends",
+        "D Worry and figure it out"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "risk_tolerance",
+        "habits",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_CONF_20",
+      "type": "mcq",
+      "prompt": "How comfortable are you talking about money?",
+      "options": [
+        "A Very uncomfortable",
+        "B A bit awkward",
+        "C Fairly comfortable",
+        "D Totally comfortable"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "confidence",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_BASE_21",
+      "type": "mcq",
+      "prompt": "What stops you from reaching your money goals?",
+      "options": [
+        "A Lack of knowledge",
+        "B Not enough income",
+        "C Poor habits",
+        "D No clear goals"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "tags": [
+        "base",
+        "motivation",
+        "beginner_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_MOTIV_22",
+      "type": "mcq",
+      "prompt": "What would you do with extra $1000?",
+      "options": [
+        "A Save it all",
+        "B Invest it",
+        "C Spend on needs",
+        "D Treat yourself"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "habits",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_HABIT_23",
+      "type": "mcq",
+      "prompt": "Before buying something expensive, you…",
+      "options": [
+        "A Buy if I want it",
+        "B Sleep on it",
+        "C Compare prices",
+        "D Check budget first"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_RISK_24",
+      "type": "mcq",
+      "prompt": "What's your approach to debt?",
+      "options": [
+        "A Avoid all debt",
+        "B Only for big purchases",
+        "C Use wisely",
+        "D Don't worry about it"
+      ],
+      "age_min": 14,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "risk_tolerance",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_BASE_25",
+      "type": "mcq",
+      "prompt": "How do you learn best about money?",
+      "options": [
+        "A Simple examples",
+        "B Step-by-step guides",
+        "C Real-life stories",
+        "D Try and learn"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "style",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_CONF_26",
+      "type": "mcq",
+      "prompt": "When faced with a money problem, you…",
+      "options": [
+        "A Feel stressed",
+        "B Ask for help",
+        "C Research solutions",
+        "D Take action quickly"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "confidence",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_GOALS_27",
+      "type": "mcq",
+      "prompt": "How far ahead do you plan financially?",
+      "options": [
+        "A This week",
+        "B This month",
+        "C This year",
+        "D Multiple years"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "goals",
+        "tempo",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_ADV_28",
+      "type": "mcq",
+      "prompt": "What's your investment philosophy?",
+      "options": [
+        "A Long-term buy and hold",
+        "B Active trading",
+        "C Index funds only",
+        "D Mixed strategy"
+      ],
+      "age_min": 18,
+      "age_max": 99,
+      "experience_levels": [
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "advanced",
+        "risk_management"
+      ]
+    },
+    {
+      "id": "BANK_Q_ADV_29",
+      "type": "mcq",
+      "prompt": "How do you evaluate financial opportunities?",
+      "options": [
+        "A Risk vs reward",
+        "B Gut feeling",
+        "C Expert advice",
+        "D Data and research"
+      ],
+      "age_min": 16,
+      "age_max": 99,
+      "experience_levels": [
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "advanced",
+        "confidence",
+        "intermediate_safe"
+      ]
+    },
+    {
+      "id": "BANK_Q_BASE_30",
+      "type": "mcq",
+      "prompt": "What's your relationship with money?",
+      "options": [
+        "A It's stressful",
+        "B It's practical",
+        "C It's empowering",
+        "D It's complicated"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "motivation",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     }
   ]
 }
