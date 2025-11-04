@@ -7,7 +7,6 @@ const API = `${BACKEND_URL}/api`;
 
 function GlobalHUD({ user, token, onLogout }) {
   const navigate = useNavigate();
-  const [resetting, setResetting] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
