@@ -71,7 +71,8 @@ class AdaptiveEngineV2:
         # Get experience constraints
         exp_constraints = self.rules['constraints']['experience'].get(financial_experience, {})
         
-        # Filter items from bank
+        # SIMPLIFIED: Use all 20 baseline questions, filtered by age appropriateness
+        # All users get the same 20 questions, just filtered for age/experience
         eligible_items = []
         for item in self.ppi_bank['items']:
             # Check age range
@@ -82,71 +83,16 @@ class AdaptiveEngineV2:
             if financial_experience not in item['experience_levels']:
                 continue
             
-            # Check age band exclusions
+            # Check age band exclusions (e.g., kids don't get "advanced" questions)
             exclude_tags = age_constraints.get('exclude_tags', [])
             if any(tag in item['tags'] for tag in exclude_tags):
                 continue
             
-            # Check experience exclusions
-            exp_exclude = exp_constraints.get('exclude_tags', [])
-            if any(tag in item['tags'] for tag in exp_exclude):
-                continue
-            
-            # Check experience inclusions (if specified)
-            exp_include = exp_constraints.get('include_tags', [])
-            if exp_include:
-                if not any(tag in item['tags'] for tag in exp_include):
-                    continue
-            
             eligible_items.append(item)
         
-        # Organize by buckets
-        bucket_weights = self.rules['selection']['bucket_weights']
-        buckets = {
-            'base': [],
-            'motivation': [],
-            'habits': [],
-            'risk_confidence': []
-        }
-        
-        for item in eligible_items:
-            tags = item['tags']
-            if 'motivation' in tags:
-                buckets['motivation'].append(item)
-            elif 'habits' in tags:
-                buckets['habits'].append(item)
-            elif any(t in tags for t in ['risk_tolerance', 'confidence']):
-                buckets['risk_confidence'].append(item)
-            else:
-                buckets['base'].append(item)
-        
-        # Select items according to bucket weights
-        selected_items = []
-        
-        # Select from each bucket
-        for bucket_name, target_count in bucket_weights.items():
-            available = buckets[bucket_name]
-            if len(available) >= target_count:
-                selected = random.sample(available, target_count)
-            else:
-                # Take all available and note the shortage
-                selected = available.copy()
-            selected_items.extend(selected)
-        
-        # If we don't have 20, fill from all eligible
-        total_needed = self.rules['selection']['total_items']
-        if len(selected_items) < total_needed:
-            remaining_items = [item for item in eligible_items if item not in selected_items]
-            shortage = total_needed - len(selected_items)
-            if remaining_items:
-                additional = random.sample(remaining_items, min(shortage, len(remaining_items)))
-                selected_items.extend(additional)
-        
-        # Shuffle for presentation
-        random.shuffle(selected_items)
-        
-        # Take exactly 20 (or all if less)
-        final_items = selected_items[:total_needed]
+        # Since we have exactly 20 baseline questions and all are appropriate for most users,
+        # we'll use all eligible items (should be 20 or close to it)
+        final_items = eligible_items[:20]  # Take up to 20
         
         # Format output according to contract
         output_items = []
