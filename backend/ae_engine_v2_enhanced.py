@@ -338,7 +338,7 @@ class AdaptiveEngineV2Enhanced:
         if trait_counts.get('goal_oriented', 0) >= 3 and discipline > 0.5:
             return "Strategic Planner"
         
-        if trait_counts.get('analytical', 0) >= 2 and discipline > 0.6:
+        if trait_counts.get('analytical', 0) >= 2 and discipline > 0.3:
             return "Analytical Planner"
         
         # Standard archetypes with adjusted thresholds for better differentiation
