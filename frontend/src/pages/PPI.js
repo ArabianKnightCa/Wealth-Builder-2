@@ -143,7 +143,7 @@ function PPI({ token }) {
                 className="btn-primary"
                 data-testid="skip-btn"
               >
-                ← Back to Dashboard
+                Back to Dashboard
               </button>
               <button 
                 onClick={() => setShowIntro(false)} 
