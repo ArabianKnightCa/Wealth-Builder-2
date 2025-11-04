@@ -231,7 +231,7 @@ backend:
 
   - task: "Adaptive Engine (AE) Chapter Personalization"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/ae_engine_v2.py"
     stuck_count: 1
     priority: "high"
@@ -256,6 +256,26 @@ backend:
           ✅ LPI progress collection structure is correct
           
           DEPENDENCY: Requires successful PPI completion for testing.
+      - working: true
+        agent: "testing"
+        comment: |
+          FULLY WORKING: Chapter personalization functioning correctly with complete AE workflow.
+          ✅ Learning map successfully saved to progress collection after PPI submission
+          ✅ Chapter orders are personalized and NOT sequential (1-10)
+          ✅ Different profiles produce different chapter orders as designed
+          ✅ First chapter unlocked correctly in LPI progress collection
+          ✅ Learning map contains all required fields: user_profile, lesson_order, financial_dna, lpi_plan, ae_version
+          
+          PERSONALIZATION CONFIRMED:
+          - Confident Explorer profile: [1, 2, 3, 5, 4, 6, 8, 7, 9, 10]
+          - Planner profile: [1, 2, 4, 3, 8, 7, 9, 6, 5, 10] 
+          - Spontaneous profile: [1, 8, 2, 3, 7, 4, 6, 9, 5, 10]
+          - Different answer patterns (All A vs All D) produce different profiles and chapter orders
+          - Chapter ordering is deterministic based on Financial DNA profile
+          
+          EXTENDED TESTING VERIFIED:
+          - All A answers → Planner profile → discipline=1.0, chapter order [1,2,4,3,8,7,9,6,5,10]
+          - All D answers → Spontaneous profile → discipline=0.0, chapter order [1,8,2,3,7,4,6,9,5,10]
 
 frontend:
   - task: "Reset Account Button on Settings Page"
