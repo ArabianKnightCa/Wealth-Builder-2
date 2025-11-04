@@ -375,6 +375,11 @@ async def get_current_user_info(user_id: str = Depends(get_current_user)):
 
 @api_router.post("/ppi/submit")
 async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_user)):
+    """
+    AE_FN_GENERATE_PLAN - Trigger: PPI_EVT_SUBMITTED
+    Process PPI answers and generate Financial DNA + personalized LPI plan
+    """
+    # Save PPI answers
     await db.ppi_answers.delete_many({"user_id": user_id})
     
     for answer in ppi_data.answers:
@@ -387,17 +392,36 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         }
         await db.ppi_answers.insert_one(ppi_answer)
     
-    # Step 3: Process through Adaptive Engine (AE)
-    ae = get_adaptive_engine()
+    # Call AE V2 generate_plan
+    ae_v2 = get_adaptive_engine_v2()
     
-    # Convert answers to AE format (PPI_Q01, PPI_Q02, etc.)
-    ppi_payload = {}
+    # Convert answers to AE V2 format
+    answers_formatted = []
     for answer in ppi_data.answers:
-        q_id = answer['question_id']  # Format: "PPI_Q01"
-        ppi_payload[q_id] = answer['selected_option']
+        answers_formatted.append({
+            "id": answer['question_id'],  # "PPI_Q01"
+            "value": answer['selected_option']  # "A", "B", "C", or "D"
+        })
     
-    # Generate personalized learning map
-    learning_map = ae.process_ppi(ppi_payload)
+    # Generate plan
+    plan = ae_v2.generate_plan(user_id, answers_formatted)
+    
+    # Extract chapter order from plan
+    chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
+    
+    # Create learning_map for backward compatibility with old format
+    learning_map = {
+        "user_profile": plan['dna']['profile'],
+        "learning_style": plan['dna']['profile'],
+        "lesson_order": chapter_order,
+        "difficulty_weights": {},  # Can be populated if needed
+        "pacing": plan['dna']['weights']['tempo'],
+        "reinforcement_rate": 0.6,
+        "financial_dna": plan['dna'],
+        "lpi_plan": plan['lpi_plan'],
+        "generated_at": plan['generated_at'],
+        "ae_version": "v2.0"
+    }
     
     # Save learning map to user progress
     await db.progress.update_one(
@@ -405,7 +429,7 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         {"$set": {
             "ppi_completed": True,
             "current_module": "lpi",
-            "current_step": learning_map["lesson_order"][0],  # First chapter in personalized order
+            "current_step": chapter_order[0],  # First chapter in personalized order
             "learning_map": learning_map,  # Store entire AE output
             "autosaved_at": datetime.now(timezone.utc).isoformat()
         }},
@@ -413,7 +437,7 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     )
     
     # Unlock first chapter in personalized learning path
-    first_chapter = learning_map["lesson_order"][0]
+    first_chapter = chapter_order[0]
     existing_lpi = await db.lpi_progress.find_one({"user_id": user_id, "chapter_id": first_chapter})
     if not existing_lpi:
         lpi_progress = {
@@ -430,12 +454,15 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     return {
         "message": "PPI submitted successfully",
         "next_step": "lpi",
+        "financial_dna": plan['dna'],
+        "lpi_plan": plan['lpi_plan'],
         "learning_map": learning_map,
         "personalized_path": {
-            "profile": learning_map["user_profile"],
+            "profile": plan['dna']['profile'],
             "first_chapter": first_chapter,
-            "learning_style": learning_map["learning_style"],
-            "pacing": learning_map["pacing"]
+            "tempo": plan['dna']['weights']['tempo'],
+            "discipline": plan['dna']['weights']['discipline'],
+            "confidence": plan['dna']['weights']['confidence']
         }
     }
 
