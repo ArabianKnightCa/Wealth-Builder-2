@@ -9,6 +9,11 @@ function GlobalHUD({ user, token, onLogout }) {
   const navigate = useNavigate();
   const [resetting, setResetting] = useState(false);
 
+  // Debug: Log when component mounts
+  React.useEffect(() => {
+    console.log('GlobalHUD mounted with user:', user);
+  }, [user]);
+
   const handleReset = async () => {
     try {
       alert('TEST: Function called!');
