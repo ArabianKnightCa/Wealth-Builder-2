@@ -136,7 +136,7 @@ backend:
   - task: "Adaptive Engine (AE) Personalized PPI Endpoint"
     implemented: true
     working: true
-    file: "/app/backend/ae_engine_v2.py"
+    file: "/app/backend/ae_engine_v2_enhanced.py"
     stuck_count: 1
     priority: "high"
     needs_retesting: false
@@ -179,6 +179,22 @@ backend:
           - Both receive appropriate question counts based on age filtering
           - All API responses have correct structure and data
           - Personalization is working as designed
+      - working: true
+        agent: "testing"
+        comment: |
+          ENHANCED AE v2.1 TESTING COMPLETE - 100% SUCCESS RATE ACHIEVED
+          ✅ Context Differentiation: Same answers with different age/experience produce different outcomes
+          ✅ Enhanced personalization with ae_engine_v2_enhanced.py implementation
+          ✅ Age-based modifiers working (15yr vs 30yr users get different profiles despite same answers)
+          ✅ Experience-level influence confirmed (beginner vs intermediate contexts affect DNA calculation)
+          ✅ Deterministic behavior maintained while adding context awareness
+          ✅ All 20 questions delivered consistently for adult users
+          ✅ Age-appropriate filtering working (younger users get filtered question sets)
+          
+          ENHANCED FEATURES VERIFIED:
+          - Question-specific trait mapping implemented
+          - Age/experience influence on DNA calculation working
+          - Context-aware personalization functioning perfectly
 
   - task: "Adaptive Engine (AE) Financial DNA Generation"
     implemented: true
