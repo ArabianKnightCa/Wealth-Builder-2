@@ -17,6 +17,7 @@ from pathlib import Path
 from content_data import PPI_QUESTIONS, LPI_CHAPTERS, LPI_ANSWER_KEY
 from ae_engine import get_adaptive_engine
 from ae_engine_v2 import get_adaptive_engine_v2
+from ae_engine_v2_enhanced import get_adaptive_engine_v2_enhanced
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
