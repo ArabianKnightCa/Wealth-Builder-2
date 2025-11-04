@@ -4,35 +4,63 @@
     "success": true,
     "message": "Different question counts: Young=18, Adult=20",
     "details": {},
-    "timestamp": "2025-11-04T15:40:25.811798"
+    "timestamp": "2025-11-04T15:41:47.221942"
   },
   {
     "test": "Test 1 - Different DNA Profiles",
-    "success": false,
-    "message": "Same profile despite different age/experience: Cautious Learner",
+    "success": true,
+    "message": "Age/experience created different profiles: Cautious Learner vs Balanced Builder",
     "details": {},
-    "timestamp": "2025-11-04T15:40:25.905720"
+    "timestamp": "2025-11-04T15:41:47.304893"
   },
   {
     "test": "Test 1 - Different Chapter Orders",
-    "success": false,
-    "message": "Same chapter order despite different age/experience: [1, 2, 8, 3, 7, 9, 4, 6, 5, 10]",
-    "details": {},
-    "timestamp": "2025-11-04T15:40:25.905759"
+    "success": true,
+    "message": "Age/experience created different chapter orders",
+    "details": {
+      "Young (15yr)": [
+        1,
+        2,
+        8,
+        3,
+        7,
+        9,
+        4,
+        6,
+        5,
+        10
+      ],
+      "Adult (25yr)": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        7,
+        6,
+        9,
+        5,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:41:47.304922"
   },
   {
     "test": "Test 1 - Age-Based DNA Modifiers",
-    "success": false,
-    "message": "Age did not influence DNA weights (confidence diff: 0.00)",
-    "details": {},
-    "timestamp": "2025-11-04T15:40:25.905769"
+    "success": true,
+    "message": "Age influenced DNA weights (confidence diff: 0.15)",
+    "details": {
+      "Young confidence": 0.0,
+      "Adult confidence": 0.15
+    },
+    "timestamp": "2025-11-04T15:41:47.304943"
   },
   {
     "test": "Test 2 - Experience-Based Profile Differences",
     "success": false,
     "message": "Same profile despite different experience: Analytical Planner",
     "details": {},
-    "timestamp": "2025-11-04T15:40:26.610238"
+    "timestamp": "2025-11-04T15:41:48.032096"
   },
   {
     "test": "Test 2 - Experience-Based Chapter Orders",
@@ -64,38 +92,38 @@
         10
       ]
     },
-    "timestamp": "2025-11-04T15:40:26.610269"
+    "timestamp": "2025-11-04T15:41:48.032125"
   },
   {
     "test": "Test 2 - Experience-Based Confidence Boost",
     "success": true,
-    "message": "Advanced user has higher confidence: 0.18 vs 0.12",
+    "message": "Advanced user has higher confidence: 0.45 vs 0.15",
     "details": {},
-    "timestamp": "2025-11-04T15:40:26.610289"
+    "timestamp": "2025-11-04T15:41:48.032142"
   },
   {
     "test": "Test 3 - All A Answers Profile",
     "success": true,
     "message": "All A answers produced disciplined profile: Analytical Planner",
     "details": {},
-    "timestamp": "2025-11-04T15:40:27.345885"
+    "timestamp": "2025-11-04T15:41:48.736801"
   },
   {
     "test": "Test 3 - All D Answers Profile",
     "success": true,
     "message": "All D answers produced spontaneous profile: Guided Learner",
     "details": {},
-    "timestamp": "2025-11-04T15:40:27.345912"
+    "timestamp": "2025-11-04T15:41:48.736829"
   },
   {
     "test": "Test 3 - Weight Differentiation",
     "success": true,
-    "message": "Clear weight differences: E discipline=0.85, F impulse=0.40",
+    "message": "Clear weight differences: E discipline=0.87, F impulse=0.40",
     "details": {
-      "User E (All A)": "discipline=0.85, impulse=0.00",
-      "User F (All D)": "discipline=0.00, impulse=0.40"
+      "User E (All A)": "discipline=0.87, impulse=0.00",
+      "User F (All D)": "discipline=0.02, impulse=0.40"
     },
-    "timestamp": "2025-11-04T15:40:27.345923"
+    "timestamp": "2025-11-04T15:41:48.736839"
   },
   {
     "test": "Test 3 - Trait-Based Chapter Orders",
@@ -127,28 +155,28 @@
         10
       ]
     },
-    "timestamp": "2025-11-04T15:40:27.345933"
+    "timestamp": "2025-11-04T15:41:48.736847"
   },
   {
     "test": "Test 4 - Guided Learner Archetype",
     "success": false,
     "message": "Did not trigger Guided Learner, got: Cautious Learner",
     "details": {},
-    "timestamp": "2025-11-04T15:40:28.036679"
+    "timestamp": "2025-11-04T15:41:49.430620"
   },
   {
     "test": "Test 4 - Strategic Planner Archetype",
     "success": false,
     "message": "Did not trigger Strategic Planner, got: Analytical Planner",
     "details": {},
-    "timestamp": "2025-11-04T15:40:28.036703"
+    "timestamp": "2025-11-04T15:41:49.430644"
   },
   {
     "test": "Test 4 - Specialized Archetypes Available",
     "success": false,
     "message": "Limited specialized archetypes found: ['Analytical Planner']",
     "details": {},
-    "timestamp": "2025-11-04T15:40:28.036717"
+    "timestamp": "2025-11-04T15:41:49.430657"
   },
   {
     "test": "Archetype Diversity - Expected Count",
@@ -168,13 +196,13 @@
         "Balanced Builder"
       ]
     },
-    "timestamp": "2025-11-04T15:40:28.036762"
+    "timestamp": "2025-11-04T15:41:49.430704"
   },
   {
     "test": "Archetype Diversity - Test Coverage",
     "success": false,
     "message": "Limited profile diversity in tests: []",
     "details": {},
-    "timestamp": "2025-11-04T15:40:28.036772"
+    "timestamp": "2025-11-04T15:41:49.430715"
   }
 ]
