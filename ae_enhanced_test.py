@@ -557,15 +557,21 @@ class EnhancedAETester:
             })
         
         # Create answers to trigger "Strategic Planner" (goal-oriented + disciplined)
-        # Based on question_traits, "A" answers often map to goal_oriented and discipline
+        # Need to target specific questions that have "goal_oriented" traits
+        # Looking at the trait mapping, Q02-C, Q05-C, Q09-A, Q20-A have goal_oriented
         items_strategic = ppi_strategic.get("items", [])
         answers_strategic = []
         
         for i, item in enumerate(items_strategic):
-            # Mostly A answers (goal-oriented, disciplined) with some strategic B answers
-            if i < 15:  # First 15 questions get "A"
+            q_id = item["question_id"]
+            # Target specific questions for goal_oriented traits
+            if q_id in ["PPI_Q02", "PPI_Q05", "PPI_Q20"]:
+                option = "C" if q_id in ["PPI_Q02", "PPI_Q05"] else "A"
+            elif q_id in ["PPI_Q09"]:
                 option = "A"
-            else:  # Rest get "B" for balance
+            elif i < 12:  # Most other questions get "A" for discipline
+                option = "A"
+            else:  # Some variety
                 option = "B"
             
             answers_strategic.append({
