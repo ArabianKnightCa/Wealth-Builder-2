@@ -290,9 +290,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Delete Account Endpoint"
-    - "Reset Account Button on Settings Page"
-  stuck_tasks: []
+    - "Adaptive Engine (AE) Personalized PPI Endpoint"
+    - "Adaptive Engine (AE) Financial DNA Generation"
+    - "Adaptive Engine (AE) Chapter Personalization"
+  stuck_tasks:
+    - "Adaptive Engine (AE) Personalized PPI Endpoint"
+    - "Adaptive Engine (AE) Financial DNA Generation"
+    - "Adaptive Engine (AE) Chapter Personalization"
   test_all: false
   test_priority: "stuck_first"
 
