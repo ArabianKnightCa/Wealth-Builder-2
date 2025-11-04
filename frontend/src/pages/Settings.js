@@ -6,6 +6,10 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 function Settings({ user, token }) {
+  console.log('🔵 Settings component loaded - NEW VERSION v2.0');
+  console.log('User prop:', user);
+  console.log('Token prop:', token);
+  
   const navigate = useNavigate();
   const [settings, setSettings] = useState({
     language: user.language || 'en',
@@ -18,7 +22,7 @@ function Settings({ user, token }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteAccount = async () => {
-    console.log('Delete button clicked');
+    console.log('🔴 Delete button clicked - handleDeleteAccount called');
     
     // First confirmation
     const confirmed1 = window.confirm(
