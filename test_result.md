@@ -101,3 +101,88 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Fix the Reset Account button on Settings page that is not responding when clicked.
+  Then proceed with Adaptive Engine (AE) integration for personalized PPI and LPI pathways.
+
+backend:
+  - task: "Delete Account Endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Endpoint exists at POST /api/auth/delete-account. 
+          Accepts {"email": "user@example.com"}.
+          Deletes user and all associated data from multiple collections.
+          Need to test if endpoint is actually working.
+
+frontend:
+  - task: "Reset Account Button on Settings Page"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Settings.js"
+    stuck_count: 3
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported button not responding, doing nothing upon clicking"
+      - working: false
+        agent: "main"
+        comment: |
+          Previous attempts: Multiple debugging approaches with alerts and inline handlers failed.
+          Button was using inline async onClick handler with debugging alerts.
+      - working: "NA"
+        agent: "main"
+        comment: |
+          FIXED: Refactored button to use separate handleDeleteAccount function.
+          Changes made:
+          1. Created clean handleDeleteAccount function with proper error handling
+          2. Added isDeleting state for button disable during operation
+          3. Removed all debugging alerts, kept console.logs
+          4. Button now calls handleDeleteAccount directly
+          5. Added visual feedback (disabled state, loading text)
+          6. Added data-testid="delete-account-btn" for testing
+          Need to test with authenticated user session.
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Delete Account Endpoint"
+    - "Reset Account Button on Settings Page"
+  stuck_tasks:
+    - "Reset Account Button on Settings Page"
+  test_all: false
+  test_priority: "stuck_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      I've refactored the Reset Account button in Settings.js to use a proper event handler function.
+      The button was using an inline async onClick which may have had issues.
+      Now it uses handleDeleteAccount() function with proper state management.
+      
+      Please test:
+      1. Backend: Verify POST /api/auth/delete-account endpoint works correctly
+      2. Create a test user account
+      3. Login with test user
+      4. Navigate to Settings page
+      5. Click "Delete My Account Permanently" button
+      6. Verify both confirmation dialogs appear
+      7. Confirm deletion and verify:
+         - Account is deleted from database
+         - User is logged out and redirected to home page
+         - All user data is removed (progress, PPI, LPI, etc.)
