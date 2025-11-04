@@ -170,6 +170,48 @@ function Settings({ user, token }) {
             >
               {loading ? 'Saving...' : 'Save Settings'}
             </button>
+
+            {/* Danger Zone */}
+            <div className="mt-8 pt-8 border-t-2 border-red-200">
+              <h3 className="text-lg font-bold text-red-600 mb-4">⚠️ Danger Zone</h3>
+              <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
+                <p className="text-sm text-red-800 mb-3">
+                  Deleting your account will permanently remove all your data, progress, and quiz results. This action cannot be undone.
+                </p>
+                <button
+                  onClick={async () => {
+                    if (!window.confirm('⚠️ Are you ABSOLUTELY SURE you want to delete your account? All data will be lost forever.')) {
+                      return;
+                    }
+                    if (!window.confirm('⚠️⚠️ FINAL WARNING: Click OK to permanently delete your account and all data.')) {
+                      return;
+                    }
+
+                    try {
+                      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/delete-account`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: user.email })
+                      });
+
+                      if (response.ok) {
+                        alert('✅ Account deleted successfully.');
+                        localStorage.clear();
+                        window.location.href = '/';
+                      } else {
+                        const error = await response.json();
+                        alert('❌ Delete failed: ' + (error.detail || 'Unknown error'));
+                      }
+                    } catch (error) {
+                      alert('❌ Delete failed: ' + error.message);
+                    }
+                  }}
+                  className="w-full bg-red-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all"
+                >
+                  🗑️ Delete My Account Permanently
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
