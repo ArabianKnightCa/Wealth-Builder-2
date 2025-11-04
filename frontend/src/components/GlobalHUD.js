@@ -98,10 +98,16 @@ function GlobalHUD({ user, token, onLogout }) {
           </button>
 
           <button
-            onClick={handleReset}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleReset();
+            }}
             disabled={resetting}
-            className="px-3 py-1 bg-red-600 text-white rounded text-sm font-semibold hover:bg-red-700 transition-all disabled:opacity-50"
+            className="px-3 py-1 bg-red-600 text-white rounded text-sm font-semibold hover:bg-red-700 transition-all disabled:opacity-50 cursor-pointer z-50"
             title="Reset Account"
+            type="button"
+            style={{ pointerEvents: 'auto' }}
           >
             {resetting ? '...' : '🔄 Reset'}
           </button>
