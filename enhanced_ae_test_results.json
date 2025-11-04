@@ -1,0 +1,180 @@
+[
+  {
+    "test": "Test 1 - Age-Based Question Filtering",
+    "success": true,
+    "message": "Different question counts: Young=18, Adult=20",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:09.184293"
+  },
+  {
+    "test": "Test 1 - Different DNA Profiles",
+    "success": false,
+    "message": "Same profile despite different age/experience: Cautious Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:09.292259"
+  },
+  {
+    "test": "Test 1 - Different Chapter Orders",
+    "success": false,
+    "message": "Same chapter order despite different age/experience: [1, 2, 8, 3, 7, 9, 4, 6, 5, 10]",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:09.292293"
+  },
+  {
+    "test": "Test 1 - Age-Based DNA Modifiers",
+    "success": false,
+    "message": "Age did not influence DNA weights (confidence diff: 0.00)",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:09.292304"
+  },
+  {
+    "test": "Test 2 - Experience-Based Profile Differences",
+    "success": false,
+    "message": "Same profile despite different experience: Cautious Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:10.078487"
+  },
+  {
+    "test": "Test 2 - Experience-Based Chapter Orders",
+    "success": true,
+    "message": "Experience level created different chapter orders",
+    "details": {
+      "Beginner": [
+        1,
+        2,
+        8,
+        3,
+        7,
+        9,
+        4,
+        6,
+        5,
+        10
+      ],
+      "Advanced": [
+        1,
+        2,
+        8,
+        5,
+        6,
+        3,
+        7,
+        9,
+        4,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:39:10.078528"
+  },
+  {
+    "test": "Test 2 - Experience-Based Confidence Boost",
+    "success": true,
+    "message": "Advanced user has higher confidence: 0.09 vs 0.06",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:10.078548"
+  },
+  {
+    "test": "Test 3 - All A Answers Profile",
+    "success": false,
+    "message": "All A answers did not produce disciplined profile: Cautious Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:10.783452"
+  },
+  {
+    "test": "Test 3 - All D Answers Profile",
+    "success": true,
+    "message": "All D answers produced spontaneous profile: Guided Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:10.783484"
+  },
+  {
+    "test": "Test 3 - Weight Differentiation",
+    "success": true,
+    "message": "Clear weight differences: E discipline=0.42, F impulse=0.20",
+    "details": {
+      "User E (All A)": "discipline=0.42, impulse=0.00",
+      "User F (All D)": "discipline=0.00, impulse=0.20"
+    },
+    "timestamp": "2025-11-04T15:39:10.783495"
+  },
+  {
+    "test": "Test 3 - Trait-Based Chapter Orders",
+    "success": true,
+    "message": "Different traits produced different chapter orders",
+    "details": {
+      "Disciplined (All A)": [
+        1,
+        2,
+        8,
+        3,
+        7,
+        9,
+        4,
+        6,
+        5,
+        10
+      ],
+      "Spontaneous (All D)": [
+        1,
+        2,
+        8,
+        7,
+        3,
+        4,
+        9,
+        6,
+        5,
+        10
+      ]
+    },
+    "timestamp": "2025-11-04T15:39:10.783505"
+  },
+  {
+    "test": "Test 4 - Guided Learner Archetype",
+    "success": false,
+    "message": "Did not trigger Guided Learner, got: Cautious Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:11.482233"
+  },
+  {
+    "test": "Test 4 - Strategic Planner Archetype",
+    "success": false,
+    "message": "Did not trigger Strategic Planner, got: Cautious Learner",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:11.482266"
+  },
+  {
+    "test": "Test 4 - Specialized Archetypes Available",
+    "success": false,
+    "message": "Limited specialized archetypes found: []",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:11.482278"
+  },
+  {
+    "test": "Archetype Diversity - Expected Count",
+    "success": true,
+    "message": "Enhanced engine supports 10 archetypes",
+    "details": {
+      "Expected archetypes": [
+        "Disciplined Planner",
+        "Analytical Planner",
+        "Strategic Planner",
+        "Spontaneous Explorer",
+        "Dynamic Adventurer",
+        "Confident Builder",
+        "Cautious Learner",
+        "Guided Learner",
+        "Steady Achiever",
+        "Balanced Builder"
+      ]
+    },
+    "timestamp": "2025-11-04T15:39:11.482327"
+  },
+  {
+    "test": "Archetype Diversity - Test Coverage",
+    "success": false,
+    "message": "Limited profile diversity in tests: []",
+    "details": {},
+    "timestamp": "2025-11-04T15:39:11.482338"
+  }
+]
