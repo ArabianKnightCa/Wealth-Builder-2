@@ -427,6 +427,25 @@ async def delete_user_account_post(data: dict):
     return await delete_user_account(email)
 
 
+@api_router.post("/feedback")
+async def submit_feedback(data: dict):
+    """
+    Submit user feedback
+    """
+    try:
+        feedback_doc = {
+            "user_id": data.get("user_id"),
+            "user_email": data.get("user_email"),
+            "feedback": data.get("feedback"),
+            "submitted_at": data.get("submitted_at"),
+            "created_at": datetime.now(timezone.utc)
+        }
+        
+        await db.feedback.insert_one(feedback_doc)
+        return {"message": "Feedback submitted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error submitting feedback: {str(e)}")
+
 @api_router.post("/lpi/quiz/submit")
 async def submit_quiz(quiz_data: QuizSubmit, user_id: str = Depends(get_current_user)):
     from content_data import LPI_ANSWER_KEY
