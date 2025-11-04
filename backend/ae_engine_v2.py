@@ -23,7 +23,8 @@ class AdaptiveEngineV2:
     def __init__(self):
         self.contracts = self._load_json('ae_contracts_stable_v1_1.json')
         self.rules = self._load_json('ae_rules_poc_v1_1.json')
-        self.ppi_bank = self._load_json('ppi_bank_poc_v1_1.json')
+        # Use baseline bank with 20 standard questions
+        self.ppi_bank = self._load_json('ppi_bank_baseline_v1_1.json')
         self.lpi_index = self._load_json('lpi_lessons_index.json')
     
     def _load_json(self, filename: str) -> Dict:
