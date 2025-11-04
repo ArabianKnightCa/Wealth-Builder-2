@@ -166,18 +166,10 @@ function PPI({ token }) {
     <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 p-4">
       <div className="max-w-3xl mx-auto py-8">
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
+          <div className="mb-4">
             <span className="text-gold font-semibold text-xl" data-testid="progress-text">
               {currentIndex + 1} / {questions.length}
             </span>
-            <button 
-              onClick={() => navigate('/dashboard')} 
-              className="text-gold hover:text-white text-3xl font-bold transition-colors"
-              title="Help - Return to Dashboard"
-              data-testid="help-btn"
-            >
-              ?
-            </button>
           </div>
           <h2 className="text-white text-2xl font-bold text-center mb-4" data-testid="ppi-title">Wealth Builder - Personality Profile Questionnaire</h2>
           <div className="progress-bar">
