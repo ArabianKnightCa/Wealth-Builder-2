@@ -136,11 +136,11 @@ backend:
 frontend:
   - task: "Reset Account Button on Settings Page"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Settings.js"
     stuck_count: 3
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
@@ -162,6 +162,18 @@ frontend:
           5. Added visual feedback (disabled state, loading text)
           6. Added data-testid="delete-account-btn" for testing
           Need to test with authenticated user session.
+      - working: true
+        agent: "testing"
+        comment: |
+          TESTED: Delete Account button is now working perfectly!
+          ✅ Button is clickable and responds to clicks
+          ✅ Two confirmation dialogs appear as expected
+          ✅ Backend API is called with correct payload (user email)
+          ✅ Account and all associated data are deleted from database
+          ✅ User is logged out and redirected to home page
+          ✅ LocalStorage is cleared properly
+          ✅ Full end-to-end flow works seamlessly
+          The refactored handleDeleteAccount function resolved all previous issues.
 
 metadata:
   created_by: "main_agent"
