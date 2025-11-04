@@ -540,18 +540,16 @@ class EnhancedAETester:
             return
         
         # Create answers to trigger "Guided Learner" (needs support pattern)
-        # Based on question_traits mapping, "D" answers often map to "needs_support"
+        # Use mostly D answers which contain "needs_support" traits
         items_guided = ppi_guided.get("items", [])
         answers_guided = []
         
         for i, item in enumerate(items_guided):
-            # Mix of D answers (needs support) and some B/C for variety
-            if i < 10:  # First 10 questions get "D" (needs support)
+            # Mostly D answers to maximize "needs_support" traits
+            if i < 16:  # First 16 questions get "D" (needs support)
                 option = "D"
-            elif i < 15:  # Next 5 get "B"
+            else:  # Rest get "B" for some variety
                 option = "B"
-            else:  # Rest get "C"
-                option = "C"
             
             answers_guided.append({
                 "question_id": item["question_id"],
