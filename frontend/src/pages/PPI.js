@@ -165,6 +165,17 @@ function PPI({ token }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 p-4">
       <div className="max-w-3xl mx-auto py-8">
+        {/* Skip button in top right corner */}
+        <div className="flex justify-end mb-4">
+          <button 
+            onClick={() => navigate('/dashboard')} 
+            className="bg-gold hover:bg-yellow-500 text-navy-900 px-6 py-2 rounded-lg font-semibold transition-all shadow-lg"
+            data-testid="skip-ppi-btn"
+          >
+            Skip for Now
+          </button>
+        </div>
+
         <div className="mb-8">
           <div className="mb-4">
             <span className="text-gold font-semibold text-xl" data-testid="progress-text">
