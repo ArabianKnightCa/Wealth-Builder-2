@@ -43,11 +43,12 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
     <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-8">
         <div className="mb-6">
+          <p className="text-gold font-semibold mb-2">Step 3 of 4</p>
           <h2 className="text-3xl font-bold text-navy-900 mb-2">
             What are your financial goals?
           </h2>
           <p className="text-gray-600">
-            Select at least one goal to help us personalize your learning journey. You can choose as many as you'd like!
+            Check all that applies, but must check at least one to help us personalize your learning journey.
           </p>
         </div>
 
