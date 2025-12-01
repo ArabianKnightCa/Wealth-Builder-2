@@ -183,7 +183,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex gap-4 pt-4 border-t border-gray-200">
+        <div className="flex justify-between pt-4 border-t border-gray-200">
           <button 
             type="button"
             onClick={onBack}
@@ -195,7 +195,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
           <button 
             type="button"
             onClick={handleNext}
-            className="btn-primary flex-1"
+            className="btn-primary"
             data-testid="continue-from-goals-btn"
           >
             Continue →
