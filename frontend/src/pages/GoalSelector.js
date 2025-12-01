@@ -32,10 +32,13 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading = 
   };
 
   const handleNext = () => {
+    console.log('GoalSelector handleNext called, selectedGoals:', selectedGoals);
     if (selectedGoals.length === 0) {
+      console.log('Validation failed: no goals selected');
       setShowError(true);
       return;
     }
+    console.log('Validation passed, calling onNext()');
     onNext();
   };
 
