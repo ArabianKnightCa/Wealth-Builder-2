@@ -13,7 +13,7 @@ from datetime import datetime
 
 class AdaptiveEngine:
     """
-    Wealth Builder Adaptive Engine
+    Mizo Wealth Builder Adaptive Engine
     Processes PPI responses and generates dynamic learning maps
     """
     
