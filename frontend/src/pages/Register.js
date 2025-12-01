@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import GoalSelector from './GoalSelector';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -22,7 +23,8 @@ function Register({ onLogin }) {
     school_name: '',
     school_city: '',
     school_state: '',
-    parent_email: ''
+    parent_email: '',
+    financial_goals: []
   });
   const [showSchoolCapture, setShowSchoolCapture] = useState(false);
   const [showParentConsent, setShowParentConsent] = useState(false);
