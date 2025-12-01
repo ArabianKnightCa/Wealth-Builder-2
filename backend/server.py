@@ -80,6 +80,8 @@ class User(BaseModel):
     school_verified: bool = False
     age_verified: bool = True
     account_status: str = "active"  # active, restricted
+    financial_goals: Optional[List[str]] = []  # Array of goal IDs
+    custom_goals: Optional[List[str]] = []  # Array of custom goal texts
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
 
