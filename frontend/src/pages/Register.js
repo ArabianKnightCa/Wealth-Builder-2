@@ -198,6 +198,11 @@ function Register({ onLogin }) {
     }
   };
 
+  // PAGE 0: Registration Introduction
+  if (currentPage === 0) {
+    return <RegistrationIntro onStart={() => setCurrentPage(1)} />;
+  }
+
   // PAGE 1: Name, Email, Password
   if (currentPage === 1) {
     return (
