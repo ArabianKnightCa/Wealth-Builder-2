@@ -195,10 +195,11 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading })
           <button 
             type="button"
             onClick={handleNext}
+            disabled={loading}
             className="btn-primary"
             data-testid="continue-from-goals-btn"
           >
-            Continue →
+            {loading ? 'Creating Account...' : 'Continue →'}
           </button>
         </div>
       </div>
