@@ -123,7 +123,7 @@ function Settings({ user, token }) {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-navy-900 text-white p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold" data-testid="settings-title">Wealth Builder - Settings</h1>
+          <h1 className="text-2xl font-bold" data-testid="settings-title">Mizo Wealth Builder - Settings</h1>
           <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate('/dashboard')} 
