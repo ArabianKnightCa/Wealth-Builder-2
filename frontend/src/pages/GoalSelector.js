@@ -191,17 +191,12 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
             ← Back
           </button>
           <button
+            type="button"
             onClick={handleNext}
-            disabled={loading || selectedGoals.length === 0}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              loading 
-                ? 'bg-gray-400 cursor-not-allowed text-gray-600'
-                : selectedGoals.length > 0
-                  ? 'bg-gold hover:bg-yellow-500 text-navy-900'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+            className="btn-primary flex-1"
+            data-testid="continue-from-goals-btn"
           >
-            {loading ? 'Creating Account...' : 'Continue →'}
+            Continue →
           </button>
         </div>
       </div>
