@@ -189,13 +189,16 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading = 
           </button>
           <button
             onClick={handleNext}
+            disabled={loading || selectedGoals.length === 0}
             className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              selectedGoals.length > 0
-                ? 'bg-gold hover:bg-yellow-500 text-navy-900'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              loading 
+                ? 'bg-gray-400 cursor-not-allowed text-gray-600'
+                : selectedGoals.length > 0
+                  ? 'bg-gold hover:bg-yellow-500 text-navy-900'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
-            Continue →
+            {loading ? 'Creating Account...' : 'Continue →'}
           </button>
         </div>
       </div>
