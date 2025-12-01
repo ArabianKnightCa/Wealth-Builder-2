@@ -517,6 +517,7 @@ function Register({ onLogin }) {
         onNext={handlePage2Next}
         onBack={() => setCurrentPage(2)}
         loading={loading}
+        error={error}
       />
     );
   }
