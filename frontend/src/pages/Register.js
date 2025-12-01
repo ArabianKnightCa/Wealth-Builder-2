@@ -160,13 +160,28 @@ function Register({ onLogin }) {
     try {
       const { confirmPassword, ...submitData } = formData;
       
+      // Extract custom goals from localStorage
+      const customGoals = submitData.financial_goals
+        .filter(id => id.startsWith('custom_'))
+        .map(id => localStorage.getItem(id))
+        .filter(Boolean);
+      
+      // Clean custom goal IDs from localStorage after extracting
+      submitData.financial_goals.forEach(id => {
+        if (id.startsWith('custom_')) {
+          localStorage.removeItem(id);
+        }
+      });
+      
       const cleanData = {
         ...submitData,
         experience_level: parseInt(submitData.experience_level),
         school_name: submitData.school_name || null,
         school_city: submitData.school_city || null,
         school_state: submitData.school_state || null,
-        parent_email: submitData.parent_email || null
+        parent_email: submitData.parent_email || null,
+        financial_goals: submitData.financial_goals || [],
+        custom_goals: customGoals
       };
       
       const response = await axios.post(`${API}/auth/register`, cleanData);
