@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FINANCIAL_GOALS_CONFIG } from '../data/financialGoals';
 
-function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
+function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading }) {
   const [openCategories, setOpenCategories] = useState({});
   const [customGoal, setCustomGoal] = useState('');
   const [showError, setShowError] = useState(false);
