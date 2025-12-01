@@ -491,6 +491,18 @@ function Register({ onLogin }) {
     );
   }
 
+  // PAGE 3: Goal Selection
+  if (currentPage === 3) {
+    return (
+      <GoalSelector
+        selectedGoals={formData.financial_goals}
+        onGoalsChange={(goals) => setFormData({ ...formData, financial_goals: goals })}
+        onNext={handlePage2Next}
+        onBack={() => setCurrentPage(2)}
+      />
+    );
+  }
+
   return null;
 }
 
