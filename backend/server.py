@@ -704,6 +704,15 @@ async def log_telemetry(data: dict, user_id: str = Depends(get_current_user)):
     await db.telemetry.insert_one(telemetry)
     return {"message": "Telemetry logged"}
 
+# Validate quiz integrity on startup
+print("\n🔍 Validating quiz answers...")
+validation_report, quiz_validator = validate_quiz_integrity(
+    LPI_CHAPTERS, 
+    LPI_ANSWER_KEY,
+    auto_correct=True,  # Auto-fix mismatches
+    fail_on_error=False  # Don't crash server, just warn
+)
+
 app.include_router(api_router)
 
 app.add_middleware(
