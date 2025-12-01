@@ -91,14 +91,15 @@ function Welcome() {
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-navy-900 mb-4">
-            Everything You Need to Succeed
-          </h2>
+        {/* Footer */}
+        <div className="text-center text-gray-300 space-y-4">
+          <button 
+            onClick={() => navigate('/admin')} 
+            className="text-gold hover:text-yellow-500 font-semibold transition-all"
+            data-testid="testing-panel-footer-btn"
+          >
+            🧪 Testing Panel
+          </button>
           <p className="text-xl text-gray-600">
             A comprehensive, step-by-step path to financial mastery
           </p>
