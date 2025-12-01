@@ -93,19 +93,6 @@ function Welcome() {
         </div>
         {/* Footer */}
         <div className="text-center text-gray-300 space-y-4">
-          <button 
-            onClick={() => navigate('/admin')} 
-            className="text-gold hover:text-yellow-500 font-semibold transition-all"
-            data-testid="testing-panel-footer-btn"
-          >
-            🧪 Testing Panel
-          </button>
-          <p className="text-xl text-gray-600">
-            A comprehensive, step-by-step path to financial mastery
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Feature 1 */}
           <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100 hover:shadow-xl transition-all">
             <div className="w-16 h-16 bg-gradient-to-br from-navy-700 to-navy-900 rounded-2xl flex items-center justify-center mb-6 mx-auto">
