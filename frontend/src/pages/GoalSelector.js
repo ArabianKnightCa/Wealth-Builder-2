@@ -65,7 +65,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
         {showError && (
           <div className="mb-4 p-3 bg-red-100 border-l-4 border-red-500 rounded">
             <p className="text-red-700 font-semibold">
-              ⚠️ Please select at least one goal before continuing
+              ⚠️ You must check at least one goal before continuing
             </p>
           </div>
         )}
