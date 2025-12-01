@@ -1,5 +1,5 @@
 """
-Adaptive Engine (AE) - Wealth Builder POC v1.0
+Adaptive Engine (AE) - Mizo Wealth Builder POC v1.0
 MRI Adaptive Map v1.3 Implementation
 
 Purpose: Analyzes PPI responses and generates personalized LPI learning pathways
