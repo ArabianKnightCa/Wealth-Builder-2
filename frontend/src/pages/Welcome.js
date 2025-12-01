@@ -265,7 +265,7 @@ function Welcome() {
           >
             🧪 Testing Panel
           </button>
-          <p className="text-gray-500 text-sm">© 2025 Wealth Builder. All rights reserved.</p>
+          <p className="text-gray-500 text-sm">© 2025 Mizo Wealth Builder. All rights reserved.</p>
         </div>
       </div>
     </div>
