@@ -196,7 +196,7 @@ async def generate_user_code(user_type: str, cohort: str, created_at: datetime) 
 
 @api_router.get("/")
 async def root():
-    return {"message": "Wealth Builder API", "version": "3.0"}
+    return {"message": "Mizo Wealth Builder API", "version": "3.0"}
 
 @api_router.get("/content/ppi")
 async def get_ppi_questions():
