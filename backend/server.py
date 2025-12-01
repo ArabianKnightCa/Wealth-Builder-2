@@ -292,7 +292,9 @@ async def register(user_data: UserCreate):
         school_state=user_data.school_state,
         school_verified=False if user_data.school_name else True,
         age_verified=True,
-        account_status=account_status
+        account_status=account_status,
+        financial_goals=user_data.financial_goals or [],
+        custom_goals=user_data.custom_goals or []
     )
     
     user_dict = user.model_dump()
