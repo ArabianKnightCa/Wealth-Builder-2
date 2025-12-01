@@ -56,7 +56,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
         <div className="mb-4 p-3 bg-gold bg-opacity-10 border-l-4 border-gold rounded">
           <p className="text-navy-900 font-semibold">
             {selectedGoals.length === 0 
-              ? "Please select at least one goal to continue" 
+              ? "Check all that applies, but must check at least one" 
               : `${selectedGoals.length} goal${selectedGoals.length !== 1 ? 's' : ''} selected`}
           </p>
         </div>
