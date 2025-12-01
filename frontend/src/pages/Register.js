@@ -508,6 +508,13 @@ function Register({ onLogin }) {
     );
   }
 
+  // Auto-submit when reaching page 4
+  React.useEffect(() => {
+    if (currentPage === 4 && !loading) {
+      handlePage2Next();
+    }
+  }, [currentPage]);
+
   // PAGE 3: Goal Selection
   if (currentPage === 3) {
     return (
@@ -520,15 +527,13 @@ function Register({ onLogin }) {
     );
   }
 
-  // PAGE 4: Submit (auto-submits once)
+  // PAGE 4: Submitting
   if (currentPage === 4) {
-    React.useEffect(() => {
-      handlePage2Next();
-    }, []);
-    
     return (
       <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center">
-        <div className="text-white text-xl">Creating your account...</div>
+        <div className="text-white text-xl">
+          {loading ? 'Creating your account...' : 'Processing...'}
+        </div>
       </div>
     );
   }
