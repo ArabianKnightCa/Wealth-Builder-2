@@ -477,12 +477,11 @@ function Register({ onLogin }) {
                 </button>
                 <button 
                   type="button"
-                  onClick={handlePage2Next}
+                  onClick={() => setCurrentPage(3)}
                   className="btn-primary flex-1" 
-                  disabled={loading}
-                  data-testid="create-account-btn"
+                  data-testid="continue-to-goals-btn"
                 >
-                  {loading ? 'Creating Account...' : 'Create Account'}
+                  Continue to Goals
                 </button>
               </div>
             </div>
