@@ -123,7 +123,7 @@ export const FINANCIAL_GOALS_CONFIG = {
     },
     {
       id: "real_talk",
-      label: ""Real Talk" Personal Goals",
+      label: "\"Real Talk\" Personal Goals",
       goals: [
         { id: "real_talk_mistakes", label: "Stop repeating the same financial mistakes" },
         { id: "real_talk_cycle", label: "Break the cycle I grew up with" },
