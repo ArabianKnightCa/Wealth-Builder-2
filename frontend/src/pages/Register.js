@@ -134,7 +134,6 @@ function Register({ onLogin }) {
   };
 
   const handlePage2Next = async () => {
-    console.log('handlePage2Next called with formData:', formData);
     setError('');
     
     if (!formData.date_of_birth) {
@@ -157,7 +156,6 @@ function Register({ onLogin }) {
       return;
     }
     
-    console.log('Starting registration with goals:', formData.financial_goals);
     setLoading(true);
     try {
       const { confirmPassword, ...submitData } = formData;
