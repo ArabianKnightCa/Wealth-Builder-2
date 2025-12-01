@@ -1010,7 +1010,7 @@ LPI_CHAPTERS = [
 
 # Answer key for LPI quizzes
 LPI_ANSWER_KEY = {
-    "CH01_Q01": "B", "CH01_Q02": "A", "CH01_Q03": "B", "CH01_Q04": "B", "CH01_Q05": "B",
+    "CH01_Q01": "C", "CH01_Q02": "B", "CH01_Q03": "C", "CH01_Q04": "B",
     "CH02_Q01": "B", "CH02_Q02": "B", "CH02_Q03": "B", "CH02_Q04": "B", "CH02_Q05": "C",
     "CH03_Q01": "B", "CH03_Q02": "B", "CH03_Q03": "B", "CH03_Q04": "C", "CH03_Q05": "B",
     "CH04_Q01": "B", "CH04_Q02": "B", "CH04_Q03": "D", "CH04_Q04": "A", "CH04_Q05": "C",
