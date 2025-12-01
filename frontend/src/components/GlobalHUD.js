@@ -103,7 +103,7 @@ function GlobalHUD({ user, token, onLogout }) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={() => setShowFeedback(false)}>
           <div className="bg-white rounded-lg p-6 max-w-md w-full m-4" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-2xl font-bold text-navy-900 mb-4">Share Your Feedback</h2>
-            <p className="text-gray-600 mb-4">Help us improve Wealth Builder! Share your thoughts, suggestions, or report issues.</p>
+            <p className="text-gray-600 mb-4">Help us improve Mizo Wealth Builder! Share your thoughts, suggestions, or report issues.</p>
             
             <textarea
               value={feedback}
