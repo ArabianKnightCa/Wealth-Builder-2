@@ -514,10 +514,19 @@ function Register({ onLogin }) {
       <GoalSelector
         selectedGoals={formData.financial_goals}
         onGoalsChange={(goals) => setFormData({ ...formData, financial_goals: goals })}
-        onNext={handlePage2Next}
+        onNext={() => setCurrentPage(4)}
         onBack={() => setCurrentPage(2)}
-        loading={loading}
       />
+    );
+  }
+
+  // PAGE 4: Submit (hidden page - auto-submits)
+  if (currentPage === 4) {
+    handlePage2Next();
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center">
+        <div className="text-white text-xl">Creating your account...</div>
+      </div>
     );
   }
 
