@@ -262,7 +262,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH01_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "Select the best practice mentioned and explain why it fits your situation.",
                 "options": {
                     "A": "Focus solely on acquiring high-demand skills, as this guarantees high income.",
                     "B": "Prioritize saving large sums of money immediately, even if it means sacrificing basic needs.",
