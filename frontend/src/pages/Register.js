@@ -508,33 +508,16 @@ function Register({ onLogin }) {
     );
   }
 
-  // Auto-submit when reaching page 4
-  React.useEffect(() => {
-    if (currentPage === 4 && !loading) {
-      handlePage2Next();
-    }
-  }, [currentPage]);
-
   // PAGE 3: Goal Selection
   if (currentPage === 3) {
     return (
       <GoalSelector
         selectedGoals={formData.financial_goals}
         onGoalsChange={(goals) => setFormData({ ...formData, financial_goals: goals })}
-        onNext={() => setCurrentPage(4)}
+        onNext={handlePage2Next}
         onBack={() => setCurrentPage(2)}
+        loading={loading}
       />
-    );
-  }
-
-  // PAGE 4: Submitting
-  if (currentPage === 4) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center">
-        <div className="text-white text-xl">
-          {loading ? 'Creating your account...' : 'Processing...'}
-        </div>
-      </div>
     );
   }
 
