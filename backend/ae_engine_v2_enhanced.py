@@ -1,5 +1,5 @@
 """
-Adaptive Engine v2.1 - Enhanced - Wealth Builder POC
+Adaptive Engine v2.1 - Enhanced - Mizo Wealth Builder POC
 Improved accuracy with question-specific analysis and user context
 
 Enhancements:
