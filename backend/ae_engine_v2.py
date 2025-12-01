@@ -1,5 +1,5 @@
 """
-Adaptive Engine v2.0 - Wealth Builder POC
+Adaptive Engine v2.0 - Mizo Wealth Builder POC
 Implements Contract v1.1-stable
 
 Functions:
