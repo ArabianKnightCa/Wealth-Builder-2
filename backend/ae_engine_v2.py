@@ -16,7 +16,7 @@ from pathlib import Path
 
 class AdaptiveEngineV2:
     """
-    Wealth Builder Adaptive Engine V2
+    Mizo Wealth Builder Adaptive Engine V2
     Implements stable contract v1.1.1
     """
     
