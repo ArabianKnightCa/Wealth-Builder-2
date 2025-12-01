@@ -54,6 +54,8 @@ class UserCreate(BaseModel):
     school_city: Optional[str] = None
     school_state: Optional[str] = None
     parent_email: Optional[EmailStr] = None  # For minors
+    financial_goals: Optional[List[str]] = []  # Array of goal IDs
+    custom_goals: Optional[List[str]] = []  # Array of custom goal texts
 
 class UserLogin(BaseModel):
     email: EmailStr
