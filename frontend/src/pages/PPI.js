@@ -182,7 +182,7 @@ function PPI({ token }) {
               {currentIndex + 1} / {questions.length}
             </span>
           </div>
-          <h2 className="text-white text-2xl font-bold text-center mb-4" data-testid="ppi-title">Wealth Builder - Personality Profile Questionnaire</h2>
+          <h2 className="text-white text-2xl font-bold text-center mb-4" data-testid="ppi-title">Mizo Wealth Builder - Personality Profile Questionnaire</h2>
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${progress}%` }} data-testid="progress-bar"></div>
           </div>
