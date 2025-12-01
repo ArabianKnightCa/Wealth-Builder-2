@@ -520,9 +520,12 @@ function Register({ onLogin }) {
     );
   }
 
-  // PAGE 4: Submit (hidden page - auto-submits)
+  // PAGE 4: Submit (auto-submits once)
   if (currentPage === 4) {
-    handlePage2Next();
+    React.useEffect(() => {
+      handlePage2Next();
+    }, []);
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center">
         <div className="text-white text-xl">Creating your account...</div>
