@@ -47,7 +47,7 @@ function GlobalHUD({ user, token, onLogout }) {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <h1 className="text-xl font-bold text-gold cursor-pointer" onClick={() => navigate('/dashboard')}>
-              Wealth Builder
+              Mizo Wealth Builder
             </h1>
             <span className="text-sm text-gray-300">
               Welcome, {user.first_name}!
