@@ -514,6 +514,7 @@ function Register({ onLogin }) {
         onGoalsChange={(goals) => setFormData({ ...formData, financial_goals: goals })}
         onNext={handlePage2Next}
         onBack={() => setCurrentPage(2)}
+        loading={loading}
       />
     );
   }
