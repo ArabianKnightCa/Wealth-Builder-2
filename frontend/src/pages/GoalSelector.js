@@ -55,6 +55,14 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
           </p>
         </div>
 
+        {/* Backend Error Message */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded" data-testid="error-message">
+            <p className="font-semibold">⚠️ Registration Error</p>
+            <p className="text-sm mt-1">{error}</p>
+          </div>
+        )}
+
         {/* Selection Counter */}
         <div className="mb-4 p-3 bg-gold bg-opacity-10 border-l-4 border-gold rounded">
           <p className="text-navy-900 font-semibold">
