@@ -183,14 +183,16 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack }) {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between pt-4 border-t border-gray-200">
-          <button
+        <div className="flex gap-4 pt-4 border-t border-gray-200">
+          <button 
+            type="button"
             onClick={onBack}
-            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+            className="px-6 py-3 bg-white border-2 border-gold text-navy-900 rounded-lg font-semibold hover:bg-gold hover:border-gold transition-all"
+            data-testid="back-btn"
           >
             ← Back
           </button>
-          <button
+          <button 
             type="button"
             onClick={handleNext}
             className="btn-primary flex-1"
