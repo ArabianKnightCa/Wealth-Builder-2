@@ -271,14 +271,23 @@ class QuizValidator:
         mismatches = len(report['mismatches'])
         missing_key = len(report['missing_in_key'])
         missing_quiz = len(report['missing_in_quiz'])
+        correctness_issues = len(report['correctness_issues'])
         
-        if mismatches == 0 and missing_key == 0 and missing_quiz == 0:
+        # Count critical correctness issues
+        critical_issues = sum(
+            1 for item in report['correctness_issues']
+            for issue in item['issues']
+            if issue['type'] == 'CRITICAL'
+        )
+        
+        if mismatches == 0 and missing_key == 0 and missing_quiz == 0 and critical_issues == 0:
             logger.info(f"✅ VALIDATION PASSED: All {total} questions validated successfully")
             report['status'] = "PASS"
         else:
             logger.error(
                 f"❌ VALIDATION FAILED: {mismatches} mismatches, "
-                f"{missing_key} missing in key, {missing_quiz} orphaned in key"
+                f"{missing_key} missing in key, {missing_quiz} orphaned in key, "
+                f"{critical_issues} critical correctness issues"
             )
             report['status'] = "FAIL"
         
@@ -288,6 +297,8 @@ class QuizValidator:
             "mismatches_found": mismatches,
             "missing_in_key": missing_key,
             "orphaned_in_key": missing_quiz,
+            "correctness_issues": correctness_issues,
+            "critical_issues": critical_issues,
             "pass_rate": f"{(validated/total*100):.1f}%" if total > 0 else "0%"
         }
     
