@@ -278,11 +278,11 @@ LPI_CHAPTERS = [
                 "options": {
                     "A": "Wait until you have $1000 saved before starting any saving habit",
                     "B": "Set up an automatic transfer of even $1-5 right after your next payday",
-                    "C": "I will try to exchange goods and services directly with neighbors without using money.",
-                    "D": "I will focus on understanding the history of different currencies."
+                    "C": "Research the history of money and banking systems for at least 3 hours",
+                    "D": "Identify one skill you have and think about a problem you could solve with it"
                 },
                 "correct": "B",
-                "rationale": "This question asks for a personal reflection based on the chapter's content. Lesson 1.3 emphasizes increasing usefulness by solving problems. Offering to help solve a problem for someone directly applies this principle in a practical, small-scale way, aligning with the chapter's takeaway about becoming more useful. Options A and D are too academic and not directly actionable. Option C is a return to bartering, which the chapter explains is inefficient."
+                "rationale": "The chapter emphasizes starting small and automating savings. Setting up even a tiny automatic transfer ($1-5) right after payday is the most practical, immediate action. Option A delays action unnecessarily. Option C is academic, not actionable. Option D is good but less specific than B's concrete automated action."
             }
         ]
     },
