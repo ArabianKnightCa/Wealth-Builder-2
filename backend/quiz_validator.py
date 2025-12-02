@@ -154,6 +154,115 @@ class QuizValidator:
                     "warning": "Answer key entry has no corresponding quiz question"
                 })
     
+    def _validate_correctness(self):
+        """
+        Feature 2: Correctness Validation
+        Validates logical correctness of quiz questions
+        """
+        for chapter in self.chapters:
+            chapter_id = chapter.get('id')
+            quiz = chapter.get('quiz', [])
+            
+            for question in quiz:
+                q_id = question.get('id')
+                correct = question.get('correct')
+                text = question.get('text', '')
+                options = question.get('options', {})
+                rationale = question.get('rationale', '')
+                
+                # Skip if missing critical data
+                if not q_id or not correct or not options:
+                    continue
+                
+                issues = []
+                
+                # Check 1: Correct answer exists in options
+                if correct not in options:
+                    issues.append({
+                        "type": "CRITICAL",
+                        "check": "correct_option_exists",
+                        "message": f"Correct answer '{correct}' not found in options: {list(options.keys())}",
+                        "requires_human_review": True
+                    })
+                
+                # Check 2: All options (A, B, C, D) present
+                expected_options = ['A', 'B', 'C', 'D']
+                missing_options = [opt for opt in expected_options if opt not in options]
+                if missing_options:
+                    issues.append({
+                        "type": "WARNING",
+                        "check": "complete_options",
+                        "message": f"Missing options: {missing_options}",
+                        "requires_human_review": False
+                    })
+                
+                # Check 3: No empty or suspiciously short options
+                for opt_key, opt_value in options.items():
+                    if not opt_value or len(opt_value.strip()) < 2:
+                        issues.append({
+                            "type": "WARNING",
+                            "check": "empty_option",
+                            "message": f"Option {opt_key} is empty or too short: '{opt_value}'",
+                            "requires_human_review": True
+                        })
+                
+                # Check 4: Duplicate options (semantic similarity)
+                option_values = [v.strip().lower() for v in options.values()]
+                if len(option_values) != len(set(option_values)):
+                    duplicates = [v for v in option_values if option_values.count(v) > 1]
+                    issues.append({
+                        "type": "WARNING",
+                        "check": "duplicate_options",
+                        "message": f"Duplicate or very similar options detected: {set(duplicates)}",
+                        "requires_human_review": True
+                    })
+                
+                # Check 5: Question text has content
+                if not text or len(text.strip()) < 10:
+                    issues.append({
+                        "type": "CRITICAL",
+                        "check": "question_text",
+                        "message": "Question text is missing or too short",
+                        "requires_human_review": True
+                    })
+                
+                # Check 6: Rationale exists for incorrect answers
+                if not rationale or len(rationale.strip()) < 10:
+                    issues.append({
+                        "type": "INFO",
+                        "check": "rationale_missing",
+                        "message": "No rationale provided for incorrect answers",
+                        "requires_human_review": False
+                    })
+                
+                # Check 7: Logic-based patterns (basic)
+                # Check if question contains "NOT" or "EXCEPT" but answer seems positive
+                if any(word in text.upper() for word in ['NOT', 'EXCEPT', 'NEVER', 'NONE']):
+                    issues.append({
+                        "type": "INFO",
+                        "check": "negative_question",
+                        "message": "Question contains negation (NOT/EXCEPT) - verify correct answer logic",
+                        "requires_human_review": True
+                    })
+                
+                # Check 8: Math question validation
+                if any(symbol in text for symbol in ['+', '-', '×', '÷', '=', '%', '$']):
+                    issues.append({
+                        "type": "INFO",
+                        "check": "math_question",
+                        "message": "Question appears to contain math - verify numerical correctness",
+                        "requires_human_review": True
+                    })
+                
+                # Record issues if any found
+                if issues:
+                    self.validation_report['correctness_issues'].append({
+                        "question_id": q_id,
+                        "chapter_id": chapter_id,
+                        "issues": issues,
+                        "question_text": text[:100] + "..." if len(text) > 100 else text
+                    })
+    
     def _generate_summary(self):
         """Generate human-readable summary"""
         report = self.validation_report
