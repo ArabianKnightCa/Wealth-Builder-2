@@ -36,12 +36,13 @@ class QuizValidator:
             "correctness_issues": []  # Feature 2: Correctness validation
         }
     
-    def validate_all(self, auto_correct: bool = False) -> Dict:
+    def validate_all(self, auto_correct: bool = False, check_correctness: bool = True) -> Dict:
         """
         Validates all quiz answers against answer key
         
         Args:
             auto_correct: If True, updates answer_key to match quiz.correct
+            check_correctness: If True, runs Feature 2 correctness validation
         
         Returns:
             Validation report with all findings
@@ -56,6 +57,11 @@ class QuizValidator:
         
         # Check for missing entries
         self._check_missing_entries(quiz_answers)
+        
+        # Feature 2: Correctness Validation
+        if check_correctness:
+            logger.info("🔍 Running correctness validation (Feature 2)...")
+            self._validate_correctness()
         
         # Generate summary
         self._generate_summary()
