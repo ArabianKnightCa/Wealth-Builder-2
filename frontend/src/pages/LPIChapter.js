@@ -351,62 +351,67 @@ function LPIChapter({ token }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-end">
-              {quizResult.passed ? (
-                <>
-                  {quizResult.next_chapter && (
-                    <button
-                      onClick={handleContinue}
-                      className="btn-primary"
-                      data-testid="continue-btn"
-                    >
-                      Continue to Next Chapter →
-                    </button>
-                  )}
-                  {!quizResult.next_chapter && (
-                    <button
-                      onClick={handleContinue}
-                      className="btn-primary"
-                      data-testid="complete-btn"
-                    >
-                      Complete Journey 🎉
-                    </button>
-                  )}
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => { 
-                      setCurrentView('lesson'); 
-                      setCurrentLessonIndex(0);
-                      setQuizResult(null); 
-                      setQuizAnswers({}); 
-                    }}
-                    className="btn-secondary"
-                    data-testid="review-lessons-btn"
-                  >
-                    ← Review Lessons
-                  </button>
-                  <button
-                    onClick={() => {
-                      setQuizResult(null);
-                      setQuizAnswers({});
-                      setCurrentView('quiz');
-                    }}
-                    className="btn-primary"
-                    data-testid="retake-quiz-btn"
-                  >
-                    Retake Quiz
-                  </button>
-                </>
-              )}
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+              {/* Left: Back to Dashboard */}
               <button
                 onClick={handleBackToDashboard}
-                className="bg-navy-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-800 transition-all"
+                className="bg-navy-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-800 transition-all order-first"
                 data-testid="back-dashboard-btn"
               >
                 Back to Dashboard
               </button>
+
+              {/* Right: Continue/Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                {quizResult.passed ? (
+                  <>
+                    {quizResult.next_chapter && (
+                      <button
+                        onClick={handleContinue}
+                        className="btn-primary"
+                        data-testid="continue-btn"
+                      >
+                        Continue to Next Chapter →
+                      </button>
+                    )}
+                    {!quizResult.next_chapter && (
+                      <button
+                        onClick={handleContinue}
+                        className="btn-primary"
+                        data-testid="complete-btn"
+                      >
+                        Complete Journey 🎉
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => { 
+                        setCurrentView('lesson'); 
+                        setCurrentLessonIndex(0);
+                        setQuizResult(null); 
+                        setQuizAnswers({}); 
+                      }}
+                      className="btn-secondary"
+                      data-testid="review-lessons-btn"
+                    >
+                      ← Review Lessons
+                    </button>
+                    <button
+                      onClick={() => {
+                        setQuizResult(null);
+                        setQuizAnswers({});
+                        setCurrentView('quiz');
+                      }}
+                      className="btn-primary"
+                      data-testid="retake-quiz-btn"
+                    >
+                      Retake Quiz
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
