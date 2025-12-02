@@ -238,46 +238,46 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH01_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "Why does money work better than bartering for everyday transactions?",
                 "options": {
-                    "A": "Money is primarily about government printing currency.",
-                    "B": "Money is a universal concept with a single definition worldwide.",
-                    "C": "Money is a social construct based on trust and facilitates exchange by solving timing issues, with its creation linked to economic activity and earning differences driven by value and skill.",
-                    "D": "The most important aspect of money is its physical form, like cash."
+                    "A": "Money is printed by the government, so it's more official",
+                    "B": "Money is shiny and physical, making it easier to carry",
+                    "C": "Money solves the 'timing problem' - you don't need to find someone who wants exactly what you have right now",
+                    "D": "Money is the same everywhere in the world"
                 },
                 "correct": "C",
-                "rationale": "This option accurately captures the core concepts discussed: money as a social agreement (trust), its role in solving the timing problem of bartering, its creation through economic activity (value and exchange), and the factors influencing earning differences (skill, problem-solving). Options A, B, and D are incomplete or inaccurate simplifications of the chapter's content."
+                "rationale": "Money solves the fundamental timing problem of bartering. With bartering, you need to find someone who wants what you have AND has what you want at the exact same time. Money acts as a bridge that stores value until you're ready to use it, making exchange much more flexible and practical."
             },
             {
                 "id": "CH01_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "Your friend says 'Rich people are just lucky.' Based on this chapter, what's the most accurate response?",
                 "options": {
-                    "A": "A person buys a new car with a loan, which is the only way money enters the economy.",
-                    "B": "A farmer trades crops directly with a baker for bread, demonstrating the limitations of bartering.",
-                    "C": "A government prints more money to solve inflation issues, showing that governments control all money creation.",
-                    "D": "A student uses a gift card to buy books, illustrating how money is a store of value until ready for use."
+                    "A": "You're right - wealth is entirely about luck and being born into the right family",
+                    "B": "Actually, people earn more when they solve bigger problems or develop skills that create more value for others",
+                    "C": "Money comes from government printing, so it's really about political connections",
+                    "D": "The only way to earn more is to work longer hours at any job"
                 },
                 "correct": "B",
-                "rationale": "The chapter explains that bartering, like trading crops for bread, only works when both parties have immediate mutual needs. This highlights the 'timing problem' that money solves, a key concept from Lesson 1.1. Option A is incorrect because money enters the economy through various means, not just car loans. Option C is an oversimplification of government's role in money creation and doesn't address inflation accurately. Option D is a good example of money's function as a store of value, but the barter example in B directly illustrates the problem money solves."
+                "rationale": "The chapter explains that earning differences are driven by the value and impact of problems people solve. While luck and circumstances play a role, developing skills and solving higher-impact problems is the fundamental driver of earning potential. It's not just about time worked, but about the value created."
             },
             {
                 "id": "CH01_Q03",
-                "text": "Select the best practice mentioned and explain why it fits your situation.",
+                "text": "If you start saving just $1 per day, what's the MOST important concept that makes this worthwhile?",
                 "options": {
-                    "A": "Focus solely on acquiring high-demand skills, as this guarantees high income.",
-                    "B": "Prioritize saving large sums of money immediately, even if it means sacrificing basic needs.",
-                    "C": "Aim to create value and solve problems, as this is the fundamental driver of earning potential.",
-                    "D": "Rely on government handouts for financial stability."
+                    "A": "The physical act of putting cash in a jar",
+                    "B": "Compounding - earning interest on your savings plus the interest from previous periods",
+                    "C": "Having exactly $365 at the end of the year",
+                    "D": "Showing off your discipline to friends"
                 },
-                "correct": "C",
-                "rationale": "Lesson 1.3 explicitly states that earning more comes from becoming more useful by solving higher-impact problems. This option aligns with the idea that focusing on value creation and problem-solving is the most effective way to increase earning potential. Option A is too narrow; while skills matter, problem-solving is the broader concept. Option B is impractical and goes against the principle of balancing needs and wants discussed in budgeting later. Option D is not supported by the lesson content."
+                "correct": "B",
+                "rationale": "Compounding is 'growth on growth' - when you earn interest on your original savings PLUS the interest you've already earned. This makes even tiny amounts grow significantly over time. It's not just about the end sum, but about how your money can grow exponentially when given time."
             },
             {
                 "id": "CH01_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "What's one practical action you could take THIS WEEK to apply the 'value of saving early' concept?",
                 "options": {
-                    "A": "I will research how central banks manage monetary policy.",
-                    "B": "I will identify one problem I can help solve for someone else and offer my assistance.",
+                    "A": "Wait until you have $1000 saved before starting any saving habit",
+                    "B": "Set up an automatic transfer of even $1-5 right after your next payday",
                     "C": "I will try to exchange goods and services directly with neighbors without using money.",
                     "D": "I will focus on understanding the history of different currencies."
                 },
