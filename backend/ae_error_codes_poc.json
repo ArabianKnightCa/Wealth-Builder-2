@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.1.1",
+  "codes": {
+    "ERR-AE-101": "Compose PPI not executed — no adaptive PPI generated",
+    "ERR-AE-102": "Missing required onboarding fields (age/experience)",
+    "ERR-AE-201": "PostPPI answer map invalid or incomplete",
+    "ERR-AE-301": "LPI generation failure — ruleset missing",
+    "ERR-AE-900": "Unexpected exception — see server log id"
+  }
+}

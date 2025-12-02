@@ -1,0 +1,307 @@
+{
+  "schema_version": "1.1.1",
+  "ppi_bank_version": "POC-v1.1.1-baseline",
+  "note": "Baseline 20 PPI questions from content_data.py converted to bank format. All users get these 20 questions with age/experience filtering.",
+  "items": [
+    {
+      "id": "PPI_Q01",
+      "type": "mcq",
+      "prompt": "When making financial decisions, I prefer to:",
+      "options": [
+        "A Research extensively before deciding",
+        "B Go with my gut feeling",
+        "C Ask friends or family for advice",
+        "D Follow what experts recommend"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["base", "decision_style", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q02",
+      "type": "mcq",
+      "prompt": "My approach to saving money is:",
+      "options": [
+        "A Save a fixed amount each month",
+        "B Save whatever is left over",
+        "C Save only for specific goals",
+        "D I struggle to save consistently"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "savings", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q03",
+      "type": "mcq",
+      "prompt": "When I think about my financial future, I feel:",
+      "options": [
+        "A Excited and optimistic",
+        "B Anxious or worried",
+        "C Uncertain but hopeful",
+        "D Confident and prepared"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["motivation", "confidence", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q04",
+      "type": "mcq",
+      "prompt": "I track my spending:",
+      "options": [
+        "A Daily or weekly",
+        "B Monthly",
+        "C Rarely or never",
+        "D Only when I'm worried about money"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "tracking", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q05",
+      "type": "mcq",
+      "prompt": "My biggest financial priority right now is:",
+      "options": [
+        "A Building an emergency fund",
+        "B Paying off debt",
+        "C Saving for a specific goal",
+        "D Learning to budget better"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["goals", "motivation", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q06",
+      "type": "mcq",
+      "prompt": "When I receive unexpected money, I usually:",
+      "options": [
+        "A Save most or all of it",
+        "B Spend it on something I've wanted",
+        "C Split it between saving and spending",
+        "D Use it to pay bills or debt"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "impulse", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q07",
+      "type": "mcq",
+      "prompt": "I learn best through:",
+      "options": [
+        "A Reading and research",
+        "B Hands-on practice",
+        "C Watching videos or tutorials",
+        "D Discussion and conversation"
+      ],
+      "age_min": 8,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["base", "learning_style", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q08",
+      "type": "mcq",
+      "prompt": "My relationship with credit cards is:",
+      "options": [
+        "A I use them responsibly and pay in full",
+        "B I avoid them completely",
+        "C I sometimes carry a balance",
+        "D I struggle with credit card debt"
+      ],
+      "age_min": 16,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "risk_tolerance", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q09",
+      "type": "mcq",
+      "prompt": "When setting financial goals, I prefer:",
+      "options": [
+        "A Detailed plans with specific timelines",
+        "B General direction without strict deadlines",
+        "C Short-term goals I can achieve quickly",
+        "D Long-term vision with flexibility"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["goals", "planning", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q10",
+      "type": "mcq",
+      "prompt": "Financial stress affects me by:",
+      "options": [
+        "A Making me more motivated to improve",
+        "B Causing me to avoid thinking about money",
+        "C Impacting my sleep or mood significantly",
+        "D I don't experience much financial stress"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["motivation", "confidence", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q11",
+      "type": "mcq",
+      "prompt": "I would describe my spending habits as:",
+      "options": [
+        "A Very disciplined",
+        "B Mostly controlled with occasional splurges",
+        "C Impulsive at times",
+        "D Often reactive to emotions"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "impulse", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q12",
+      "type": "mcq",
+      "prompt": "My knowledge of investing is:",
+      "options": [
+        "A Strong – I actively invest",
+        "B Basic – I understand the concepts",
+        "C Limited – I'm just starting to learn",
+        "D None – It seems too complicated"
+      ],
+      "age_min": 16,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["confidence", "knowledge", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q13",
+      "type": "mcq",
+      "prompt": "When facing a financial setback, I:",
+      "options": [
+        "A Quickly adjust my plan and move forward",
+        "B Feel discouraged but eventually recover",
+        "C Need support from others to cope",
+        "D Find it very difficult to bounce back"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["confidence", "resilience", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q14",
+      "type": "mcq",
+      "prompt": "I prefer to make purchases:",
+      "options": [
+        "A After careful comparison shopping",
+        "B When I find a good deal",
+        "C When I need or want something",
+        "D Impulsively if it feels right"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "impulse", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q15",
+      "type": "mcq",
+      "prompt": "My comfort level with financial risk is:",
+      "options": [
+        "A High – I'm willing to take calculated risks",
+        "B Moderate – Some risk is okay",
+        "C Low – I prefer safety and stability",
+        "D Very low – I avoid risk completely"
+      ],
+      "age_min": 14,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["risk_tolerance", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q16",
+      "type": "mcq",
+      "prompt": "I talk about money with friends/family:",
+      "options": [
+        "A Openly and regularly",
+        "B Occasionally when relevant",
+        "C Rarely – it feels uncomfortable",
+        "D Never – it's too personal"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["confidence", "social", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q17",
+      "type": "mcq",
+      "prompt": "My biggest financial challenge is:",
+      "options": [
+        "A Not earning enough",
+        "B Controlling my spending",
+        "C Understanding financial concepts",
+        "D Staying motivated to save"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["motivation", "challenges", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q18",
+      "type": "mcq",
+      "prompt": "When planning my budget, I:",
+      "options": [
+        "A Use detailed spreadsheets or apps",
+        "B Keep a rough mental estimate",
+        "C Follow a simple system",
+        "D Don't really budget"
+      ],
+      "age_min": 12,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["habits", "planning", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q19",
+      "type": "mcq",
+      "prompt": "I would describe my financial personality as:",
+      "options": [
+        "A Planner and saver",
+        "B Balanced and practical",
+        "C Spontaneous spender",
+        "D Still figuring it out"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["base", "self_assessment", "beginner_safe", "intermediate_safe"]
+    },
+    {
+      "id": "PPI_Q20",
+      "type": "mcq",
+      "prompt": "My motivation for improving financial literacy is:",
+      "options": [
+        "A Achieving specific financial goals",
+        "B Reducing stress and anxiety",
+        "C Building long-term wealth",
+        "D Feeling more confident and in control"
+      ],
+      "age_min": 10,
+      "age_max": 99,
+      "experience_levels": ["beginner", "intermediate", "advanced"],
+      "tags": ["motivation", "goals", "beginner_safe", "intermediate_safe"]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "contract_version",
+    "triggers",
+    "functions"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "contract_version": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "object"
+    },
+    "triggers": {
+      "type": "object"
+    },
+    "functions": {
+      "type": "object"
+    },
+    "error_policy": {
+      "type": "object"
+    }
+  }
+}

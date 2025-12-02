@@ -1,15 +1,23 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, validator
+from typing import List, Optional, Dict, Any
+from datetime import datetime, timedelta, timezone
 import os
 import logging
-from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, validator
-from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
-
+import bcrypt
+import jwt
+import random
+import string
+from pathlib import Path
+from content_data import PPI_QUESTIONS, LPI_CHAPTERS, LPI_ANSWER_KEY
+from ae_engine import get_adaptive_engine
+from ae_engine_v2 import get_adaptive_engine_v2
+from quiz_validator import validate_quiz_integrity
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -19,256 +27,692 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+# JWT Configuration
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'your-secret-key-change-in-production-12345')
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
+
+# Create the main app
 app = FastAPI()
-
-# Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+security = HTTPBearer()
 
+# ===========================
+# Pydantic Models
+# ===========================
 
-# ========== Feature 1: Consistency Check Models ==========
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    first_name: str
+    date_of_birth: str
+    language: str = "en"
+    experience_level: int = Field(ge=1, le=5)
+    user_type: str = "POC"  # POC, B1, B2, B3, COMM
+    occupation: str  # Role selector
+    state: Optional[str] = None  # US state
+    school_name: Optional[str] = None
+    school_city: Optional[str] = None
+    school_state: Optional[str] = None
+    parent_email: Optional[EmailStr] = None  # For minors
+    financial_goals: Optional[List[str]] = []  # Array of goal IDs
+    custom_goals: Optional[List[str]] = []  # Array of custom goal texts
 
-class QuizOption(BaseModel):
-    option_id: str
-    text: str
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
 
-class QuizQuestion(BaseModel):
-    question_id: str
-    question_text: str
-    options: List[QuizOption]
-    correct_answer: str  # should match one of the option_ids
-
-class QuizContent(BaseModel):
+class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    title: str
-    description: Optional[str] = None
-    questions: List[QuizQuestion]
+    person_key: str  # PK-XXXXXXXX
+    user_code: str  # UID-ENV-COHORT-SEQ-TIMESTAMP
+    user_type: str  # POC, B1, B2, B3, COMM
+    cohort: str  # EDU or GEN
+    email: EmailStr
+    first_name: str
+    dob_month: int
+    dob_year: int
+    language: str = "en"
+    experience_level: int
+    occupation: str
+    state: Optional[str] = None
+    school_name: Optional[str] = None
+    school_city: Optional[str] = None
+    school_state: Optional[str] = None
+    school_verified: bool = False
+    age_verified: bool = True
+    account_status: str = "active"  # active, restricted
+    financial_goals: Optional[List[str]] = []  # Array of goal IDs
+    custom_goals: Optional[List[str]] = []  # Array of custom goal texts
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    created_by: str = "system"
-    status: str = "draft"
+    last_login: Optional[datetime] = None
 
-class QuizContentCreate(BaseModel):
-    title: str
-    description: Optional[str] = None
-    questions: List[QuizQuestion]
-    created_by: str = "system"
+class PPISubmit(BaseModel):
+    answers: List[Dict[str, str]]
 
-class ConsistencyError(BaseModel):
-    type: str  # "missing_field", "mismatched_options", "invalid_answer_key", "structural_error"
-    message: str
-    question_id: Optional[str] = None
-    details: Optional[Dict[str, Any]] = None
+class QuizSubmit(BaseModel):
+    chapter_id: str
+    answers: List[Dict[str, str]]
 
-class ConsistencyCheckResult(BaseModel):
-    quiz_id: str
-    is_valid: bool
-    errors: List[ConsistencyError]
-    warnings: List[ConsistencyError]
-    checked_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+class Progress(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    current_module: str
+    current_step: str
+    ppi_completed: bool = False
+    lpi_current_chapter: int = 1
+    autosaved_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class FeedbackSubmit(BaseModel):
+    context_page: str
+    feedback_text: str
 
-# ========== Feature 1: Consistency Check Logic ==========
+class SettingsUpdate(BaseModel):
+    language: Optional[str] = None
+    experience_level: Optional[int] = None
+    notifications_enabled: Optional[bool] = None
 
-def perform_consistency_check(quiz: QuizContent) -> ConsistencyCheckResult:
+# ===========================
+# Helper Functions
+# ===========================
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+        return user_id
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.JWTError:
+        raise HTTPException(status_code=401, detail="Could not validate credentials")
+
+def calculate_age(date_of_birth: str) -> int:
+    """Calculate age from date of birth string (YYYY-MM-DD)"""
+    try:
+        dob = datetime.strptime(date_of_birth, "%Y-%m-%d")
+        today = datetime.now()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        return age
+    except:
+        return 0
+
+def generate_person_key() -> str:
+    """Generate Person Key: PK-[A-Z0-9]{8}"""
+    chars = string.ascii_uppercase + string.digits
+    random_part = ''.join(random.choices(chars, k=8))
+    return f"PK-{random_part}"
+
+def generate_parent_key() -> str:
+    """Generate Parent Person Key: PPK-[A-Z0-9]{8}"""
+    chars = string.ascii_uppercase + string.digits
+    random_part = ''.join(random.choices(chars, k=8))
+    return f"PPK-{random_part}"
+
+def generate_link_token() -> str:
+    """Generate Family Link Token: FLK-[A-Z0-9]{6}"""
+    chars = string.ascii_uppercase + string.digits
+    random_part = ''.join(random.choices(chars, k=6))
+    return f"FLK-{random_part}"
+
+def determine_cohort(occupation: str) -> str:
+    """Determine cohort (EDU or GEN) based on occupation"""
+    edu_roles = [
+        "Middle / High School Student",
+        "College / University Student",
+        "Part-Time Worker / Student",
+        "Educator / Mentor / Advisor"
+    ]
+    return "EDU" if occupation in edu_roles else "GEN"
+
+async def generate_user_code(user_type: str, cohort: str, created_at: datetime) -> str:
+    """Generate UID: UID-[ENV]-[COHORT]-[SEQ]
+    Example: UID-POC-EDU-1
     """
-    Performs comprehensive consistency checks on quiz content:
-    1. Verifies JSON structure integrity
-    2. Ensures answer key alignment
-    3. Detects missing fields
-    4. Detects mismatched options
-    """
-    errors = []
-    warnings = []
+    # Count existing users of this type and cohort
+    count = await db.users.count_documents({"user_type": user_type, "cohort": cohort})
+    seq = count + 1
     
-    # Check if quiz has questions
-    if not quiz.questions or len(quiz.questions) == 0:
-        errors.append(ConsistencyError(
-            type="missing_field",
-            message="Quiz must contain at least one question",
-            details={"field": "questions"}
-        ))
-    
-    # Check each question
-    for idx, question in enumerate(quiz.questions):
-        q_num = idx + 1
-        
-        # Check question_id
-        if not question.question_id or question.question_id.strip() == "":
-            errors.append(ConsistencyError(
-                type="missing_field",
-                message=f"Question {q_num} is missing question_id",
-                question_id=question.question_id,
-                details={"question_number": q_num}
-            ))
-        
-        # Check question_text
-        if not question.question_text or question.question_text.strip() == "":
-            errors.append(ConsistencyError(
-                type="missing_field",
-                message=f"Question {q_num} is missing question_text",
-                question_id=question.question_id,
-                details={"question_number": q_num}
-            ))
-        
-        # Check options
-        if not question.options or len(question.options) < 2:
-            errors.append(ConsistencyError(
-                type="mismatched_options",
-                message=f"Question {q_num} must have at least 2 options",
-                question_id=question.question_id,
-                details={"question_number": q_num, "option_count": len(question.options) if question.options else 0}
-            ))
-        else:
-            # Check each option
-            option_ids = []
-            for opt_idx, option in enumerate(question.options):
-                if not option.option_id or option.option_id.strip() == "":
-                    errors.append(ConsistencyError(
-                        type="missing_field",
-                        message=f"Question {q_num}, Option {opt_idx + 1} is missing option_id",
-                        question_id=question.question_id,
-                        details={"question_number": q_num, "option_number": opt_idx + 1}
-                    ))
-                else:
-                    option_ids.append(option.option_id)
-                
-                if not option.text or option.text.strip() == "":
-                    errors.append(ConsistencyError(
-                        type="missing_field",
-                        message=f"Question {q_num}, Option {opt_idx + 1} is missing text",
-                        question_id=question.question_id,
-                        details={"question_number": q_num, "option_number": opt_idx + 1}
-                    ))
-            
-            # Check for duplicate option_ids
-            if len(option_ids) != len(set(option_ids)):
-                errors.append(ConsistencyError(
-                    type="mismatched_options",
-                    message=f"Question {q_num} has duplicate option_ids",
-                    question_id=question.question_id,
-                    details={"question_number": q_num}
-                ))
-            
-            # Check correct_answer alignment
-            if not question.correct_answer or question.correct_answer.strip() == "":
-                errors.append(ConsistencyError(
-                    type="invalid_answer_key",
-                    message=f"Question {q_num} is missing correct_answer",
-                    question_id=question.question_id,
-                    details={"question_number": q_num}
-                ))
-            elif question.correct_answer not in option_ids:
-                errors.append(ConsistencyError(
-                    type="invalid_answer_key",
-                    message=f"Question {q_num} has invalid correct_answer '{question.correct_answer}' - must match one of the option_ids",
-                    question_id=question.question_id,
-                    details={
-                        "question_number": q_num,
-                        "correct_answer": question.correct_answer,
-                        "available_options": option_ids
-                    }
-                ))
-    
-    # Check for duplicate question_ids
-    question_ids = [q.question_id for q in quiz.questions if q.question_id]
-    if len(question_ids) != len(set(question_ids)):
-        errors.append(ConsistencyError(
-            type="structural_error",
-            message="Quiz contains duplicate question_ids",
-            details={"question_ids": question_ids}
-        ))
-    
-    is_valid = len(errors) == 0
-    
-    return ConsistencyCheckResult(
-        quiz_id=quiz.id,
-        is_valid=is_valid,
-        errors=errors,
-        warnings=warnings
-    )
+    return f"UID-{user_type}-{cohort}-{seq}"
 
-
-# ========== Feature 1: API Endpoints ==========
+# ===========================
+# API Endpoints
+# ===========================
 
 @api_router.get("/")
 async def root():
-    return {"message": "Commercial Quiz Management System API"}
+    return {"message": "Mizo Wealth Builder API", "version": "3.0"}
 
-@api_router.post("/quizzes", response_model=QuizContent)
-async def create_quiz(quiz_input: QuizContentCreate):
-    """Create a new quiz"""
-    quiz_dict = quiz_input.model_dump()
-    quiz_obj = QuizContent(**quiz_dict)
-    
-    # Convert to dict and serialize datetime
-    doc = quiz_obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    
-    await db.quizzes.insert_one(doc)
-    return quiz_obj
+@api_router.get("/content/ppi")
+async def get_ppi_questions():
+    """Legacy endpoint - returns static 20 questions"""
+    return {"questions": PPI_QUESTIONS}
 
-@api_router.get("/quizzes", response_model=List[QuizContent])
-async def get_all_quizzes():
-    """Get all quizzes"""
-    quizzes = await db.quizzes.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for quiz in quizzes:
-        if isinstance(quiz['created_at'], str):
-            quiz['created_at'] = datetime.fromisoformat(quiz['created_at'])
-    
-    return quizzes
-
-@api_router.get("/quizzes/{quiz_id}", response_model=QuizContent)
-async def get_quiz(quiz_id: str):
-    """Get a specific quiz by ID"""
-    quiz = await db.quizzes.find_one({"id": quiz_id}, {"_id": 0})
-    if not quiz:
-        raise HTTPException(status_code=404, detail="Quiz not found")
-    
-    if isinstance(quiz['created_at'], str):
-        quiz['created_at'] = datetime.fromisoformat(quiz['created_at'])
-    
-    return quiz
-
-@api_router.post("/quizzes/{quiz_id}/check-consistency", response_model=ConsistencyCheckResult)
-async def check_quiz_consistency(quiz_id: str):
+@api_router.get("/content/ppi/personalized")
+async def get_personalized_ppi(user_id: str = Depends(get_current_user)):
     """
-    Feature 1: Consistency Check
-    Verifies JSON structure integrity, answer key alignment, missing fields, and mismatched options
+    AE_FN_COMPOSE_PPI - Trigger: MCC_EVT_ONBOARDING_COMPLETE
+    Returns personalized 20 PPI questions based on user profile
     """
-    # Fetch the quiz
-    quiz_doc = await db.quizzes.find_one({"id": quiz_id}, {"_id": 0})
-    if not quiz_doc:
-        raise HTTPException(status_code=404, detail="Quiz not found")
+    # Get user data
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     
-    # Convert to QuizContent object
-    if isinstance(quiz_doc['created_at'], str):
-        quiz_doc['created_at'] = datetime.fromisoformat(quiz_doc['created_at'])
+    # Calculate age
+    from datetime import date
+    today = date.today()
+    age = today.year - user['dob_year']
+    if today.month < user['dob_month']:
+        age -= 1
     
-    quiz = QuizContent(**quiz_doc)
+    # Get financial experience
+    financial_experience = user.get('experience_level', 'beginner')
+    if isinstance(financial_experience, int):
+        # Map numeric to string
+        exp_map = {1: 'beginner', 2: 'beginner', 3: 'intermediate', 4: 'advanced', 5: 'advanced'}
+        financial_experience = exp_map.get(financial_experience, 'beginner')
     
-    # Perform consistency check
-    result = perform_consistency_check(quiz)
+    # Call AE compose_ppi
+    ae_v2 = get_adaptive_engine_v2()
+    ppi_result = ae_v2.compose_ppi(
+        user_id=user_id,
+        age=age,
+        financial_experience=financial_experience,
+        occupation_bucket=user.get('occupation', None),
+        locale=user.get('language', 'en-US')
+    )
     
-    # Save the check result to audit trail
-    result_doc = result.model_dump()
-    result_doc['checked_at'] = result_doc['checked_at'].isoformat()
-    await db.consistency_checks.insert_one(result_doc)
-    
-    return result
+    return ppi_result
 
-@api_router.delete("/quizzes/{quiz_id}")
-async def delete_quiz(quiz_id: str):
-    """Delete a quiz"""
-    result = await db.quizzes.delete_one({"id": quiz_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Quiz not found")
-    return {"message": "Quiz deleted successfully"}
+@api_router.get("/content/lpi")
+async def get_lpi_chapters():
+    return {"chapters": LPI_CHAPTERS}
 
-# Include the router in the main app
+@api_router.post("/auth/register")
+async def register(user_data: UserCreate):
+    existing_user = await db.users.find_one({"email": user_data.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    age = calculate_age(user_data.date_of_birth)
+    if age < 8:
+        raise HTTPException(status_code=400, detail="User must be at least 8 years old")
+    
+    # Determine cohort from occupation
+    cohort = determine_cohort(user_data.occupation)
+    
+    # Check if minor (< 18)
+    is_minor = age < 18
+    account_status = "restricted" if (is_minor and not user_data.parent_email) else "active"
+    
+    # Generate keys and codes
+    person_key = generate_person_key()
+    created_at = datetime.now(timezone.utc)
+    user_code = await generate_user_code(user_data.user_type, cohort, created_at)
+    
+    # Extract DOB parts
+    dob = datetime.strptime(user_data.date_of_birth, "%Y-%m-%d")
+    
+    hashed_password = hash_password(user_data.password)
+    user = User(
+        email=user_data.email,
+        first_name=user_data.first_name,
+        dob_month=dob.month,
+        dob_year=dob.year,
+        language=user_data.language,
+        experience_level=user_data.experience_level,
+        person_key=person_key,
+        user_code=user_code,
+        user_type=user_data.user_type,
+        cohort=cohort,
+        occupation=user_data.occupation,
+        state=user_data.state,
+        school_name=user_data.school_name,
+        school_city=user_data.school_city,
+        school_state=user_data.school_state,
+        school_verified=False if user_data.school_name else True,
+        age_verified=True,
+        account_status=account_status,
+        financial_goals=user_data.financial_goals or [],
+        custom_goals=user_data.custom_goals or []
+    )
+    
+    user_dict = user.model_dump()
+    user_dict['password'] = hashed_password
+    user_dict['created_at'] = user_dict['created_at'].isoformat()
+    await db.users.insert_one(user_dict)
+    
+    # If minor with parent email, create parent and family link
+    if is_minor and user_data.parent_email:
+        # Check if parent already exists
+        parent = await db.parents.find_one({"emails": user_data.parent_email})
+        if not parent:
+            parent_key = generate_parent_key()
+            parent = {
+                "parent_key": parent_key,
+                "emails": [user_data.parent_email],
+                "phones": [],
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.parents.insert_one(parent)
+        else:
+            parent_key = parent['parent_key']
+        
+        # Create family link
+        link_token = generate_link_token()
+        family_link = {
+            "parent_key": parent_key,
+            "child_person_key": person_key,
+            "link_token": link_token,
+            "status": "pending",  # Will be 'active' after verification
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "revoked_at": None
+        }
+        await db.family_links.insert_one(family_link)
+        
+        # TODO: Send verification email to parent
+        # For now, we'll auto-activate for testing
+        await db.family_links.update_one(
+            {"link_token": link_token},
+            {"$set": {"status": "active"}}
+        )
+        await db.users.update_one(
+            {"person_key": person_key},
+            {"$set": {"account_status": "active"}}
+        )
+    
+    progress = Progress(user_id=user.id, current_module="ppi", current_step="start")
+    progress_dict = progress.model_dump()
+    progress_dict['autosaved_at'] = progress_dict['autosaved_at'].isoformat()
+    await db.progress.insert_one(progress_dict)
+    
+    access_token = create_access_token(
+        data={"sub": user.id},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    
+    return {"user": user.model_dump(), "access_token": access_token, "token_type": "bearer"}
+
+@api_router.post("/auth/login")
+async def login(login_data: UserLogin):
+    user = await db.users.find_one({"email": login_data.email})
+    if not user or not verify_password(login_data.password, user['password']):
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
+    
+    await db.users.update_one(
+        {"id": user['id']},
+        {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    access_token = create_access_token(
+        data={"sub": user['id']},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    
+    user_obj = User(**user)
+    return {"user": user_obj.model_dump(), "access_token": access_token, "token_type": "bearer"}
+
+@api_router.get("/auth/me")
+async def get_current_user_info(user_id: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@api_router.post("/ppi/submit")
+async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_user)):
+    """
+    AE_FN_GENERATE_PLAN - Trigger: PPI_EVT_SUBMITTED
+    Process PPI answers and generate Financial DNA + personalized LPI plan
+    """
+    # Save PPI answers
+    await db.ppi_answers.delete_many({"user_id": user_id})
+    
+    for answer in ppi_data.answers:
+        ppi_answer = {
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "question_id": answer['question_id'],
+            "selected_option": answer['selected_option'],
+            "answered_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.ppi_answers.insert_one(ppi_answer)
+    
+    # Call AE V2 generate_plan
+    ae_v2 = get_adaptive_engine_v2()
+    
+    # Convert answers to AE V2 format
+    answers_formatted = []
+    for answer in ppi_data.answers:
+        answers_formatted.append({
+            "id": answer['question_id'],  # "PPI_Q01"
+            "value": answer['selected_option']  # "A", "B", "C", or "D"
+        })
+    
+    # Generate plan
+    plan = ae_v2.generate_plan(user_id, answers_formatted)
+    
+    # Extract chapter order from plan
+    chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
+    
+    # Create learning_map for backward compatibility with old format
+    learning_map = {
+        "user_profile": plan['dna']['profile'],
+        "learning_style": plan['dna']['profile'],
+        "lesson_order": chapter_order,
+        "difficulty_weights": {},  # Can be populated if needed
+        "pacing": plan['dna']['weights']['tempo'],
+        "reinforcement_rate": 0.6,
+        "financial_dna": plan['dna'],
+        "lpi_plan": plan['lpi_plan'],
+        "generated_at": plan['generated_at'],
+        "ae_version": "v2.0"
+    }
+    
+    # Save learning map to user progress
+    await db.progress.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            "ppi_completed": True,
+            "current_module": "lpi",
+            "current_step": chapter_order[0],  # First chapter in personalized order
+            "learning_map": learning_map,  # Store entire AE output
+            "autosaved_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    
+    # Unlock first chapter in personalized learning path
+    first_chapter = chapter_order[0]
+    existing_lpi = await db.lpi_progress.find_one({"user_id": user_id, "chapter_id": first_chapter})
+    if not existing_lpi:
+        lpi_progress = {
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "chapter_id": first_chapter,
+            "lesson_completed": [],
+            "quiz_score": None,
+            "quiz_completed_at": None,
+            "unlocked_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.lpi_progress.insert_one(lpi_progress)
+    
+    return {
+        "message": "PPI submitted successfully",
+        "next_step": "lpi",
+        "financial_dna": plan['dna'],
+        "lpi_plan": plan['lpi_plan'],
+        "learning_map": learning_map,
+        "personalized_path": {
+            "profile": plan['dna']['profile'],
+            "first_chapter": first_chapter,
+            "tempo": plan['dna']['weights']['tempo'],
+            "discipline": plan['dna']['weights']['discipline'],
+            "confidence": plan['dna']['weights']['confidence']
+        }
+    }
+
+@api_router.get("/ppi/answers")
+async def get_ppi_answers(user_id: str = Depends(get_current_user)):
+    answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    return {"answers": answers}
+
+@api_router.delete("/auth/delete-account/{email}")
+async def delete_user_account(email: str):
+    """
+    Delete a user account and all associated data (for testing purposes)
+    """
+    try:
+        # Find user
+        user = await db.users.find_one({"email": email})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        user_id = user['id']
+        
+        # Delete from all collections
+        deleted_users = await db.users.delete_one({"email": email})
+        deleted_progress = await db.progress.delete_many({"user_id": user_id})
+        deleted_ppi = await db.ppi_answers.delete_many({"user_id": user_id})
+        deleted_lpi = await db.lpi_progress.delete_many({"user_id": user_id})
+        deleted_parents = await db.parents.delete_many({"child_email": email})
+        deleted_family = await db.family_links.delete_many({"child_user_id": user_id})
+        
+        return {
+            "message": f"Account {email} and all associated data deleted successfully",
+            "user_id": user_id,
+            "deleted": {
+                "users": deleted_users.deleted_count,
+                "progress": deleted_progress.deleted_count,
+                "ppi_answers": deleted_ppi.deleted_count,
+                "lpi_progress": deleted_lpi.deleted_count,
+                "parents": deleted_parents.deleted_count,
+                "family_links": deleted_family.deleted_count
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting account: {str(e)}")
+
+@api_router.post("/auth/delete-account")
+async def delete_user_account_post(data: dict):
+    """
+    POST version of delete account for easier testing
+    Expects: {"email": "user@example.com"}
+    """
+    email = data.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+    
+    return await delete_user_account(email)
+
+
+@api_router.post("/feedback")
+async def submit_feedback(data: dict):
+    """
+    Submit user feedback
+    """
+    try:
+        feedback_doc = {
+            "user_id": data.get("user_id"),
+            "user_email": data.get("user_email"),
+            "feedback": data.get("feedback"),
+            "submitted_at": data.get("submitted_at"),
+            "created_at": datetime.now(timezone.utc)
+        }
+        
+        await db.feedback.insert_one(feedback_doc)
+        return {"message": "Feedback submitted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error submitting feedback: {str(e)}")
+
+@api_router.post("/lpi/quiz/submit")
+async def submit_quiz(quiz_data: QuizSubmit, user_id: str = Depends(get_current_user)):
+    from content_data import LPI_ANSWER_KEY
+    chapter_id = quiz_data.chapter_id
+    
+    correct_count = 0
+    total_questions = len(quiz_data.answers)
+    
+    for answer in quiz_data.answers:
+        if LPI_ANSWER_KEY.get(answer['question_id']) == answer['selected_option']:
+            correct_count += 1
+    
+    score = (correct_count / total_questions) * 100 if total_questions > 0 else 0
+    passed = score >= 50
+    
+    await db.lpi_progress.update_one(
+        {"user_id": user_id, "chapter_id": chapter_id},
+        {"$set": {
+            "quiz_score": score,
+            "quiz_completed_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    next_chapter = None
+    if passed:
+        chapter_num = int(chapter_id.replace("CH", "").lstrip("0"))
+        if chapter_num < 10:
+            next_chapter = f"CH{str(chapter_num + 1).zfill(2)}"
+            existing = await db.lpi_progress.find_one({"user_id": user_id, "chapter_id": next_chapter})
+            if not existing:
+                lpi_progress = {
+                    "id": str(uuid.uuid4()),
+                    "user_id": user_id,
+                    "chapter_id": next_chapter,
+                    "lesson_completed": [],
+                    "quiz_score": None,
+                    "quiz_completed_at": None,
+                    "unlocked_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.lpi_progress.insert_one(lpi_progress)
+        
+        if chapter_num < 10:
+            await db.progress.update_one(
+                {"user_id": user_id},
+                {"$set": {"current_step": next_chapter}}
+            )
+        else:
+            await db.progress.update_one(
+                {"user_id": user_id},
+                {"$set": {"current_module": "completed", "current_step": "end"}}
+            )
+    
+    return {
+        "score": score,
+        "passed": passed,
+        "correct_count": correct_count,
+        "total_questions": total_questions,
+        "next_chapter": next_chapter
+    }
+
+@api_router.get("/lpi/progress")
+async def get_lpi_progress(user_id: str = Depends(get_current_user)):
+    progress = await db.lpi_progress.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    return {"progress": progress}
+
+@api_router.post("/lpi/lesson/complete")
+async def complete_lesson(data: dict, user_id: str = Depends(get_current_user)):
+    chapter_id = data.get('chapter_id')
+    lesson_id = data.get('lesson_id')
+    
+    await db.lpi_progress.update_one(
+        {"user_id": user_id, "chapter_id": chapter_id},
+        {"$addToSet": {"lesson_completed": lesson_id}}
+    )
+    
+    return {"message": "Lesson marked as complete"}
+
+@api_router.get("/progress")
+async def get_progress(user_id: str = Depends(get_current_user)):
+    progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
+    if not progress:
+        progress = Progress(user_id=user_id, current_module="ppi", current_step="start")
+        progress_dict = progress.model_dump()
+        progress_dict['autosaved_at'] = progress_dict['autosaved_at'].isoformat()
+        await db.progress.insert_one(progress_dict)
+        return progress_dict
+    return progress
+
+@api_router.post("/progress/update")
+async def update_progress(data: dict, user_id: str = Depends(get_current_user)):
+    await db.progress.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            **data,
+            "autosaved_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    return {"message": "Progress updated"}
+
+@api_router.post("/feedback")
+async def submit_feedback(feedback_data: FeedbackSubmit, user_id: str = Depends(get_current_user)):
+    feedback = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "context_page": feedback_data.context_page,
+        "feedback_text": feedback_data.feedback_text,
+        "submitted_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.feedback.insert_one(feedback)
+    return {"message": "Feedback submitted successfully"}
+
+@api_router.get("/settings")
+async def get_settings(user_id: str = Depends(get_current_user)):
+    settings = await db.settings.find_one({"user_id": user_id}, {"_id": 0})
+    if not settings:
+        user = await db.users.find_one({"id": user_id}, {"_id": 0})
+        settings = {
+            "user_id": user_id,
+            "language": user.get('language', 'en'),
+            "experience_level": user.get('experience_level', 3),
+            "notifications_enabled": True
+        }
+        await db.settings.insert_one(settings)
+    return settings
+
+@api_router.put("/settings")
+async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(get_current_user)):
+    update_data = {k: v for k, v in settings_data.model_dump().items() if v is not None}
+    
+    await db.settings.update_one(
+        {"user_id": user_id},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    if 'language' in update_data or 'experience_level' in update_data:
+        user_update = {}
+        if 'language' in update_data:
+            user_update['language'] = update_data['language']
+        if 'experience_level' in update_data:
+            user_update['experience_level'] = update_data['experience_level']
+        await db.users.update_one({"id": user_id}, {"$set": user_update})
+    
+    return {"message": "Settings updated successfully"}
+
+@api_router.post("/telemetry")
+async def log_telemetry(data: dict, user_id: str = Depends(get_current_user)):
+    telemetry = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "event_type": data.get('event_type'),
+        "event_data": data.get('event_data', {}),
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await db.telemetry.insert_one(telemetry)
+    return {"message": "Telemetry logged"}
+
+# Validate quiz integrity on startup
+print("\n🔍 Validating quiz answers...")
+validation_report, quiz_validator = validate_quiz_integrity(
+    LPI_CHAPTERS, 
+    LPI_ANSWER_KEY,
+    auto_correct=True,  # Auto-fix mismatches
+    fail_on_error=False  # Don't crash server, just warn
+)
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -279,7 +723,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
