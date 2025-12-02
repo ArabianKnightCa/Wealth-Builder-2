@@ -17,6 +17,42 @@ function AdminPanel({ onLogin }) {
 
   const MASTER_CODE = 'WEALTHBUILDER';
 
+  // Feature 1: Fetch quiz validation report
+  const fetchValidationReport = async () => {
+    setLoadingValidation(true);
+    try {
+      const response = await axios.get(`${API}/admin/quiz-validation-report`);
+      setValidationReport(response.data);
+    } catch (error) {
+      console.error('Error fetching validation report:', error);
+      setMessage('❌ Error loading validation report');
+    } finally {
+      setLoadingValidation(false);
+    }
+  };
+
+  // Feature 1: Run validation with auto-correct option
+  const runValidation = async (autoCorrect = false) => {
+    setLoadingValidation(true);
+    setMessage(autoCorrect ? 'Running validation with auto-correct...' : 'Running validation...');
+    try {
+      const response = await axios.post(`${API}/admin/quiz-validation-run?auto_correct=${autoCorrect}`);
+      setValidationReport(response.data.report);
+      setMessage(`✅ Validation completed! ${autoCorrect ? 'Auto-corrections applied.' : ''}`);
+    } catch (error) {
+      console.error('Error running validation:', error);
+      setMessage('❌ Error running validation');
+    } finally {
+      setLoadingValidation(false);
+    }
+  };
+
+  useEffect(() => {
+    if (unlocked && activeTab === 'quizzes' && !validationReport) {
+      fetchValidationReport();
+    }
+  }, [unlocked, activeTab]);
+
   const testProfiles = [
     {
       name: '9 Year Old Beginner (Curious)',
