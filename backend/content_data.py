@@ -638,7 +638,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH06_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "What are the main levers you can pull to increase your income?",
                 "options": {
                     "A": "The chapter teaches strategies for increasing income, focusing on improving skills, diversifying income sources, and using proof to negotiate better pay.",
                     "B": "To increase income, you must work 80 hours a week.",
@@ -650,7 +650,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH06_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "What does skill stacking mean and why is it powerful for earning more?",
                 "options": {
                     "A": "A graphic designer who also learned basic web development starts offering combined design and simple website creation services.",
                     "B": "An employee asks for a raise without any evidence of their accomplishments.",
@@ -662,7 +662,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH06_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "What is the smart way to approach side gigs according to this chapter?",
                 "options": {
                     "A": "Focus on mastering one highly specialized skill, as this is the only path to high income.",
                     "B": "Always say yes to every side gig offered, regardless of pay or time commitment.",
@@ -674,7 +674,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH06_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "You want a raise. What should you do BEFORE asking your boss?",
                 "options": {
                     "A": "I will avoid learning any new skills to maintain my current income.",
                     "B": "I will identify one skill that complements my current abilities and dedicate 30 minutes to learning more about it.",
@@ -718,7 +718,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH07_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "Why are systems more important than motivation for financial success?",
                 "options": {
                     "A": "Financial success is purely about having high motivation and willpower.",
                     "B": "The chapter emphasizes that building sustainable financial success relies on creating effective systems, aligning financial behaviors with a positive self-identity, deliberately managing lifestyle changes, and developing resilience to overcome setbacks.",
@@ -730,7 +730,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH07_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "What is lifestyle creep and why should you avoid it?",
                 "options": {
                     "A": "Someone who frequently misses bill payments because they don't have a system for tracking them.",
                     "B": "A person decides to automatically transfer 10% of every paycheck to savings and puts recurring bills on autopay.",
@@ -742,7 +742,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH07_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "How does your identity about money affect your financial decisions?",
                 "options": {
                     "A": "Rely solely on willpower and motivation to achieve financial goals.",
                     "B": "Adopt a positive money identity, build reliable systems for finances, plan for how to handle income increases deliberately, and have a clear process for resetting after setbacks.",
@@ -754,7 +754,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH07_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "You face a financial setback. What is the healthy way to cope according to this chapter?",
                 "options": {
                     "A": "I will stop tracking my spending and just hope for the best.",
                     "B": "I will identify one small financial habit I want to build and commit to doing it daily this week, no matter how I feel.",
@@ -798,7 +798,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH08_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "What makes a goal specific versus vague? Give an example of each.",
                 "options": {
                     "A": "The chapter explains that turning dreams into reality requires making goals specific, breaking them down into actionable steps, tracking progress, and celebrating completions to build confidence for future endeavors.",
                     "B": "Goals are best achieved through spontaneous bursts of effort.",
@@ -810,7 +810,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH08_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "You have a goal to save for college. How should you break it into steps?",
                 "options": {
                     "A": "A person wants to 'save money' but doesn't specify an amount or deadline.",
                     "B": "Someone wants to save $500 for a new laptop by October 1st, calculates they need to save $50 per week, and sets up an automatic transfer for that amount.",
@@ -822,7 +822,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH08_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "Why is tracking and adjusting your goals important, not just setting them?",
                 "options": {
                     "A": "Set vague goals like 'save more money' and hope for the best.",
                     "B": "Create specific, measurable goals with clear deadlines, break them down into small, scheduled steps, track progress regularly, and plan a way to celebrate completion.",
@@ -834,7 +834,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH08_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "What does finishing strong mean when it comes to achieving financial goals?",
                 "options": {
                     "A": "I will think about a big dream I have.",
                     "B": "I will identify one financial goal and write down exactly how much money I need and by when.",
@@ -878,7 +878,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH09_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "What are the most common financial risks young people face?",
                 "options": {
                     "A": "The chapter advises on how to protect your finances by understanding common risks, building an emergency fund, securing appropriate insurance, and safeguarding personal information.",
                     "B": "The only way to protect your money is to hide it under your mattress.",
@@ -890,7 +890,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH09_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "Why is an emergency fund your first line of defense against financial stress?",
                 "options": {
                     "A": "A person decides not to get health insurance because they are young and healthy.",
                     "B": "Someone sets aside $500 in a separate savings account specifically for unexpected car repairs.",
@@ -902,7 +902,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH09_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "What types of smart protection should you consider as you build wealth?",
                 "options": {
                     "A": "Avoid insurance at all costs, as it is a waste of money.",
                     "B": "Build a robust emergency fund covering 3–6 months of essential expenses and secure essential insurance policies like health and renters/homeowners insurance based on your situation.",
@@ -914,7 +914,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH09_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "How much should a beginner aim to have in their emergency buffer?",
                 "options": {
                     "A": "I will ignore all potential financial risks and hope for the best.",
                     "B": "I will research what type of insurance is most relevant to my current living situation.",
@@ -958,7 +958,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH10_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "What are the red flags that something might be a financial scam?",
                 "options": {
                     "A": "This chapter provides guidance on identifying and avoiding common scams by recognizing red flags, protecting online accounts, and knowing how to respond if you become a victim.",
                     "B": "All unsolicited messages are scams.",
@@ -970,7 +970,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH10_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "Someone offers you a guaranteed 50% return in one month. What should you do?",
                 "options": {
                     "A": "An email arrives asking for your bank account details to 'verify your account' due to a supposed security breach.",
                     "B": "Someone receives a job offer for a position they didn't apply for, with an unusually high salary and a request to pay for equipment upfront.",
@@ -982,7 +982,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH10_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "How can you protect your personal financial information online?",
                 "options": {
                     "A": "Immediately respond to any urgent requests for personal information or money.",
                     "B": "Enable two-factor authentication (2FA) on all your important online accounts and use strong, unique passwords.",
@@ -994,7 +994,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH10_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "If something sounds too good to be true financially, what should you assume?",
                 "options": {
                     "A": "I will ignore all security advice and continue using weak passwords.",
                     "B": "I will research and enable two-factor authentication on at least one of my critical online accounts.",
