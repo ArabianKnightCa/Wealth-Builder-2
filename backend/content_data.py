@@ -330,12 +330,12 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH02_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "You have $100 left after paying for rent and food this month. Using the 'needs vs wants' concept, what's the smartest move?",
                 "options": {
-                    "A": "Someone decides to buy the most expensive phone because they 'need' the latest technology.",
-                    "B": "A person allocates a specific amount for entertainment each month after covering rent and utilities, choosing to spend on movies within that limit.",
-                    "C": "An individual spends all their money on impulse purchases throughout the month and then worries about bills.",
-                    "D": "A student spends all their allowance on video games and then has no money for food."
+                    "A": "Spend all $100 on a concert ticket - you deserve fun after working hard!",
+                    "B": "Put $20 toward savings/emergency fund, then use the rest for things you enjoy",
+                    "C": "Save nothing - you already paid for needs so the rest is for wants",
+                    "D": "Feel guilty about spending ANY of it and save all $100"
                 },
                 "correct": "B",
                 "rationale": "This example demonstrates the core principle of budgeting: prioritizing needs (rent, utilities) and then allocating a specific amount for wants (entertainment) within a defined limit. This shows intentional spending and control, a key takeaway from the chapter. Option A miscategorizes a want as a need. Option C exemplifies a lack of budgeting. Option D shows a failure to prioritize needs over wants."
