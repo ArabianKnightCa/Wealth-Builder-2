@@ -704,6 +704,61 @@ async def log_telemetry(data: dict, user_id: str = Depends(get_current_user)):
     await db.telemetry.insert_one(telemetry)
     return {"message": "Telemetry logged"}
 
+# ========== Feature 1: Enhanced Consistency Check API ==========
+
+@api_router.get("/admin/quiz-validation-report")
+async def get_quiz_validation_report():
+    """
+    Feature 1: Consistency Check
+    Returns the detailed validation report for all quiz questions
+    """
+    # Run validation again to get latest report
+    report, validator = validate_quiz_integrity(
+        LPI_CHAPTERS,
+        LPI_ANSWER_KEY,
+        auto_correct=False,  # Don't modify, just report
+        fail_on_error=False
+    )
+    return report
+
+@api_router.post("/admin/quiz-validation-run")
+async def run_quiz_validation(auto_correct: bool = False):
+    """
+    Feature 1: Consistency Check
+    Manually trigger quiz validation with option to auto-correct
+    """
+    global validation_report, quiz_validator
+    report, validator = validate_quiz_integrity(
+        LPI_CHAPTERS,
+        LPI_ANSWER_KEY,
+        auto_correct=auto_correct,
+        fail_on_error=False
+    )
+    validation_report = report
+    quiz_validator = validator
+    return {
+        "message": "Validation completed",
+        "auto_corrected": auto_correct,
+        "report": report
+    }
+
+@api_router.get("/admin/quiz-content")
+async def get_quiz_content():
+    """
+    Feature 1: Get all quiz content for review
+    Returns all chapters with quiz questions
+    """
+    quiz_content = []
+    for chapter in LPI_CHAPTERS:
+        chapter_data = {
+            "id": chapter.get("id"),
+            "title": chapter.get("title"),
+            "quiz_count": len(chapter.get("quiz", [])),
+            "quizzes": chapter.get("quiz", [])
+        }
+        quiz_content.append(chapter_data)
+    return quiz_content
+
 # Validate quiz integrity on startup
 print("\n🔍 Validating quiz answers...")
 validation_report, quiz_validator = validate_quiz_integrity(
