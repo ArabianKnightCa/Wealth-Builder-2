@@ -342,7 +342,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH02_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "The 50/30/20 rule suggests 50% needs, 30% wants, 20% savings. If your needs are actually 65% of your income, what should you do?",
                 "options": {
                     "A": "Immediately adopt the 50/30/20 rule without considering my current income or expenses.",
                     "B": "Focus on tracking every single penny spent each day, as this is the only way to budget effectively.",
@@ -354,7 +354,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH02_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "What is the EASIEST way to make budgeting stick according to this chapter?",
                 "options": {
                     "A": "I will ignore my bank account balance for the rest of the week.",
                     "B": "I will create a detailed spreadsheet for every transaction I make.",
@@ -398,7 +398,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH03_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "What does Pay Yourself First actually mean in practice?",
                 "options": {
                     "A": "Saving and spending are about making big sacrifices to achieve financial freedom.",
                     "B": "The key to good financial habits is to always spend less than you earn.",
@@ -410,7 +410,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH03_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "You are about to buy a $60 video game online. What is the Spend With a Pause approach?",
                 "options": {
                     "A": "Someone wants a new video game and buys it immediately without thinking.",
                     "B": "A person automates a transfer of $50 to their savings account every payday before spending on anything else.",
@@ -422,7 +422,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH03_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "Why should you balance both short-term AND long-term savings goals?",
                 "options": {
                     "A": "Only save money when you have a large surplus at the end of the month.",
                     "B": "Prioritize spending on wants first, then save whatever is left.",
@@ -434,7 +434,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH03_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "You want to save $240 in 12 weeks. What is the simple plan?",
                 "options": {
                     "A": "I will buy whatever I want throughout the week and worry about saving later.",
                     "B": "I will identify one specific savings goal and calculate how much I need to save each week to reach it.",
@@ -478,7 +478,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH04_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "What is the main difference between good debt and bad debt?",
                 "options": {
                     "A": "Credit is always a bad idea and should be avoided at all costs.",
                     "B": "The chapter explains what credit is, the difference between good and bad debt, the impact of interest, and safe strategies for building credit history.",
@@ -490,7 +490,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH04_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "A credit card charges 20% annual interest. You owe $1,000. If you only pay minimum payments, what happens?",
                 "options": {
                     "A": "A student takes out a payday loan with a 300% APR to buy concert tickets.",
                     "B": "Someone takes out a student loan to pay for college tuition, which they expect will lead to a higher-paying job.",
@@ -502,7 +502,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH04_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "What is the safest way to start building credit when you are young?",
                 "options": {
                     "A": "Avoid using any credit products, as they are too risky.",
                     "B": "Take out multiple credit cards and max them out to build credit quickly.",
@@ -514,7 +514,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH04_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "Before taking on ANY debt, what is the key question to ask yourself?",
                 "options": {
                     "A": "I will apply for several new credit cards to increase my available credit.",
                     "B": "I will ignore my credit score and any credit-related mail.",
@@ -558,7 +558,7 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH05_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "Why should you invest instead of just saving cash under your mattress?",
                 "options": {
                     "A": "Investing is a way to use money to buy assets that can grow in value or generate income over time, with key principles being understanding risk, diversifying, keeping costs low, and starting with consistent, automated actions.",
                     "B": "Investing is only for wealthy individuals who can afford to take big risks.",
@@ -570,7 +570,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH05_Q02",
-                "text": "Provide a real-world example that applies one concept from this chapter.",
+                "text": "What is the relationship between risk and reward in investing?",
                 "options": {
                     "A": "A person puts all their savings into a single tech stock hoping it will skyrocket.",
                     "B": "Someone invests $100 every month into a broad market index fund that holds hundreds of different companies.",
@@ -582,7 +582,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH05_Q03",
-                "text": "Multiple choice: select the best practice mentioned and explain why it fits your situation.",
+                "text": "What does diversification mean in simple terms?",
                 "options": {
                     "A": "Invest all your available money into one trending stock you heard about.",
                     "B": "Wait until you have a large sum of money before you start investing.",
@@ -594,7 +594,7 @@ LPI_CHAPTERS = [
             },
             {
                 "id": "CH05_Q04",
-                "text": "Reflection: What small step will you take this week related to this chapter?",
+                "text": "What is a smart beginner investing move mentioned in this chapter?",
                 "options": {
                     "A": "I will immediately sell all my existing investments to focus on day trading.",
                     "B": "I will research low-cost, diversified index funds that I could potentially invest in.",
