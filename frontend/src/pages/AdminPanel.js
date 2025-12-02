@@ -11,6 +11,9 @@ function AdminPanel({ onLogin }) {
   const [unlocked, setUnlocked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [activeTab, setActiveTab] = useState('users'); // 'users' or 'quizzes'
+  const [validationReport, setValidationReport] = useState(null);
+  const [loadingValidation, setLoadingValidation] = useState(false);
 
   const MASTER_CODE = 'WEALTHBUILDER';
 
