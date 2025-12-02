@@ -355,6 +355,17 @@ class QuizValidator:
             for w in report['warnings']:
                 print(f"  {w}")
         
+        # Feature 2: Correctness Issues
+        if report['correctness_issues']:
+            print(f"\n🔍 CORRECTNESS VALIDATION ISSUES ({len(report['correctness_issues'])}):")
+            for item in report['correctness_issues']:
+                q_id = item['question_id']
+                print(f"\n  {q_id}: {item['question_text']}")
+                for issue in item['issues']:
+                    icon = "🔴" if issue['type'] == 'CRITICAL' else "⚠️" if issue['type'] == 'WARNING' else "ℹ️"
+                    review = " [REQUIRES HUMAN REVIEW]" if issue['requires_human_review'] else ""
+                    print(f"    {icon} {issue['check']}: {issue['message']}{review}")
+        
         print("="*70 + "\n")
 
 
