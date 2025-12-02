@@ -299,8 +299,11 @@ function AdminPanel({ onLogin }) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {testProfiles.map((item, index) => (
+        {/* User Testing Tab */}
+        {activeTab === 'users' && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {testProfiles.map((item, index) => (
             <div key={index} className="card">
               <h3 className="text-xl font-bold text-navy-900 mb-3">{item.name}</h3>
               
