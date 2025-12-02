@@ -326,7 +326,7 @@ LPI_CHAPTERS = [
                     "D": "Everyone should spend exactly 50% on needs no matter what"
                 },
                 "correct": "B",
-                "rationale": "This option comprehensively captures the essence of the chapter: budgeting as a plan, its purpose (clarity, control), its flexibility, and the prioritization of needs, wants, and savings. Options A and B misrepresent budgeting as restrictive. Option D is too rigid, as the chapter discusses variations of the 50/30/20 rule."
+                "rationale": "Option B captures the key insight from the chapter that budgets provide clarity and control, allowing you to spend intentionally on what matters to you. The chapter emphasizes that budgets are permission to spend, not restriction. Options A and C misrepresent budgeting as restrictive or rigid, while D oversimplifies the 50/30/20 rule."
             },
             {
                 "id": "CH02_Q02",
