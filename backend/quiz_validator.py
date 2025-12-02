@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 class QuizValidator:
     """
     Validates quiz answers and maintains data integrity
+    Includes correctness validation (Feature 2)
     """
     
     def __init__(self, lpi_chapters: List[Dict], answer_key: Dict[str, str]):
@@ -31,7 +32,8 @@ class QuizValidator:
             "mismatches": [],
             "missing_in_key": [],
             "missing_in_quiz": [],
-            "warnings": []
+            "warnings": [],
+            "correctness_issues": []  # Feature 2: Correctness validation
         }
     
     def validate_all(self, auto_correct: bool = False) -> Dict:
