@@ -318,14 +318,14 @@ LPI_CHAPTERS = [
         "quiz": [
             {
                 "id": "CH02_Q01",
-                "text": "Summarize the main idea of this chapter in your own words.",
+                "text": "Your friend says 'Budgets are boring and restrictive - they stop you from having fun!' What's the best response based on this chapter?",
                 "options": {
-                    "A": "Budgets are restrictive documents that limit all spending.",
-                    "B": "The primary goal of budgeting is to eliminate all wants and desires.",
-                    "C": "Budgeting is a flexible planning tool that provides clarity and control over money, allowing intentional spending aligned with goals by prioritizing needs, wants, and savings.",
-                    "D": "A budget is only useful if it strictly adheres to the 50/30/20 rule."
+                    "A": "You're right - budgets mean saying no to everything you enjoy",
+                    "B": "Actually, a budget is permission to spend on what you care about BECAUSE you planned for it",
+                    "C": "Budgets only work if you follow the 50/30/20 rule perfectly",
+                    "D": "Everyone should spend exactly 50% on needs no matter what"
                 },
-                "correct": "C",
+                "correct": "B",
                 "rationale": "This option comprehensively captures the essence of the chapter: budgeting as a plan, its purpose (clarity, control), its flexibility, and the prioritization of needs, wants, and savings. Options A and B misrepresent budgeting as restrictive. Option D is too rigid, as the chapter discusses variations of the 50/30/20 rule."
             },
             {
