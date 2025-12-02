@@ -269,6 +269,30 @@ function AdminPanel({ onLogin }) {
           <p className="text-gray-300">Create and test different user personas instantly</p>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="mb-6 flex gap-2 border-b border-gray-300">
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`px-6 py-3 font-semibold transition-colors ${
+              activeTab === 'users'
+                ? 'text-navy-900 border-b-2 border-navy-900'
+                : 'text-gray-500 hover:text-navy-700'
+            }`}
+          >
+            👥 User Testing
+          </button>
+          <button
+            onClick={() => setActiveTab('quizzes')}
+            className={`px-6 py-3 font-semibold transition-colors ${
+              activeTab === 'quizzes'
+                ? 'text-navy-900 border-b-2 border-navy-900'
+                : 'text-gray-500 hover:text-navy-700'
+            }`}
+          >
+            📝 Quiz Management (Feature 1)
+          </button>
+        </div>
+
         {message && (
           <div className={`mb-6 p-4 rounded ${message.includes('❌') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
             {message}
