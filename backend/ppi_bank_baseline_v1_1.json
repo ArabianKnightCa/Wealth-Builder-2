@@ -13,7 +13,7 @@
         "C Ask friends or family for advice",
         "D Follow what experts recommend"
       ],
-      "age_min": 8,
+      "age_min": 6,
       "age_max": 99,
       "experience_levels": ["beginner", "intermediate", "advanced"],
       "tags": ["base", "decision_style", "beginner_safe", "intermediate_safe"]
@@ -103,7 +103,7 @@
         "C Watching videos or tutorials",
         "D Discussion and conversation"
       ],
-      "age_min": 8,
+      "age_min": 6,
       "age_max": 99,
       "experience_levels": ["beginner", "intermediate", "advanced"],
       "tags": ["base", "learning_style", "beginner_safe", "intermediate_safe"]
