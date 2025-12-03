@@ -32,6 +32,9 @@ SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'your-secret-key-change-in-product
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
+# Age Configuration - Single source of truth for minimum age
+MINIMUM_USER_AGE = 6  # Change this value to adjust minimum age for the entire system
+
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
