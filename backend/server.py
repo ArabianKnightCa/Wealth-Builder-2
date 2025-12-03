@@ -1174,20 +1174,48 @@ async def add_family_member(member_data: FamilyMemberCreate, user_id: str = Depe
     return {"message": "Family member added successfully", "member": member_dict}
 
 @api_router.get("/family-members/family/{family_id}")
-async def get_family_members(family_id: str, user_id: str = Depends(get_current_user)):
-    """Get all members of a family"""
-    members = await db.family_members.find(
-        {"family_id": family_id, "is_deleted": False},
-        {"_id": 0}
-    ).to_list(1000)
+async def get_family_members(
+    family_id: str,
+    user_id: str = Depends(get_current_user),
+    active_only: bool = False,
+    include_user_data: bool = False,
+    include_family_data: bool = False,
+    tenant_id: str = "POC"
+):
+    """Get all members of a family with optional filters and relations"""
+    # Apply filters
+    if active_only:
+        query = QueryFilters.family_member_active_only(tenant_id)
+        query["family_id"] = family_id
+    else:
+        query = QueryFilters.family_member_by_family(tenant_id, family_id)
+    
+    # Default sort: created_at asc
+    members = await db.family_members.find(query, {"_id": 0}).sort("created_at", 1).to_list(1000)
     
     for member in members:
+        # Parse dates
         if isinstance(member.get('joined_at'), str):
             member['joined_at'] = datetime.fromisoformat(member['joined_at'])
         if isinstance(member.get('created_at'), str):
             member['created_at'] = datetime.fromisoformat(member['created_at'])
         if isinstance(member.get('updated_at'), str):
             member['updated_at'] = datetime.fromisoformat(member['updated_at'])
+        
+        # Load relations if requested
+        if include_user_data:
+            user = await db.users.find_one(
+                {"id": member['user_id'], "is_deleted": False},
+                {"_id": 0, "password_hash": 0}
+            )
+            member['user'] = user
+        
+        if include_family_data:
+            family = await db.families.find_one(
+                {"id": member['family_id'], "is_deleted": False},
+                {"_id": 0}
+            )
+            member['family'] = family
     
     return members
 
