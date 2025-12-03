@@ -453,7 +453,7 @@ class TelemetryTester:
         """Test data integrity across all collections"""
         print("\n🔍 Testing Data Integrity...")
         
-        if not self.db:
+        if self.db is None:
             print("❌ Cannot test data integrity - MongoDB connection not available")
             return
         
