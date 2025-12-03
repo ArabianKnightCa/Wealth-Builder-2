@@ -1093,7 +1093,11 @@ async def update_family_member(
     return {"message": "Family member updated successfully"}
 
 @api_router.delete("/family-members/{member_id}")
-async def remove_family_member(member_id: str, user_id: str = Depends(get_current_user)):
+async def remove_family_member(
+    member_id: str, 
+    user_id: str = Depends(get_current_user),
+    reason: Optional[str] = None
+):
     """Soft delete a family member"""
     member = await db.family_members.find_one({"id": member_id, "is_deleted": False})
     
@@ -1107,9 +1111,13 @@ async def remove_family_member(member_id: str, user_id: str = Depends(get_curren
         {"$set": {
             "is_deleted": True,
             "deleted_at": now,
+            "deleted_by": user_id,
+            "deleted_reason": reason,
             "updated_at": now,
+            "updated_by": user_id,
             "status": "removed",
-            "removed_at": now
+            "removed_at": now,
+            "removed_by_user_id": user_id
         }}
     )
     
