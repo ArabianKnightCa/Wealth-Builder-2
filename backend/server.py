@@ -942,6 +942,7 @@ async def update_family(family_id: str, update_data: dict, user_id: str = Depend
         raise HTTPException(status_code=404, detail="Family not found")
     
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    update_data['updated_by'] = user_id
     
     await db.families.update_one(
         {"id": family_id},
