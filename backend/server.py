@@ -872,6 +872,102 @@ async def get_quiz_content():
     return quiz_content
 
 # ===========================
+# Database Schema v1.0: Enhanced Query Filters & Relations
+# ===========================
+
+class QueryFilters:
+    """Predefined query filters for consistent data access"""
+    
+    @staticmethod
+    def user_by_tenant(tenant_id: str):
+        return {"tenant_id": tenant_id, "is_deleted": False}
+    
+    @staticmethod
+    def user_by_email(tenant_id: str, email: str):
+        return {"tenant_id": tenant_id, "email": email, "is_deleted": False}
+    
+    @staticmethod
+    def user_active_only(tenant_id: str):
+        return {"tenant_id": tenant_id, "is_deleted": False}
+    
+    @staticmethod
+    def family_by_tenant(tenant_id: str):
+        return {"tenant_id": tenant_id, "is_deleted": False}
+    
+    @staticmethod
+    def family_by_plan_tier(tenant_id: str, plan_tier: str):
+        return {"tenant_id": tenant_id, "plan_tier": plan_tier, "is_deleted": False}
+    
+    @staticmethod
+    def family_member_by_family(tenant_id: str, family_id: str):
+        return {"tenant_id": tenant_id, "family_id": family_id, "is_deleted": False}
+    
+    @staticmethod
+    def family_member_by_user(tenant_id: str, user_id: str):
+        return {"tenant_id": tenant_id, "user_id": user_id, "is_deleted": False}
+    
+    @staticmethod
+    def family_member_active_only(tenant_id: str):
+        return {"tenant_id": tenant_id, "is_deleted": False, "status": "active"}
+
+async def load_user_families(user_id: str, tenant_id: str = "POC"):
+    """Load all families for a user (manyThrough relation)"""
+    # Get family memberships
+    memberships = await db.family_members.find(
+        QueryFilters.family_member_by_user(tenant_id, user_id),
+        {"_id": 0}
+    ).to_list(1000)
+    
+    if not memberships:
+        return []
+    
+    # Get family IDs
+    family_ids = [m['family_id'] for m in memberships]
+    
+    # Load families
+    families = await db.families.find(
+        {"id": {"$in": family_ids}, "tenant_id": tenant_id, "is_deleted": False},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    return families
+
+async def load_family_members(family_id: str, tenant_id: str = "POC"):
+    """Load all members of a family (oneToMany relation)"""
+    members = await db.family_members.find(
+        QueryFilters.family_member_by_family(tenant_id, family_id),
+        {"_id": 0}
+    ).to_list(1000)
+    
+    # Enrich with user data
+    for member in members:
+        user = await db.users.find_one(
+            {"id": member['user_id'], "is_deleted": False},
+            {"_id": 0, "password_hash": 0}
+        )
+        if user:
+            member['user_data'] = user
+    
+    return members
+
+async def load_family_primary_contact(family_id: str, tenant_id: str = "POC"):
+    """Load primary contact for a family (oneToOne relation)"""
+    family = await db.families.find_one(
+        {"id": family_id, "tenant_id": tenant_id, "is_deleted": False},
+        {"_id": 0}
+    )
+    
+    if not family or not family.get('primary_contact_user_id'):
+        return None
+    
+    contact = await db.users.find_one(
+        {"id": family['primary_contact_user_id'], "is_deleted": False},
+        {"_id": 0, "password_hash": 0}
+    )
+    
+    return contact
+
+# ===========================
 # Database Schema v1.0: Family Management APIs
 # ===========================
 
