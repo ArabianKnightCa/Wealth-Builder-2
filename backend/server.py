@@ -1226,6 +1226,44 @@ async def list_form_templates():
     """List all available form templates"""
     return list(FORM_TEMPLATES.values())
 
+@api_router.get("/forms/lookup/{collection_name}")
+async def lookup_field_options(
+    collection_name: str,
+    display_field: str = "display_name",
+    search: Optional[str] = None,
+    tenant_id: str = "POC",
+    limit: int = 50
+):
+    """
+    Get lookup field options for form dropdowns
+    Supports searching across collections with tenant filtering
+    """
+    collection = db[collection_name]
+    
+    # Build query with tenant filter
+    query = {"tenant_id": tenant_id, "is_deleted": False}
+    
+    # Add search filter if provided
+    if search:
+        query[display_field] = {"$regex": search, "$options": "i"}
+    
+    # Fetch results
+    results = await collection.find(
+        query,
+        {"_id": 0, "id": 1, display_field: 1}
+    ).limit(limit).to_list(limit)
+    
+    # Format for dropdown
+    options = [
+        {
+            "value": doc["id"],
+            "label": doc.get(display_field, doc["id"])
+        }
+        for doc in results
+    ]
+    
+    return options
+
 @api_router.get("/forms/templates/{template_id}")
 async def get_form_template(
     template_id: str,
