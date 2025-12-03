@@ -1287,14 +1287,14 @@ async def get_form_template(
     user_id: str = Depends(get_current_user),
     tenant_id: str = "POC"
 ):
-    """Get a specific form template with defaults applied"""
+    """Get a specific form template with defaults and field filters applied"""
     template = FORM_TEMPLATES.get(template_id)
     
     if not template:
         raise HTTPException(status_code=404, detail="Form template not found")
     
-    # Apply variable substitution to defaults
-    template_copy = template.copy()
+    # Apply variable substitution to defaults and field filters
+    template_copy = apply_template_field_filters(template, user_id, tenant_id)
     template_copy["defaults"] = apply_template_defaults(template, user_id, tenant_id)
     
     return template_copy
