@@ -71,7 +71,20 @@ class AdaptiveEngineV2:
         
         # Get age band constraints
         age_band = self._get_age_band(age)
+        # Try to get exact match first, then fallback to default child/teen/adult rules
         age_constraints = self.rules['constraints']['age_bands'].get(age_band, {})
+        
+        # If no exact match, apply default rules based on age category
+        if not age_constraints:
+            if age <= self.CHILD_AGE_MAX:
+                # Child: exclude advanced content
+                age_constraints = {'exclude_tags': ['advanced'], 'reading_level': 'simple'}
+            elif age <= self.TEEN_AGE_MAX:
+                # Teen: allow most content
+                age_constraints = {'exclude_tags': [], 'reading_level': 'youth'}
+            else:
+                # Adult: allow all content
+                age_constraints = {'exclude_tags': [], 'reading_level': 'standard'}
         
         # Get experience constraints
         exp_constraints = self.rules['constraints']['experience'].get(financial_experience, {})
