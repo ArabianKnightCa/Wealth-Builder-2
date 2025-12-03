@@ -926,17 +926,39 @@ FORM_TEMPLATES = {
             "is_deleted": False
         }
     },
-    "family_member_form_basic_v1": {
-        "id": "family_member_form_basic_v1",
+    "family_member_form_v1": {
+        "id": "family_member_form_v1",
         "type": "form",
         "collection": "family_members",
-        "label": "Family Member (Basic)",
+        "label": "Family Member",
         "fields": [
-            {"name": "family_id", "label": "Family ID", "input": "text", "required": True},
-            {"name": "user_id", "label": "User ID", "input": "text", "required": True},
-            {"name": "role", "label": "Role", "input": "select", "options": ["parent", "child", "guardian", "dependent"], "required": True},
+            {
+                "name": "family_id",
+                "label": "Family",
+                "input": "lookup",
+                "collection": "families",
+                "displayField": "family_name",
+                "required": True,
+                "filter": {"tenant_id": "{{currentTenantId}}"}
+            },
+            {
+                "name": "user_id",
+                "label": "User",
+                "input": "lookup",
+                "collection": "users",
+                "displayField": "display_name",
+                "required": True,
+                "filter": {"tenant_id": "{{currentTenantId}}"}
+            },
+            {
+                "name": "role",
+                "label": "Role",
+                "input": "select",
+                "options": ["parent", "guardian", "child", "teen", "learner"],
+                "required": True
+            },
             {"name": "is_primary_guardian", "label": "Primary Guardian", "input": "checkbox", "required": False},
-            {"name": "status", "label": "Status", "input": "select", "options": ["pending", "active", "removed"], "required": True}
+            {"name": "status", "label": "Status", "input": "select", "options": ["pending_invite", "active", "removed", "left"], "required": True}
         ],
         "defaults": {
             "tenant_id": "{{currentTenantId}}",
