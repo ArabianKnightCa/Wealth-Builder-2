@@ -1035,9 +1035,18 @@ async def list_families(
     return families
 
 @api_router.get("/families/{family_id}")
-async def get_family(family_id: str, user_id: str = Depends(get_current_user)):
-    """Get a specific family by ID"""
-    family = await db.families.find_one({"id": family_id, "is_deleted": False}, {"_id": 0})
+async def get_family(
+    family_id: str,
+    user_id: str = Depends(get_current_user),
+    include_members: bool = False,
+    include_primary_contact: bool = False,
+    tenant_id: str = "POC"
+):
+    """Get a specific family by ID with optional relations"""
+    family = await db.families.find_one(
+        {"id": family_id, "tenant_id": tenant_id, "is_deleted": False},
+        {"_id": 0}
+    )
     
     if not family:
         raise HTTPException(status_code=404, detail="Family not found")
@@ -1046,6 +1055,13 @@ async def get_family(family_id: str, user_id: str = Depends(get_current_user)):
         family['created_at'] = datetime.fromisoformat(family['created_at'])
     if isinstance(family.get('updated_at'), str):
         family['updated_at'] = datetime.fromisoformat(family['updated_at'])
+    
+    # Load relations if requested
+    if include_members:
+        family['members'] = await load_family_members(family_id, tenant_id)
+    
+    if include_primary_contact:
+        family['primary_contact'] = await load_family_primary_contact(family_id, tenant_id)
     
     return family
 
