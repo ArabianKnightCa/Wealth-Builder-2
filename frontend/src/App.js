@@ -13,6 +13,7 @@ import Settings from './pages/Settings';
 import Completed from './pages/Completed';
 import AdminPanel from './pages/AdminPanel';
 import GlobalHUD from './components/GlobalHUD';
+import telemetryService from './utils/telemetry';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -29,6 +30,37 @@ function App() {
       setLoading(false);
     }
   }, [token]);
+  
+  // Track session start/end
+  useEffect(() => {
+    if (user?.id) {
+      // Log session start
+      telemetryService.logSessionStart(
+        user.id,
+        user.user_type || 'free',
+        'web',
+        '1.0.0'
+      );
+      
+      // Log session end on page unload
+      const handleUnload = () => {
+        telemetryService.logSessionEnd(
+          user.id,
+          user.user_type || 'free',
+          'web',
+          '1.0.0'
+        );
+      };
+      
+      window.addEventListener('beforeunload', handleUnload);
+      
+      return () => {
+        window.removeEventListener('beforeunload', handleUnload);
+        // Also log session end when user changes
+        handleUnload();
+      };
+    }
+  }, [user]);
 
   const fetchUser = async () => {
     try {
