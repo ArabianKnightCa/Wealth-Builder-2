@@ -116,8 +116,8 @@ class AdaptiveEngineV2:
     
     def _get_age_band(self, age: int) -> str:
         """Determine age band from age"""
-        if 8 <= age <= 12:
-            return "8-12"
+        if 6 <= age <= 12:
+            return "6-12"
         elif 13 <= age <= 17:
             return "13-17"
         else:
