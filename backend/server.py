@@ -2240,6 +2240,25 @@ async def create_database_indexes():
         await db.telemetry_subscription_change.create_index([("householdId", 1)])
         print("✓ Telemetry subscription change indexes created")
         
+        # Analytics indexes
+        await db.analytics_user_progress.create_index([("userId", 1)], unique=True)
+        await db.analytics_user_progress.create_index([("userTier", 1)])
+        await db.analytics_user_progress.create_index([("householdId", 1)])
+        print("✓ Analytics user progress indexes created")
+        
+        await db.analytics_topic_performance.create_index([("topicId", 1), ("chapterId", 1)], unique=True)
+        await db.analytics_topic_performance.create_index([("chapterId", 1)])
+        print("✓ Analytics topic performance indexes created")
+        
+        await db.analytics_chapter_heatmap.create_index([("chapterId", 1)], unique=True)
+        print("✓ Analytics chapter heatmap indexes created")
+        
+        await db.analytics_daily_summary.create_index([("summaryDate", 1)], unique=True)
+        print("✓ Analytics daily summary indexes created")
+        
+        await db.analytics_tier_overview.create_index([("summaryDate", 1)], unique=True)
+        print("✓ Analytics tier overview indexes created")
+        
         print("✅ All database indexes created successfully")
     except Exception as e:
         print(f"⚠️ Index creation warning: {e}")
