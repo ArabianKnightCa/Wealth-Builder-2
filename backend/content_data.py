@@ -400,10 +400,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q01",
                 "text": "What does Pay Yourself First actually mean in practice?",
                 "options": {
-                    "A": "Saving and spending are about making big sacrifices to achieve financial freedom.",
-                    "B": "The key to good financial habits is to always spend less than you earn.",
-                    "C": "This chapter focuses on developing consistent habits of saving and mindful spending by prioritizing savings, pausing before purchases, balancing short and long-term goals, and creating actionable plans.",
-                    "D": "The most important aspect of saving is earning a high income."
+                    "A": "Buy yourself something nice before paying bills as a reward for working hard",
+                    "B": "Transfer money to savings immediately when paid, before spending on anything else",
+                    "C": "Pay all expenses first, then save whatever happens to be left over at month end",
+                    "D": "Give yourself a bonus from savings whenever you accomplish a financial goal"
                 },
                 "correct": "C",
                 "rationale": "This option effectively synthesizes the chapter's main themes: paying yourself first, pausing before spending, setting and balancing goals, and building simple savings plans. It highlights the focus on habit formation and practical strategies. Options A and B are too simplistic or potentially misleading. Option D, while related to income, is not the central focus of this chapter on saving and spending habits."
@@ -412,10 +412,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q02",
                 "text": "You are about to buy a $60 video game online. What is the Spend With a Pause approach?",
                 "options": {
-                    "A": "Someone wants a new video game and buys it immediately without thinking.",
-                    "B": "A person automates a transfer of $50 to their savings account every payday before spending on anything else.",
-                    "C": "A student decides to save up for a fancy car that will take several years, ignoring all other financial needs.",
-                    "D": "Someone spends their entire paycheck on clothes and then realizes they have no money for rent."
+                    "A": "Buy it immediately while it's on sale before the price increases tomorrow",
+                    "B": "Wait 24 hours, then ask: Will this matter next week? What am I trading for it?",
+                    "C": "Never purchase entertainment items - only spend money on absolute necessities",
+                    "D": "Buy the game plus accessories while you're shopping to save on shipping"
                 },
                 "correct": "B",
                 "rationale": "This example directly illustrates the 'Pay Yourself First' strategy (Lesson 3.1) by automating savings immediately after getting paid. This makes saving the default and a priority. Option A demonstrates a lack of the 'Spend With a Pause' habit. Option C focuses solely on a long-term goal without mentioning balance. Option D shows a complete lack of budgeting and saving."
@@ -424,10 +424,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q03",
                 "text": "Why should you balance both short-term AND long-term savings goals?",
                 "options": {
-                    "A": "Only save money when you have a large surplus at the end of the month.",
-                    "B": "Prioritize spending on wants first, then save whatever is left.",
-                    "C": "Automate a small, consistent savings transfer immediately after each payday and use a three-step pause before making non-essential purchases.",
-                    "D": "Avoid making any purchases for an entire year to maximize savings."
+                    "A": "Focus exclusively on long-term goals since short-term wins waste valuable resources",
+                    "B": "Short-term wins maintain motivation while long-term goals build real stability",
+                    "C": "Only young people need short-term goals; adults should focus on retirement planning",
+                    "D": "Short-term goals are distractions that prevent you from achieving bigger objectives"
                 },
                 "correct": "C",
                 "rationale": "This option combines the most effective practices from the chapter: 'Pay Yourself First' through automation (Lesson 3.1) and 'Spend With a Pause' for mindful spending (Lesson 3.2). These are sustainable habits that lead to consistent progress without extreme measures. Option A makes saving an afterthought. Option B reverses the priority. Option D is an unsustainable extreme that doesn't align with balancing goals."
@@ -436,10 +436,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q04",
                 "text": "You want to save $240 in 12 weeks. What is the simple plan?",
                 "options": {
-                    "A": "I will buy whatever I want throughout the week and worry about saving later.",
-                    "B": "I will identify one specific savings goal and calculate how much I need to save each week to reach it.",
-                    "C": "I will avoid saving any money this week to focus on spending.",
-                    "D": "I will make a large, impulse purchase and hope for the best."
+                    "A": "Save random amounts whenever you feel motivated and have extra cash available",
+                    "B": "Calculate $20/week, automate the transfer on payday, and track weekly progress",
+                    "C": "Wait until you have $240 at once, then move it all to savings together",
+                    "D": "Set a general goal but don't worry about specific weekly amounts or deadlines"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, small step related to the chapter's content. Lesson 3.4 details building a simple savings plan, which starts with naming a goal and determining a weekly saving amount. Calculating this for a specific goal is a concrete action that aligns with building momentum and planning for savings. Option A, C, and D are contrary to the chapter's principles."
@@ -480,10 +480,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q01",
                 "text": "What is the main difference between good debt and bad debt?",
                 "options": {
-                    "A": "Credit is always a bad idea and should be avoided at all costs.",
-                    "B": "The chapter explains what credit is, the difference between good and bad debt, the impact of interest, and safe strategies for building credit history.",
-                    "C": "A high credit score is only important for buying a house.",
-                    "D": "Borrowing money is a sign of financial irresponsibility."
+                    "A": "Good debt has lower interest rates while bad debt has higher interest rates",
+                    "B": "Good debt builds assets or earning power; bad debt finances depreciating wants",
+                    "C": "Good debt comes from banks and credit unions; bad debt is from other sources",
+                    "D": "Good debt is under $10,000 total while bad debt exceeds this threshold"
                 },
                 "correct": "B",
                 "rationale": "This option accurately summarizes the key topics covered in Chapter 4: the definition of credit, the distinction between beneficial and detrimental debt, the mechanics of interest, and methods for establishing credit. Options A, C, and D present extreme or inaccurate views not supported by the chapter's content."
@@ -492,10 +492,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q02",
                 "text": "A credit card charges 20% annual interest. You owe $1,000. If you only pay minimum payments, what happens?",
                 "options": {
-                    "A": "A student takes out a payday loan with a 300% APR to buy concert tickets.",
-                    "B": "Someone takes out a student loan to pay for college tuition, which they expect will lead to a higher-paying job.",
-                    "C": "A person uses a store credit card with a high interest rate to buy everyday groceries.",
-                    "D": "An individual buys a luxury car with a loan that exceeds their income."
+                    "A": "The balance decreases steadily and you'll be debt-free in exactly 5 years",
+                    "B": "Interest compounds against you - you'll pay much more than $1,000 total",
+                    "C": "Minimum payments help build your credit score faster through consistent history",
+                    "D": "The bank will automatically reduce your interest rate as you make payments"
                 },
                 "correct": "B",
                 "rationale": "This example clearly illustrates 'good debt' as described in Lesson 4.2. A student loan for education is presented as debt that builds capacity or assets by enabling a higher-paying career. Option A describes bad debt (payday loan for wants). Option C describes bad debt (store card for wants at high interest). Option D is a risky borrowing decision that could lead to financial trouble."
@@ -504,10 +504,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q03",
                 "text": "What is the safest way to start building credit when you are young?",
                 "options": {
-                    "A": "Avoid using any credit products, as they are too risky.",
-                    "B": "Take out multiple credit cards and max them out to build credit quickly.",
-                    "C": "Use a secured credit card or become an authorized user, make small, consistent purchases, and pay the balance in full each month.",
-                    "D": "Only borrow money for essential needs, regardless of interest rates."
+                    "A": "Apply for multiple premium rewards cards immediately to maximize benefits",
+                    "B": "Avoid credit completely and only use cash or debit for all purchases",
+                    "C": "Get one card, use it for small purchases, and pay the full balance monthly",
+                    "D": "Open several store credit cards to get the signup discounts and rewards"
                 },
                 "correct": "C",
                 "rationale": "Lesson 4.4 provides specific, safe strategies for building credit. Option C combines the suggested tools (secured card/authorized user) with the recommended behavior (small purchases, full payment), which are low-risk and effective for establishing a positive credit history. Option A is too extreme and misses out on the benefits of credit. Option B is a dangerous strategy that will lead to high debt. Option D is partially correct but misses the actionable part of building credit."
@@ -516,10 +516,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q04",
                 "text": "Before taking on ANY debt, what is the key question to ask yourself?",
                 "options": {
-                    "A": "I will apply for several new credit cards to increase my available credit.",
-                    "B": "I will ignore my credit score and any credit-related mail.",
-                    "C": "I will research if I can become an authorized user on a responsible family member's credit card.",
-                    "D": "I will take out a personal loan to consolidate any existing small debts."
+                    "A": "Will this debt help build something valuable or just finance temporary wants?",
+                    "B": "Can I get approved for the maximum credit limit available to me?",
+                    "C": "What's the absolute minimum monthly payment I'll need to make each month?",
+                    "D": "How many different credit cards or loans can I qualify for right now?"
                 },
                 "correct": "C",
                 "rationale": "This question prompts a practical, small step based on the chapter's advice. Lesson 4.4 suggests becoming an authorized user as a safe way to build credit. Researching this possibility is a concrete, low-commitment action that aligns with the chapter's guidance. Option A is risky. Option B is neglectful. Option D might be premature or not suitable without deeper analysis."
@@ -560,10 +560,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q01",
                 "text": "Why should you invest instead of just saving cash under your mattress?",
                 "options": {
-                    "A": "Investing is a way to use money to buy assets that can grow in value or generate income over time, with key principles being understanding risk, diversifying, keeping costs low, and starting with consistent, automated actions.",
-                    "B": "Investing is only for wealthy individuals who can afford to take big risks.",
-                    "C": "The fastest way to get rich is by day trading stocks.",
-                    "D": "Investing is too complicated for beginners and should be avoided."
+                    "A": "Cash under your mattress is perfectly safe and you'll never lose access to it",
+                    "B": "Investing grows your money through compound returns that outpace inflation over time",
+                    "C": "Investing guarantees you'll double your money every year without any risk involved",
+                    "D": "Cash savings always earn higher returns than any investment strategy available"
                 },
                 "correct": "A",
                 "rationale": "This option accurately captures the core messages of the chapter: investing's purpose (growth/income), its benefits over time, and the essential principles of risk management, diversification, cost control, and consistent action. Options B, C, and D present misconceptions or extreme views not supported by the chapter."
@@ -572,10 +572,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q02",
                 "text": "What is the relationship between risk and reward in investing?",
                 "options": {
-                    "A": "A person puts all their savings into a single tech stock hoping it will skyrocket.",
-                    "B": "Someone invests $100 every month into a broad market index fund that holds hundreds of different companies.",
-                    "C": "An individual tries to predict the stock market daily to make quick profits.",
-                    "D": "A person invests money they need for rent next month into a volatile cryptocurrency."
+                    "A": "Higher potential returns usually come with higher risk of losing money",
+                    "B": "Risk and reward are completely unrelated factors in investment decisions",
+                    "C": "High-risk investments always deliver guaranteed high returns to investors",
+                    "D": "Low-risk investments consistently provide the best long-term returns"
                 },
                 "correct": "B",
                 "rationale": "This example perfectly illustrates diversification (Lesson 5.3) and consistent, automated investing (Lesson 5.4). Investing in a broad index fund spreads risk across many assets, and the recurring monthly investment represents a sound beginner strategy. Option A is the opposite of diversification. Options C and D describe risky, speculative behaviors that the chapter advises against."
@@ -584,10 +584,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q03",
                 "text": "What does diversification mean in simple terms?",
                 "options": {
-                    "A": "Invest all your available money into one trending stock you heard about.",
-                    "B": "Wait until you have a large sum of money before you start investing.",
-                    "C": "Invest a small, regular amount into a diversified fund, and avoid investing money needed in the short term.",
-                    "D": "Try to time the market by buying low and selling high based on daily news."
+                    "A": "Investing all your money in a single stock you strongly believe will succeed",
+                    "B": "Researching and only buying stock in companies whose products you personally use",
+                    "C": "Spreading investments across different assets so one failure won't destroy you",
+                    "D": "Focusing exclusively on the most expensive stocks from well-known companies"
                 },
                 "correct": "C",
                 "rationale": "This option synthesizes the most critical and practical advice for beginners from the chapter: consistent investing in diversified assets (Lessons 5.3 & 5.4), and earmarking funds based on their time horizon (Lesson 5.4). This approach balances risk and reward and focuses on long-term growth, which is the chapter's emphasis. Option A is highly risky. Option B is a common mistake that delays wealth building. Option D describes market timing, which the chapter suggests is not a reliable strategy."
@@ -596,10 +596,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q04",
                 "text": "What is a smart beginner investing move mentioned in this chapter?",
                 "options": {
-                    "A": "I will immediately sell all my existing investments to focus on day trading.",
-                    "B": "I will research low-cost, diversified index funds that I could potentially invest in.",
-                    "C": "I will try to predict which stocks will perform best tomorrow.",
-                    "D": "I will invest all my savings into a single cryptocurrency."
+                    "A": "Day trading penny stocks to maximize short-term profits from market volatility",
+                    "B": "Start with low-cost index funds that track the entire market's performance",
+                    "C": "Invest your entire savings in cryptocurrency for potentially explosive growth",
+                    "D": "Wait until you're 40 years old before beginning any investment strategy"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, beginner-friendly action. Lesson 5.3 emphasizes diversification and simplicity, and Lesson 5.4 suggests learning the basics. Researching diversified index funds is a proactive, educational step that aligns with these principles and is a good starting point for someone new to investing. Options A, C, and D involve risky, speculative, or ill-advised actions."
