@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import telemetryService from '../utils/telemetry';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-function LPIChapter({ token }) {
+function LPIChapter({ token, user }) {
   const { chapterId } = useParams();
   const navigate = useNavigate();
   const [chapter, setChapter] = useState(null);
@@ -15,6 +16,7 @@ function LPIChapter({ token }) {
   const [quizResult, setQuizResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [quizStartTime, setQuizStartTime] = useState(null);
 
   useEffect(() => {
     fetchChapter();
