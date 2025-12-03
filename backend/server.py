@@ -838,6 +838,227 @@ async def get_quiz_content():
         quiz_content.append(chapter_data)
     return quiz_content
 
+# ===========================
+# Database Schema v1.0: Family Management APIs
+# ===========================
+
+@api_router.post("/families", status_code=status.HTTP_201_CREATED)
+async def create_family(family_data: FamilyCreate, user_id: str = Depends(get_current_user)):
+    """Create a new family with unique family code"""
+    # Generate unique 8-character family code
+    family_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    
+    # Ensure uniqueness
+    while await db.families.find_one({"family_code": family_code}):
+        family_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    
+    family = Family(
+        family_name=family_data.family_name,
+        family_code=family_code,
+        primary_contact_user_id=family_data.primary_contact_user_id or user_id,
+        tenant_id=family_data.tenant_id,
+        plan_tier=family_data.plan_tier
+    )
+    
+    family_dict = family.model_dump()
+    family_dict['created_at'] = family_dict['created_at'].isoformat()
+    family_dict['updated_at'] = family_dict['updated_at'].isoformat()
+    
+    await db.families.insert_one(family_dict)
+    
+    return {"message": "Family created successfully", "family": family_dict}
+
+@api_router.get("/families")
+async def list_families(user_id: str = Depends(get_current_user), tenant_id: Optional[str] = "POC"):
+    """List all families for a tenant (with optional user filter)"""
+    query = {"is_deleted": False, "tenant_id": tenant_id}
+    families = await db.families.find(query, {"_id": 0}).to_list(1000)
+    
+    for fam in families:
+        if isinstance(fam.get('created_at'), str):
+            fam['created_at'] = datetime.fromisoformat(fam['created_at'])
+        if isinstance(fam.get('updated_at'), str):
+            fam['updated_at'] = datetime.fromisoformat(fam['updated_at'])
+    
+    return families
+
+@api_router.get("/families/{family_id}")
+async def get_family(family_id: str, user_id: str = Depends(get_current_user)):
+    """Get a specific family by ID"""
+    family = await db.families.find_one({"id": family_id, "is_deleted": False}, {"_id": 0})
+    
+    if not family:
+        raise HTTPException(status_code=404, detail="Family not found")
+    
+    if isinstance(family.get('created_at'), str):
+        family['created_at'] = datetime.fromisoformat(family['created_at'])
+    if isinstance(family.get('updated_at'), str):
+        family['updated_at'] = datetime.fromisoformat(family['updated_at'])
+    
+    return family
+
+@api_router.put("/families/{family_id}")
+async def update_family(family_id: str, update_data: dict, user_id: str = Depends(get_current_user)):
+    """Update family details"""
+    family = await db.families.find_one({"id": family_id, "is_deleted": False})
+    
+    if not family:
+        raise HTTPException(status_code=404, detail="Family not found")
+    
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.families.update_one(
+        {"id": family_id},
+        {"$set": update_data}
+    )
+    
+    return {"message": "Family updated successfully"}
+
+@api_router.delete("/families/{family_id}")
+async def delete_family(family_id: str, user_id: str = Depends(get_current_user)):
+    """Soft delete a family and all associated family members"""
+    family = await db.families.find_one({"id": family_id, "is_deleted": False})
+    
+    if not family:
+        raise HTTPException(status_code=404, detail="Family not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # Soft delete the family
+    await db.families.update_one(
+        {"id": family_id},
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": now,
+            "updated_at": now
+        }}
+    )
+    
+    # Soft delete all associated family members (orphan prevention)
+    await db.family_members.update_many(
+        {"family_id": family_id, "is_deleted": False},
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": now,
+            "updated_at": now,
+            "status": "removed"
+        }}
+    )
+    
+    return {"message": "Family and associated members deleted successfully"}
+
+# ===========================
+# Family Members Management
+# ===========================
+
+@api_router.post("/family-members", status_code=status.HTTP_201_CREATED)
+async def add_family_member(member_data: FamilyMemberCreate, user_id: str = Depends(get_current_user)):
+    """Add a user to a family"""
+    # Verify family exists
+    family = await db.families.find_one({"id": member_data.family_id, "is_deleted": False})
+    if not family:
+        raise HTTPException(status_code=404, detail="Family not found")
+    
+    # Check if user already in family
+    existing = await db.family_members.find_one({
+        "family_id": member_data.family_id,
+        "user_id": member_data.user_id,
+        "is_deleted": False
+    })
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="User already in this family")
+    
+    member = FamilyMember(
+        family_id=member_data.family_id,
+        user_id=member_data.user_id,
+        role=member_data.role,
+        is_primary_guardian=member_data.is_primary_guardian,
+        tenant_id=family.get('tenant_id', 'POC')
+    )
+    
+    member_dict = member.model_dump()
+    member_dict['joined_at'] = member_dict['joined_at'].isoformat()
+    member_dict['created_at'] = member_dict['created_at'].isoformat()
+    member_dict['updated_at'] = member_dict['updated_at'].isoformat()
+    
+    await db.family_members.insert_one(member_dict)
+    
+    return {"message": "Family member added successfully", "member": member_dict}
+
+@api_router.get("/family-members/family/{family_id}")
+async def get_family_members(family_id: str, user_id: str = Depends(get_current_user)):
+    """Get all members of a family"""
+    members = await db.family_members.find(
+        {"family_id": family_id, "is_deleted": False},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    for member in members:
+        if isinstance(member.get('joined_at'), str):
+            member['joined_at'] = datetime.fromisoformat(member['joined_at'])
+        if isinstance(member.get('created_at'), str):
+            member['created_at'] = datetime.fromisoformat(member['created_at'])
+        if isinstance(member.get('updated_at'), str):
+            member['updated_at'] = datetime.fromisoformat(member['updated_at'])
+    
+    return members
+
+@api_router.get("/family-members/user/{user_id_param}")
+async def get_user_families(user_id_param: str, user_id: str = Depends(get_current_user)):
+    """Get all families a user belongs to"""
+    memberships = await db.family_members.find(
+        {"user_id": user_id_param, "is_deleted": False},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    return memberships
+
+@api_router.put("/family-members/{member_id}")
+async def update_family_member(
+    member_id: str,
+    update_data: FamilyMemberUpdate,
+    user_id: str = Depends(get_current_user)
+):
+    """Update family member details"""
+    member = await db.family_members.find_one({"id": member_id, "is_deleted": False})
+    
+    if not member:
+        raise HTTPException(status_code=404, detail="Family member not found")
+    
+    update_dict = {k: v for k, v in update_data.model_dump().items() if v is not None}
+    update_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.family_members.update_one(
+        {"id": member_id},
+        {"$set": update_dict}
+    )
+    
+    return {"message": "Family member updated successfully"}
+
+@api_router.delete("/family-members/{member_id}")
+async def remove_family_member(member_id: str, user_id: str = Depends(get_current_user)):
+    """Soft delete a family member"""
+    member = await db.family_members.find_one({"id": member_id, "is_deleted": False})
+    
+    if not member:
+        raise HTTPException(status_code=404, detail="Family member not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    await db.family_members.update_one(
+        {"id": member_id},
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": now,
+            "updated_at": now,
+            "status": "removed",
+            "removed_at": now
+        }}
+    )
+    
+    return {"message": "Family member removed successfully"}
+
 # Validate quiz integrity on startup
 print("\n🔍 Validating quiz answers...")
 validation_report, quiz_validator = validate_quiz_integrity(
