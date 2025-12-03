@@ -1083,6 +1083,7 @@ async def update_family_member(
     
     update_dict = {k: v for k, v in update_data.model_dump().items() if v is not None}
     update_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+    update_dict['updated_by'] = user_id
     
     await db.family_members.update_one(
         {"id": member_id},
