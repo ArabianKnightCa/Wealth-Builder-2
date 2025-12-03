@@ -880,10 +880,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q01",
                 "text": "What are the most common financial risks young people face?",
                 "options": {
-                    "A": "The chapter advises on how to protect your finances by understanding common risks, building an emergency fund, securing appropriate insurance, and safeguarding personal information.",
-                    "B": "The only way to protect your money is to hide it under your mattress.",
-                    "C": "Insurance is a scam designed to take your money.",
-                    "D": "Financial risks are unavoidable and cannot be prepared for."
+                    "A": "Unexpected medical emergencies, job loss, car repairs, and unplanned expenses",
+                    "B": "Stock market crashes that only affect retirement accounts for older people",
+                    "C": "Taxes are the primary and most dangerous financial risk anyone faces today",
+                    "D": "Identity theft exclusively - physical risks don't matter in the digital age"
                 },
                 "correct": "A",
                 "rationale": "This option accurately summarizes the chapter's core message and its four main components: identifying risks, creating an emergency buffer, using insurance for protection, and securing digital information. Options B, C, and D present extreme, inaccurate, or negative views not supported by the chapter."
@@ -892,10 +892,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q02",
                 "text": "Why is an emergency fund your first line of defense against financial stress?",
                 "options": {
-                    "A": "A person decides not to get health insurance because they are young and healthy.",
-                    "B": "Someone sets aside $500 in a separate savings account specifically for unexpected car repairs.",
-                    "C": "A person shares their bank account password with a friend.",
-                    "D": "An individual invests all their savings in a single high-risk stock, ignoring potential losses."
+                    "A": "Emergency funds earn the highest interest rates of any savings strategy available",
+                    "B": "An emergency fund prevents you from going into debt when unexpected costs hit",
+                    "C": "Banks require emergency funds before approving any loans or credit applications",
+                    "D": "Emergency funds are only necessary for people over 40 with families to support"
                 },
                 "correct": "B",
                 "rationale": "This example directly illustrates the concept of building an 'Emergency Buffer' (Lesson 9.2). Setting aside a specific amount for unexpected expenses like car repairs is a practical application of creating a financial cushion to manage risk. Option A demonstrates a lack of preparation for health risks. Option C shows a failure to secure information. Option D is about investing risk, not protection from common financial risks."
@@ -904,10 +904,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q03",
                 "text": "What types of smart protection should you consider as you build wealth?",
                 "options": {
-                    "A": "Avoid insurance at all costs, as it is a waste of money.",
-                    "B": "Build a robust emergency fund covering 3–6 months of essential expenses and secure essential insurance policies like health and renters/homeowners insurance based on your situation.",
-                    "C": "Share all your passwords with trusted friends and family to ensure someone can access your accounts if something happens.",
-                    "D": "Focus only on preventing scams and ignore other financial risks."
+                    "A": "Only life insurance matters - all other protection types are unnecessary expenses",
+                    "B": "Insurance for health, income protection, and valuable assets as wealth grows",
+                    "C": "Protection isn't needed until you're 50 years old with significant assets",
+                    "D": "The most expensive insurance coverage available is always the smartest choice"
                 },
                 "correct": "B",
                 "rationale": "This option combines the most crucial protective measures discussed: building a substantial emergency fund (Lesson 9.2) and securing appropriate insurance (Lesson 9.3). It acknowledges the need for both personal preparedness and external protection mechanisms. Options A and C suggest dangerous or detrimental practices. Option D is too narrow, as the chapter covers multiple types of risks."
@@ -916,10 +916,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q04",
                 "text": "How much should a beginner aim to have in their emergency buffer?",
                 "options": {
-                    "A": "I will ignore all potential financial risks and hope for the best.",
-                    "B": "I will research what type of insurance is most relevant to my current living situation.",
-                    "C": "I will share my passwords with a few close friends for safekeeping.",
-                    "D": "I will spend all my savings on a luxury item and forget about emergencies."
+                    "A": "At least $50,000 saved before considering any other financial goals at all",
+                    "B": "Start with $500-1,000, then build toward 3-6 months of living expenses",
+                    "C": "Exactly 12 months of expenses before spending money on anything discretionary",
+                    "D": "Emergency funds aren't necessary until you own a home and have children"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, small step. Lesson 9.1 emphasizes identifying risks, and Lesson 9.3 discusses securing appropriate insurance. Researching relevant insurance policies based on one's situation is a proactive and manageable step that aligns directly with preparing for common financial risks. Options A, C, and D are contrary to the chapter's advice."
@@ -960,10 +960,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q01",
                 "text": "What are the red flags that something might be a financial scam?",
                 "options": {
-                    "A": "This chapter provides guidance on identifying and avoiding common scams by recognizing red flags, protecting online accounts, and knowing how to respond if you become a victim.",
-                    "B": "All unsolicited messages are scams.",
-                    "C": "It is impossible to protect yourself from scams in today's world.",
-                    "D": "Scammers are always obvious and easy to spot."
+                    "A": "Guaranteed high returns with no risk, pressure to act now, requests for personal info",
+                    "B": "Any investment opportunity that promises returns higher than 5% annually",
+                    "C": "Financial advisors who charge fees instead of working for completely free",
+                    "D": "Investment opportunities that take longer than one month to see returns"
                 },
                 "correct": "A",
                 "rationale": "This option accurately summarizes the chapter's main focus: providing practical advice for scam identification, prevention, and response. It covers the key elements of spotting red flags, protecting accounts, and taking action after an incident. Options B, C, and D present overly broad, pessimistic, or inaccurate generalizations about scams."
@@ -972,10 +972,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q02",
                 "text": "Someone offers you a guaranteed 50% return in one month. What should you do?",
                 "options": {
-                    "A": "An email arrives asking for your bank account details to 'verify your account' due to a supposed security breach.",
-                    "B": "Someone receives a job offer for a position they didn't apply for, with an unusually high salary and a request to pay for equipment upfront.",
-                    "C": "A person receives a text message from their bank asking them to click a link to update their account information.",
-                    "D": "All of the above."
+                    "A": "Invest all your money immediately before this once-in-a-lifetime opportunity expires",
+                    "B": "Invest half your savings to test it out while keeping some money as backup",
+                    "C": "Research the person thoroughly and ask for references from current investors",
+                    "D": "Walk away immediately - guaranteed 50% monthly returns are impossible and fraudulent"
                 },
                 "correct": "D",
                 "rationale": "All of the provided scenarios are classic examples of common scams discussed in the chapter. Option A is a phishing attempt. Option B is a fake job offer scam. Option C is a common form of phishing via text message (smishing). Therefore, 'All of the above' is the correct answer as each option illustrates a concept from the chapter."
@@ -984,10 +984,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q03",
                 "text": "How can you protect your personal financial information online?",
                 "options": {
-                    "A": "Immediately respond to any urgent requests for personal information or money.",
-                    "B": "Enable two-factor authentication (2FA) on all your important online accounts and use strong, unique passwords.",
-                    "C": "Click on any suspicious links or download attachments from unknown senders to see what they are.",
-                    "D": "Share your login credentials with a friend for safekeeping."
+                    "A": "Share all your financial information freely since banks already have your data",
+                    "B": "Use strong unique passwords, enable two-factor authentication, monitor accounts regularly",
+                    "C": "Only access financial accounts from public WiFi networks at coffee shops",
+                    "D": "Write all your passwords in a notebook you carry with you everywhere"
                 },
                 "correct": "B",
                 "rationale": "Lesson 10.3 emphasizes protecting your accounts, and enabling 2FA and using strong passwords are the most fundamental and effective digital habits for doing so. This practice directly addresses account security and prevents unauthorized access. Option A is a tactic used by scammers. Option C is a dangerous action that can lead to infection or compromise. Option D is a security risk."
@@ -996,10 +996,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q04",
                 "text": "If something sounds too good to be true financially, what should you assume?",
                 "options": {
-                    "A": "I will ignore all security advice and continue using weak passwords.",
-                    "B": "I will research and enable two-factor authentication on at least one of my critical online accounts.",
-                    "C": "I will click on a suspicious link to see if it's a scam.",
-                    "D": "I will share my bank login details with someone I trust implicitly."
+                    "A": "Assume it's likely legitimate and worth investigating further with due diligence",
+                    "B": "Invest a small amount to test whether it's real before committing more money",
+                    "C": "Ask your friends and family if they've heard about this opportunity before",
+                    "D": "Assume it's probably a scam and protect yourself by walking away immediately"
                 },
                 "correct": "B",
                 "rationale": "This question seeks a practical, small step. Lesson 10.3 stresses the importance of securing accounts, with enabling two-factor authentication (2FA) being a key recommendation. Researching and implementing 2FA on an account is a concrete, actionable step that directly enhances security and aligns with the chapter's advice. Options A, C, and D are all counterproductive or dangerous."
