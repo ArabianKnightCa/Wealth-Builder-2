@@ -872,6 +872,86 @@ async def get_quiz_content():
     return quiz_content
 
 # ===========================
+# Database Schema v1.0: Form Templates System
+# ===========================
+
+FORM_TEMPLATES = {
+    "user_form_basic_v1": {
+        "id": "user_form_basic_v1",
+        "type": "form",
+        "collection": "users",
+        "label": "User (Basic)",
+        "fields": [
+            {"name": "first_name", "label": "First Name", "input": "text", "required": True},
+            {"name": "last_name", "label": "Last Name", "input": "text", "required": False},
+            {"name": "display_name", "label": "Display Name", "input": "text", "required": False},
+            {"name": "email", "label": "Email", "input": "email", "required": False},
+            {"name": "role_primary", "label": "Primary Role", "input": "select", "options": ["parent", "child", "learner", "admin"], "required": True},
+            {"name": "date_of_birth", "label": "Date of Birth", "input": "date", "required": False},
+            {"name": "locale", "label": "Locale", "input": "text", "required": False},
+            {"name": "time_zone", "label": "Time Zone", "input": "text", "required": False}
+        ],
+        "defaults": {
+            "tenant_id": "{{currentTenantId}}",
+            "created_by": "{{currentUserId}}",
+            "updated_by": "{{currentUserId}}",
+            "is_deleted": False
+        }
+    },
+    "family_form_basic_v1": {
+        "id": "family_form_basic_v1",
+        "type": "form",
+        "collection": "families",
+        "label": "Family (Basic)",
+        "fields": [
+            {"name": "family_name", "label": "Family Name", "input": "text", "required": True},
+            {"name": "plan_tier", "label": "Plan Tier", "input": "select", "options": ["free", "basic", "premium"], "required": True},
+            {"name": "primary_contact_user_id", "label": "Primary Contact User ID", "input": "text", "required": False}
+        ],
+        "defaults": {
+            "tenant_id": "{{currentTenantId}}",
+            "created_by_user_id": "{{currentUserId}}",
+            "created_by": "{{currentUserId}}",
+            "updated_by": "{{currentUserId}}",
+            "plan_status": "active",
+            "is_deleted": False
+        }
+    },
+    "family_member_form_basic_v1": {
+        "id": "family_member_form_basic_v1",
+        "type": "form",
+        "collection": "family_members",
+        "label": "Family Member (Basic)",
+        "fields": [
+            {"name": "family_id", "label": "Family ID", "input": "text", "required": True},
+            {"name": "user_id", "label": "User ID", "input": "text", "required": True},
+            {"name": "role", "label": "Role", "input": "select", "options": ["parent", "child", "guardian", "dependent"], "required": True},
+            {"name": "is_primary_guardian", "label": "Primary Guardian", "input": "checkbox", "required": False},
+            {"name": "status", "label": "Status", "input": "select", "options": ["pending", "active", "removed"], "required": True}
+        ],
+        "defaults": {
+            "tenant_id": "{{currentTenantId}}",
+            "created_by": "{{currentUserId}}",
+            "updated_by": "{{currentUserId}}",
+            "is_deleted": False,
+            "status": "active"
+        }
+    }
+}
+
+def apply_template_defaults(template: dict, user_id: str, tenant_id: str = "POC") -> dict:
+    """Apply template variable substitution"""
+    defaults = template.get("defaults", {}).copy()
+    
+    for key, value in defaults.items():
+        if isinstance(value, str):
+            value = value.replace("{{currentUserId}}", user_id)
+            value = value.replace("{{currentTenantId}}", tenant_id)
+            defaults[key] = value
+    
+    return defaults
+
+# ===========================
 # Database Schema v1.0: Enhanced Query Filters & Relations
 # ===========================
 
