@@ -15,8 +15,17 @@
       ],
       "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["base", "decision_style", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "decision_style",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q02",
@@ -28,10 +37,19 @@
         "C Save only for specific goals",
         "D I struggle to save consistently"
       ],
-      "age_min": 10,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "savings", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "savings",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q03",
@@ -43,10 +61,19 @@
         "C Uncertain but hopeful",
         "D Confident and prepared"
       ],
-      "age_min": 12,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["motivation", "confidence", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "confidence",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q04",
@@ -58,10 +85,19 @@
         "C Rarely or never",
         "D Only when I'm worried about money"
       ],
-      "age_min": 10,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "tracking", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "tracking",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q05",
@@ -75,8 +111,17 @@
       ],
       "age_min": 12,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["goals", "motivation", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "goals",
+        "motivation",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q06",
@@ -88,10 +133,19 @@
         "C Split it between saving and spending",
         "D Use it to pay bills or debt"
       ],
-      "age_min": 10,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "impulse", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "impulse",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q07",
@@ -105,8 +159,17 @@
       ],
       "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["base", "learning_style", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "learning_style",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q08",
@@ -120,8 +183,16 @@
       ],
       "age_min": 16,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "risk_tolerance", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "risk_tolerance",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q09",
@@ -133,10 +204,19 @@
         "C Short-term goals I can achieve quickly",
         "D Long-term vision with flexibility"
       ],
-      "age_min": 10,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["goals", "planning", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "goals",
+        "planning",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q10",
@@ -150,8 +230,17 @@
       ],
       "age_min": 12,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["motivation", "confidence", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "confidence",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q11",
@@ -163,25 +252,42 @@
         "C Impulsive at times",
         "D Often reactive to emotions"
       ],
-      "age_min": 10,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "impulse", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "impulse",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q12",
       "type": "mcq",
       "prompt": "My knowledge of investing is:",
       "options": [
-        "A Strong – I actively invest",
-        "B Basic – I understand the concepts",
-        "C Limited – I'm just starting to learn",
-        "D None – It seems too complicated"
+        "A Strong \u2013 I actively invest",
+        "B Basic \u2013 I understand the concepts",
+        "C Limited \u2013 I'm just starting to learn",
+        "D None \u2013 It seems too complicated"
       ],
       "age_min": 16,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["confidence", "knowledge", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "confidence",
+        "knowledge",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q13",
@@ -193,10 +299,19 @@
         "C Need support from others to cope",
         "D Find it very difficult to bounce back"
       ],
-      "age_min": 12,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["confidence", "resilience", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "confidence",
+        "resilience",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q14",
@@ -210,23 +325,39 @@
       ],
       "age_min": 10,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "impulse", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "impulse",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q15",
       "type": "mcq",
       "prompt": "My comfort level with financial risk is:",
       "options": [
-        "A High – I'm willing to take calculated risks",
-        "B Moderate – Some risk is okay",
-        "C Low – I prefer safety and stability",
-        "D Very low – I avoid risk completely"
+        "A High \u2013 I'm willing to take calculated risks",
+        "B Moderate \u2013 Some risk is okay",
+        "C Low \u2013 I prefer safety and stability",
+        "D Very low \u2013 I avoid risk completely"
       ],
-      "age_min": 14,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["risk_tolerance", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "risk_tolerance",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q16",
@@ -235,13 +366,22 @@
       "options": [
         "A Openly and regularly",
         "B Occasionally when relevant",
-        "C Rarely – it feels uncomfortable",
-        "D Never – it's too personal"
+        "C Rarely \u2013 it feels uncomfortable",
+        "D Never \u2013 it's too personal"
       ],
       "age_min": 12,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["confidence", "social", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "confidence",
+        "social",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q17",
@@ -253,10 +393,19 @@
         "C Understanding financial concepts",
         "D Staying motivated to save"
       ],
-      "age_min": 12,
+      "age_min": 6,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["motivation", "challenges", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "challenges",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q18",
@@ -270,8 +419,17 @@
       ],
       "age_min": 12,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["habits", "planning", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "habits",
+        "planning",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q19",
@@ -285,8 +443,17 @@
       ],
       "age_min": 10,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["base", "self_assessment", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "base",
+        "self_assessment",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     },
     {
       "id": "PPI_Q20",
@@ -300,8 +467,17 @@
       ],
       "age_min": 10,
       "age_max": 99,
-      "experience_levels": ["beginner", "intermediate", "advanced"],
-      "tags": ["motivation", "goals", "beginner_safe", "intermediate_safe"]
+      "experience_levels": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "tags": [
+        "motivation",
+        "goals",
+        "beginner_safe",
+        "intermediate_safe"
+      ]
     }
   ]
 }
