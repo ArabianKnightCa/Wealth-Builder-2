@@ -1213,7 +1213,7 @@ async def delete_family(
 # ===========================
 
 @api_router.get("/forms/templates")
-async def list_form_templates(user_id: str = Depends(get_current_user)):
+async def list_form_templates():
     """List all available form templates"""
     return list(FORM_TEMPLATES.values())
 
