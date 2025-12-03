@@ -240,10 +240,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q01",
                 "text": "Why does money work better than bartering for everyday transactions?",
                 "options": {
-                    "A": "Money is printed by the government, so it's more official",
-                    "B": "Money is shiny and physical, making it easier to carry",
-                    "C": "Money solves the 'timing problem' - you don't need to find someone who wants exactly what you have right now",
-                    "D": "Money is the same everywhere in the world"
+                    "A": "Money works better because it's standardized and regulated by governments worldwide",
+                    "B": "Money is more durable than goods and can be stored indefinitely without spoiling",
+                    "C": "Money solves the timing problem - you can store value and exchange it when needed",
+                    "D": "Money is universally accepted, making it easier than finding direct trade partners"
                 },
                 "correct": "C",
                 "rationale": "Money solves the fundamental timing problem of bartering. With bartering, you need to find someone who wants what you have AND has what you want at the exact same time. Money acts as a bridge that stores value until you're ready to use it, making exchange much more flexible and practical."
@@ -252,10 +252,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q02",
                 "text": "Your friend says 'Rich people are just lucky.' Based on this chapter, what's the most accurate response?",
                 "options": {
-                    "A": "You're right - wealth is entirely about luck and being born into the right family",
-                    "B": "Actually, people earn more when they solve bigger problems or develop skills that create more value for others",
-                    "C": "Money comes from government printing, so it's really about political connections",
-                    "D": "The only way to earn more is to work longer hours at any job"
+                    "A": "Luck and family wealth are the primary factors in someone becoming financially successful",
+                    "B": "People earn more when they develop skills that solve valuable problems for others",
+                    "C": "Working longer hours at any job is the only way to increase your income",
+                    "D": "Government policies determine who gets wealthy through regulations and tax breaks"
                 },
                 "correct": "B",
                 "rationale": "The chapter explains that earning differences are driven by the value and impact of problems people solve. While luck and circumstances play a role, developing skills and solving higher-impact problems is the fundamental driver of earning potential. It's not just about time worked, but about the value created."
@@ -264,10 +264,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q03",
                 "text": "If you start saving just $1 per day, what's the MOST important concept that makes this worthwhile?",
                 "options": {
-                    "A": "The physical act of putting cash in a jar",
-                    "B": "Compounding - earning interest on your savings plus the interest from previous periods",
-                    "C": "Having exactly $365 at the end of the year",
-                    "D": "Showing off your discipline to friends"
+                    "A": "The satisfaction of watching your savings account balance grow month by month",
+                    "B": "Compound growth - your money earns returns on both principal and previous earnings",
+                    "C": "The discipline of developing consistent financial habits that last a lifetime",
+                    "D": "Having emergency cash available for unexpected expenses that might arise"
                 },
                 "correct": "B",
                 "rationale": "Compounding is 'growth on growth' - when you earn interest on your original savings PLUS the interest you've already earned. This makes even tiny amounts grow significantly over time. It's not just about the end sum, but about how your money can grow exponentially when given time."
@@ -276,10 +276,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q04",
                 "text": "What's one practical action you could take THIS WEEK to apply the 'value of saving early' concept?",
                 "options": {
-                    "A": "Wait until you have $1000 saved before starting any saving habit",
-                    "B": "Set up an automatic transfer of even $1-5 right after your next payday",
-                    "C": "Research the history of money and banking systems for at least 3 hours",
-                    "D": "Identify one skill you have and think about a problem you could solve with it"
+                    "A": "Research different investment strategies and create a comprehensive financial plan",
+                    "B": "Set up automatic transfers of $1-5 from each paycheck into a savings account",
+                    "C": "Read several personal finance books to understand economic theory thoroughly",
+                    "D": "Calculate your net worth and create detailed spreadsheets of all expenses"
                 },
                 "correct": "B",
                 "rationale": "The chapter emphasizes starting small and automating savings. Setting up even a tiny automatic transfer ($1-5) right after payday is the most practical, immediate action. Option A delays action unnecessarily. Option C is academic, not actionable. Option D is good but less specific than B's concrete automated action."
@@ -320,10 +320,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q01",
                 "text": "Your friend says 'Budgets are boring and restrictive - they stop you from having fun!' What's the best response based on this chapter?",
                 "options": {
-                    "A": "You're right - budgets mean saying no to everything you enjoy",
-                    "B": "Actually, a budget is permission to spend on what you care about BECAUSE you planned for it",
-                    "C": "Budgets only work if you follow the 50/30/20 rule perfectly",
-                    "D": "Everyone should spend exactly 50% on needs no matter what"
+                    "A": "Budgets eliminate all discretionary spending and focus only on necessities",
+                    "B": "A budget gives you permission to spend on priorities because you planned ahead",
+                    "C": "Everyone must follow the 50/30/20 rule exactly for budgets to work properly",
+                    "D": "Budgets are only useful for people who struggle with overspending habits"
                 },
                 "correct": "B",
                 "rationale": "Option B captures the key insight from the chapter that budgets provide clarity and control, allowing you to spend intentionally on what matters to you. The chapter emphasizes that budgets are permission to spend, not restriction. Options A and C misrepresent budgeting as restrictive or rigid, while D oversimplifies the 50/30/20 rule."
@@ -332,10 +332,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q02",
                 "text": "You have $100 left after paying for rent and food this month. Using the 'needs vs wants' concept, what's the smartest move?",
                 "options": {
-                    "A": "Spend all $100 on a concert ticket - you deserve fun after working hard!",
-                    "B": "Put $20 toward savings/emergency fund, then use the rest for things you enjoy",
-                    "C": "Save nothing - you already paid for needs so the rest is for wants",
-                    "D": "Feel guilty about spending ANY of it and save all $100"
+                    "A": "Spend it all on entertainment - you earned it after covering your necessities",
+                    "B": "Save $20 for emergencies, then use the remaining $80 on things you enjoy",
+                    "C": "Put everything in savings immediately and don't spend any of it this month",
+                    "D": "Invest all $100 in stocks to maximize your long-term financial growth"
                 },
                 "correct": "B",
                 "rationale": "This example demonstrates the core principle of budgeting: prioritizing needs (rent, utilities) and then allocating a specific amount for wants (entertainment) within a defined limit. This shows intentional spending and control, a key takeaway from the chapter. Option A miscategorizes a want as a need. Option C exemplifies a lack of budgeting. Option D shows a failure to prioritize needs over wants."
@@ -344,10 +344,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q03",
                 "text": "The 50/30/20 rule suggests 50% needs, 30% wants, 20% savings. If your needs are actually 65% of your income, what should you do?",
                 "options": {
-                    "A": "Immediately adopt the 50/30/20 rule without considering my current income or expenses.",
-                    "B": "Focus on tracking every single penny spent each day, as this is the only way to budget effectively.",
-                    "C": "Create a simple, flexible budget that prioritizes needs, allows for wants, and includes savings, reviewing it weekly.",
-                    "D": "Avoid budgeting altogether, as it is too complicated and time-consuming."
+                    "A": "Force yourself to match 50/30/20 exactly even if it means cutting essential costs",
+                    "B": "Adjust to 65/15/20 and focus on building momentum with realistic numbers",
+                    "C": "Abandon budgeting entirely since the standard rule doesn't fit your situation",
+                    "D": "Eliminate all savings until your needs drop below 50% of your income"
                 },
                 "correct": "C",
                 "rationale": "Lesson 2.4 emphasizes making budgeting stick through simple systems. Lesson 2.1 highlights flexibility and clarity. Lesson 2.2 discusses prioritizing needs. Combining these, option C represents the best practice: a simple, flexible system that prioritizes key areas and involves regular review, making it sustainable and adaptable to one's situation. Option A is too rigid. Option B can be overwhelming and may not be sustainable. Option D contradicts the core message of the chapter."
@@ -356,10 +356,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q04",
                 "text": "What is the EASIEST way to make budgeting stick according to this chapter?",
                 "options": {
-                    "A": "I will ignore my bank account balance for the rest of the week.",
-                    "B": "I will create a detailed spreadsheet for every transaction I make.",
-                    "C": "I will identify one category of spending (e.g., dining out) and set a specific limit for it this week.",
-                    "D": "I will wait until the end of the month to review my spending habits."
+                    "A": "Track every transaction daily in a detailed spreadsheet with multiple categories",
+                    "B": "Do a quick 10-minute weekly check: money in vs out, plus one adjustment",
+                    "C": "Review your spending patterns once per year during tax season only",
+                    "D": "Set up your budget once and never look at it again after the initial setup"
                 },
                 "correct": "C",
                 "rationale": "This question asks for a personal, actionable step. Lesson 2.4 suggests making tracking simple and visible, and Lesson 2.2 encourages prioritizing. Setting a specific limit for one spending category is a concrete, manageable step that applies budgeting principles directly and can be reviewed easily at the end of the week, making it a good 'small step.' Option A is counterproductive. Option B might be too detailed for a 'small step' for some. Option D is too infrequent for effective budgeting as described in the chapter."
