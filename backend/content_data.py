@@ -640,10 +640,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q01",
                 "text": "What are the main levers you can pull to increase your income?",
                 "options": {
-                    "A": "The chapter teaches strategies for increasing income, focusing on improving skills, diversifying income sources, and using proof to negotiate better pay.",
-                    "B": "To increase income, you must work 80 hours a week.",
-                    "C": "The only way to earn more money is to start your own business.",
-                    "D": "Income is solely determined by luck."
+                    "A": "Develop in-demand skills, solve bigger problems, or create multiple income streams",
+                    "B": "Work more hours at your current job without changing your role or responsibilities",
+                    "C": "Wait for annual cost-of-living raises and hope for unexpected bonus payments",
+                    "D": "Focus exclusively on lottery tickets and gambling for potential income boosts"
                 },
                 "correct": "A",
                 "rationale": "This option accurately summarizes the chapter's core themes: strategies for income growth, including skill development, adding income streams, and negotiation tactics supported by evidence. Options B, C, and D present simplistic, extreme, or inaccurate views on income generation."
@@ -652,10 +652,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q02",
                 "text": "What does skill stacking mean and why is it powerful for earning more?",
                 "options": {
-                    "A": "A graphic designer who also learned basic web development starts offering combined design and simple website creation services.",
-                    "B": "An employee asks for a raise without any evidence of their accomplishments.",
-                    "C": "Someone decides to work two full-time jobs simultaneously.",
-                    "D": "An individual relies on winning the lottery to improve their financial situation."
+                    "A": "Combining multiple related skills to create unique value others can't easily replicate",
+                    "B": "Learning one highly specialized skill and ignoring everything else completely",
+                    "C": "Collecting certifications in random unrelated fields to pad your resume",
+                    "D": "Mastering skills that are identical to what everyone else in your field knows"
                 },
                 "correct": "A",
                 "rationale": "This example illustrates 'Skill Stacking' (Lesson 6.2), where combining two complementary skills (graphic design and web development) creates a more valuable offering and potential for increased income. Option B shows a failure to use proof for negotiation. Option C is about working more hours, not necessarily diversifying income or leveraging skills strategically. Option D relies on luck, not strategic income building."
@@ -664,10 +664,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q03",
                 "text": "What is the smart way to approach side gigs according to this chapter?",
                 "options": {
-                    "A": "Focus on mastering one highly specialized skill, as this is the only path to high income.",
-                    "B": "Always say yes to every side gig offered, regardless of pay or time commitment.",
-                    "C": "Identify one specific lever for income growth (skill improvement, changing pay structure, or adding a stream), focus on it for a set period, and gather proof of results to negotiate for better pay.",
-                    "D": "Avoid any form of negotiation and accept whatever salary or rate is initially offered."
+                    "A": "Take any available gig regardless of how it fits your goals or skills",
+                    "B": "Avoid all side work completely to focus on your main job exclusively",
+                    "C": "Choose gigs that build skills or connections aligned with your career goals",
+                    "D": "Only pursue side gigs that pay the maximum hourly rate possible"
                 },
                 "correct": "C",
                 "rationale": "This option combines the chapter's key actionable advice: focusing on one 'lever' at a time (Lesson 6.1), gathering proof of results for negotiation (Lesson 6.4), and implicitly allowing for skill stacking or side gigs as part of the process. This balanced and strategic approach is the most effective. Option A is too narrow. Option B leads to burnout and poor financial decisions. Option D misses a crucial opportunity for income growth."
@@ -676,10 +676,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q04",
                 "text": "You want a raise. What should you do BEFORE asking your boss?",
                 "options": {
-                    "A": "I will avoid learning any new skills to maintain my current income.",
-                    "B": "I will identify one skill that complements my current abilities and dedicate 30 minutes to learning more about it.",
-                    "C": "I will ignore any opportunities for side income.",
-                    "D": "I will ask for a significant raise without any supporting evidence."
+                    "A": "March into their office immediately and demand a raise without any preparation",
+                    "B": "Wait patiently for them to offer you a raise without ever asking directly",
+                    "C": "Document your contributions, research market rates, and prepare your case first",
+                    "D": "Threaten to quit unless they give you a raise within the next 48 hours"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, small step. Lesson 6.1 encourages focusing on one income-growth lever, and Lesson 6.2 highlights skill stacking. Dedicating time to learn about a complementary skill is a manageable and proactive step that aligns with both concepts and can lead to future income growth. Options A and C are counterproductive. Option D demonstrates poor negotiation strategy."
@@ -720,10 +720,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q01",
                 "text": "Why are systems more important than motivation for financial success?",
                 "options": {
-                    "A": "Financial success is purely about having high motivation and willpower.",
-                    "B": "The chapter emphasizes that building sustainable financial success relies on creating effective systems, aligning financial behaviors with a positive self-identity, deliberately managing lifestyle changes, and developing resilience to overcome setbacks.",
-                    "C": "Setbacks are inevitable and should lead to giving up on financial goals.",
-                    "D": "Lifestyle creep is a natural and positive outcome of earning more."
+                    "A": "Motivation is unreliable and fades quickly, but systems run automatically regardless",
+                    "B": "Motivation is the only factor that determines financial success in the long run",
+                    "C": "Systems are unnecessary if you have enough willpower and determination",
+                    "D": "Both motivation and systems are equally important and cannot work without each other"
                 },
                 "correct": "B",
                 "rationale": "This option effectively summarizes the chapter's core tenets: the importance of systems over fleeting motivation, the role of identity in shaping habits, the need for deliberate lifestyle management, and the concept of resilience in the face of financial challenges. Options A, C, and D present incomplete or incorrect perspectives."
@@ -732,10 +732,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q02",
                 "text": "What is lifestyle creep and why should you avoid it?",
                 "options": {
-                    "A": "Someone who frequently misses bill payments because they don't have a system for tracking them.",
-                    "B": "A person decides to automatically transfer 10% of every paycheck to savings and puts recurring bills on autopay.",
-                    "C": "An individual gets a promotion and immediately buys an expensive new car and upgrades their wardrobe without considering future goals.",
-                    "D": "Someone experiences an unexpected job loss and gives up on their financial plan."
+                    "A": "Starting a business that gradually expands as you earn more revenue",
+                    "B": "Increasing your spending proportionally whenever your income grows at all",
+                    "C": "Investing more money in your education as your career advances over time",
+                    "D": "Upgrading your living situation as your family size expands over the years"
                 },
                 "correct": "B",
                 "rationale": "This example clearly demonstrates the principle of 'Systems over Motivation' (Lesson 7.1). Automating savings and bill payments creates a reliable system that ensures essential financial tasks are completed by default, reducing reliance on fluctuating motivation. Option A shows a lack of system. Option C is an example of lifestyle creep. Option D demonstrates a lack of resilience."
@@ -744,10 +744,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q03",
                 "text": "How does your identity about money affect your financial decisions?",
                 "options": {
-                    "A": "Rely solely on willpower and motivation to achieve financial goals.",
-                    "B": "Adopt a positive money identity, build reliable systems for finances, plan for how to handle income increases deliberately, and have a clear process for resetting after setbacks.",
-                    "C": "Give up on financial goals whenever a setback occurs.",
-                    "D": "Increase spending immediately and proportionally with every pay raise."
+                    "A": "Your beliefs about money don't actually affect your financial decision making",
+                    "B": "Identity shapes behavior - seeing yourself as 'good with money' influences choices",
+                    "C": "Only your income level matters for financial success, not your mindset at all",
+                    "D": "Money identity only matters for wealthy people, not for average earners"
                 },
                 "correct": "B",
                 "rationale": "This option is the most comprehensive and aligns with all the key strategies discussed in the chapter. It emphasizes the interconnectedness of identity, systems, deliberate growth, and resilience as the foundation for financial success. Options A, C, and D represent approaches that are unsustainable or counterproductive according to the chapter's lessons."
@@ -756,10 +756,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q04",
                 "text": "You face a financial setback. What is the healthy way to cope according to this chapter?",
                 "options": {
-                    "A": "I will stop tracking my spending and just hope for the best.",
-                    "B": "I will identify one small financial habit I want to build and commit to doing it daily this week, no matter how I feel.",
-                    "C": "I will spend any extra money I get immediately on something frivolous.",
-                    "D": "I will avoid thinking about my financial goals and wait for inspiration to strike."
+                    "A": "Immediately make drastic lifestyle cuts and panic about your financial future",
+                    "B": "View it as a learning opportunity, adjust your plan, and keep moving forward",
+                    "C": "Give up entirely on your financial goals since you've proven you can't succeed",
+                    "D": "Ignore it completely and hope the problem resolves itself without any action"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a personal, actionable step. Lesson 7.2 highlights the connection between identity and habits, and Lesson 7.1 stresses systems over motivation. Committing to one small, repeatable habit that aligns with a desired financial identity is a perfect way to start building systems and proving identity. It's a small, manageable step that embodies the chapter's core message. Options A, C, and D are contrary to the chapter's teachings."
@@ -800,10 +800,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q01",
                 "text": "What makes a goal specific versus vague? Give an example of each.",
                 "options": {
-                    "A": "The chapter explains that turning dreams into reality requires making goals specific, breaking them down into actionable steps, tracking progress, and celebrating completions to build confidence for future endeavors.",
-                    "B": "Goals are best achieved through spontaneous bursts of effort.",
-                    "C": "Setting financial goals is a waste of time if you don't have a lot of money already.",
-                    "D": "The most important part of a goal is having a grand, ambitious vision."
+                    "A": "Specific: Save $3,000 in 12 months for laptop. Vague: Save money someday",
+                    "B": "Specific: Make more money. Vague: Earn $500 extra monthly through freelancing",
+                    "C": "Specific: Be better with finances. Vague: Reduce eating out to twice weekly",
+                    "D": "Specific: Get rich eventually. Vague: Invest $200 monthly in index funds"
                 },
                 "correct": "A",
                 "rationale": "This option accurately encapsulates the chapter's main points: the SMART principles (Specific, Measurable, Achievable, Relevant, Time-bound, though not explicitly stated as such, the content covers these aspects), the importance of planning and tracking, and the motivational power of finishing strong. Options B, C, and D misrepresent the process and value of goal setting."
@@ -812,10 +812,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q02",
                 "text": "You have a goal to save for college. How should you break it into steps?",
                 "options": {
-                    "A": "A person wants to 'save money' but doesn't specify an amount or deadline.",
-                    "B": "Someone wants to save $500 for a new laptop by October 1st, calculates they need to save $50 per week, and sets up an automatic transfer for that amount.",
-                    "C": "A student decides to 'get better grades' without defining what that means or how to achieve it.",
-                    "D": "An individual wishes they could 'travel more' but takes no concrete steps to plan or save for it."
+                    "A": "Set the total amount needed and hope you save enough by the deadline",
+                    "B": "Break it into steps: calculate total needed, divide by months, automate savings",
+                    "C": "Wait until you have the full amount saved before deciding where to attend",
+                    "D": "Focus only on the final number without planning monthly or yearly milestones"
                 },
                 "correct": "B",
                 "rationale": "This example demonstrates multiple key concepts from the chapter: making a goal specific (saving $500 for a laptop by Oct 1st), breaking it down into steps (calculating weekly savings), and implicitly suggesting automation and tracking for progress. This is a clear application of turning a dream into a plan. Options A and C are vague goals. Option D is a wish without a plan."
@@ -824,10 +824,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q03",
                 "text": "Why is tracking and adjusting your goals important, not just setting them?",
                 "options": {
-                    "A": "Set vague goals like 'save more money' and hope for the best.",
-                    "B": "Create specific, measurable goals with clear deadlines, break them down into small, scheduled steps, track progress regularly, and plan a way to celebrate completion.",
-                    "C": "Focus only on one large, long-term goal and ignore any smaller goals.",
-                    "D": "Avoid tracking progress, as it can be discouraging if you fall behind."
+                    "A": "Tracking shows progress and allows adjustments when life circumstances change",
+                    "B": "Once you set a goal, you should never change it regardless of circumstances",
+                    "C": "Tracking goals wastes time that could be spent earning more money instead",
+                    "D": "Goals work automatically without any monitoring or adjustment after setting them"
                 },
                 "correct": "B",
                 "rationale": "This option effectively integrates the four lessons of the chapter into a cohesive and actionable strategy. Specificity (8.1), breaking down steps (8.2), tracking and adjusting (8.3), and finishing strong (8.4) are all covered, making it the most effective practice for achieving goals. Option A is vague. Option C limits progress. Option D contradicts the importance of tracking for learning and adjustment."
@@ -836,10 +836,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q04",
                 "text": "What does finishing strong mean when it comes to achieving financial goals?",
                 "options": {
-                    "A": "I will think about a big dream I have.",
-                    "B": "I will identify one financial goal and write down exactly how much money I need and by when.",
-                    "C": "I will decide to stop setting goals altogether.",
-                    "D": "I will wait until I have a perfect plan before taking any action."
+                    "A": "Giving up when you're 80% complete because you're tired of the effort",
+                    "B": "Celebrating progress but staying focused until you completely achieve the goal",
+                    "C": "Setting new goals immediately without acknowledging what you've accomplished",
+                    "D": "Stopping your efforts as soon as you get close to achieving the target"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a small, actionable step. Lesson 8.1 emphasizes making goals specific. Identifying one financial goal and defining the amount and deadline is a concrete action that directly applies this principle and is a manageable first step towards creating a plan. Option A is too vague. Option C is counterproductive. Option D describes procrastination."
