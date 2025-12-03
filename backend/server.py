@@ -886,11 +886,14 @@ async def create_family(family_data: FamilyCreate, user_id: str = Depends(get_cu
         family_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     
     family = Family(
-        family_name=family_data.family_name,
+        family_name=family_data.family_name or "My Family",
         family_code=family_code,
+        created_by_user_id=user_id,
         primary_contact_user_id=family_data.primary_contact_user_id or user_id,
         tenant_id=family_data.tenant_id,
-        plan_tier=family_data.plan_tier
+        plan_tier=family_data.plan_tier,
+        created_by=user_id,
+        updated_by=user_id
     )
     
     family_dict = family.model_dump()
