@@ -106,9 +106,9 @@ function App() {
         <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
         <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
         <Route path="/onboarding" element={user ? <Onboarding user={user} token={token} /> : <Navigate to="/login" />} />
-        <Route path="/ppi" element={user ? <PPI token={token} /> : <Navigate to="/login" />} />
+        <Route path="/ppi" element={user ? <PPI token={token} user={user} /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/chapter/:chapterId" element={user ? <LPIChapter token={token} /> : <Navigate to="/login" />} />
+        <Route path="/chapter/:chapterId" element={user ? <LPIChapter token={token} user={user} /> : <Navigate to="/login" />} />
         <Route path="/settings" element={user ? <Settings user={user} token={token} /> : <Navigate to="/login" />} />
         <Route path="/completed" element={user ? <Completed token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
       </Routes>
