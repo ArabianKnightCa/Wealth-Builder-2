@@ -1220,12 +1220,37 @@ async def get_family_members(
     return members
 
 @api_router.get("/family-members/user/{user_id_param}")
-async def get_user_families(user_id_param: str, user_id: str = Depends(get_current_user)):
-    """Get all families a user belongs to"""
-    memberships = await db.family_members.find(
-        {"user_id": user_id_param, "is_deleted": False},
-        {"_id": 0}
-    ).to_list(1000)
+async def get_user_families(
+    user_id_param: str,
+    user_id: str = Depends(get_current_user),
+    active_only: bool = False,
+    include_family_data: bool = False,
+    tenant_id: str = "POC"
+):
+    """Get all families a user belongs to (manyThrough relation)"""
+    # Apply filters
+    if active_only:
+        query = QueryFilters.family_member_active_only(tenant_id)
+        query["user_id"] = user_id_param
+    else:
+        query = QueryFilters.family_member_by_user(tenant_id, user_id_param)
+    
+    memberships = await db.family_members.find(query, {"_id": 0}).to_list(1000)
+    
+    # Load family data if requested (manyThrough relation)
+    if include_family_data:
+        family_ids = [m['family_id'] for m in memberships]
+        families = await db.families.find(
+            {"id": {"$in": family_ids}, "tenant_id": tenant_id, "is_deleted": False},
+            {"_id": 0}
+        ).to_list(1000)
+        
+        # Create family lookup
+        family_map = {f['id']: f for f in families}
+        
+        # Attach family data to memberships
+        for membership in memberships:
+            membership['family'] = family_map.get(membership['family_id'])
     
     return memberships
 
