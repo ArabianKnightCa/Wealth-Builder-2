@@ -1132,6 +1132,38 @@ validation_report, quiz_validator = validate_quiz_integrity(
     fail_on_error=False  # Don't crash server, just warn
 )
 
+# Database Schema v1.0: Create indexes on startup
+async def create_database_indexes():
+    """Create indexes for performance optimization"""
+    print("\n📊 Creating database indexes...")
+    
+    try:
+        # Users indexes
+        await db.users.create_index([("tenant_id", 1), ("email", 1)], unique=True, sparse=True)
+        await db.users.create_index([("tenant_id", 1), ("created_at", 1)])
+        print("✓ Users indexes created")
+        
+        # Families indexes  
+        await db.families.create_index([("tenant_id", 1), ("family_code", 1)])
+        await db.families.create_index([("tenant_id", 1), ("created_at", 1)])
+        await db.families.create_index([("tenant_id", 1), ("is_deleted", 1)])
+        print("✓ Families indexes created")
+        
+        # Family Members indexes
+        await db.family_members.create_index([("tenant_id", 1), ("family_id", 1)])
+        await db.family_members.create_index([("tenant_id", 1), ("user_id", 1)])
+        await db.family_members.create_index([("tenant_id", 1), ("family_id", 1), ("user_id", 1)], unique=True, sparse=True)
+        await db.family_members.create_index([("family_id", 1), ("is_deleted", 1)])
+        print("✓ Family Members indexes created")
+        
+        print("✅ All database indexes created successfully")
+    except Exception as e:
+        print(f"⚠️ Index creation warning: {e}")
+
+# Run index creation on startup
+import asyncio
+asyncio.create_task(create_database_indexes())
+
 app.include_router(api_router)
 
 app.add_middleware(
