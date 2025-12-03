@@ -1018,16 +1018,22 @@ async def add_family_member(member_data: FamilyMemberCreate, user_id: str = Depe
     if existing:
         raise HTTPException(status_code=400, detail="User already in this family")
     
+    now = datetime.now(timezone.utc)
     member = FamilyMember(
         family_id=member_data.family_id,
         user_id=member_data.user_id,
         role=member_data.role,
         is_primary_guardian=member_data.is_primary_guardian,
-        tenant_id=family.get('tenant_id', 'POC')
+        status=member_data.status,
+        tenant_id=family.get('tenant_id', 'POC'),
+        joined_at=now,
+        created_by=user_id,
+        updated_by=user_id
     )
     
     member_dict = member.model_dump()
-    member_dict['joined_at'] = member_dict['joined_at'].isoformat()
+    if member_dict.get('joined_at'):
+        member_dict['joined_at'] = member_dict['joined_at'].isoformat()
     member_dict['created_at'] = member_dict['created_at'].isoformat()
     member_dict['updated_at'] = member_dict['updated_at'].isoformat()
     
