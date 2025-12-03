@@ -115,83 +115,116 @@ class SettingsUpdate(BaseModel):
     notifications_enabled: Optional[bool] = None
 
 # ===========================
-# Database Schema v1.0: Identity & Family Models
+# Database Schema v1.0: Identity & Family Models (Complete Spec)
 # ===========================
 
 class UserV1(BaseModel):
-    """Enhanced User model with tenant support and soft delete"""
+    """Enhanced User model with complete audit trail"""
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    tenant_id: str = "POC"  # POC, BETA, PROD
+    tenant_id: str = "POC"
     email: Optional[EmailStr] = None
+    email_verified: bool = False
+    password_hash: Optional[str] = None
+    auth_provider: Optional[str] = None  # google, email, etc
+    auth_provider_id: Optional[str] = None
     first_name: str
-    role_primary: str = "student"  # student, parent, admin, educator
-    role_flags: List[str] = []  # Additional role permissions
+    last_name: Optional[str] = None
+    display_name: Optional[str] = None
+    date_of_birth: Optional[str] = None  # ISO date format
+    locale: Optional[str] = "en"
+    time_zone: Optional[str] = None
+    role_primary: str = "student"
+    role_flags: List[str] = []
+    onboarding_status: Optional[str] = "not_started"
+    onboarding_step: Optional[str] = None
     ppi_profile_id: Optional[str] = None
+    avatar_style: Optional[str] = None
     settings: Dict[str, Any] = {}
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_by: str
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_by: str
     is_deleted: bool = False
     deleted_at: Optional[datetime] = None
+    deleted_by: Optional[str] = None
+    deleted_reason: Optional[str] = None
 
 class UserV1Create(BaseModel):
     email: Optional[EmailStr] = None
     first_name: str
+    last_name: Optional[str] = None
     role_primary: str = "student"
     tenant_id: str = "POC"
+    date_of_birth: Optional[str] = None
 
 class Family(BaseModel):
-    """Represents a household group"""
+    """Represents a household group with complete audit trail"""
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     tenant_id: str = "POC"
-    family_name: str
-    family_code: str  # Unique 8-char code for joining
+    family_name: Optional[str] = None
+    family_code: Optional[str] = None
+    created_by_user_id: str
     primary_contact_user_id: Optional[str] = None
-    plan_tier: str = "free"  # free, basic, premium
-    plan_status: str = "active"  # active, suspended, cancelled
+    plan_tier: Optional[str] = "free"
+    plan_status: Optional[str] = "active"
     billing_account_id: Optional[str] = None
     settings: Dict[str, Any] = {}
+    metadata: Dict[str, Any] = {}
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_by: str
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_by: str
     is_deleted: bool = False
     deleted_at: Optional[datetime] = None
+    deleted_by: Optional[str] = None
+    deleted_reason: Optional[str] = None
 
 class FamilyCreate(BaseModel):
-    family_name: str
+    family_name: Optional[str] = None
     primary_contact_user_id: Optional[str] = None
     tenant_id: str = "POC"
     plan_tier: str = "free"
 
 class FamilyMember(BaseModel):
-    """Join table linking users to families"""
+    """Join table with complete audit trail"""
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     tenant_id: str = "POC"
-    family_id: str  # Foreign key to Families.id
-    user_id: str  # Foreign key to Users.id
-    role: str = "child"  # parent, child, guardian, dependent
+    family_id: str
+    user_id: str
+    role: str
     is_primary_guardian: bool = False
-    permissions: Dict[str, Any] = {}  # View, edit, delete permissions
-    status: str = "active"  # pending, active, removed
-    joined_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    permissions: Dict[str, Any] = {}
+    status: str
+    invited_at: Optional[datetime] = None
+    joined_at: Optional[datetime] = None
     removed_at: Optional[datetime] = None
+    removed_by_user_id: Optional[str] = None
+    notes: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_by: str
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_by: str
     is_deleted: bool = False
     deleted_at: Optional[datetime] = None
+    deleted_by: Optional[str] = None
+    deleted_reason: Optional[str] = None
 
 class FamilyMemberCreate(BaseModel):
     family_id: str
     user_id: str
     role: str = "child"
     is_primary_guardian: bool = False
+    status: str = "active"
 
 class FamilyMemberUpdate(BaseModel):
     role: Optional[str] = None
     is_primary_guardian: Optional[bool] = None
     status: Optional[str] = None
     permissions: Optional[Dict[str, Any]] = None
+    notes: Optional[str] = None
 
 # ===========================
 # Helper Functions
