@@ -1209,6 +1209,132 @@ async def delete_family(
     return {"message": "Family and associated members deleted successfully"}
 
 # ===========================
+# Form Templates API
+# ===========================
+
+@api_router.get("/forms/templates")
+async def list_form_templates(user_id: str = Depends(get_current_user)):
+    """List all available form templates"""
+    return list(FORM_TEMPLATES.values())
+
+@api_router.get("/forms/templates/{template_id}")
+async def get_form_template(
+    template_id: str,
+    user_id: str = Depends(get_current_user),
+    tenant_id: str = "POC"
+):
+    """Get a specific form template with defaults applied"""
+    template = FORM_TEMPLATES.get(template_id)
+    
+    if not template:
+        raise HTTPException(status_code=404, detail="Form template not found")
+    
+    # Apply variable substitution to defaults
+    template_copy = template.copy()
+    template_copy["defaults"] = apply_template_defaults(template, user_id, tenant_id)
+    
+    return template_copy
+
+@api_router.post("/forms/submit/{template_id}")
+async def submit_form(
+    template_id: str,
+    form_data: dict,
+    user_id: str = Depends(get_current_user),
+    tenant_id: str = "POC"
+):
+    """Submit a form using a template"""
+    template = FORM_TEMPLATES.get(template_id)
+    
+    if not template:
+        raise HTTPException(status_code=404, detail="Form template not found")
+    
+    # Get collection name
+    collection_name = template["collection"]
+    collection = db[collection_name]
+    
+    # Apply defaults
+    defaults = apply_template_defaults(template, user_id, tenant_id)
+    
+    # Merge form data with defaults
+    document = {**defaults, **form_data}
+    
+    # Add standard fields if not present
+    if "id" not in document:
+        document["id"] = str(uuid.uuid4())
+    
+    if "created_at" not in document:
+        document["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    if "updated_at" not in document:
+        document["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Special handling for families - generate family code
+    if collection_name == "families" and "family_code" not in document:
+        family_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        while await collection.find_one({"family_code": family_code}):
+            family_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        document["family_code"] = family_code
+    
+    # Special handling for family members - add joined_at
+    if collection_name == "family_members" and "joined_at" not in document:
+        document["joined_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Validate required fields
+    for field in template["fields"]:
+        if field.get("required") and field["name"] not in document:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Required field missing: {field['label']}"
+            )
+    
+    # Insert document
+    await collection.insert_one(document)
+    
+    return {
+        "message": f"{template['label']} created successfully",
+        "id": document["id"],
+        "document": document
+    }
+
+@api_router.put("/forms/update/{template_id}/{record_id}")
+async def update_form(
+    template_id: str,
+    record_id: str,
+    form_data: dict,
+    user_id: str = Depends(get_current_user),
+    tenant_id: str = "POC"
+):
+    """Update a record using a form template"""
+    template = FORM_TEMPLATES.get(template_id)
+    
+    if not template:
+        raise HTTPException(status_code=404, detail="Form template not found")
+    
+    # Get collection
+    collection_name = template["collection"]
+    collection = db[collection_name]
+    
+    # Check if record exists
+    existing = await collection.find_one({"id": record_id, "is_deleted": False})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Record not found")
+    
+    # Add update metadata
+    form_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    form_data["updated_by"] = user_id
+    
+    # Update document
+    await collection.update_one(
+        {"id": record_id},
+        {"$set": form_data}
+    )
+    
+    return {
+        "message": f"{template['label']} updated successfully",
+        "id": record_id
+    }
+
+# ===========================
 # Users Management (Enhanced)
 # ===========================
 
