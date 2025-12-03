@@ -40,6 +40,9 @@ function LPIChapter({ token, user }) {
 
   const handleSubmitQuiz = async () => {
     setSubmitting(true);
+    const quizEndTime = Date.now();
+    const timeSpentSeconds = quizStartTime ? Math.floor((quizEndTime - quizStartTime) / 1000) : 0;
+    
     try {
       const formattedAnswers = Object.entries(quizAnswers).map(([question_id, selected_option]) => ({
         question_id,
@@ -61,6 +64,37 @@ function LPIChapter({ token, user }) {
       };
       
       setQuizResult(detailedResult);
+      
+      // Log telemetry for quiz attempt
+      if (user?.id) {
+        await telemetryService.logQuizAttempt(
+          user.id,
+          `quiz-${chapterId}`,
+          chapterId,
+          chapterId,
+          result.score || 0,
+          100,
+          result.score || 0,
+          timeSpentSeconds,
+          user.user_type || 'free',
+          null
+        );
+        
+        // Log topic completion if quiz passed
+        if (result.passed) {
+          await telemetryService.logTopicCompletion(
+            user.id,
+            chapterId,
+            chapterId,
+            1,
+            timeSpentSeconds,
+            result.score || 0,
+            0,
+            user.user_type || 'free',
+            null
+          );
+        }
+      }
     } catch (error) {
       console.error('Failed to submit quiz:', error);
       alert('Failed to submit quiz. Please try again.');
