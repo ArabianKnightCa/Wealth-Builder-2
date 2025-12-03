@@ -1565,6 +1565,378 @@ async def log_subscription_change(data: TelemetrySubscriptionChange):
         raise HTTPException(status_code=500, detail=f"Failed to log subscription change: {str(e)}")
 
 # ===========================
+# Analytics System - Pydantic Models
+# ===========================
+
+class AnalyticsDailySummary(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    summaryDate: str
+    newUsers: int
+    onboardStarted: int
+    onboardCompleted: int
+    avgTimeToCompleteOnboard: Optional[float] = None
+    totalTopicsCompleted: int
+    avgTopicsPerUser: Optional[float] = None
+    totalQuizAttempts: int
+    avgQuizScore: Optional[float] = None
+    retentionDay1: Optional[float] = None
+    retentionDay7: Optional[float] = None
+    retentionDay30: Optional[float] = None
+    freeUsers: Optional[int] = None
+    plusUsers: Optional[int] = None
+    proUsers: Optional[int] = None
+    platinumUsers: Optional[int] = None
+    familyUsers: Optional[int] = None
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AnalyticsTopicPerformance(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    topicId: str
+    chapterId: str
+    attempts: int
+    completions: int
+    failCount: int
+    avgScore: Optional[float] = None
+    avgAccuracy: Optional[float] = None
+    avgDifficultyCurvePosition: Optional[float] = None
+    avgTimeSpentSeconds: Optional[float] = None
+    dropoutRate: Optional[float] = None
+    familyCompletionRate: Optional[float] = None
+    avgFamilyTimeSpentSeconds: Optional[float] = None
+    lastUpdatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AnalyticsChapterHeatmap(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    chapterId: str
+    topicsInChapter: Optional[int] = None
+    avgCompletionTimeSeconds: Optional[float] = None
+    avgScore: Optional[float] = None
+    failRate: Optional[float] = None
+    retryCount: Optional[int] = None
+    dropoutCount: Optional[int] = None
+    dropoutRate: Optional[float] = None
+    avgDifficultyTier: Optional[float] = None
+    familyDropoutRate: Optional[float] = None
+    lastUpdatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AnalyticsUserProgress(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    totalTopicsCompleted: int
+    chaptersCompleted: Optional[int] = None
+    avgDifficultyTier: Optional[float] = None
+    quizAvgScore: Optional[float] = None
+    lastActive: Optional[datetime] = None
+    stuckAtTopicId: Optional[str] = None
+    stuckAtChapterId: Optional[str] = None
+    userTier: str
+    isInFamilyTier: bool
+    householdId: Optional[str] = None
+    householdSize: Optional[int] = None
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    lastUpdatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AnalyticsTierOverview(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    summaryDate: str
+    freeUsers: int
+    plusUsers: int
+    proUsers: int
+    platinumUsers: int
+    familyUsers: int
+    avgTopicsFree: Optional[float] = None
+    avgTopicsPlus: Optional[float] = None
+    avgTopicsPro: Optional[float] = None
+    avgTopicsPlatinum: Optional[float] = None
+    avgTopicsFamily: Optional[float] = None
+    churnFree: Optional[float] = None
+    churnPlus: Optional[float] = None
+    churnPro: Optional[float] = None
+    churnPlatinum: Optional[float] = None
+    churnFamily: Optional[float] = None
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    lastUpdatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# ===========================
+# Analytics Aggregation Functions
+# ===========================
+
+async def generate_user_progress_analytics():
+    """Generate user progress analytics from telemetry data"""
+    try:
+        # Clear existing data
+        await db.analytics_user_progress.delete_many({})
+        
+        # Get all unique users from telemetry
+        user_ids = await db.telemetry_quiz_attempt.distinct("userId")
+        
+        analytics_records = []
+        
+        for user_id in user_ids:
+            # Get topic completions
+            topic_completions = await db.telemetry_topic_completed.find({"userId": user_id}).to_list(1000)
+            
+            # Get quiz attempts
+            quiz_attempts = await db.telemetry_quiz_attempt.find({"userId": user_id}).to_list(1000)
+            
+            if not quiz_attempts:
+                continue
+            
+            # Calculate metrics
+            total_topics = len(topic_completions)
+            unique_chapters = len(set([t.get("chapterId") for t in topic_completions]))
+            avg_difficulty = sum([t.get("difficultyTier", 0) for t in topic_completions]) / max(len(topic_completions), 1)
+            avg_score = sum([q.get("score", 0) for q in quiz_attempts]) / len(quiz_attempts)
+            
+            # Get last activity
+            last_active_timestamp = max([q.get("timestamp") for q in quiz_attempts], default=None)
+            last_active = datetime.fromisoformat(last_active_timestamp) if last_active_timestamp else None
+            
+            # Get user tier from most recent attempt
+            user_tier = quiz_attempts[-1].get("userTier", "free") if quiz_attempts else "free"
+            household_id = quiz_attempts[-1].get("householdId") if quiz_attempts else None
+            
+            record = AnalyticsUserProgress(
+                userId=user_id,
+                totalTopicsCompleted=total_topics,
+                chaptersCompleted=unique_chapters,
+                avgDifficultyTier=round(avg_difficulty, 2) if topic_completions else None,
+                quizAvgScore=round(avg_score, 2),
+                lastActive=last_active,
+                stuckAtTopicId=None,
+                stuckAtChapterId=None,
+                userTier=user_tier,
+                isInFamilyTier=household_id is not None,
+                householdId=household_id,
+                householdSize=None
+            )
+            
+            analytics_records.append(record.model_dump())
+        
+        # Insert all records
+        if analytics_records:
+            for record in analytics_records:
+                if record.get('createdAt'):
+                    record['createdAt'] = record['createdAt'].isoformat()
+                if record.get('lastUpdatedAt'):
+                    record['lastUpdatedAt'] = record['lastUpdatedAt'].isoformat()
+                if record.get('lastActive'):
+                    record['lastActive'] = record['lastActive'].isoformat()
+            await db.analytics_user_progress.insert_many(analytics_records)
+        
+        return {"message": f"Generated {len(analytics_records)} user progress records"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate user progress analytics: {str(e)}")
+
+async def generate_topic_performance_analytics():
+    """Generate topic performance analytics from telemetry data"""
+    try:
+        # Clear existing data
+        await db.analytics_topic_performance.delete_many({})
+        
+        # Get all unique topics
+        topics = await db.telemetry_quiz_attempt.distinct("topicId")
+        
+        analytics_records = []
+        
+        for topic_id in topics:
+            # Get quiz attempts for this topic
+            quiz_attempts = await db.telemetry_quiz_attempt.find({"topicId": topic_id}).to_list(1000)
+            
+            if not quiz_attempts:
+                continue
+            
+            chapter_id = quiz_attempts[0].get("chapterId", topic_id)
+            
+            # Calculate metrics
+            total_attempts = len(quiz_attempts)
+            completions = len([q for q in quiz_attempts if q.get("score", 0) >= 50])
+            fail_count = total_attempts - completions
+            avg_score = sum([q.get("score", 0) for q in quiz_attempts]) / total_attempts
+            avg_accuracy = sum([q.get("accuracy", 0) for q in quiz_attempts]) / total_attempts
+            avg_time = sum([q.get("timeSpentSeconds", 0) for q in quiz_attempts]) / total_attempts
+            
+            # Family-specific metrics
+            family_attempts = [q for q in quiz_attempts if q.get("householdId")]
+            family_completion_rate = None
+            avg_family_time = None
+            
+            if family_attempts:
+                family_completions = len([q for q in family_attempts if q.get("score", 0) >= 50])
+                family_completion_rate = (family_completions / len(family_attempts)) * 100
+                avg_family_time = sum([q.get("timeSpentSeconds", 0) for q in family_attempts]) / len(family_attempts)
+            
+            record = AnalyticsTopicPerformance(
+                topicId=topic_id,
+                chapterId=chapter_id,
+                attempts=total_attempts,
+                completions=completions,
+                failCount=fail_count,
+                avgScore=round(avg_score, 2),
+                avgAccuracy=round(avg_accuracy, 2),
+                avgDifficultyCurvePosition=None,
+                avgTimeSpentSeconds=round(avg_time, 2),
+                dropoutRate=round((fail_count / total_attempts) * 100, 2) if total_attempts > 0 else 0,
+                familyCompletionRate=round(family_completion_rate, 2) if family_completion_rate else None,
+                avgFamilyTimeSpentSeconds=round(avg_family_time, 2) if avg_family_time else None
+            )
+            
+            analytics_records.append(record.model_dump())
+        
+        # Insert all records
+        if analytics_records:
+            for record in analytics_records:
+                if record.get('lastUpdatedAt'):
+                    record['lastUpdatedAt'] = record['lastUpdatedAt'].isoformat()
+            await db.analytics_topic_performance.insert_many(analytics_records)
+        
+        return {"message": f"Generated {len(analytics_records)} topic performance records"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate topic performance analytics: {str(e)}")
+
+async def generate_chapter_heatmap_analytics():
+    """Generate chapter heatmap analytics from telemetry data"""
+    try:
+        # Clear existing data
+        await db.analytics_chapter_heatmap.delete_many({})
+        
+        # Get all unique chapters
+        chapters = await db.telemetry_quiz_attempt.distinct("chapterId")
+        
+        analytics_records = []
+        
+        for chapter_id in chapters:
+            # Get quiz attempts for this chapter
+            quiz_attempts = await db.telemetry_quiz_attempt.find({"chapterId": chapter_id}).to_list(1000)
+            topic_completions = await db.telemetry_topic_completed.find({"chapterId": chapter_id}).to_list(1000)
+            
+            if not quiz_attempts:
+                continue
+            
+            # Calculate metrics
+            total_attempts = len(quiz_attempts)
+            failures = len([q for q in quiz_attempts if q.get("score", 0) < 50])
+            fail_rate = (failures / total_attempts) * 100 if total_attempts > 0 else 0
+            
+            avg_score = sum([q.get("score", 0) for q in quiz_attempts]) / total_attempts
+            avg_time = sum([q.get("timeSpentSeconds", 0) for q in quiz_attempts]) / total_attempts if quiz_attempts else 0
+            
+            # Retry count (users who attempted more than once)
+            user_attempt_counts = {}
+            for attempt in quiz_attempts:
+                user_id = attempt.get("userId")
+                user_attempt_counts[user_id] = user_attempt_counts.get(user_id, 0) + 1
+            
+            retry_count = sum(1 for count in user_attempt_counts.values() if count > 1)
+            
+            # Difficulty tier
+            avg_difficulty = None
+            if topic_completions:
+                avg_difficulty = sum([t.get("difficultyTier", 0) for t in topic_completions]) / len(topic_completions)
+            
+            # Family-specific metrics
+            family_attempts = [q for q in quiz_attempts if q.get("householdId")]
+            family_dropout_rate = None
+            if family_attempts:
+                family_failures = len([q for q in family_attempts if q.get("score", 0) < 50])
+                family_dropout_rate = (family_failures / len(family_attempts)) * 100
+            
+            record = AnalyticsChapterHeatmap(
+                chapterId=chapter_id,
+                topicsInChapter=len(set([q.get("topicId") for q in quiz_attempts])),
+                avgCompletionTimeSeconds=round(avg_time, 2),
+                avgScore=round(avg_score, 2),
+                failRate=round(fail_rate, 2),
+                retryCount=retry_count,
+                dropoutCount=failures,
+                dropoutRate=round(fail_rate, 2),
+                avgDifficultyTier=round(avg_difficulty, 2) if avg_difficulty else None,
+                familyDropoutRate=round(family_dropout_rate, 2) if family_dropout_rate else None
+            )
+            
+            analytics_records.append(record.model_dump())
+        
+        # Insert all records
+        if analytics_records:
+            for record in analytics_records:
+                if record.get('lastUpdatedAt'):
+                    record['lastUpdatedAt'] = record['lastUpdatedAt'].isoformat()
+            await db.analytics_chapter_heatmap.insert_many(analytics_records)
+        
+        return {"message": f"Generated {len(analytics_records)} chapter heatmap records"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate chapter heatmap analytics: {str(e)}")
+
+# ===========================
+# Analytics API Endpoints
+# ===========================
+
+@api_router.post("/analytics/generate/all")
+async def generate_all_analytics():
+    """Generate all analytics from telemetry data"""
+    try:
+        results = {}
+        
+        # Generate user progress analytics
+        user_result = await generate_user_progress_analytics()
+        results["user_progress"] = user_result
+        
+        # Generate topic performance analytics
+        topic_result = await generate_topic_performance_analytics()
+        results["topic_performance"] = topic_result
+        
+        # Generate chapter heatmap analytics
+        chapter_result = await generate_chapter_heatmap_analytics()
+        results["chapter_heatmap"] = chapter_result
+        
+        return {
+            "message": "All analytics generated successfully",
+            "results": results
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate analytics: {str(e)}")
+
+@api_router.get("/analytics/user-progress")
+async def get_user_progress_analytics(userId: Optional[str] = None):
+    """Get user progress analytics"""
+    try:
+        query = {"userId": userId} if userId else {}
+        records = await db.analytics_user_progress.find(query, {"_id": 0}).to_list(1000)
+        return records
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get user progress analytics: {str(e)}")
+
+@api_router.get("/analytics/topic-performance")
+async def get_topic_performance_analytics(topicId: Optional[str] = None, chapterId: Optional[str] = None):
+    """Get topic performance analytics"""
+    try:
+        query = {}
+        if topicId:
+            query["topicId"] = topicId
+        if chapterId:
+            query["chapterId"] = chapterId
+        
+        records = await db.analytics_topic_performance.find(query, {"_id": 0}).to_list(1000)
+        return records
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get topic performance analytics: {str(e)}")
+
+@api_router.get("/analytics/chapter-heatmap")
+async def get_chapter_heatmap_analytics(chapterId: Optional[str] = None):
+    """Get chapter heatmap analytics"""
+    try:
+        query = {"chapterId": chapterId} if chapterId else {}
+        records = await db.analytics_chapter_heatmap.find(query, {"_id": 0}).to_list(1000)
+        return records
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get chapter heatmap analytics: {str(e)}")
+
+# ===========================
 # Users Management (Enhanced)
 # ===========================
 
