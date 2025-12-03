@@ -240,10 +240,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q01",
                 "text": "Why does money work better than bartering for everyday transactions?",
                 "options": {
-                    "A": "Money works better because it's standardized and regulated by governments worldwide",
-                    "B": "Money is more durable than goods and can be stored indefinitely without spoiling",
-                    "C": "Money solves the timing problem - you can store value and exchange it when needed",
-                    "D": "Money is universally accepted, making it easier than finding direct trade partners"
+                    "A": "Money works better because governments standardize and regulate it, ensuring everyone can trust its value and accept it in transactions",
+                    "B": "Money is more durable than physical goods - it doesn't spoil or deteriorate, and can be stored indefinitely for future use",
+                    "C": "Money solves the timing problem of bartering - you don't need someone who wants your goods at the exact moment you need theirs",
+                    "D": "Money is universally accepted across businesses and individuals, making transactions simpler than finding direct trade partners"
                 },
                 "correct": "C",
                 "rationale": "Money solves the fundamental timing problem of bartering. With bartering, you need to find someone who wants what you have AND has what you want at the exact same time. Money acts as a bridge that stores value until you're ready to use it, making exchange much more flexible and practical."
@@ -252,10 +252,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q02",
                 "text": "Your friend says 'Rich people are just lucky.' Based on this chapter, what's the most accurate response?",
                 "options": {
-                    "A": "Luck and family wealth are the primary factors in someone becoming financially successful",
-                    "B": "People earn more when they develop skills that solve valuable problems for others",
-                    "C": "Working longer hours at any job is the only way to increase your income",
-                    "D": "Government policies determine who gets wealthy through regulations and tax breaks"
+                    "A": "Luck and family wealth are the primary factors - most successful people simply inherited money or were born into the right circumstances",
+                    "B": "People earn more when they develop valuable skills that solve bigger problems others are willing to pay them to solve",
+                    "C": "Working longer hours at any job is the only way to increase income - the type of work doesn't matter, just time spent",
+                    "D": "Government policies and tax structures determine wealth - who gets rich is decided by regulations and political connections"
                 },
                 "correct": "B",
                 "rationale": "The chapter explains that earning differences are driven by the value and impact of problems people solve. While luck and circumstances play a role, developing skills and solving higher-impact problems is the fundamental driver of earning potential. It's not just about time worked, but about the value created."
@@ -264,10 +264,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q03",
                 "text": "If you start saving just $1 per day, what's the MOST important concept that makes this worthwhile?",
                 "options": {
-                    "A": "The satisfaction of watching your savings account balance grow month by month",
-                    "B": "Compound growth - your money earns returns on both principal and previous earnings",
-                    "C": "The discipline of developing consistent financial habits that last a lifetime",
-                    "D": "Having emergency cash available for unexpected expenses that might arise"
+                    "A": "The satisfaction of watching your balance grow and feeling accomplished as you see your money accumulate over months and years",
+                    "B": "Compound growth - your money earns returns on the principal AND on previous earnings, creating exponential growth over time",
+                    "C": "The discipline of building consistent financial habits early that become automatic and serve you well throughout your entire life",
+                    "D": "Having emergency cash available means you're prepared when unexpected expenses hit and won't need to go into debt or panic"
                 },
                 "correct": "B",
                 "rationale": "Compounding is 'growth on growth' - when you earn interest on your original savings PLUS the interest you've already earned. This makes even tiny amounts grow significantly over time. It's not just about the end sum, but about how your money can grow exponentially when given time."
@@ -276,10 +276,10 @@ LPI_CHAPTERS = [
                 "id": "CH01_Q04",
                 "text": "What's one practical action you could take THIS WEEK to apply the 'value of saving early' concept?",
                 "options": {
-                    "A": "Research different investment strategies and create a comprehensive financial plan",
-                    "B": "Set up automatic transfers of $1-5 from each paycheck into a savings account",
-                    "C": "Read several personal finance books to understand economic theory thoroughly",
-                    "D": "Calculate your net worth and create detailed spreadsheets of all expenses"
+                    "A": "Research investment strategies, read finance books, and create a comprehensive 5-year plan with detailed projections and goals",
+                    "B": "Set up automatic transfers of just $1-5 from each paycheck into a separate savings account you won't easily access for spending",
+                    "C": "Study economic theory by reading several personal finance books to build thorough understanding of markets and money principles",
+                    "D": "Calculate your net worth, create detailed expense spreadsheets, and analyze your complete spending patterns from the past year"
                 },
                 "correct": "B",
                 "rationale": "The chapter emphasizes starting small and automating savings. Setting up even a tiny automatic transfer ($1-5) right after payday is the most practical, immediate action. Option A delays action unnecessarily. Option C is academic, not actionable. Option D is good but less specific than B's concrete automated action."
@@ -320,10 +320,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q01",
                 "text": "Your friend says 'Budgets are boring and restrictive - they stop you from having fun!' What's the best response based on this chapter?",
                 "options": {
-                    "A": "Budgets eliminate all discretionary spending and focus only on necessities",
-                    "B": "A budget gives you permission to spend on priorities because you planned ahead",
-                    "C": "Everyone must follow the 50/30/20 rule exactly for budgets to work properly",
-                    "D": "Budgets are only useful for people who struggle with overspending habits"
+                    "A": "Budgets are restrictive tools that eliminate all discretionary spending and force you to only pay for absolute necessities",
+                    "B": "A budget gives you permission to spend on priorities because you've planned ahead and know the money is allocated for it",
+                    "C": "Everyone must follow the 50/30/20 rule exactly for budgets to work - there's no flexibility based on individual circumstances",
+                    "D": "Budgets are only necessary for people who struggle with overspending - financially disciplined people don't need them"
                 },
                 "correct": "B",
                 "rationale": "Option B captures the key insight from the chapter that budgets provide clarity and control, allowing you to spend intentionally on what matters to you. The chapter emphasizes that budgets are permission to spend, not restriction. Options A and C misrepresent budgeting as restrictive or rigid, while D oversimplifies the 50/30/20 rule."
@@ -332,10 +332,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q02",
                 "text": "You have $100 left after paying for rent and food this month. Using the 'needs vs wants' concept, what's the smartest move?",
                 "options": {
-                    "A": "Spend it all on entertainment - you earned it after covering your necessities",
-                    "B": "Save $20 for emergencies, then use the remaining $80 on things you enjoy",
-                    "C": "Put everything in savings immediately and don't spend any of it this month",
-                    "D": "Invest all $100 in stocks to maximize your long-term financial growth"
+                    "A": "Spend it all on entertainment since you earned it and already covered your necessities - you deserve to enjoy the money",
+                    "B": "Save $20 for emergencies first, then use the remaining $80 guilt-free on things you enjoy knowing you're building security",
+                    "C": "Put every dollar into savings immediately and don't spend any of it this month - maximize your savings rate no matter what",
+                    "D": "Invest the entire $100 in stocks to maximize long-term growth potential - entertainment spending is wasting future wealth"
                 },
                 "correct": "B",
                 "rationale": "This example demonstrates the core principle of budgeting: prioritizing needs (rent, utilities) and then allocating a specific amount for wants (entertainment) within a defined limit. This shows intentional spending and control, a key takeaway from the chapter. Option A miscategorizes a want as a need. Option C exemplifies a lack of budgeting. Option D shows a failure to prioritize needs over wants."
@@ -344,10 +344,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q03",
                 "text": "The 50/30/20 rule suggests 50% needs, 30% wants, 20% savings. If your needs are actually 65% of your income, what should you do?",
                 "options": {
-                    "A": "Force yourself to match 50/30/20 exactly even if it means cutting essential costs",
-                    "B": "Adjust to 65/15/20 and focus on building momentum with realistic numbers",
-                    "C": "Abandon budgeting entirely since the standard rule doesn't fit your situation",
-                    "D": "Eliminate all savings until your needs drop below 50% of your income"
+                    "A": "Force yourself to match the 50/30/20 split exactly even if it means cutting essential expenses or going into debt temporarily",
+                    "B": "Adjust to something like 65/15/20 and focus on building momentum with realistic numbers that fit your actual life right now",
+                    "C": "Abandon budgeting entirely since the standard rule doesn't fit your situation - if it doesn't work perfectly, it's useless",
+                    "D": "Eliminate all savings completely until your needs naturally drop below 50% of income through earning more or cutting expenses"
                 },
                 "correct": "C",
                 "rationale": "Lesson 2.4 emphasizes making budgeting stick through simple systems. Lesson 2.1 highlights flexibility and clarity. Lesson 2.2 discusses prioritizing needs. Combining these, option C represents the best practice: a simple, flexible system that prioritizes key areas and involves regular review, making it sustainable and adaptable to one's situation. Option A is too rigid. Option B can be overwhelming and may not be sustainable. Option D contradicts the core message of the chapter."
@@ -356,10 +356,10 @@ LPI_CHAPTERS = [
                 "id": "CH02_Q04",
                 "text": "What is the EASIEST way to make budgeting stick according to this chapter?",
                 "options": {
-                    "A": "Track every transaction daily in a detailed spreadsheet with multiple categories",
-                    "B": "Do a quick 10-minute weekly check: money in vs out, plus one adjustment",
-                    "C": "Review your spending patterns once per year during tax season only",
-                    "D": "Set up your budget once and never look at it again after the initial setup"
+                    "A": "Track every single transaction daily in a detailed spreadsheet with multiple categories, subcategories, and year-over-year comparisons",
+                    "B": "Do a quick 10-minute weekly check-in: total money in versus money out, plus make one small adjustment to improve next week",
+                    "C": "Review your spending patterns once per year during tax season - monthly or weekly tracking is excessive micromanagement that wastes time",
+                    "D": "Set up your budget once at the beginning of the year and never look at it again - budgets should run on autopilot after setup"
                 },
                 "correct": "C",
                 "rationale": "This question asks for a personal, actionable step. Lesson 2.4 suggests making tracking simple and visible, and Lesson 2.2 encourages prioritizing. Setting a specific limit for one spending category is a concrete, manageable step that applies budgeting principles directly and can be reviewed easily at the end of the week, making it a good 'small step.' Option A is counterproductive. Option B might be too detailed for a 'small step' for some. Option D is too infrequent for effective budgeting as described in the chapter."
@@ -400,10 +400,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q01",
                 "text": "What does Pay Yourself First actually mean in practice?",
                 "options": {
-                    "A": "Buy yourself something nice before paying bills as a reward for working hard",
-                    "B": "Transfer money to savings immediately when paid, before spending on anything else",
-                    "C": "Pay all expenses first, then save whatever happens to be left over at month end",
-                    "D": "Give yourself a bonus from savings whenever you accomplish a financial goal"
+                    "A": "Buy yourself something nice before paying bills as a reward for working hard - you deserve treats for your effort and dedication",
+                    "B": "Transfer money to savings immediately when you get paid, before spending on anything else - make saving the first priority always",
+                    "C": "Pay all your expenses first, then save whatever money happens to be left over at the end of the month if there's any remaining",
+                    "D": "Give yourself a bonus withdrawal from savings whenever you accomplish a financial goal - reward yourself for hitting milestones"
                 },
                 "correct": "B",
                 "rationale": "This option effectively synthesizes the chapter's main themes: paying yourself first, pausing before spending, setting and balancing goals, and building simple savings plans. It highlights the focus on habit formation and practical strategies. Options A and B are too simplistic or potentially misleading. Option D, while related to income, is not the central focus of this chapter on saving and spending habits."
@@ -412,10 +412,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q02",
                 "text": "You are about to buy a $60 video game online. What is the Spend With a Pause approach?",
                 "options": {
-                    "A": "Buy it immediately while it's on sale before the price increases tomorrow",
-                    "B": "Wait 24 hours, then ask: Will this matter next week? What am I trading for it?",
-                    "C": "Never purchase entertainment items - only spend money on absolute necessities",
-                    "D": "Buy the game plus accessories while you're shopping to save on shipping"
+                    "A": "Buy it immediately while it's on sale before the price goes up tomorrow - you might miss this deal if you hesitate or wait",
+                    "B": "Wait 24 hours, then ask yourself: Will this still matter to me next week? What am I giving up to buy this right now?",
+                    "C": "Never purchase entertainment items or games - only spend money on absolute necessities like food, shelter, and transportation",
+                    "D": "Buy the game plus all the accessories and expansion packs while you're shopping to save on shipping costs and get everything at once"
                 },
                 "correct": "B",
                 "rationale": "This example directly illustrates the 'Pay Yourself First' strategy (Lesson 3.1) by automating savings immediately after getting paid. This makes saving the default and a priority. Option A demonstrates a lack of the 'Spend With a Pause' habit. Option C focuses solely on a long-term goal without mentioning balance. Option D shows a complete lack of budgeting and saving."
@@ -424,10 +424,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q03",
                 "text": "Why should you balance both short-term AND long-term savings goals?",
                 "options": {
-                    "A": "Focus exclusively on long-term goals since short-term wins waste valuable resources",
-                    "B": "Short-term wins maintain motivation while long-term goals build real stability",
-                    "C": "Only young people need short-term goals; adults should focus on retirement planning",
-                    "D": "Short-term goals are distractions that prevent you from achieving bigger objectives"
+                    "A": "Focus exclusively on long-term goals like retirement since short-term wins waste resources that could compound over decades",
+                    "B": "Short-term wins keep you motivated and engaged while long-term goals build the real financial stability and security you need",
+                    "C": "Only young people need short-term goals - adults should focus entirely on retirement planning since that's what really matters",
+                    "D": "Short-term goals are distractions that prevent you from achieving bigger objectives - they make you feel good but hurt long-term success"
                 },
                 "correct": "B",
                 "rationale": "This option combines the most effective practices from the chapter: 'Pay Yourself First' through automation (Lesson 3.1) and 'Spend With a Pause' for mindful spending (Lesson 3.2). These are sustainable habits that lead to consistent progress without extreme measures. Option A makes saving an afterthought. Option B reverses the priority. Option D is an unsustainable extreme that doesn't align with balancing goals."
@@ -436,10 +436,10 @@ LPI_CHAPTERS = [
                 "id": "CH03_Q04",
                 "text": "You want to save $240 in 12 weeks. What is the simple plan?",
                 "options": {
-                    "A": "Save random amounts whenever you feel motivated and have extra cash available",
-                    "B": "Calculate $20/week, automate the transfer on payday, and track weekly progress",
-                    "C": "Wait until you have $240 at once, then move it all to savings together",
-                    "D": "Set a general goal but don't worry about specific weekly amounts or deadlines"
+                    "A": "Save random amounts whenever you feel motivated and have extra cash available - letting it happen naturally without rigid structure",
+                    "B": "Calculate $20 per week, automate the transfer on every payday, and track your weekly progress toward the $240 goal each Sunday",
+                    "C": "Wait until you have the full $240 at once from a bonus or windfall, then move it all to savings together in one transaction",
+                    "D": "Set a general goal of saving some money but don't worry about specific weekly amounts or deadlines - stay flexible and adaptable"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, small step related to the chapter's content. Lesson 3.4 details building a simple savings plan, which starts with naming a goal and determining a weekly saving amount. Calculating this for a specific goal is a concrete action that aligns with building momentum and planning for savings. Option A, C, and D are contrary to the chapter's principles."
@@ -480,10 +480,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q01",
                 "text": "What is the main difference between good debt and bad debt?",
                 "options": {
-                    "A": "Good debt has lower interest rates while bad debt has higher interest rates",
-                    "B": "Good debt builds assets or earning power; bad debt finances depreciating wants",
-                    "C": "Good debt comes from banks and credit unions; bad debt is from other sources",
-                    "D": "Good debt is under $10,000 total while bad debt exceeds this threshold"
+                    "A": "Good debt has lower interest rates while bad debt has higher rates - the percentage you pay determines if borrowing is smart",
+                    "B": "Good debt builds assets or earning power like education or business; bad debt finances depreciating wants like vacations or clothes",
+                    "C": "Good debt comes from banks and credit unions you can trust; bad debt is from payday lenders, friends, or questionable sources",
+                    "D": "Good debt is anything under $10,000 total that you can manage; bad debt is any amount exceeding this manageable threshold"
                 },
                 "correct": "B",
                 "rationale": "This option accurately summarizes the key topics covered in Chapter 4: the definition of credit, the distinction between beneficial and detrimental debt, the mechanics of interest, and methods for establishing credit. Options A, C, and D present extreme or inaccurate views not supported by the chapter's content."
@@ -492,10 +492,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q02",
                 "text": "A credit card charges 20% annual interest. You owe $1,000. If you only pay minimum payments, what happens?",
                 "options": {
-                    "A": "The balance decreases steadily and you'll be debt-free in exactly 5 years",
-                    "B": "Interest compounds against you - you'll pay much more than $1,000 total",
-                    "C": "Minimum payments help build your credit score faster through consistent history",
-                    "D": "The bank will automatically reduce your interest rate as you make payments"
+                    "A": "The balance decreases steadily at a predictable rate and you'll be completely debt-free in exactly 5 years with consistent payments",
+                    "B": "Interest compounds working against you - you'll end up paying much more than $1,000 total because interest charges keep accumulating",
+                    "C": "Making minimum payments helps build your credit score faster through consistent payment history that lenders value and track closely",
+                    "D": "The bank will automatically reduce your interest rate over time as you make payments and prove you're a responsible borrower"
                 },
                 "correct": "B",
                 "rationale": "This example clearly illustrates 'good debt' as described in Lesson 4.2. A student loan for education is presented as debt that builds capacity or assets by enabling a higher-paying career. Option A describes bad debt (payday loan for wants). Option C describes bad debt (store card for wants at high interest). Option D is a risky borrowing decision that could lead to financial trouble."
@@ -504,10 +504,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q03",
                 "text": "What is the safest way to start building credit when you are young?",
                 "options": {
-                    "A": "Apply for multiple premium rewards cards immediately to maximize benefits",
-                    "B": "Avoid credit completely and only use cash or debit for all purchases",
-                    "C": "Get one card, use it for small purchases, and pay the full balance monthly",
-                    "D": "Open several store credit cards to get the signup discounts and rewards"
+                    "A": "Apply for multiple premium rewards cards immediately to maximize signup bonuses, cashback percentages, and travel points across different programs",
+                    "B": "Avoid credit completely and only use cash or debit cards for all purchases - credit cards are dangerous traps that lead to debt",
+                    "C": "Get one credit card, use it only for small regular purchases you can afford, and pay the full balance every single month without exception",
+                    "D": "Open several store credit cards to get all the signup discounts and rewards - each store's card gives you better deals when shopping there"
                 },
                 "correct": "C",
                 "rationale": "Lesson 4.4 provides specific, safe strategies for building credit. Option C combines the suggested tools (secured card/authorized user) with the recommended behavior (small purchases, full payment), which are low-risk and effective for establishing a positive credit history. Option A is too extreme and misses out on the benefits of credit. Option B is a dangerous strategy that will lead to high debt. Option D is partially correct but misses the actionable part of building credit."
@@ -516,10 +516,10 @@ LPI_CHAPTERS = [
                 "id": "CH04_Q04",
                 "text": "Before taking on ANY debt, what is the key question to ask yourself?",
                 "options": {
-                    "A": "Will this debt help build something valuable or just finance temporary wants?",
-                    "B": "Can I get approved for the maximum credit limit available to me?",
-                    "C": "What's the absolute minimum monthly payment I'll need to make each month?",
-                    "D": "How many different credit cards or loans can I qualify for right now?"
+                    "A": "Will this debt help me build something valuable long-term, or am I just financing temporary wants that will depreciate quickly?",
+                    "B": "Can I get approved for the maximum credit limit available to me based on my current income and credit score?",
+                    "C": "What's the absolute minimum monthly payment I'll need to make each month - can I afford at least that amount comfortably?",
+                    "D": "How many different credit cards or loans can I qualify for right now across all banks, stores, and lending institutions?"
                 },
                 "correct": "A",
                 "rationale": "This question prompts a practical, small step based on the chapter's advice. Lesson 4.4 suggests becoming an authorized user as a safe way to build credit. Researching this possibility is a concrete, low-commitment action that aligns with the chapter's guidance. Option A is risky. Option B is neglectful. Option D might be premature or not suitable without deeper analysis."
@@ -560,10 +560,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q01",
                 "text": "Why should you invest instead of just saving cash under your mattress?",
                 "options": {
-                    "A": "Cash under your mattress is perfectly safe and you'll never lose access to it",
-                    "B": "Investing grows your money through compound returns that outpace inflation over time",
-                    "C": "Investing guarantees you'll double your money every year without any risk involved",
-                    "D": "Cash savings always earn higher returns than any investment strategy available"
+                    "A": "Cash under your mattress is perfectly safe from theft or fire, and you'll always have instant access without any restrictions whatsoever",
+                    "B": "Investing allows your money to grow through compound returns over time that outpace inflation, building real wealth instead of losing value",
+                    "C": "Investing guarantees you'll double your money every single year without any risk - it's essentially free money that grows automatically",
+                    "D": "Cash savings always earn higher returns than any stock market investment strategy because savings accounts are protected and stable"
                 },
                 "correct": "B",
                 "rationale": "This option accurately captures the core messages of the chapter: investing's purpose (growth/income), its benefits over time, and the essential principles of risk management, diversification, cost control, and consistent action. Options B, C, and D present misconceptions or extreme views not supported by the chapter."
@@ -572,10 +572,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q02",
                 "text": "What is the relationship between risk and reward in investing?",
                 "options": {
-                    "A": "Higher potential returns usually come with higher risk of losing money",
-                    "B": "Risk and reward are completely unrelated factors in investment decisions",
-                    "C": "High-risk investments always deliver guaranteed high returns to investors",
-                    "D": "Low-risk investments consistently provide the best long-term returns"
+                    "A": "Higher potential returns usually come with higher risk of losing money - there's generally a trade-off between safety and growth",
+                    "B": "Risk and reward are completely unrelated factors in investment decisions - you can find high returns with zero risk if you look hard enough",
+                    "C": "High-risk investments always deliver guaranteed high returns to investors - that's why they're high-risk, the reward makes up for it automatically",
+                    "D": "Low-risk investments like bonds consistently provide the best long-term returns compared to stocks - safety equals better growth over time"
                 },
                 "correct": "A",
                 "rationale": "This example perfectly illustrates diversification (Lesson 5.3) and consistent, automated investing (Lesson 5.4). Investing in a broad index fund spreads risk across many assets, and the recurring monthly investment represents a sound beginner strategy. Option A is the opposite of diversification. Options C and D describe risky, speculative behaviors that the chapter advises against."
@@ -584,10 +584,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q03",
                 "text": "What does diversification mean in simple terms?",
                 "options": {
-                    "A": "Investing all your money in a single stock you strongly believe will succeed",
-                    "B": "Researching and only buying stock in companies whose products you personally use",
-                    "C": "Spreading investments across different assets so one failure won't destroy you",
-                    "D": "Focusing exclusively on the most expensive stocks from well-known companies"
+                    "A": "Investing all your money in a single stock you strongly believe will succeed - go all-in on your highest conviction pick for maximum gains",
+                    "B": "Researching and only buying stock in companies whose products you personally use - if you like them, they're probably good investments",
+                    "C": "Spreading investments across many different assets so if one fails badly, it won't destroy your entire portfolio or financial future",
+                    "D": "Focusing exclusively on the most expensive stocks from well-known companies like Apple and Amazon - price reflects quality and safety"
                 },
                 "correct": "C",
                 "rationale": "This option synthesizes the most critical and practical advice for beginners from the chapter: consistent investing in diversified assets (Lessons 5.3 & 5.4), and earmarking funds based on their time horizon (Lesson 5.4). This approach balances risk and reward and focuses on long-term growth, which is the chapter's emphasis. Option A is highly risky. Option B is a common mistake that delays wealth building. Option D describes market timing, which the chapter suggests is not a reliable strategy."
@@ -596,10 +596,10 @@ LPI_CHAPTERS = [
                 "id": "CH05_Q04",
                 "text": "What is a smart beginner investing move mentioned in this chapter?",
                 "options": {
-                    "A": "Day trading penny stocks to maximize short-term profits from market volatility",
-                    "B": "Start with low-cost index funds that track the entire market's performance",
-                    "C": "Invest your entire savings in cryptocurrency for potentially explosive growth",
-                    "D": "Wait until you're 40 years old before beginning any investment strategy"
+                    "A": "Day trading penny stocks to maximize short-term profits from daily market volatility - quick trades mean faster wealth building",
+                    "B": "Start with low-cost index funds that automatically track the entire market's performance - simple, diversified, and historically reliable",
+                    "C": "Invest your entire life savings in cryptocurrency for potentially explosive 1000x growth - it's the future of money and finance",
+                    "D": "Wait until you're 40 years old before beginning any investment strategy - young people don't have enough money to make it worthwhile"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, beginner-friendly action. Lesson 5.3 emphasizes diversification and simplicity, and Lesson 5.4 suggests learning the basics. Researching diversified index funds is a proactive, educational step that aligns with these principles and is a good starting point for someone new to investing. Options A, C, and D involve risky, speculative, or ill-advised actions."
@@ -640,10 +640,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q01",
                 "text": "What are the main levers you can pull to increase your income?",
                 "options": {
-                    "A": "Develop in-demand skills, solve bigger problems, or create multiple income streams",
-                    "B": "Work more hours at your current job without changing your role or responsibilities",
-                    "C": "Wait for annual cost-of-living raises and hope for unexpected bonus payments",
-                    "D": "Focus exclusively on lottery tickets and gambling for potential income boosts"
+                    "A": "Develop in-demand skills, learn to solve bigger more valuable problems, or create multiple income streams beyond your main job",
+                    "B": "Work more hours at your current job without changing your role, responsibilities, or the type of work you're doing each day",
+                    "C": "Wait patiently for annual cost-of-living raises and hope for unexpected bonus payments or promotions to come your way eventually",
+                    "D": "Focus exclusively on lottery tickets, gambling, and other games of chance for potential income boosts and financial windfalls"
                 },
                 "correct": "A",
                 "rationale": "This option accurately summarizes the chapter's core themes: strategies for income growth, including skill development, adding income streams, and negotiation tactics supported by evidence. Options B, C, and D present simplistic, extreme, or inaccurate views on income generation."
@@ -652,10 +652,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q02",
                 "text": "What does skill stacking mean and why is it powerful for earning more?",
                 "options": {
-                    "A": "Combining multiple related skills to create unique value others can't easily replicate",
-                    "B": "Learning one highly specialized skill and ignoring everything else completely",
-                    "C": "Collecting certifications in random unrelated fields to pad your resume",
-                    "D": "Mastering skills that are identical to what everyone else in your field knows"
+                    "A": "Combining multiple related skills to create unique value that others can't easily replicate - making yourself distinctly valuable in the market",
+                    "B": "Learning one single highly specialized skill and ignoring everything else completely - become the absolute best at one narrow thing only",
+                    "C": "Collecting certifications in random unrelated fields just to pad your resume - quantity of credentials matters more than relevance or mastery",
+                    "D": "Mastering the exact same skills that everyone else in your field already knows - fitting in perfectly with industry standard capabilities"
                 },
                 "correct": "A",
                 "rationale": "This example illustrates 'Skill Stacking' (Lesson 6.2), where combining two complementary skills (graphic design and web development) creates a more valuable offering and potential for increased income. Option B shows a failure to use proof for negotiation. Option C is about working more hours, not necessarily diversifying income or leveraging skills strategically. Option D relies on luck, not strategic income building."
@@ -664,10 +664,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q03",
                 "text": "What is the smart way to approach side gigs according to this chapter?",
                 "options": {
-                    "A": "Take any available gig regardless of how it fits your goals or skills",
-                    "B": "Avoid all side work completely to focus on your main job exclusively",
-                    "C": "Choose gigs that build skills or connections aligned with your career goals",
-                    "D": "Only pursue side gigs that pay the maximum hourly rate possible"
+                    "A": "Take any side gig available regardless of how well it fits your career goals, interests, or long-term professional development path",
+                    "B": "Avoid all side work completely to focus 100% of your time and energy on your main job - never dilute your primary career focus",
+                    "C": "Choose side gigs that build skills or connections strategically aligned with your career goals - make side work advance your main path",
+                    "D": "Only pursue side gigs that pay the absolute maximum hourly rate possible - pick whatever pays most right now regardless of other factors"
                 },
                 "correct": "C",
                 "rationale": "This option combines the chapter's key actionable advice: focusing on one 'lever' at a time (Lesson 6.1), gathering proof of results for negotiation (Lesson 6.4), and implicitly allowing for skill stacking or side gigs as part of the process. This balanced and strategic approach is the most effective. Option A is too narrow. Option B leads to burnout and poor financial decisions. Option D misses a crucial opportunity for income growth."
@@ -676,10 +676,10 @@ LPI_CHAPTERS = [
                 "id": "CH06_Q04",
                 "text": "You want a raise. What should you do BEFORE asking your boss?",
                 "options": {
-                    "A": "March into their office immediately and demand a raise without any preparation",
-                    "B": "Wait patiently for them to offer you a raise without ever asking directly",
-                    "C": "Document your contributions, research market rates, and prepare your case first",
-                    "D": "Threaten to quit unless they give you a raise within the next 48 hours"
+                    "A": "March into their office immediately and demand a raise without any preparation, documentation, or research about market rates",
+                    "B": "Wait patiently and hope they eventually offer you a raise without you ever needing to ask directly or advocate for yourself",
+                    "C": "Document your specific contributions, research current market rates for your role, and prepare a solid case before the conversation",
+                    "D": "Threaten to quit unless they give you a substantial raise within the next 48 hours - use ultimatums to force immediate action"
                 },
                 "correct": "C",
                 "rationale": "This question asks for a practical, small step. Lesson 6.1 encourages focusing on one income-growth lever, and Lesson 6.2 highlights skill stacking. Dedicating time to learn about a complementary skill is a manageable and proactive step that aligns with both concepts and can lead to future income growth. Options A and C are counterproductive. Option D demonstrates poor negotiation strategy."
@@ -720,10 +720,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q01",
                 "text": "Why are systems more important than motivation for financial success?",
                 "options": {
-                    "A": "Motivation is unreliable and fades quickly, but systems run automatically regardless",
-                    "B": "Motivation is the only factor that determines financial success in the long run",
-                    "C": "Systems are unnecessary if you have enough willpower and determination",
-                    "D": "Both motivation and systems are equally important and cannot work without each other"
+                    "A": "Motivation is unreliable and fades quickly when life gets hard, but automated systems keep running regardless of how you feel",
+                    "B": "Motivation is the only factor that determines financial success - if you're motivated enough, you don't need any systems or structure",
+                    "C": "Systems are completely unnecessary if you have enough willpower and determination - successful people just want it more than others do",
+                    "D": "Both motivation and systems are equally important and neither can work without the other - you must have both in perfect balance always"
                 },
                 "correct": "A",
                 "rationale": "This option effectively summarizes the chapter's core tenets: the importance of systems over fleeting motivation, the role of identity in shaping habits, the need for deliberate lifestyle management, and the concept of resilience in the face of financial challenges. Options A, C, and D present incomplete or incorrect perspectives."
@@ -732,10 +732,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q02",
                 "text": "What is lifestyle creep and why should you avoid it?",
                 "options": {
-                    "A": "Starting a business that gradually expands as you earn more revenue",
-                    "B": "Increasing your spending proportionally whenever your income grows at all",
-                    "C": "Investing more money in your education as your career advances over time",
-                    "D": "Upgrading your living situation as your family size expands over the years"
+                    "A": "Starting a business that gradually expands operations and adds employees as revenue and profits grow over time organically",
+                    "B": "Increasing your spending proportionally every time your income grows - buying a nicer car, bigger house, and fancier lifestyle each raise",
+                    "C": "Investing more money in your education and professional development as your career advances and you earn higher income levels",
+                    "D": "Upgrading your living situation and home size as your family grows and you need more space for children and dependents"
                 },
                 "correct": "B",
                 "rationale": "This example clearly demonstrates the principle of 'Systems over Motivation' (Lesson 7.1). Automating savings and bill payments creates a reliable system that ensures essential financial tasks are completed by default, reducing reliance on fluctuating motivation. Option A shows a lack of system. Option C is an example of lifestyle creep. Option D demonstrates a lack of resilience."
@@ -744,10 +744,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q03",
                 "text": "How does your identity about money affect your financial decisions?",
                 "options": {
-                    "A": "Your beliefs about money don't actually affect your financial decision making",
-                    "B": "Identity shapes behavior - seeing yourself as 'good with money' influences choices",
-                    "C": "Only your income level matters for financial success, not your mindset at all",
-                    "D": "Money identity only matters for wealthy people, not for average earners"
+                    "A": "Your beliefs about money don't actually affect your financial decisions - actions and income level are what matter, not mindset or identity",
+                    "B": "Identity shapes behavior unconsciously - seeing yourself as someone 'good with money' naturally influences daily choices and financial habits",
+                    "C": "Only your current income level matters for financial success, not your mindset, beliefs, or identity about money management",
+                    "D": "Money identity and mindset only matter for wealthy people - average earners don't benefit from thinking about financial psychology"
                 },
                 "correct": "B",
                 "rationale": "This option is the most comprehensive and aligns with all the key strategies discussed in the chapter. It emphasizes the interconnectedness of identity, systems, deliberate growth, and resilience as the foundation for financial success. Options A, C, and D represent approaches that are unsustainable or counterproductive according to the chapter's lessons."
@@ -756,10 +756,10 @@ LPI_CHAPTERS = [
                 "id": "CH07_Q04",
                 "text": "You face a financial setback. What is the healthy way to cope according to this chapter?",
                 "options": {
-                    "A": "Immediately make drastic lifestyle cuts and panic about your financial future",
-                    "B": "View it as a learning opportunity, adjust your plan, and keep moving forward",
-                    "C": "Give up entirely on your financial goals since you've proven you can't succeed",
-                    "D": "Ignore it completely and hope the problem resolves itself without any action"
+                    "A": "Immediately make drastic lifestyle cuts, panic about your financial future, and catastrophize about everything going wrong permanently",
+                    "B": "View it as a learning opportunity, calmly adjust your plan based on new information, and keep moving forward without shame or panic",
+                    "C": "Give up entirely on your financial goals since you've proven through this setback that you're incapable of succeeding financially",
+                    "D": "Ignore the setback completely and hope the problem somehow resolves itself over time without requiring any action or changes from you"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a personal, actionable step. Lesson 7.2 highlights the connection between identity and habits, and Lesson 7.1 stresses systems over motivation. Committing to one small, repeatable habit that aligns with a desired financial identity is a perfect way to start building systems and proving identity. It's a small, manageable step that embodies the chapter's core message. Options A, C, and D are contrary to the chapter's teachings."
@@ -800,10 +800,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q01",
                 "text": "What makes a goal specific versus vague? Give an example of each.",
                 "options": {
-                    "A": "Specific: Save $3,000 in 12 months for laptop. Vague: Save money someday",
-                    "B": "Specific: Make more money. Vague: Earn $500 extra monthly through freelancing",
-                    "C": "Specific: Be better with finances. Vague: Reduce eating out to twice weekly",
-                    "D": "Specific: Get rich eventually. Vague: Invest $200 monthly in index funds"
+                    "A": "Specific: Save $3,000 in 12 months for new laptop. Vague: Save money someday for something I might need eventually",
+                    "B": "Specific: Make more money at some point. Vague: Earn exactly $500 extra monthly through specific freelance graphic design projects",
+                    "C": "Specific: Be better with finances generally. Vague: Reduce eating out from 5 times weekly to exactly twice weekly by cooking at home",
+                    "D": "Specific: Get rich eventually through some means. Vague: Invest precisely $200 monthly in low-cost index funds through automatic transfers"
                 },
                 "correct": "A",
                 "rationale": "This option accurately encapsulates the chapter's main points: the SMART principles (Specific, Measurable, Achievable, Relevant, Time-bound, though not explicitly stated as such, the content covers these aspects), the importance of planning and tracking, and the motivational power of finishing strong. Options B, C, and D misrepresent the process and value of goal setting."
@@ -812,10 +812,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q02",
                 "text": "You have a goal to save for college. How should you break it into steps?",
                 "options": {
-                    "A": "Set the total amount needed and hope you save enough by the deadline",
-                    "B": "Break it into steps: calculate total needed, divide by months, automate savings",
-                    "C": "Wait until you have the full amount saved before deciding where to attend",
-                    "D": "Focus only on the final number without planning monthly or yearly milestones"
+                    "A": "Set the total amount needed and just hope you somehow save enough by the deadline through willpower and good intentions alone",
+                    "B": "Break it into actionable steps: calculate total cost, divide by months until college, automate monthly savings transfers to dedicated account",
+                    "C": "Wait until you have the complete full amount saved before deciding which college to attend - don't plan or apply until money is ready",
+                    "D": "Focus only on the final number without planning any monthly or yearly milestones - just keep the big goal vaguely in mind somehow"
                 },
                 "correct": "B",
                 "rationale": "This example demonstrates multiple key concepts from the chapter: making a goal specific (saving $500 for a laptop by Oct 1st), breaking it down into steps (calculating weekly savings), and implicitly suggesting automation and tracking for progress. This is a clear application of turning a dream into a plan. Options A and C are vague goals. Option D is a wish without a plan."
@@ -824,10 +824,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q03",
                 "text": "Why is tracking and adjusting your goals important, not just setting them?",
                 "options": {
-                    "A": "Tracking shows progress and allows adjustments when life circumstances change",
-                    "B": "Once you set a goal, you should never change it regardless of circumstances",
-                    "C": "Tracking goals wastes time that could be spent earning more money instead",
-                    "D": "Goals work automatically without any monitoring or adjustment after setting them"
+                    "A": "Tracking progress reveals if you're on track and allows you to adjust when life circumstances change - rigid unchanging goals fail eventually",
+                    "B": "Once you set a goal you should never ever change it regardless of circumstances - any modification means you failed and gave up",
+                    "C": "Tracking goals wastes valuable time that could be spent earning more money instead - successful people just work, they don't measure constantly",
+                    "D": "Goals work automatically once set without any monitoring required - writing them down once is enough to achieve them through intention alone"
                 },
                 "correct": "A",
                 "rationale": "This option effectively integrates the four lessons of the chapter into a cohesive and actionable strategy. Specificity (8.1), breaking down steps (8.2), tracking and adjusting (8.3), and finishing strong (8.4) are all covered, making it the most effective practice for achieving goals. Option A is vague. Option C limits progress. Option D contradicts the importance of tracking for learning and adjustment."
@@ -836,10 +836,10 @@ LPI_CHAPTERS = [
                 "id": "CH08_Q04",
                 "text": "What does finishing strong mean when it comes to achieving financial goals?",
                 "options": {
-                    "A": "Giving up when you're 80% complete because you're tired of the effort",
-                    "B": "Celebrating progress but staying focused until you completely achieve the goal",
-                    "C": "Setting new goals immediately without acknowledging what you've accomplished",
-                    "D": "Stopping your efforts as soon as you get close to achieving the target"
+                    "A": "Giving up when you're 80% complete because you're exhausted and tired of the effort required to push through to the finish line",
+                    "B": "Celebrating progress and small wins along the way, but maintaining focus and discipline until you completely achieve the original goal",
+                    "C": "Setting new ambitious goals immediately without acknowledging or celebrating what you've already accomplished or learned from the process",
+                    "D": "Stopping your efforts as soon as you get reasonably close to the target - being 'close enough' means you achieved it basically"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a small, actionable step. Lesson 8.1 emphasizes making goals specific. Identifying one financial goal and defining the amount and deadline is a concrete action that directly applies this principle and is a manageable first step towards creating a plan. Option A is too vague. Option C is counterproductive. Option D describes procrastination."
@@ -880,10 +880,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q01",
                 "text": "What are the most common financial risks young people face?",
                 "options": {
-                    "A": "Unexpected medical emergencies, job loss, car repairs, and unplanned expenses",
-                    "B": "Stock market crashes that only affect retirement accounts for older people",
-                    "C": "Taxes are the primary and most dangerous financial risk anyone faces today",
-                    "D": "Identity theft exclusively - physical risks don't matter in the digital age"
+                    "A": "Unexpected medical emergencies, sudden job loss, major car repairs, and other unplanned urgent expenses that can derail your finances quickly",
+                    "B": "Stock market crashes that primarily affect retirement accounts - this only matters for older people who are close to retirement age",
+                    "C": "Taxes are the primary and most dangerous financial risk anyone faces - government taking your money is worse than any other risk",
+                    "D": "Identity theft and online scams exclusively - physical risks like medical bills or job loss don't matter much in our digital economy"
                 },
                 "correct": "A",
                 "rationale": "This option accurately summarizes the chapter's core message and its four main components: identifying risks, creating an emergency buffer, using insurance for protection, and securing digital information. Options B, C, and D present extreme, inaccurate, or negative views not supported by the chapter."
@@ -892,10 +892,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q02",
                 "text": "Why is an emergency fund your first line of defense against financial stress?",
                 "options": {
-                    "A": "Emergency funds earn the highest interest rates of any savings strategy available",
-                    "B": "An emergency fund prevents you from going into debt when unexpected costs hit",
-                    "C": "Banks require emergency funds before approving any loans or credit applications",
-                    "D": "Emergency funds are only necessary for people over 40 with families to support"
+                    "A": "Emergency funds earn the highest interest rates of any savings strategy available - that's why financial experts recommend them so strongly",
+                    "B": "An emergency fund prevents you from going into expensive high-interest debt when unexpected costs hit - it's a buffer against financial disaster",
+                    "C": "Banks legally require you to have emergency funds before they'll approve any loans or credit applications - it's a mandatory lending requirement",
+                    "D": "Emergency funds are only necessary for people over 40 with families to support - young single people don't need emergency savings at all"
                 },
                 "correct": "B",
                 "rationale": "This example directly illustrates the concept of building an 'Emergency Buffer' (Lesson 9.2). Setting aside a specific amount for unexpected expenses like car repairs is a practical application of creating a financial cushion to manage risk. Option A demonstrates a lack of preparation for health risks. Option C shows a failure to secure information. Option D is about investing risk, not protection from common financial risks."
@@ -904,10 +904,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q03",
                 "text": "What types of smart protection should you consider as you build wealth?",
                 "options": {
-                    "A": "Only life insurance matters - all other protection types are unnecessary expenses",
-                    "B": "Insurance for health, income protection, and valuable assets as wealth grows",
-                    "C": "Protection isn't needed until you're 50 years old with significant assets",
-                    "D": "The most expensive insurance coverage available is always the smartest choice"
+                    "A": "Only life insurance matters - all other protection types like health or disability insurance are unnecessary expenses that waste money",
+                    "B": "Consider insurance for health, income protection through disability coverage, and valuable assets as your wealth grows over time",
+                    "C": "Protection isn't needed until you're over 50 years old with significant assets - young people should skip insurance completely",
+                    "D": "The most expensive insurance coverage available is always the smartest choice - you get what you pay for with maximum protection"
                 },
                 "correct": "B",
                 "rationale": "This option combines the most crucial protective measures discussed: building a substantial emergency fund (Lesson 9.2) and securing appropriate insurance (Lesson 9.3). It acknowledges the need for both personal preparedness and external protection mechanisms. Options A and C suggest dangerous or detrimental practices. Option D is too narrow, as the chapter covers multiple types of risks."
@@ -916,10 +916,10 @@ LPI_CHAPTERS = [
                 "id": "CH09_Q04",
                 "text": "How much should a beginner aim to have in their emergency buffer?",
                 "options": {
-                    "A": "At least $50,000 saved before considering any other financial goals at all",
-                    "B": "Start with $500-1,000, then build toward 3-6 months of living expenses",
-                    "C": "Exactly 12 months of expenses before spending money on anything discretionary",
-                    "D": "Emergency funds aren't necessary until you own a home and have children"
+                    "A": "At least $50,000 saved before considering any other financial goals - starting with less means you're not really financially secure yet",
+                    "B": "Start with $500-1,000 as initial buffer, then gradually build toward 3-6 months of living expenses as your financial foundation grows",
+                    "C": "Exactly 12 months of expenses before spending money on anything discretionary whatsoever - maximum security comes from maximum savings",
+                    "D": "Emergency funds aren't necessary until you own a home and have children - renters and single people don't need emergency savings yet"
                 },
                 "correct": "B",
                 "rationale": "This question asks for a practical, small step. Lesson 9.1 emphasizes identifying risks, and Lesson 9.3 discusses securing appropriate insurance. Researching relevant insurance policies based on one's situation is a proactive and manageable step that aligns directly with preparing for common financial risks. Options A, C, and D are contrary to the chapter's advice."
@@ -960,10 +960,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q01",
                 "text": "What are the red flags that something might be a financial scam?",
                 "options": {
-                    "A": "Guaranteed high returns with no risk, pressure to act now, requests for personal info",
-                    "B": "Any investment opportunity that promises returns higher than 5% annually",
-                    "C": "Financial advisors who charge fees instead of working for completely free",
-                    "D": "Investment opportunities that take longer than one month to see returns"
+                    "A": "Guaranteed high returns with no risk, intense pressure to invest immediately, vague details, and requests for personal banking information upfront",
+                    "B": "Any investment opportunity that promises returns higher than 5% annually - anything above that threshold is automatically a scam to avoid",
+                    "C": "Financial advisors who charge professional fees instead of working completely free - real advisors never charge because they profit from your success",
+                    "D": "Investment opportunities that take longer than one month to show returns - legitimate investments show profit within 30 days maximum"
                 },
                 "correct": "A",
                 "rationale": "This option accurately summarizes the chapter's main focus: providing practical advice for scam identification, prevention, and response. It covers the key elements of spotting red flags, protecting accounts, and taking action after an incident. Options B, C, and D present overly broad, pessimistic, or inaccurate generalizations about scams."
@@ -972,10 +972,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q02",
                 "text": "Someone offers you a guaranteed 50% return in one month. What should you do?",
                 "options": {
-                    "A": "Invest all your money immediately before this once-in-a-lifetime opportunity expires",
-                    "B": "Invest half your savings to test it out while keeping some money as backup",
-                    "C": "Research the person thoroughly and ask for references from current investors",
-                    "D": "Walk away immediately - guaranteed 50% monthly returns are impossible and fraudulent"
+                    "A": "Invest all your money immediately before this once-in-a-lifetime opportunity expires tomorrow - you'll regret missing out on guaranteed returns forever",
+                    "B": "Invest half your savings to test it out while keeping some money as backup safety net - this way you can see if it's real before committing fully",
+                    "C": "Research the person thoroughly online, ask for references from current investors, and verify their credentials before making any financial decisions",
+                    "D": "Walk away immediately without further discussion - guaranteed 50% monthly returns are mathematically impossible and obviously fraudulent"
                 },
                 "correct": "D",
                 "rationale": "All of the provided scenarios are classic examples of common scams discussed in the chapter. Option A is a phishing attempt. Option B is a fake job offer scam. Option C is a common form of phishing via text message (smishing). Therefore, 'All of the above' is the correct answer as each option illustrates a concept from the chapter."
@@ -984,10 +984,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q03",
                 "text": "How can you protect your personal financial information online?",
                 "options": {
-                    "A": "Share all your financial information freely since banks already have your data",
-                    "B": "Use strong unique passwords, enable two-factor authentication, monitor accounts regularly",
-                    "C": "Only access financial accounts from public WiFi networks at coffee shops",
-                    "D": "Write all your passwords in a notebook you carry with you everywhere"
+                    "A": "Share all your financial information freely on any website since banks and companies already have access to your complete data anyway",
+                    "B": "Use strong unique passwords for every account, enable two-factor authentication everywhere possible, and monitor all accounts regularly for suspicious activity",
+                    "C": "Only access your financial accounts from public WiFi networks at coffee shops and libraries - home networks are less secure somehow",
+                    "D": "Write all your passwords in a physical notebook you carry everywhere - digital password managers are dangerous because they can be hacked easily"
                 },
                 "correct": "B",
                 "rationale": "Lesson 10.3 emphasizes protecting your accounts, and enabling 2FA and using strong passwords are the most fundamental and effective digital habits for doing so. This practice directly addresses account security and prevents unauthorized access. Option A is a tactic used by scammers. Option C is a dangerous action that can lead to infection or compromise. Option D is a security risk."
@@ -996,10 +996,10 @@ LPI_CHAPTERS = [
                 "id": "CH10_Q04",
                 "text": "If something sounds too good to be true financially, what should you assume?",
                 "options": {
-                    "A": "Assume it's likely legitimate and worth investigating further with due diligence",
-                    "B": "Invest a small amount to test whether it's real before committing more money",
-                    "C": "Ask your friends and family if they've heard about this opportunity before",
-                    "D": "Assume it's probably a scam and protect yourself by walking away immediately"
+                    "A": "Assume it's likely legitimate and worth investigating further with thorough due diligence - many real opportunities sound too good at first glance",
+                    "B": "Invest a small test amount like $100 to see whether it's actually real before committing more significant money to the opportunity",
+                    "C": "Ask your friends and family members if they've heard about this opportunity before - social proof from people you trust validates legitimacy",
+                    "D": "Assume it's probably a scam designed to steal your money and protect yourself by walking away immediately without further engagement"
                 },
                 "correct": "D",
                 "rationale": "This question seeks a practical, small step. Lesson 10.3 stresses the importance of securing accounts, with enabling two-factor authentication (2FA) being a key recommendation. Researching and implementing 2FA on an account is a concrete, actionable step that directly enhances security and aligns with the chapter's advice. Options A, C, and D are all counterproductive or dangerous."
