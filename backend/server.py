@@ -368,8 +368,8 @@ async def register(user_data: UserCreate):
         raise HTTPException(status_code=400, detail="Email already registered")
     
     age = calculate_age(user_data.date_of_birth)
-    if age < 8:
-        raise HTTPException(status_code=400, detail="User must be at least 8 years old")
+    if age < 6:
+        raise HTTPException(status_code=400, detail="User must be at least 6 years old")
     
     # Determine cohort from occupation
     cohort = determine_cohort(user_data.occupation)
