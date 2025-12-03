@@ -74,7 +74,7 @@ class TelemetryTester:
     
     def verify_data_in_mongo(self, collection_name, expected_count=None, filters=None):
         """Verify data was stored correctly in MongoDB"""
-        if not self.db:
+        if self.db is None:
             return False
             
         try:
