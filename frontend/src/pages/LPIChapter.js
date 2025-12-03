@@ -228,7 +228,10 @@ function LPIChapter({ token, user }) {
                 ← Go Back
               </button>
               <button
-                onClick={() => setCurrentView('quiz')}
+                onClick={() => {
+                  setCurrentView('quiz');
+                  setQuizStartTime(Date.now());
+                }}
                 className="btn-primary"
                 data-testid="start-quiz-btn"
               >
