@@ -1842,6 +1842,32 @@ async def create_database_indexes():
         await db.family_members.create_index([("family_id", 1), ("is_deleted", 1)])
         print("✓ Family Members indexes created")
         
+        # Telemetry indexes
+        await db.telemetry_user_session.create_index([("userId", 1), ("sessionStart", -1)])
+        await db.telemetry_user_session.create_index([("sessionId", 1)])
+        print("✓ Telemetry user session indexes created")
+        
+        await db.telemetry_onboarding.create_index([("userId", 1), ("timestamp", -1)])
+        await db.telemetry_onboarding.create_index([("stepName", 1)])
+        print("✓ Telemetry onboarding indexes created")
+        
+        await db.telemetry_ppi_completed.create_index([("userId", 1), ("timestamp", -1)])
+        print("✓ Telemetry PPI completed indexes created")
+        
+        await db.telemetry_topic_completed.create_index([("userId", 1), ("timestamp", -1)])
+        await db.telemetry_topic_completed.create_index([("chapterId", 1), ("topicId", 1)])
+        await db.telemetry_topic_completed.create_index([("householdId", 1)])
+        print("✓ Telemetry topic completed indexes created")
+        
+        await db.telemetry_quiz_attempt.create_index([("userId", 1), ("timestamp", -1)])
+        await db.telemetry_quiz_attempt.create_index([("chapterId", 1), ("quizId", 1)])
+        await db.telemetry_quiz_attempt.create_index([("householdId", 1)])
+        print("✓ Telemetry quiz attempt indexes created")
+        
+        await db.telemetry_subscription_change.create_index([("userId", 1), ("timestamp", -1)])
+        await db.telemetry_subscription_change.create_index([("householdId", 1)])
+        print("✓ Telemetry subscription change indexes created")
+        
         print("✅ All database indexes created successfully")
     except Exception as e:
         print(f"⚠️ Index creation warning: {e}")
