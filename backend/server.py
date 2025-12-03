@@ -376,7 +376,8 @@ async def register(user_data: UserCreate):
     
     # Check if minor (< 18)
     is_minor = age < 18
-    account_status = "restricted" if (is_minor and not user_data.parent_email) else "active"
+    # TESTING MODE: Auto-activate all accounts regardless of parent email
+    account_status = "active"  # TODO: Re-enable parent approval check for production
     
     # Generate keys and codes
     person_key = generate_person_key()
