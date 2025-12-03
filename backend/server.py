@@ -1421,6 +1421,150 @@ async def update_form(
     }
 
 # ===========================
+# Telemetry System - Pydantic Models
+# ===========================
+
+class TelemetryUserSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    sessionId: str
+    sessionStart: datetime
+    sessionEnd: Optional[datetime] = None
+    deviceType: str
+    userTier: str
+    appVersion: Optional[str] = None
+
+class TelemetryOnboarding(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    stepName: str
+    completed: bool
+    timestamp: datetime
+    userTier: str
+
+class TelemetryPPICompleted(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    ppiVersion: str
+    ppiCategorySummary: Optional[Dict[str, Any]] = None
+    timestamp: datetime
+    userTier: str
+
+class TelemetryTopicCompleted(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    topicId: str
+    chapterId: str
+    difficultyTier: int
+    timeSpentSeconds: int
+    accuracy: float
+    retries: int
+    timestamp: datetime
+    userTier: str
+    householdId: Optional[str] = None
+
+class TelemetryQuizAttempt(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    quizId: str
+    topicId: str
+    chapterId: str
+    score: float
+    maxScore: float
+    accuracy: float
+    timeSpentSeconds: int
+    timestamp: datetime
+    userTier: str
+    householdId: Optional[str] = None
+
+class TelemetrySubscriptionChange(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    fromTier: Optional[str] = None
+    toTier: str
+    timestamp: datetime
+    householdId: Optional[str] = None
+    householdSize: Optional[int] = None
+
+# ===========================
+# Telemetry API Endpoints
+# ===========================
+
+@api_router.post("/telemetry/session")
+async def log_session(data: TelemetryUserSession):
+    """Log user session telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["sessionStart"] = doc["sessionStart"].isoformat() if isinstance(doc["sessionStart"], datetime) else doc["sessionStart"]
+        if doc.get("sessionEnd"):
+            doc["sessionEnd"] = doc["sessionEnd"].isoformat() if isinstance(doc["sessionEnd"], datetime) else doc["sessionEnd"]
+        await db.telemetry_user_session.insert_one(doc)
+        return {"message": "Session logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log session: {str(e)}")
+
+@api_router.post("/telemetry/onboarding")
+async def log_onboarding(data: TelemetryOnboarding):
+    """Log onboarding step telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["timestamp"] = doc["timestamp"].isoformat() if isinstance(doc["timestamp"], datetime) else doc["timestamp"]
+        await db.telemetry_onboarding.insert_one(doc)
+        return {"message": "Onboarding step logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log onboarding: {str(e)}")
+
+@api_router.post("/telemetry/ppi-completed")
+async def log_ppi_completed(data: TelemetryPPICompleted):
+    """Log PPI completion telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["timestamp"] = doc["timestamp"].isoformat() if isinstance(doc["timestamp"], datetime) else doc["timestamp"]
+        await db.telemetry_ppi_completed.insert_one(doc)
+        return {"message": "PPI completion logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log PPI completion: {str(e)}")
+
+@api_router.post("/telemetry/topic-completed")
+async def log_topic_completed(data: TelemetryTopicCompleted):
+    """Log topic completion telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["timestamp"] = doc["timestamp"].isoformat() if isinstance(doc["timestamp"], datetime) else doc["timestamp"]
+        await db.telemetry_topic_completed.insert_one(doc)
+        return {"message": "Topic completion logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log topic completion: {str(e)}")
+
+@api_router.post("/telemetry/quiz-attempt")
+async def log_quiz_attempt(data: TelemetryQuizAttempt):
+    """Log quiz attempt telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["timestamp"] = doc["timestamp"].isoformat() if isinstance(doc["timestamp"], datetime) else doc["timestamp"]
+        await db.telemetry_quiz_attempt.insert_one(doc)
+        return {"message": "Quiz attempt logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log quiz attempt: {str(e)}")
+
+@api_router.post("/telemetry/subscription-change")
+async def log_subscription_change(data: TelemetrySubscriptionChange):
+    """Log subscription change telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["timestamp"] = doc["timestamp"].isoformat() if isinstance(doc["timestamp"], datetime) else doc["timestamp"]
+        await db.telemetry_subscription_change.insert_one(doc)
+        return {"message": "Subscription change logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log subscription change: {str(e)}")
+
+# ===========================
 # Users Management (Enhanced)
 # ===========================
 
