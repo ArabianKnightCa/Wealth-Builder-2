@@ -960,6 +960,23 @@ def apply_template_defaults(template: dict, user_id: str, tenant_id: str = "POC"
     
     return defaults
 
+def apply_template_field_filters(template: dict, user_id: str, tenant_id: str = "POC") -> dict:
+    """Apply variable substitution to field filters (for lookup fields)"""
+    template_copy = template.copy()
+    
+    if "fields" in template_copy:
+        for field in template_copy["fields"]:
+            if field.get("input") == "lookup" and "filter" in field:
+                filter_dict = field["filter"].copy()
+                for key, value in filter_dict.items():
+                    if isinstance(value, str):
+                        value = value.replace("{{currentUserId}}", user_id)
+                        value = value.replace("{{currentTenantId}}", tenant_id)
+                        filter_dict[key] = value
+                field["filter"] = filter_dict
+    
+    return template_copy
+
 # ===========================
 # Database Schema v1.0: Enhanced Query Filters & Relations
 # ===========================
