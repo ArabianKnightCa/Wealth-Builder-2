@@ -306,7 +306,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All telemetry endpoints tested and verified"
+    - "Complete user journey testing completed successfully"
+    - "Age-appropriate content verification completed"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
