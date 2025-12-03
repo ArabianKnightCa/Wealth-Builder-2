@@ -405,7 +405,7 @@ LPI_CHAPTERS = [
                     "C": "Pay all expenses first, then save whatever happens to be left over at month end",
                     "D": "Give yourself a bonus from savings whenever you accomplish a financial goal"
                 },
-                "correct": "C",
+                "correct": "B",
                 "rationale": "This option effectively synthesizes the chapter's main themes: paying yourself first, pausing before spending, setting and balancing goals, and building simple savings plans. It highlights the focus on habit formation and practical strategies. Options A and B are too simplistic or potentially misleading. Option D, while related to income, is not the central focus of this chapter on saving and spending habits."
             },
             {
@@ -429,7 +429,7 @@ LPI_CHAPTERS = [
                     "C": "Only young people need short-term goals; adults should focus on retirement planning",
                     "D": "Short-term goals are distractions that prevent you from achieving bigger objectives"
                 },
-                "correct": "C",
+                "correct": "B",
                 "rationale": "This option combines the most effective practices from the chapter: 'Pay Yourself First' through automation (Lesson 3.1) and 'Spend With a Pause' for mindful spending (Lesson 3.2). These are sustainable habits that lead to consistent progress without extreme measures. Option A makes saving an afterthought. Option B reverses the priority. Option D is an unsustainable extreme that doesn't align with balancing goals."
             },
             {
@@ -521,7 +521,7 @@ LPI_CHAPTERS = [
                     "C": "What's the absolute minimum monthly payment I'll need to make each month?",
                     "D": "How many different credit cards or loans can I qualify for right now?"
                 },
-                "correct": "C",
+                "correct": "A",
                 "rationale": "This question prompts a practical, small step based on the chapter's advice. Lesson 4.4 suggests becoming an authorized user as a safe way to build credit. Researching this possibility is a concrete, low-commitment action that aligns with the chapter's guidance. Option A is risky. Option B is neglectful. Option D might be premature or not suitable without deeper analysis."
             }
         ]
@@ -565,7 +565,7 @@ LPI_CHAPTERS = [
                     "C": "Investing guarantees you'll double your money every year without any risk involved",
                     "D": "Cash savings always earn higher returns than any investment strategy available"
                 },
-                "correct": "A",
+                "correct": "B",
                 "rationale": "This option accurately captures the core messages of the chapter: investing's purpose (growth/income), its benefits over time, and the essential principles of risk management, diversification, cost control, and consistent action. Options B, C, and D present misconceptions or extreme views not supported by the chapter."
             },
             {
@@ -577,7 +577,7 @@ LPI_CHAPTERS = [
                     "C": "High-risk investments always deliver guaranteed high returns to investors",
                     "D": "Low-risk investments consistently provide the best long-term returns"
                 },
-                "correct": "B",
+                "correct": "A",
                 "rationale": "This example perfectly illustrates diversification (Lesson 5.3) and consistent, automated investing (Lesson 5.4). Investing in a broad index fund spreads risk across many assets, and the recurring monthly investment represents a sound beginner strategy. Option A is the opposite of diversification. Options C and D describe risky, speculative behaviors that the chapter advises against."
             },
             {
@@ -681,7 +681,7 @@ LPI_CHAPTERS = [
                     "C": "Document your contributions, research market rates, and prepare your case first",
                     "D": "Threaten to quit unless they give you a raise within the next 48 hours"
                 },
-                "correct": "B",
+                "correct": "C",
                 "rationale": "This question asks for a practical, small step. Lesson 6.1 encourages focusing on one income-growth lever, and Lesson 6.2 highlights skill stacking. Dedicating time to learn about a complementary skill is a manageable and proactive step that aligns with both concepts and can lead to future income growth. Options A and C are counterproductive. Option D demonstrates poor negotiation strategy."
             }
         ]
@@ -725,7 +725,7 @@ LPI_CHAPTERS = [
                     "C": "Systems are unnecessary if you have enough willpower and determination",
                     "D": "Both motivation and systems are equally important and cannot work without each other"
                 },
-                "correct": "B",
+                "correct": "A",
                 "rationale": "This option effectively summarizes the chapter's core tenets: the importance of systems over fleeting motivation, the role of identity in shaping habits, the need for deliberate lifestyle management, and the concept of resilience in the face of financial challenges. Options A, C, and D present incomplete or incorrect perspectives."
             },
             {
@@ -829,7 +829,7 @@ LPI_CHAPTERS = [
                     "C": "Tracking goals wastes time that could be spent earning more money instead",
                     "D": "Goals work automatically without any monitoring or adjustment after setting them"
                 },
-                "correct": "B",
+                "correct": "A",
                 "rationale": "This option effectively integrates the four lessons of the chapter into a cohesive and actionable strategy. Specificity (8.1), breaking down steps (8.2), tracking and adjusting (8.3), and finishing strong (8.4) are all covered, making it the most effective practice for achieving goals. Option A is vague. Option C limits progress. Option D contradicts the importance of tracking for learning and adjustment."
             },
             {
@@ -1001,7 +1001,7 @@ LPI_CHAPTERS = [
                     "C": "Ask your friends and family if they've heard about this opportunity before",
                     "D": "Assume it's probably a scam and protect yourself by walking away immediately"
                 },
-                "correct": "B",
+                "correct": "D",
                 "rationale": "This question seeks a practical, small step. Lesson 10.3 stresses the importance of securing accounts, with enabling two-factor authentication (2FA) being a key recommendation. Researching and implementing 2FA on an account is a concrete, actionable step that directly enhances security and aligns with the chapter's advice. Options A, C, and D are all counterproductive or dangerous."
             }
         ]
