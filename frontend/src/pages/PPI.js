@@ -61,6 +61,16 @@ function PPI({ token, user }) {
         { answers: formattedAnswers },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
+      // Log PPI completion telemetry
+      if (user?.id) {
+        await telemetryService.logPPICompletion(
+          user.id,
+          'v1',
+          { totalQuestions: questions.length, answeredQuestions: Object.keys(answers).length },
+          user.user_type || 'free'
+        );
+      }
 
       navigate('/dashboard');
     } catch (error) {
