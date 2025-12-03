@@ -21,8 +21,29 @@ function PPI({ token, user }) {
 
   const fetchQuestions = async () => {
     try {
-      const response = await axios.get(`${API}/content/ppi`);
-      setQuestions(response.data.questions);
+      // Use personalized PPI endpoint that adapts to user age/experience
+      const response = await axios.get(`${API}/content/ppi/personalized`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Handle new personalized response format
+      if (response.data.items) {
+        // Convert personalized format to legacy format for compatibility
+        const questions = response.data.items.map((item, index) => ({
+          id: index + 1,
+          text: item.prompt,
+          options: item.options.reduce((acc, opt) => {
+            const letter = opt.charAt(0); // Extract "A", "B", etc.
+            const text = opt.substring(2); // Extract text after "A "
+            acc[letter] = text;
+            return acc;
+          }, {})
+        }));
+        setQuestions(questions);
+      } else {
+        // Fallback to legacy format
+        setQuestions(response.data.questions || []);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch questions:', error);
