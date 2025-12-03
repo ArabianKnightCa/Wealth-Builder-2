@@ -1001,16 +1001,36 @@ async def create_family(family_data: FamilyCreate, user_id: str = Depends(get_cu
     return {"message": "Family created successfully", "family": family_dict}
 
 @api_router.get("/families")
-async def list_families(user_id: str = Depends(get_current_user), tenant_id: Optional[str] = "POC"):
-    """List all families for a tenant (with optional user filter)"""
-    query = {"is_deleted": False, "tenant_id": tenant_id}
-    families = await db.families.find(query, {"_id": 0}).to_list(1000)
+async def list_families(
+    user_id: str = Depends(get_current_user),
+    tenant_id: Optional[str] = "POC",
+    plan_tier: Optional[str] = None,
+    include_members: bool = False,
+    include_primary_contact: bool = False
+):
+    """List all families with optional filters and relations"""
+    # Apply filters
+    if plan_tier:
+        query = QueryFilters.family_by_plan_tier(tenant_id, plan_tier)
+    else:
+        query = QueryFilters.family_by_tenant(tenant_id)
     
+    # Default sort: created_at desc
+    families = await db.families.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Parse dates
     for fam in families:
         if isinstance(fam.get('created_at'), str):
             fam['created_at'] = datetime.fromisoformat(fam['created_at'])
         if isinstance(fam.get('updated_at'), str):
             fam['updated_at'] = datetime.fromisoformat(fam['updated_at'])
+        
+        # Load relations if requested
+        if include_members:
+            fam['members'] = await load_family_members(fam['id'], tenant_id)
+        
+        if include_primary_contact:
+            fam['primary_contact'] = await load_family_primary_contact(fam['id'], tenant_id)
     
     return families
 
