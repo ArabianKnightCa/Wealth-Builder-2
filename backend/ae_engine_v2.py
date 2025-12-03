@@ -20,6 +20,11 @@ class AdaptiveEngineV2:
     Implements stable contract v1.1.1
     """
     
+    # Age band configuration - dynamically calculated
+    MINIMUM_AGE = 6  # Single source of truth for minimum age
+    CHILD_AGE_MAX = 12
+    TEEN_AGE_MAX = 17
+    
     def __init__(self):
         self.contracts = self._load_json('ae_contracts_stable_v1_1.json')
         self.rules = self._load_json('ae_rules_poc_v1_1.json')
