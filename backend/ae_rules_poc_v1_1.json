@@ -16,12 +16,6 @@
   },
   "constraints": {
     "age_bands": {
-      "8-12": {
-        "exclude_tags": [
-          "advanced"
-        ],
-        "reading_level": "simple"
-      },
       "13-17": {
         "exclude_tags": [],
         "reading_level": "youth"
@@ -29,6 +23,12 @@
       "18-99": {
         "exclude_tags": [],
         "reading_level": "standard"
+      },
+      "6-12": {
+        "exclude_tags": [
+          "advanced"
+        ],
+        "reading_level": "simple"
       }
     },
     "experience": {
