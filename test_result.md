@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Telemetry System End-to-End Testing - I've implemented a complete telemetry system for the Wealth Builder application. Please perform comprehensive testing to verify all telemetry endpoints and data collection work correctly."
+user_problem_statement: "Complete User Journey Test - 8-Year-Old Beginner from California - Test the complete user flow from registration through first chapter completion to verify age-appropriate content and functionality for young users."
 
 backend:
   - task: "Session Telemetry Endpoint"
