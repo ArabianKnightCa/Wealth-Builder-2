@@ -120,13 +120,16 @@ class AdaptiveEngineV2:
         }
     
     def _get_age_band(self, age: int) -> str:
-        """Determine age band from age"""
-        if 6 <= age <= 12:
-            return "6-12"
-        elif 13 <= age <= 17:
-            return "13-17"
+        """
+        Determine age band from age - dynamically calculated based on constants
+        Age bands are automatically adjusted when MINIMUM_AGE is changed
+        """
+        if self.MINIMUM_AGE <= age <= self.CHILD_AGE_MAX:
+            return f"{self.MINIMUM_AGE}-{self.CHILD_AGE_MAX}"
+        elif self.CHILD_AGE_MAX < age <= self.TEEN_AGE_MAX:
+            return f"{self.CHILD_AGE_MAX + 1}-{self.TEEN_AGE_MAX}"
         else:
-            return "18-99"
+            return f"{self.TEEN_AGE_MAX + 1}-99"
     
     def generate_plan(self, user_id: str, answers: List[Dict[str, str]]) -> Dict[str, Any]:
         """
