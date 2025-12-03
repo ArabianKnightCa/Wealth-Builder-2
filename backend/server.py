@@ -902,18 +902,27 @@ FORM_TEMPLATES = {
         "id": "family_form_basic_v1",
         "type": "form",
         "collection": "families",
-        "label": "Family (Basic)",
+        "label": "Family",
         "fields": [
-            {"name": "family_name", "label": "Family Name", "input": "text", "required": True},
-            {"name": "plan_tier", "label": "Plan Tier", "input": "select", "options": ["free", "basic", "premium"], "required": True},
-            {"name": "primary_contact_user_id", "label": "Primary Contact User ID", "input": "text", "required": False}
+            {"name": "family_name", "label": "Family Name", "input": "text", "required": False},
+            {"name": "family_code", "label": "Family Code", "input": "text", "required": False},
+            {
+                "name": "primary_contact_user_id",
+                "label": "Primary Contact",
+                "input": "lookup",
+                "collection": "users",
+                "displayField": "display_name",
+                "required": False,
+                "filter": {"tenant_id": "{{currentTenantId}}"}
+            },
+            {"name": "plan_tier", "label": "Plan Tier", "input": "select", "options": ["free", "plus", "pro", "family_premium"], "required": False},
+            {"name": "plan_status", "label": "Plan Status", "input": "select", "options": ["active", "trial", "past_due", "cancelled"], "required": False}
         ],
         "defaults": {
             "tenant_id": "{{currentTenantId}}",
             "created_by_user_id": "{{currentUserId}}",
             "created_by": "{{currentUserId}}",
             "updated_by": "{{currentUserId}}",
-            "plan_status": "active",
             "is_deleted": False
         }
     },
