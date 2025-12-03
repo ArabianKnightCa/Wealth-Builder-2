@@ -53,7 +53,7 @@ class TelemetryTester:
     
     def cleanup_test_data(self):
         """Clean up test data from all telemetry collections"""
-        if not self.db:
+        if self.db is None:
             return
             
         collections = [
