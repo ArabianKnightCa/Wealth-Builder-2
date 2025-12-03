@@ -115,6 +115,85 @@ class SettingsUpdate(BaseModel):
     notifications_enabled: Optional[bool] = None
 
 # ===========================
+# Database Schema v1.0: Identity & Family Models
+# ===========================
+
+class UserV1(BaseModel):
+    """Enhanced User model with tenant support and soft delete"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    tenant_id: str = "POC"  # POC, BETA, PROD
+    email: Optional[EmailStr] = None
+    first_name: str
+    role_primary: str = "student"  # student, parent, admin, educator
+    role_flags: List[str] = []  # Additional role permissions
+    ppi_profile_id: Optional[str] = None
+    settings: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    is_deleted: bool = False
+    deleted_at: Optional[datetime] = None
+
+class UserV1Create(BaseModel):
+    email: Optional[EmailStr] = None
+    first_name: str
+    role_primary: str = "student"
+    tenant_id: str = "POC"
+
+class Family(BaseModel):
+    """Represents a household group"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    tenant_id: str = "POC"
+    family_name: str
+    family_code: str  # Unique 8-char code for joining
+    primary_contact_user_id: Optional[str] = None
+    plan_tier: str = "free"  # free, basic, premium
+    plan_status: str = "active"  # active, suspended, cancelled
+    billing_account_id: Optional[str] = None
+    settings: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    is_deleted: bool = False
+    deleted_at: Optional[datetime] = None
+
+class FamilyCreate(BaseModel):
+    family_name: str
+    primary_contact_user_id: Optional[str] = None
+    tenant_id: str = "POC"
+    plan_tier: str = "free"
+
+class FamilyMember(BaseModel):
+    """Join table linking users to families"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    tenant_id: str = "POC"
+    family_id: str  # Foreign key to Families.id
+    user_id: str  # Foreign key to Users.id
+    role: str = "child"  # parent, child, guardian, dependent
+    is_primary_guardian: bool = False
+    permissions: Dict[str, Any] = {}  # View, edit, delete permissions
+    status: str = "active"  # pending, active, removed
+    joined_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    removed_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    is_deleted: bool = False
+    deleted_at: Optional[datetime] = None
+
+class FamilyMemberCreate(BaseModel):
+    family_id: str
+    user_id: str
+    role: str = "child"
+    is_primary_guardian: bool = False
+
+class FamilyMemberUpdate(BaseModel):
+    role: Optional[str] = None
+    is_primary_guardian: Optional[bool] = None
+    status: Optional[str] = None
+    permissions: Optional[Dict[str, Any]] = None
+
+# ===========================
 # Helper Functions
 # ===========================
 
