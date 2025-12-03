@@ -1129,6 +1129,71 @@ async def delete_family(
     return {"message": "Family and associated members deleted successfully"}
 
 # ===========================
+# Users Management (Enhanced)
+# ===========================
+
+@api_router.get("/users")
+async def list_users(
+    user_id: str = Depends(get_current_user),
+    tenant_id: str = "POC",
+    email: Optional[str] = None,
+    active_only: bool = True,
+    include_families: bool = False
+):
+    """List users with optional filters and relations"""
+    # Apply filters
+    if email:
+        query = QueryFilters.user_by_email(tenant_id, email)
+    elif active_only:
+        query = QueryFilters.user_active_only(tenant_id)
+    else:
+        query = QueryFilters.user_by_tenant(tenant_id)
+    
+    # Default sort: created_at desc
+    users = await db.users.find(query, {"_id": 0, "password_hash": 0}).sort("created_at", -1).to_list(1000)
+    
+    for user in users:
+        # Parse dates
+        if isinstance(user.get('created_at'), str):
+            user['created_at'] = datetime.fromisoformat(user['created_at'])
+        if isinstance(user.get('updated_at'), str):
+            user['updated_at'] = datetime.fromisoformat(user['updated_at'])
+        
+        # Load families relation if requested (manyThrough)
+        if include_families:
+            user['families'] = await load_user_families(user['id'], tenant_id)
+    
+    return users
+
+@api_router.get("/users/{user_id_param}")
+async def get_user(
+    user_id_param: str,
+    user_id: str = Depends(get_current_user),
+    include_families: bool = False,
+    tenant_id: str = "POC"
+):
+    """Get a specific user with optional relations"""
+    user = await db.users.find_one(
+        {"id": user_id_param, "tenant_id": tenant_id, "is_deleted": False},
+        {"_id": 0, "password_hash": 0}
+    )
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Parse dates
+    if isinstance(user.get('created_at'), str):
+        user['created_at'] = datetime.fromisoformat(user['created_at'])
+    if isinstance(user.get('updated_at'), str):
+        user['updated_at'] = datetime.fromisoformat(user['updated_at'])
+    
+    # Load families relation if requested (manyThrough)
+    if include_families:
+        user['families'] = await load_user_families(user_id_param, tenant_id)
+    
+    return user
+
+# ===========================
 # Family Members Management
 # ===========================
 
