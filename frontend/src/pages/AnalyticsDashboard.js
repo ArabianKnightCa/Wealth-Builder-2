@@ -19,6 +19,12 @@ function AnalyticsDashboard({ token }) {
       personalizedVsBaseline: [],
       dnaProfilePerformance: [],
       ageEffectiveness: []
+    },
+    learningPatterns: {
+      sessionPatterns: [],
+      dayOfWeekPatterns: [],
+      streakAnalysis: {},
+      quizRetryBehavior: []
     }
   });
   const [telemetry, setTelemetry] = useState({
