@@ -316,12 +316,6 @@ async def generate_user_code(user_type: str, cohort: str, created_at: datetime) 
 @api_router.get("/")
 async def root():
     return {"message": "Mizo Wealth Builder API", "version": "3.0"}
-
-@api_router.get("/content/ppi")
-async def get_ppi_questions():
-    """Legacy endpoint - returns static 20 questions"""
-    return {"questions": PPI_QUESTIONS}
-
 @api_router.get("/content/ppi/personalized")
 async def get_personalized_ppi(user_id: str = Depends(get_current_user)):
     """
