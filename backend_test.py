@@ -516,12 +516,12 @@ class AnalyticsDashboardTester:
 
 def main():
     """Main test execution"""
-    print("🚀 Starting Feedback System End-to-End Testing")
+    print("🚀 Starting Analytics Dashboard Comprehensive Testing")
     print(f"Backend URL: {BACKEND_URL}")
     print(f"MongoDB URL: {MONGO_URL}")
     print(f"Database: {DB_NAME}")
     
-    tester = FeedbackSystemTester()
+    tester = AnalyticsDashboardTester()
     
     # Setup MongoDB connection
     if not tester.setup_mongo_connection():
@@ -536,17 +536,17 @@ def main():
             print("❌ Failed to register test user - aborting tests")
             return 1
         
-        # Step 2: Test feedback submission (both endpoints)
-        tester.test_feedback_submission()
+        # Step 2: Test all analytics endpoints
+        tester.test_analytics_endpoints()
         
-        # Step 3: Test feedback retrieval
-        tester.test_feedback_retrieval()
+        # Step 3: Validate data structures
+        tester.validate_data_structures()
         
         # Step 4: Database verification
         tester.test_database_verification()
         
-        # Step 5: Issue identification
-        tester.identify_issues()
+        # Step 5: Generate endpoint summary
+        tester.generate_endpoint_summary()
         
         # Print comprehensive summary
         success = tester.print_summary()
