@@ -266,68 +266,59 @@ class AnalyticsDashboardTester:
         
         return True
     
-    def test_feedback_retrieval(self):
-        """Test feedback retrieval via admin endpoint"""
-        print(f"\n📋 Testing Feedback Retrieval...")
+    def validate_data_structures(self):
+        """Validate data structures returned by analytics endpoints"""
+        print(f"\n🔍 Validating Data Structures...")
         
-        if not self.user_data:
-            print("❌ No user data available - skipping feedback retrieval test")
-            return False
+        structure_issues = []
         
-        headers = {"Authorization": f"Bearer {self.user_data['access_token']}"}
+        for result in self.endpoint_results:
+            if result["status"] == "PASS" and result["response_data"] is not None:
+                endpoint_name = result["name"]
+                data = result["response_data"]
+                
+                # Check for MongoDB ObjectId issues
+                data_str = str(data)
+                if "ObjectId" in data_str:
+                    issue = f"{endpoint_name}: Contains MongoDB ObjectId (not JSON serializable)"
+                    structure_issues.append(issue)
+                    print(f"⚠️ {issue}")
+                
+                # Check for expected data types
+                if isinstance(data, dict):
+                    # Check for null values in important fields
+                    null_fields = [k for k, v in data.items() if v is None]
+                    if null_fields:
+                        issue = f"{endpoint_name}: Contains null fields: {null_fields}"
+                        structure_issues.append(issue)
+                        print(f"⚠️ {issue}")
+                
+                # Validate specific endpoint structures
+                if "personalization-effectiveness" in result["endpoint"]:
+                    expected_keys = ["personalizedVsBaseline", "dnaProfilePerformance", "experienceLevelEffectiveness"]
+                    missing_keys = [k for k in expected_keys if k not in data]
+                    if missing_keys:
+                        issue = f"{endpoint_name}: Missing personalization keys: {missing_keys}"
+                        structure_issues.append(issue)
+                        print(f"⚠️ {issue}")
+                
+                elif "learning-patterns" in result["endpoint"]:
+                    expected_keys = ["sessionPatterns", "dayOfWeekPatterns", "streakAnalysis", "quizRetryBehavior"]
+                    missing_keys = [k for k in expected_keys if k not in data]
+                    if missing_keys:
+                        issue = f"{endpoint_name}: Missing learning pattern keys: {missing_keys}"
+                        structure_issues.append(issue)
+                        print(f"⚠️ {issue}")
         
-        try:
-            response = requests.get(f"{BACKEND_URL}/admin/feedback", headers=headers)
-            if response.status_code == 200:
-                result = response.json()
-                feedback_list = result.get("feedback", [])
-                feedback_count = result.get("count", 0)
-                
-                print(f"✅ Feedback retrieval successful")
-                print(f"   📊 Total feedback entries: {feedback_count}")
-                print(f"   📋 Feedback list length: {len(feedback_list)}")
-                
-                # Check if our submitted feedback appears
-                found_feedback = []
-                for feedback in feedback_list:
-                    # Check for feedback from our test user
-                    if feedback.get("user_id") == self.user_data["user_id"]:
-                        found_feedback.append(feedback)
-                        print(f"   ✅ Found our feedback: {feedback.get('feedback_text', feedback.get('feedback', 'N/A'))[:50]}...")
-                
-                if found_feedback:
-                    print(f"✅ Found {len(found_feedback)} feedback entries from our test user")
-                    self.results["feedback_retrieval"]["passed"] += 1
-                else:
-                    error_msg = "No feedback found from our test user in admin view"
-                    print(f"❌ {error_msg}")
-                    self.results["feedback_retrieval"]["failed"] += 1
-                    self.results["feedback_retrieval"]["errors"].append(error_msg)
-                
-                # Show sample feedback structure
-                if feedback_list:
-                    sample = feedback_list[0]
-                    print(f"\n📋 Sample feedback structure:")
-                    for key, value in sample.items():
-                        if key == "_id":
-                            continue
-                        print(f"   • {key}: {str(value)[:100]}...")
-                
-                return len(found_feedback) > 0
-                
-            else:
-                error_msg = f"Feedback retrieval failed: {response.status_code} - {response.text}"
-                print(f"❌ {error_msg}")
-                self.results["feedback_retrieval"]["failed"] += 1
-                self.results["feedback_retrieval"]["errors"].append(error_msg)
-                return False
-                
-        except Exception as e:
-            error_msg = f"Feedback retrieval error: {str(e)}"
-            print(f"❌ {error_msg}")
-            self.results["feedback_retrieval"]["failed"] += 1
-            self.results["feedback_retrieval"]["errors"].append(error_msg)
-            return False
+        if structure_issues:
+            print(f"❌ Found {len(structure_issues)} data structure issues")
+            self.results["data_structure_validation"]["failed"] += 1
+            self.results["data_structure_validation"]["errors"].extend(structure_issues)
+        else:
+            print(f"✅ All data structures are valid")
+            self.results["data_structure_validation"]["passed"] += 1
+        
+        return len(structure_issues) == 0
     
     def test_database_verification(self):
         """Test direct database queries to verify feedback storage"""
