@@ -34,55 +34,16 @@ BACKEND_URL = "https://money-mentor-380.preview.emergentagent.com/api"
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'test_database')
 
-# Test Personas
-PERSONAS = {
-    "child": {
-        "name": "Alex Kid",
-        "age": 8,
-        "email": f"alex.kid.{uuid.uuid4()}@example.com",
-        "password": "SecurePass123!",
-        "date_of_birth": "2016-03-15",
-        "experience_level": 1,
-        "occupation": "Middle / High School Student",
-        "state": "CA",
-        "school_name": "Sunny Elementary School",
-        "school_city": "Los Angeles",
-        "school_state": "CA",
-        "parent_email": f"parent.{uuid.uuid4()}@example.com",
-        "financial_goals": ["learn_money_basics", "save_for_purchase"],
-        "expected_profile": "Creative & Analytical",
-        "ppi_answers": "mostly_A_and_D"  # Simple, curious answers
-    },
-    "teen": {
-        "name": "Jordan Planner",
-        "age": 16,
-        "email": f"jordan.planner.{uuid.uuid4()}@example.com",
-        "password": "SecurePass123!",
-        "date_of_birth": "2008-07-22",
-        "experience_level": 3,
-        "occupation": "Middle / High School Student",
-        "state": "NY",
-        "school_name": "Metro High School",
-        "school_city": "New York",
-        "school_state": "NY",
-        "parent_email": f"parent.teen.{uuid.uuid4()}@example.com",
-        "financial_goals": ["save_for_college", "start_business"],
-        "expected_profile": "Planner",
-        "ppi_answers": "mostly_A_and_B"  # Structured, organized answers
-    },
-    "adult": {
-        "name": "Morgan Builder",
-        "age": 30,
-        "email": f"morgan.builder.{uuid.uuid4()}@example.com",
-        "password": "SecurePass123!",
-        "date_of_birth": "1994-11-08",
-        "experience_level": 5,
-        "occupation": "Professional / Manager",
-        "state": "TX",
-        "financial_goals": ["build_wealth", "retirement"],
-        "expected_profile": "Builder",
-        "ppi_answers": "mostly_A_and_C"  # Ambitious, goal-focused answers
-    }
+# Test User Data
+TEST_USER = {
+    "name": "Feedback Tester",
+    "email": f"feedback.tester.{int(time.time())}@example.com",
+    "password": "SecurePass123!",
+    "date_of_birth": "1995-06-15",
+    "experience_level": 3,
+    "occupation": "Professional / Manager",
+    "state": "CA",
+    "financial_goals": ["build_wealth", "save_for_purchase"]
 }
 
 class AdaptiveEngineTester:
