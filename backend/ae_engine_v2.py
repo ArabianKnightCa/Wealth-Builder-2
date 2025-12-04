@@ -264,16 +264,72 @@ class AdaptiveEngineV2:
         else:
             return "Balanced Builder"
     
-    def _generate_lpi_plan(self, dna: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_goal_prioritization(self, base_order: List[int], goals: List[str], age: int) -> List[int]:
         """
-        Generate personalized LPI plan based on Financial DNA
+        Adjust chapter order based on user's financial goals
+        
+        Args:
+            base_order: Chapter order from PPI profile
+            goals: List of goal IDs from user registration
+            age: User age for goal filtering
+        
+        Returns:
+            Reordered chapter list prioritizing goal-relevant chapters
+        """
+        if not goals or not self.goal_mapping.get('goal_definitions'):
+            return base_order
+        
+        # Build priority scores for each chapter
+        chapter_scores = {ch: 0 for ch in base_order}
+        
+        for goal_id in goals:
+            # Find goal definition
+            goal_def = next((g for g in self.goal_mapping['goal_definitions'] if g['id'] == goal_id), None)
+            if not goal_def:
+                continue
+            
+            # Check if goal is age-appropriate
+            age_min, age_max = goal_def.get('age_appropriate', [0, 99])
+            if not (age_min <= age <= age_max):
+                continue
+            
+            # Add priority for primary chapters
+            for ch in goal_def.get('primary_chapters', []):
+                if ch in chapter_scores:
+                    chapter_scores[ch] += 10 * goal_def.get('priority_boost', 1)
+            
+            # Add priority for secondary chapters
+            for ch in goal_def.get('secondary_chapters', []):
+                if ch in chapter_scores:
+                    chapter_scores[ch] += 5 * goal_def.get('priority_boost', 1)
+        
+        # Sort chapters: high priority first, then preserve base order
+        # CH01 (Money Basics) always stays first
+        ch01 = [1] if 1 in base_order else []
+        other_chapters = [ch for ch in base_order if ch != 1]
+        
+        # Sort by priority score (desc), then by original position
+        sorted_others = sorted(other_chapters, key=lambda ch: (-chapter_scores[ch], other_chapters.index(ch)))
+        
+        return ch01 + sorted_others
+    
+    def _generate_lpi_plan(self, dna: Dict[str, Any], age: int = None, goals: List[str] = None) -> Dict[str, Any]:
+        """
+        Generate personalized LPI plan based on Financial DNA + Age + Goals
+        
+        NEW: Now incorporates user goals for chapter prioritization
+        
+        Args:
+            dna: Financial DNA profile from PPI
+            age: User age (for goal filtering)
+            goals: List of financial goal IDs
         
         Returns chapter order and configuration
         """
         profile = dna['profile']
         tempo = dna['weights']['tempo']
         
-        # Define chapter orders for different profiles
+        # Define base chapter orders for different profiles (from PPI)
         chapter_orders = {
             "Planner": [1, 2, 4, 3, 8, 7, 9, 6, 5, 10],
             "Spontaneous": [1, 8, 2, 3, 7, 4, 6, 9, 5, 10],
