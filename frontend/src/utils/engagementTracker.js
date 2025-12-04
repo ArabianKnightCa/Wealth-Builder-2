@@ -16,16 +16,27 @@ class EngagementTracker {
   }
 
   /**
+   * Determine age band
+   */
+  getAgeBand(age) {
+    if (age <= 12) return 'child';
+    if (age <= 18) return 'teen';
+    return 'adult';
+  }
+
+  /**
    * Start tracking a lesson
    */
   startLesson(chapterId, lessonId, lessonTitle, userData) {
+    const age = userData.age || 18;
     this.currentLesson = {
       chapterId,
       lessonId,
       lessonTitle,
       userId: userData.id,
       profileId: userData.currentProfile?.id,
-      age: userData.age || 18,
+      age: age,
+      ageBand: this.getAgeBand(age),
       experienceLevel: userData.experience_level || 1,
       dnaProfile: userData.dna_profile,
       startedAt: new Date().toISOString(),
