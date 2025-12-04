@@ -148,13 +148,15 @@ class EngagementTracker {
    * Quick track without detailed metrics (for backwards compatibility)
    */
   async quickTrack(chapterId, lessonId, lessonTitle, userData, timeSpent = 60) {
+    const age = userData.age || 18;
     const engagementData = {
       userId: userData.id,
       profileId: userData.currentProfile?.id,
       chapterId,
       lessonId,
       lessonTitle,
-      age: userData.age || 18,
+      age: age,
+      ageBand: this.getAgeBand(age),
       experienceLevel: userData.experience_level || 1,
       dnaProfile: userData.dna_profile,
       startedAt: new Date(Date.now() - timeSpent * 1000).toISOString(),
