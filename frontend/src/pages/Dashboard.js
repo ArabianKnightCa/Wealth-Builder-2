@@ -25,7 +25,9 @@ function Dashboard({ user, token, onLogout }) {
       // If PPI not completed, allow dashboard but show message
       // User can navigate to PPI via ? button if needed
       const [chaptersRes, progressRes] = await Promise.all([
-        axios.get(`${API}/content/lpi`),
+        axios.get(`${API}/content/lpi`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
         axios.get(`${API}/lpi/progress`, {
           headers: { Authorization: `Bearer ${token}` }
         })
