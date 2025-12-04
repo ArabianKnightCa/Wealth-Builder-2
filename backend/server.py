@@ -2524,6 +2524,9 @@ async def get_personalization_effectiveness():
         # Age-appropriate effectiveness
         age_pipeline = [
             {
+                "$match": {"ageBand": {"$ne": None, "$exists": True}}
+            },
+            {
                 "$group": {
                     "_id": "$ageBand",
                     "avgCompletionRate": {
