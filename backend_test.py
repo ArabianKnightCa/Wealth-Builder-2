@@ -155,76 +155,116 @@ class AnalyticsDashboardTester:
             self.results["registration"]["errors"].append(error_msg)
             return False
     
-    def test_feedback_submission(self):
-        """Test feedback submission using both duplicate endpoints"""
-        print(f"\n📝 Testing Feedback Submission...")
+    def test_analytics_endpoints(self):
+        """Test all analytics endpoints comprehensively"""
+        print(f"\n📊 Testing Analytics Endpoints...")
         
         if not self.user_data:
-            print("❌ No user data available - skipping feedback submission test")
+            print("❌ No user data available - skipping analytics endpoint tests")
             return False
         
         headers = {"Authorization": f"Bearer {self.user_data['access_token']}"}
         
-        # Test Case 1: Submit feedback using the first endpoint (line 872) - no auth required
-        print("\n🔍 Testing First Feedback Endpoint (line 872 - no auth)...")
-        feedback_data_1 = {
-            "context_page": "Dashboard",
-            "feedback_text": "This is a test feedback from endpoint 1"
-        }
+        for endpoint_config in self.analytics_endpoints:
+            endpoint_name = endpoint_config["name"]
+            endpoint_path = endpoint_config["endpoint"]
+            expected_fields = endpoint_config["expected_fields"]
+            
+            print(f"\n🔍 Testing {endpoint_name}: {endpoint_path}")
+            
+            endpoint_result = {
+                "name": endpoint_name,
+                "endpoint": endpoint_path,
+                "status": "UNKNOWN",
+                "status_code": None,
+                "response_data": None,
+                "issues": [],
+                "expected_fields": expected_fields,
+                "found_fields": []
+            }
+            
+            try:
+                response = requests.get(f"{BACKEND_URL}{endpoint_path}", headers=headers)
+                endpoint_result["status_code"] = response.status_code
+                
+                if response.status_code == 404:
+                    endpoint_result["status"] = "FAIL"
+                    endpoint_result["issues"].append("Endpoint not found (404)")
+                    print(f"❌ {endpoint_name}: Endpoint not found (404)")
+                    self.results["analytics_endpoints"]["failed"] += 1
+                    self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Endpoint not found")
+                    
+                elif response.status_code == 500:
+                    endpoint_result["status"] = "FAIL"
+                    endpoint_result["issues"].append(f"Server error (500): {response.text}")
+                    print(f"❌ {endpoint_name}: Server error (500)")
+                    self.results["analytics_endpoints"]["failed"] += 1
+                    self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Server error (500)")
+                    
+                elif response.status_code == 200:
+                    try:
+                        data = response.json()
+                        endpoint_result["response_data"] = data
+                        
+                        # Check if response is empty or null
+                        if data is None:
+                            endpoint_result["status"] = "FAIL"
+                            endpoint_result["issues"].append("Response is null")
+                            print(f"❌ {endpoint_name}: Response is null")
+                            self.results["analytics_endpoints"]["failed"] += 1
+                            self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Response is null")
+                        elif isinstance(data, list) and len(data) == 0:
+                            endpoint_result["status"] = "PASS"
+                            endpoint_result["issues"].append("Response is empty array (may be expected)")
+                            print(f"✅ {endpoint_name}: Returns empty array (may be expected)")
+                            self.results["analytics_endpoints"]["passed"] += 1
+                        elif isinstance(data, dict):
+                            # Check for expected fields
+                            endpoint_result["found_fields"] = list(data.keys())
+                            missing_fields = []
+                            for field in expected_fields:
+                                if field not in data:
+                                    missing_fields.append(field)
+                            
+                            if missing_fields:
+                                endpoint_result["status"] = "FAIL"
+                                endpoint_result["issues"].append(f"Missing expected fields: {missing_fields}")
+                                print(f"❌ {endpoint_name}: Missing fields {missing_fields}")
+                                self.results["analytics_endpoints"]["failed"] += 1
+                                self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Missing fields {missing_fields}")
+                            else:
+                                endpoint_result["status"] = "PASS"
+                                print(f"✅ {endpoint_name}: Returns valid data structure")
+                                self.results["analytics_endpoints"]["passed"] += 1
+                        else:
+                            endpoint_result["status"] = "PASS"
+                            print(f"✅ {endpoint_name}: Returns data (type: {type(data).__name__})")
+                            self.results["analytics_endpoints"]["passed"] += 1
+                            
+                    except json.JSONDecodeError as e:
+                        endpoint_result["status"] = "FAIL"
+                        endpoint_result["issues"].append(f"Invalid JSON response: {str(e)}")
+                        print(f"❌ {endpoint_name}: Invalid JSON response")
+                        self.results["analytics_endpoints"]["failed"] += 1
+                        self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Invalid JSON response")
+                        
+                else:
+                    endpoint_result["status"] = "FAIL"
+                    endpoint_result["issues"].append(f"Unexpected status code: {response.status_code}")
+                    print(f"❌ {endpoint_name}: Unexpected status code {response.status_code}")
+                    self.results["analytics_endpoints"]["failed"] += 1
+                    self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Status {response.status_code}")
+                    
+            except Exception as e:
+                endpoint_result["status"] = "FAIL"
+                endpoint_result["issues"].append(f"Request error: {str(e)}")
+                print(f"❌ {endpoint_name}: Request error - {str(e)}")
+                self.results["analytics_endpoints"]["failed"] += 1
+                self.results["analytics_endpoints"]["errors"].append(f"{endpoint_name}: Request error")
+            
+            self.endpoint_results.append(endpoint_result)
         
-        try:
-            response = requests.post(f"{BACKEND_URL}/feedback", json=feedback_data_1)
-            if response.status_code == 200:
-                result = response.json()
-                print(f"✅ First endpoint submission: {result['message']}")
-                self.submitted_feedback.append({
-                    "endpoint": "first",
-                    "data": feedback_data_1,
-                    "success": True
-                })
-                self.results["feedback_submission"]["passed"] += 1
-            else:
-                error_msg = f"First endpoint failed: {response.status_code} - {response.text}"
-                print(f"❌ {error_msg}")
-                self.results["feedback_submission"]["failed"] += 1
-                self.results["feedback_submission"]["errors"].append(error_msg)
-        except Exception as e:
-            error_msg = f"First endpoint error: {str(e)}"
-            print(f"❌ {error_msg}")
-            self.results["feedback_submission"]["failed"] += 1
-            self.results["feedback_submission"]["errors"].append(error_msg)
-        
-        # Test Case 2: Submit feedback using the second endpoint (line 992) - with auth
-        print("\n🔍 Testing Second Feedback Endpoint (line 992 - with auth)...")
-        feedback_data_2 = {
-            "context_page": "Dashboard",
-            "feedback_text": "This is a test feedback from endpoint 2"
-        }
-        
-        try:
-            response = requests.post(f"{BACKEND_URL}/feedback", json=feedback_data_2, headers=headers)
-            if response.status_code == 200:
-                result = response.json()
-                print(f"✅ Second endpoint submission: {result['message']}")
-                self.submitted_feedback.append({
-                    "endpoint": "second",
-                    "data": feedback_data_2,
-                    "success": True,
-                    "user_id": self.user_data['user_id']
-                })
-                self.results["feedback_submission"]["passed"] += 1
-            else:
-                error_msg = f"Second endpoint failed: {response.status_code} - {response.text}"
-                print(f"❌ {error_msg}")
-                self.results["feedback_submission"]["failed"] += 1
-                self.results["feedback_submission"]["errors"].append(error_msg)
-        except Exception as e:
-            error_msg = f"Second endpoint error: {str(e)}"
-            print(f"❌ {error_msg}")
-            self.results["feedback_submission"]["failed"] += 1
-            self.results["feedback_submission"]["errors"].append(error_msg)
-        
-        return len(self.submitted_feedback) > 0
+        return True
     
     def test_feedback_retrieval(self):
         """Test feedback retrieval via admin endpoint"""
