@@ -18,7 +18,7 @@ function AnalyticsDashboard({ token }) {
     personalization: {
       personalizedVsBaseline: [],
       dnaProfilePerformance: [],
-      ageEffectiveness: []
+      experienceLevelEffectiveness: []
     },
     learningPatterns: {
       sessionPatterns: [],
