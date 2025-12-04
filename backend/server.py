@@ -411,6 +411,125 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
         }
     }
 
+# ===========================
+# Content API - Database-Driven
+# ===========================
+
+@api_router.get("/content/chapters")
+async def get_chapters_list():
+    """Get list of all chapters from database"""
+    chapters = await db.chapters.find(
+        {"is_active": True},
+        {"_id": 0}
+    ).sort("order", 1).to_list(100)
+    return {"chapters": chapters}
+
+@api_router.get("/content/chapters/{chapter_id}")
+async def get_chapter_with_lessons(chapter_id: str, user_id: str = Depends(get_current_user)):
+    """Get chapter with lessons (personalized) from database"""
+    # Fetch chapter
+    chapter = await db.chapters.find_one({"id": chapter_id, "is_active": True}, {"_id": 0})
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapter not found")
+    
+    # Fetch lessons
+    lessons = await db.lessons.find(
+        {"chapter_id": chapter_id, "is_active": True},
+        {"_id": 0}
+    ).sort("order", 1).to_list(100)
+    
+    # Get user profile for personalization
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if user:
+        progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
+        
+        dna_profile = 'Balanced'
+        dna_weights = {}
+        if progress and 'learning_map' in progress:
+            learning_map = progress['learning_map']
+            if 'financial_dna' in learning_map:
+                dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
+                dna_weights = learning_map['financial_dna'].get('weights', {})
+        
+        user_profile = {
+            'age': calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
+            'financial_experience': map_experience_level(user.get('experience_level', 1)),
+            'dna_profile': dna_profile,
+            'dna_weights': dna_weights,
+            'goals': user.get('financial_goals', [])
+        }
+        
+        # Transform lessons
+        transformer = get_content_transformer()
+        personalized_lessons = []
+        for lesson in lessons:
+            transformed_text = transformer.transform_lesson(lesson['text'], user_profile)
+            transformed_takeaway = transformer.transform_lesson(lesson['takeaway'], user_profile)
+            personalized_lessons.append({
+                **lesson,
+                'text': transformed_text,
+                'takeaway': transformed_takeaway
+            })
+        lessons = personalized_lessons
+    
+    return {
+        "chapter": chapter,
+        "lessons": lessons,
+        "personalization_applied": bool(user)
+    }
+
+@api_router.get("/content/chapters/{chapter_id}/quiz")
+async def get_chapter_quiz(chapter_id: str):
+    """Get quiz questions for a chapter from database"""
+    # Fetch chapter
+    chapter = await db.chapters.find_one({"id": chapter_id, "is_active": True}, {"_id": 0})
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapter not found")
+    
+    # Fetch quiz questions
+    questions = await db.quiz_questions.find(
+        {"chapter_id": chapter_id, "is_active": True},
+        {"_id": 0}
+    ).sort("order", 1).to_list(100)
+    
+    # Remove rationale and correct_answer from response (for quiz taking)
+    quiz_questions = []
+    for q in questions:
+        quiz_questions.append({
+            "id": q['id'],
+            "question_text": q['question_text'],
+            "options": q['options'],
+            "order": q['order']
+        })
+    
+    return {
+        "chapter": chapter,
+        "questions": quiz_questions
+    }
+
+@api_router.post("/content/quiz/submit")
+async def submit_quiz_answer(answer_data: dict, user_id: str = Depends(get_current_user)):
+    """Submit quiz answer and get feedback"""
+    question_id = answer_data.get('question_id')
+    selected_answer = answer_data.get('selected_answer')
+    
+    if not question_id or not selected_answer:
+        raise HTTPException(status_code=400, detail="Missing question_id or selected_answer")
+    
+    # Fetch question from database
+    question = await db.quiz_questions.find_one({"id": question_id}, {"_id": 0})
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    
+    is_correct = question['correct_answer'] == selected_answer
+    
+    return {
+        "is_correct": is_correct,
+        "correct_answer": question['correct_answer'],
+        "rationale": question['rationale'],
+        "selected_answer": selected_answer
+    }
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
