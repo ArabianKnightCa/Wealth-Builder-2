@@ -152,6 +152,11 @@ function Register({ onLogin }) {
       return;
     }
     
+    if (!formData.life_stage) {
+      setError('Please select your life stage');
+      return;
+    }
+    
     if (!formData.occupation) {
       setError('Please select your current role');
       return;
