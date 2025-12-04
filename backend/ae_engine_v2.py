@@ -338,8 +338,14 @@ class AdaptiveEngineV2:
             "Balanced Builder": [1, 2, 3, 4, 8, 7, 9, 6, 5, 10]
         }
         
-        # Get chapter order for profile
-        chapter_order = chapter_orders.get(profile, chapter_orders["Balanced Builder"])
+        # Get base chapter order for profile (from PPI)
+        base_order = chapter_orders.get(profile, chapter_orders["Balanced Builder"])
+        
+        # Apply goal-based prioritization if goals provided
+        if goals and age:
+            chapter_order = self._apply_goal_prioritization(base_order, goals, age)
+        else:
+            chapter_order = base_order
         
         # Build chapter plan
         chapters = []
@@ -354,7 +360,8 @@ class AdaptiveEngineV2:
             "version": "POC-v1.1.1",
             "chapters": chapters,
             "tempo": tempo,
-            "profile": profile
+            "profile": profile,
+            "goals_applied": len(goals) if goals else 0
         }
 
 
