@@ -2553,14 +2553,14 @@ async def get_personalization_effectiveness():
         
         dna_results = await db.telemetry_lesson_engagement.aggregate(dna_pipeline).to_list(1000)
         
-        # Age-appropriate effectiveness
-        age_pipeline = [
+        # Experience level effectiveness
+        experience_pipeline = [
             {
-                "$match": {"ageBand": {"$ne": None, "$exists": True}}
+                "$match": {"experienceLevel": {"$ne": None, "$exists": True}}
             },
             {
                 "$group": {
-                    "_id": "$ageBand",
+                    "_id": "$experienceLevel",
                     "avgCompletionRate": {
                         "$avg": {"$cond": ["$completed", 100, 0]}
                     },
@@ -2572,22 +2572,22 @@ async def get_personalization_effectiveness():
             {
                 "$project": {
                     "_id": 0,
-                    "ageBand": "$_id",
+                    "experienceLevel": "$_id",
                     "avgCompletionRate": {"$round": ["$avgCompletionRate", 1]},
                     "avgTimeSpent": {"$round": ["$avgTimeSpent", 0]},
                     "avgScrollDepth": {"$round": ["$avgScrollDepth", 0]},
                     "totalLessons": 1
                 }
             },
-            {"$sort": {"ageBand": 1}}
+            {"$sort": {"experienceLevel": 1}}
         ]
         
-        age_results = await db.telemetry_lesson_engagement.aggregate(age_pipeline).to_list(1000)
+        experience_results = await db.telemetry_lesson_engagement.aggregate(experience_pipeline).to_list(1000)
         
         return {
             "personalizedVsBaseline": results,
             "dnaProfilePerformance": dna_results,
-            "ageEffectiveness": age_results,
+            "experienceLevelEffectiveness": experience_results,
             "summary": {
                 "message": "Personalization effectiveness metrics",
                 "dataPoints": len(results)
