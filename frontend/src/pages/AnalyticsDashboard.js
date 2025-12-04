@@ -25,6 +25,21 @@ function AnalyticsDashboard({ token }) {
       dayOfWeekPatterns: [],
       streakAnalysis: {},
       quizRetryBehavior: []
+    },
+    multiProfile: {
+      profileDistribution: [],
+      switchingBehavior: {}
+    },
+    errorsAndFriction: {
+      apiErrors: [],
+      frictionPoints: []
+    },
+    contentDifficulty: {
+      quizDifficulty: [],
+      lessonEngagement: []
+    },
+    featureUsage: {
+      features: {}
     }
   });
   const [telemetry, setTelemetry] = useState({
