@@ -1480,6 +1480,30 @@ async def update_form(
     }
 
 # ===========================
+# Admin Endpoints - Collection Management
+# ===========================
+
+@api_router.get("/admin/{collection_name}")
+async def get_collection_records(
+    collection_name: str,
+    user_id: str = Depends(get_current_user),
+    limit: int = 100
+):
+    """Get records from a collection for admin management"""
+    allowed_collections = ["users", "families", "family_members"]
+    
+    if collection_name not in allowed_collections:
+        raise HTTPException(status_code=400, detail=f"Access to collection '{collection_name}' not allowed")
+    
+    collection = db[collection_name]
+    records = await collection.find(
+        {"is_deleted": False},
+        {"_id": 0, "password": 0}
+    ).limit(limit).to_list(limit)
+    
+    return {"data": records, "count": len(records)}
+
+# ===========================
 # Telemetry System - Pydantic Models
 # ===========================
 
