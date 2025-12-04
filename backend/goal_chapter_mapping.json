@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Maps financial goals to relevant LPI chapters for personalized learning paths",
+  
+  "goal_definitions": [
+    {
+      "id": "save_for_purchase",
+      "label": "Save for a specific purchase (toy, game, clothes, etc.)",
+      "age_appropriate": [6, 99],
+      "primary_chapters": [3, 8],
+      "secondary_chapters": [2, 1],
+      "priority_boost": 2
+    },
+    {
+      "id": "learn_money_basics",
+      "label": "Learn what money is and how it works",
+      "age_appropriate": [6, 99],
+      "primary_chapters": [1, 2],
+      "secondary_chapters": [3, 7],
+      "priority_boost": 3
+    },
+    {
+      "id": "earn_money",
+      "label": "Learn how to earn money (chores, allowance, job)",
+      "age_appropriate": [6, 99],
+      "primary_chapters": [6, 1],
+      "secondary_chapters": [2, 8],
+      "priority_boost": 2
+    },
+    {
+      "id": "budget_allowance",
+      "label": "Learn to budget my allowance/money",
+      "age_appropriate": [8, 99],
+      "primary_chapters": [2, 3],
+      "secondary_chapters": [8, 1],
+      "priority_boost": 2
+    },
+    {
+      "id": "save_for_college",
+      "label": "Save for college or education",
+      "age_appropriate": [13, 99],
+      "primary_chapters": [8, 5],
+      "secondary_chapters": [3, 2],
+      "priority_boost": 2
+    },
+    {
+      "id": "build_emergency_fund",
+      "label": "Build an emergency fund",
+      "age_appropriate": [16, 99],
+      "primary_chapters": [3, 9],
+      "secondary_chapters": [2, 8],
+      "priority_boost": 2
+    },
+    {
+      "id": "pay_off_debt",
+      "label": "Pay off debt (credit cards, loans)",
+      "age_appropriate": [18, 99],
+      "primary_chapters": [4, 2],
+      "secondary_chapters": [3, 6],
+      "priority_boost": 3
+    },
+    {
+      "id": "invest_future",
+      "label": "Start investing for the future",
+      "age_appropriate": [16, 99],
+      "primary_chapters": [5, 8],
+      "secondary_chapters": [9, 6],
+      "priority_boost": 2
+    },
+    {
+      "id": "buy_car",
+      "label": "Save to buy a car",
+      "age_appropriate": [15, 99],
+      "primary_chapters": [8, 3],
+      "secondary_chapters": [2, 6],
+      "priority_boost": 2
+    },
+    {
+      "id": "buy_home",
+      "label": "Save to buy a home",
+      "age_appropriate": [18, 99],
+      "primary_chapters": [8, 5],
+      "secondary_chapters": [3, 2, 4],
+      "priority_boost": 2
+    },
+    {
+      "id": "start_business",
+      "label": "Learn about starting a business",
+      "age_appropriate": [13, 99],
+      "primary_chapters": [6, 5],
+      "secondary_chapters": [9, 7],
+      "priority_boost": 2
+    },
+    {
+      "id": "understand_credit",
+      "label": "Learn about credit and credit scores",
+      "age_appropriate": [16, 99],
+      "primary_chapters": [4, 2],
+      "secondary_chapters": [9, 1],
+      "priority_boost": 2
+    },
+    {
+      "id": "avoid_scams",
+      "label": "Learn to avoid financial scams and fraud",
+      "age_appropriate": [10, 99],
+      "primary_chapters": [10, 9],
+      "secondary_chapters": [4, 1],
+      "priority_boost": 2
+    },
+    {
+      "id": "financial_independence",
+      "label": "Achieve financial independence",
+      "age_appropriate": [16, 99],
+      "primary_chapters": [6, 5],
+      "secondary_chapters": [8, 3, 2],
+      "priority_boost": 2
+    },
+    {
+      "id": "help_family",
+      "label": "Help my family with money",
+      "age_appropriate": [10, 99],
+      "primary_chapters": [6, 2],
+      "secondary_chapters": [3, 8],
+      "priority_boost": 2
+    },
+    {
+      "id": "retirement",
+      "label": "Plan for retirement",
+      "age_appropriate": [18, 99],
+      "primary_chapters": [5, 8],
+      "secondary_chapters": [9, 6, 3],
+      "priority_boost": 2
+    },
+    {
+      "id": "build_wealth",
+      "label": "Build long-term wealth",
+      "age_appropriate": [18, 99],
+      "primary_chapters": [5, 6],
+      "secondary_chapters": [8, 3, 7],
+      "priority_boost": 2
+    },
+    {
+      "id": "improve_mindset",
+      "label": "Improve my money mindset",
+      "age_appropriate": [13, 99],
+      "primary_chapters": [7, 1],
+      "secondary_chapters": [8, 2],
+      "priority_boost": 2
+    }
+  ],
+  
+  "chapter_info": {
+    "1": {"title": "Money Basics", "description": "What is money and how does it work"},
+    "2": {"title": "Budgeting", "description": "Track and manage your money"},
+    "3": {"title": "Saving & Spending", "description": "Balance saving and spending"},
+    "4": {"title": "Credit", "description": "Understanding credit and debt"},
+    "5": {"title": "Investing", "description": "Grow your wealth over time"},
+    "6": {"title": "Income", "description": "Earning and increasing income"},
+    "7": {"title": "Mindset", "description": "Money beliefs and psychology"},
+    "8": {"title": "Goals", "description": "Setting and achieving financial goals"},
+    "9": {"title": "Risk & Protection", "description": "Insurance and risk management"},
+    "10": {"title": "Safety & Scams", "description": "Fraud prevention and security"}
+  },
+  
+  "personalization_rules": {
+    "description": "How to use goals in chapter ordering",
+    "rules": [
+      "Filter goals by user age (age_appropriate range)",
+      "Primary chapters get highest priority (move to front 20%)",
+      "Secondary chapters get medium priority (move to front 40%)",
+      "priority_boost multiplier adjusts final ordering",
+      "Combine with PPI-based learning style for final order"
+    ]
+  }
+}
