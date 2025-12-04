@@ -356,6 +356,114 @@ function AnalyticsDashboard({ token }) {
               </div>
             )}
 
+            {/* Personalization Tab - NEW! */}
+            {activeTab === 'personalization' && (
+              <div className="space-y-6">
+                {/* DNA Profile Performance */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🧬 DNA Profile Performance</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    How different personality types engage with content
+                  </p>
+                  
+                  {analytics.personalization.dnaProfilePerformance.length === 0 ? (
+                    <p className="text-gray-600">No DNA profile data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {analytics.personalization.dnaProfilePerformance.map((profile, idx) => (
+                        <div key={idx} className="border border-gray-200 rounded-lg p-4">
+                          <h3 className="font-semibold text-gray-800 mb-2">{profile.dnaProfile || 'Unknown'}</h3>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Completion Rate:</span>
+                              <span className="font-medium text-gray-800">{profile.avgCompletionRate}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Avg Time:</span>
+                              <span className="font-medium text-gray-800">{Math.floor(profile.avgTimeSpent / 60)}m</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Users:</span>
+                              <span className="font-medium text-gray-800">{profile.userCount}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Completed:</span>
+                              <span className="font-medium text-gray-800">{profile.chaptersCompleted}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Age Effectiveness */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">👶➡️👨 Age-Appropriate Effectiveness</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    How well content works for different age groups
+                  </p>
+                  
+                  {analytics.personalization.ageEffectiveness.length === 0 ? (
+                    <p className="text-gray-600">No age data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {analytics.personalization.ageEffectiveness.map((age, idx) => (
+                        <div key={idx} className={`border-2 rounded-lg p-4 ${
+                          age.ageBand === 'child' ? 'border-yellow-300 bg-yellow-50' :
+                          age.ageBand === 'teen' ? 'border-blue-300 bg-blue-50' :
+                          'border-purple-300 bg-purple-50'
+                        }`}>
+                          <h3 className="font-bold text-lg mb-3 capitalize">{age.ageBand || 'Unknown'}</h3>
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="text-gray-600">Completion Rate:</span>
+                              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                <div
+                                  className={`h-2 rounded-full ${
+                                    age.ageBand === 'child' ? 'bg-yellow-500' :
+                                    age.ageBand === 'teen' ? 'bg-blue-500' : 'bg-purple-500'
+                                  }`}
+                                  style={{ width: `${age.avgCompletionRate}%` }}
+                                ></div>
+                              </div>
+                              <span className="font-medium">{age.avgCompletionRate}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Avg Time:</span>
+                              <span className="font-medium">{Math.floor(age.avgTimeSpent / 60)}m {age.avgTimeSpent % 60}s</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Scroll Depth:</span>
+                              <span className="font-medium">{age.avgScrollDepth}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Total Lessons:</span>
+                              <span className="font-medium">{age.totalLessons}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Key Insights */}
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6">
+                  <h3 className="font-bold text-purple-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">🎯</span>
+                    Personalization Insights
+                  </h3>
+                  <ul className="text-sm text-purple-800 space-y-2">
+                    <li>• <strong>DNA Profiles:</strong> Shows which personality types engage most with content</li>
+                    <li>• <strong>Age Groups:</strong> Validates if simplified content works for children</li>
+                    <li>• <strong>Best Performers:</strong> Identify which personalizations drive completion</li>
+                    <li>• <strong>Proof of Concept:</strong> Data proves personalization improves outcomes</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
             {/* Feedback Tab */}
             {activeTab === 'feedback' && (
               <div className="bg-white rounded-lg shadow-md p-6">
