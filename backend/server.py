@@ -2038,6 +2038,18 @@ async def log_lesson_engagement(data: TelemetryLessonEngagement):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to log lesson engagement: {str(e)}")
 
+@api_router.post("/telemetry/session-pattern")
+async def log_session_pattern(data: TelemetrySessionPattern):
+    """Log session pattern telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["sessionStart"] = doc["sessionStart"].isoformat() if isinstance(doc["sessionStart"], datetime) else doc["sessionStart"]
+        doc["sessionEnd"] = doc["sessionEnd"].isoformat() if isinstance(doc["sessionEnd"], datetime) else doc["sessionEnd"]
+        await db.telemetry_session_pattern.insert_one(doc)
+        return {"message": "Session pattern logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log session pattern: {str(e)}")
+
 # ===========================
 # Analytics System - Pydantic Models
 # ===========================
