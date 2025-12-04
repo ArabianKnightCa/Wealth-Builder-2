@@ -6,7 +6,7 @@ import telemetryService from '../utils/telemetry';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-function PPI({ token, user }) {
+function PPI({ token, user, onPPIComplete }) {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
