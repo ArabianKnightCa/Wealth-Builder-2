@@ -401,64 +401,54 @@ class AnalyticsDashboardTester:
             self.results["database_verification"]["errors"].append(error_msg)
             return False
     
-    def identify_issues(self):
-        """Identify and analyze potential issues with the feedback system"""
-        print(f"\n🔍 Identifying Feedback System Issues...")
+    def generate_endpoint_summary(self):
+        """Generate comprehensive summary of all analytics endpoints"""
+        print(f"\n📋 Generating Analytics Endpoint Summary...")
         
-        issues_found = []
+        working_endpoints = []
+        broken_endpoints = []
         
-        # Issue 1: Duplicate endpoints
-        print(f"\n📋 Issue Analysis:")
-        print(f"   🔍 Duplicate Endpoints:")
-        print(f"      • Line 872: POST /api/feedback (no auth, different data structure)")
-        print(f"      • Line 992: POST /api/feedback (with auth, structured data)")
-        issues_found.append("Duplicate feedback endpoints with different authentication and data structures")
+        print(f"\n{'Endpoint':<40} | {'Status':<6} | {'Issues'}")
+        print(f"{'-'*40} | {'-'*6} | {'-'*50}")
         
-        # Issue 2: Data structure mismatch
-        print(f"   🔍 Data Structure Analysis:")
-        print(f"      • First endpoint expects: user_id, user_email, feedback, submitted_at")
-        print(f"      • Second endpoint expects: context_page, feedback_text (+ auto user_id)")
-        print(f"      • Admin viewer expects: consistent field names for display")
-        issues_found.append("Inconsistent data structures between submission endpoints")
+        for result in self.endpoint_results:
+            endpoint = result["endpoint"]
+            status = "✅ PASS" if result["status"] == "PASS" else "❌ FAIL"
+            issues = "; ".join(result["issues"]) if result["issues"] else "None"
+            
+            print(f"{endpoint:<40} | {status:<6} | {issues}")
+            
+            if result["status"] == "PASS":
+                working_endpoints.append(endpoint)
+                self.results["endpoint_summary"]["passed"] += 1
+            else:
+                broken_endpoints.append(endpoint)
+                self.results["endpoint_summary"]["failed"] += 1
+                self.results["endpoint_summary"]["errors"].append(f"{endpoint}: {'; '.join(result['issues'])}")
         
-        # Issue 3: Authentication inconsistency
-        print(f"   🔍 Authentication Analysis:")
-        print(f"      • First endpoint: No authentication required")
-        print(f"      • Second endpoint: Bearer token authentication required")
-        print(f"      • Admin viewer: Authentication required")
-        issues_found.append("Inconsistent authentication requirements")
+        print(f"\n📊 Summary Statistics:")
+        print(f"   • Total endpoints tested: {len(self.endpoint_results)}")
+        print(f"   • Working endpoints: {len(working_endpoints)}")
+        print(f"   • Broken endpoints: {len(broken_endpoints)}")
         
-        # Issue 4: Field naming inconsistency
-        print(f"   🔍 Field Naming Analysis:")
-        print(f"      • First endpoint uses: 'feedback' field")
-        print(f"      • Second endpoint uses: 'feedback_text' field")
-        print(f"      • This causes display issues in admin viewer")
-        issues_found.append("Inconsistent field naming between endpoints")
+        if working_endpoints:
+            print(f"\n✅ Working Endpoints:")
+            for endpoint in working_endpoints:
+                print(f"   • {endpoint}")
         
-        # Issue 5: ID field problems
-        print(f"   🔍 ID Field Analysis:")
-        print(f"      • First endpoint: No 'id' field generated")
-        print(f"      • Second endpoint: UUID 'id' field generated")
-        print(f"      • MongoDB: Uses ObjectId '_id' which is not JSON serializable")
-        issues_found.append("Mixed ID field usage causing serialization issues")
+        if broken_endpoints:
+            print(f"\n❌ Broken Endpoints:")
+            for endpoint in broken_endpoints:
+                print(f"   • {endpoint}")
         
-        # Recommendations
-        print(f"\n💡 Recommendations:")
-        print(f"   1. Remove duplicate endpoint (keep line 992 version with auth)")
-        print(f"   2. Standardize field names (use 'feedback_text' consistently)")
-        print(f"   3. Always generate UUID 'id' field for all feedback")
-        print(f"   4. Ensure consistent authentication across all feedback operations")
-        print(f"   5. Update admin viewer to handle both field name variations")
+        # Check for missing telemetry endpoint specifically
+        telemetry_found = any("/analytics/telemetry" in result["endpoint"] for result in self.endpoint_results)
+        if not telemetry_found or any(result["status"] == "FAIL" and "/analytics/telemetry" in result["endpoint"] for result in self.endpoint_results):
+            print(f"\n⚠️ CRITICAL: /analytics/telemetry endpoint missing or broken")
+            print(f"   This endpoint should return: ppiCompleted, topicsCompleted, quizAttempts, sessions")
+            self.results["endpoint_summary"]["errors"].append("Critical telemetry endpoint missing/broken")
         
-        if issues_found:
-            print(f"\n❌ Found {len(issues_found)} issues with feedback system")
-            self.results["issue_identification"]["failed"] += 1
-            self.results["issue_identification"]["errors"].extend(issues_found)
-        else:
-            print(f"\n✅ No issues found with feedback system")
-            self.results["issue_identification"]["passed"] += 1
-        
-        return issues_found
+        return len(broken_endpoints) == 0
     
     def print_summary(self):
         """Print comprehensive test summary"""
