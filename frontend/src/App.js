@@ -25,6 +25,8 @@ function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
+  const [currentProfile, setCurrentProfile] = useState(null);
+  const [showProfileSelector, setShowProfileSelector] = useState(false);
 
   useEffect(() => {
     if (token) {
