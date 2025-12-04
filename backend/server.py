@@ -14,8 +14,7 @@ import jwt
 import random
 import string
 from pathlib import Path
-from content_data import PPI_QUESTIONS, LPI_CHAPTERS, LPI_ANSWER_KEY
-from ae_engine import get_adaptive_engine
+from content_data import LPI_CHAPTERS, LPI_ANSWER_KEY
 from ae_engine_v2 import get_adaptive_engine_v2
 from quiz_validator import validate_quiz_integrity
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
