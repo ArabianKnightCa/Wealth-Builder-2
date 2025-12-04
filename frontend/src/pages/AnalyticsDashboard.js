@@ -464,7 +464,7 @@ function AnalyticsDashboard({ token }) {
                   </h3>
                   <ul className="text-sm text-purple-800 space-y-2">
                     <li>• <strong>DNA Profiles:</strong> Shows which personality types engage most with content</li>
-                    <li>• <strong>Age Groups:</strong> Validates if simplified content works for children</li>
+                    <li>• <strong>Experience Levels:</strong> Tracks how beginners vs. experts interact with material</li>
                     <li>• <strong>Best Performers:</strong> Identify which personalizations drive completion</li>
                     <li>• <strong>Proof of Concept:</strong> Data proves personalization improves outcomes</li>
                   </ul>
