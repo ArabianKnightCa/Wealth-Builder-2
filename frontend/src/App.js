@@ -16,6 +16,7 @@ import FormsManager from './pages/FormsManager';
 import ProfileSelector from './pages/ProfileSelector';
 import AddProfile from './pages/AddProfile';
 import FeedbackViewer from './pages/FeedbackViewer';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
