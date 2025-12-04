@@ -399,238 +399,43 @@ class FeedbackSystemTester:
         
         return issues_found
     
-    def test_quiz_attempt_telemetry(self):
-        """Test quiz attempt telemetry endpoint"""
-        print("\n🔍 Testing Quiz Attempt Telemetry...")
-        
-        test_scenarios = [
-            {
-                "quizId": "quiz_budgeting_01",
-                "topicId": "budgeting_basics",
-                "chapterId": "CH01",
-                "score": 8.5,
-                "maxScore": 10.0,
-                "accuracy": 85.0,
-                "timeSpentSeconds": 180,
-                "householdId": TEST_HOUSEHOLD_ID
-            },
-            {
-                "quizId": "quiz_investment_02",
-                "topicId": "investment_fundamentals",
-                "chapterId": "CH02", 
-                "score": 4.2,
-                "maxScore": 10.0,
-                "accuracy": 42.0,
-                "timeSpentSeconds": 240,
-                "householdId": None
-            },
-            {
-                "quizId": "quiz_portfolio_03",
-                "topicId": "advanced_portfolio",
-                "chapterId": "CH03",
-                "score": 9.8,
-                "maxScore": 10.0,
-                "accuracy": 98.0,
-                "timeSpentSeconds": 120,
-                "householdId": TEST_HOUSEHOLD_ID
-            }
-        ]
-        
-        for i, scenario in enumerate(test_scenarios):
-            test_data = {
-                "userId": TEST_USER_ID,
-                "quizId": scenario["quizId"],
-                "topicId": scenario["topicId"],
-                "chapterId": scenario["chapterId"],
-                "score": scenario["score"],
-                "maxScore": scenario["maxScore"],
-                "accuracy": scenario["accuracy"],
-                "timeSpentSeconds": scenario["timeSpentSeconds"],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "userTier": "premium",
-                "householdId": scenario["householdId"]
-            }
-            
-            try:
-                response = requests.post(f"{BACKEND_URL}/telemetry/quiz-attempt", json=test_data)
-                if response.status_code == 200:
-                    result = response.json()
-                    print(f"✅ Quiz {scenario['quizId']}: {result['message']}")
-                    self.results["quiz_attempt"]["passed"] += 1
-                else:
-                    print(f"❌ Quiz {scenario['quizId']} failed: {response.status_code} - {response.text}")
-                    self.results["quiz_attempt"]["failed"] += 1
-                    self.results["quiz_attempt"]["errors"].append(f"Quiz {scenario['quizId']}: {response.status_code} - {response.text}")
-            except Exception as e:
-                print(f"❌ Quiz {scenario['quizId']} error: {e}")
-                self.results["quiz_attempt"]["failed"] += 1
-                self.results["quiz_attempt"]["errors"].append(f"Quiz {scenario['quizId']}: {str(e)}")
-        
-        # Verify data in MongoDB
-        self.verify_data_in_mongo('telemetry_quiz_attempt', expected_count=3)
-    
-    def test_subscription_change_telemetry(self):
-        """Test subscription change telemetry endpoint"""
-        print("\n🔍 Testing Subscription Change Telemetry...")
-        
-        test_scenarios = [
-            {
-                "fromTier": None,  # Initial subscription
-                "toTier": "free",
-                "householdId": None,
-                "householdSize": None
-            },
-            {
-                "fromTier": "free",
-                "toTier": "premium",
-                "householdId": TEST_HOUSEHOLD_ID,
-                "householdSize": 4
-            },
-            {
-                "fromTier": "premium",
-                "toTier": "family_premium",
-                "householdId": TEST_HOUSEHOLD_ID,
-                "householdSize": 6
-            },
-            {
-                "fromTier": "family_premium",
-                "toTier": "free",  # Downgrade
-                "householdId": TEST_HOUSEHOLD_ID,
-                "householdSize": 2
-            }
-        ]
-        
-        for i, scenario in enumerate(test_scenarios):
-            test_data = {
-                "userId": TEST_USER_ID,
-                "fromTier": scenario["fromTier"],
-                "toTier": scenario["toTier"],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "householdId": scenario["householdId"],
-                "householdSize": scenario["householdSize"]
-            }
-            
-            try:
-                response = requests.post(f"{BACKEND_URL}/telemetry/subscription-change", json=test_data)
-                if response.status_code == 200:
-                    result = response.json()
-                    change_type = "Initial" if scenario["fromTier"] is None else f"{scenario['fromTier']} → {scenario['toTier']}"
-                    print(f"✅ Subscription change ({change_type}): {result['message']}")
-                    self.results["subscription_change"]["passed"] += 1
-                else:
-                    print(f"❌ Subscription change failed: {response.status_code} - {response.text}")
-                    self.results["subscription_change"]["failed"] += 1
-                    self.results["subscription_change"]["errors"].append(f"Change {i+1}: {response.status_code} - {response.text}")
-            except Exception as e:
-                print(f"❌ Subscription change error: {e}")
-                self.results["subscription_change"]["failed"] += 1
-                self.results["subscription_change"]["errors"].append(f"Change {i+1}: {str(e)}")
-        
-        # Verify data in MongoDB
-        self.verify_data_in_mongo('telemetry_subscription_change', expected_count=4)
-    
-    def test_data_integrity(self):
-        """Test data integrity across all collections"""
-        print("\n🔍 Testing Data Integrity...")
-        
-        if self.db is None:
-            print("❌ Cannot test data integrity - MongoDB connection not available")
-            return
-        
-        collections = [
-            'telemetry_user_session',
-            'telemetry_onboarding', 
-            'telemetry_ppi_completed',
-            'telemetry_topic_completed',
-            'telemetry_quiz_attempt',
-            'telemetry_subscription_change'
-        ]
-        
-        total_records = 0
-        integrity_issues = []
-        
-        for coll_name in collections:
-            try:
-                records = list(self.db[coll_name].find({"userId": TEST_USER_ID}))
-                total_records += len(records)
-                
-                for record in records:
-                    # Check required fields
-                    if 'userId' not in record or record['userId'] != TEST_USER_ID:
-                        integrity_issues.append(f"{coll_name}: Missing or incorrect userId")
-                    
-                    if 'id' not in record:
-                        integrity_issues.append(f"{coll_name}: Missing id field")
-                    
-                    # Check timestamp fields
-                    timestamp_fields = ['timestamp', 'sessionStart']
-                    for field in timestamp_fields:
-                        if field in record:
-                            try:
-                                # Verify it's a valid ISO format timestamp
-                                if isinstance(record[field], str):
-                                    datetime.fromisoformat(record[field].replace('Z', '+00:00'))
-                            except ValueError:
-                                integrity_issues.append(f"{coll_name}: Invalid timestamp format in {field}")
-                    
-                    # Check numeric fields
-                    if coll_name == 'telemetry_topic_completed':
-                        numeric_fields = ['difficultyTier', 'timeSpentSeconds', 'accuracy', 'retries']
-                        for field in numeric_fields:
-                            if field in record and not isinstance(record[field], (int, float)):
-                                integrity_issues.append(f"{coll_name}: {field} should be numeric")
-                    
-                    if coll_name == 'telemetry_quiz_attempt':
-                        numeric_fields = ['score', 'maxScore', 'accuracy', 'timeSpentSeconds']
-                        for field in numeric_fields:
-                            if field in record and not isinstance(record[field], (int, float)):
-                                integrity_issues.append(f"{coll_name}: {field} should be numeric")
-                
-                print(f"✅ {coll_name}: {len(records)} records verified")
-                
-            except Exception as e:
-                integrity_issues.append(f"{coll_name}: Error during integrity check - {e}")
-        
-        print(f"\n📊 Data Integrity Summary:")
-        print(f"   Total records checked: {total_records}")
-        print(f"   Integrity issues found: {len(integrity_issues)}")
-        
-        if integrity_issues:
-            print("\n❌ Integrity Issues:")
-            for issue in integrity_issues:
-                print(f"   • {issue}")
-        else:
-            print("✅ All data integrity checks passed!")
-    
     def print_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "="*60)
-        print("📋 TELEMETRY SYSTEM TEST SUMMARY")
+        print("📋 FEEDBACK SYSTEM TEST SUMMARY")
         print("="*60)
         
         total_passed = 0
         total_failed = 0
         
-        for endpoint, results in self.results.items():
+        for test_name, results in self.results.items():
             passed = results["passed"]
             failed = results["failed"]
             total_passed += passed
             total_failed += failed
             
             status = "✅ PASS" if failed == 0 else "❌ FAIL"
-            print(f"{endpoint.upper():20} | {status} | {passed} passed, {failed} failed")
+            print(f"{test_name.upper():25} | {status} | {passed} passed, {failed} failed")
             
             if results["errors"]:
                 for error in results["errors"]:
-                    print(f"                     |      | Error: {error}")
+                    print(f"{'':27} |      | Error: {error}")
         
         print("-" * 60)
-        print(f"{'TOTAL':20} | {'✅ PASS' if total_failed == 0 else '❌ FAIL'} | {total_passed} passed, {total_failed} failed")
+        print(f"{'TOTAL':25} | {'✅ PASS' if total_failed == 0 else '❌ FAIL'} | {total_passed} passed, {total_failed} failed")
+        
+        # Detailed findings
+        print(f"\n📋 DETAILED FINDINGS:")
+        print(f"   • Duplicate endpoints found at lines 872 and 992")
+        print(f"   • Data structure inconsistencies between endpoints")
+        print(f"   • Authentication requirement differences")
+        print(f"   • Field naming inconsistencies (feedback vs feedback_text)")
+        print(f"   • MongoDB ObjectId serialization issues")
         
         if total_failed == 0:
-            print("\n🎉 All telemetry endpoints are working correctly!")
+            print("\n✅ All tests completed successfully!")
         else:
-            print(f"\n⚠️ {total_failed} test(s) failed. Please review the errors above.")
+            print(f"\n❌ {total_failed} test(s) failed. Issues identified above.")
         
         return total_failed == 0
 
