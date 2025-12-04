@@ -46,18 +46,19 @@ TEST_USER = {
     "financial_goals": ["build_wealth", "save_for_purchase"]
 }
 
-class AdaptiveEngineTester:
+class FeedbackSystemTester:
     def __init__(self):
         self.results = {
             "registration": {"passed": 0, "failed": 0, "errors": []},
-            "ppi_personalization": {"passed": 0, "failed": 0, "errors": []},
-            "ppi_submission": {"passed": 0, "failed": 0, "errors": []},
-            "lpi_personalization": {"passed": 0, "failed": 0, "errors": []},
-            "content_transformation": {"passed": 0, "failed": 0, "errors": []}
+            "feedback_submission": {"passed": 0, "failed": 0, "errors": []},
+            "feedback_retrieval": {"passed": 0, "failed": 0, "errors": []},
+            "database_verification": {"passed": 0, "failed": 0, "errors": []},
+            "issue_identification": {"passed": 0, "failed": 0, "errors": []}
         }
-        self.persona_data = {}
+        self.user_data = {}
         self.mongo_client = None
         self.db = None
+        self.submitted_feedback = []
         
     def setup_mongo_connection(self):
         """Setup MongoDB connection for data verification"""
