@@ -32,6 +32,8 @@ class AdaptiveEngineV2:
         # Use baseline bank with 20 standard questions
         self.ppi_bank = self._load_json('ppi_bank_baseline_v1_1.json')
         self.lpi_index = self._load_json('lpi_lessons_index.json')
+        # Load goal-to-chapter mapping for personalization
+        self.goal_mapping = self._load_json('goal_chapter_mapping.json')
     
     def _load_json(self, filename: str) -> Dict:
         """Load JSON file from backend directory"""
