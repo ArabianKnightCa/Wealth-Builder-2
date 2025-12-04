@@ -147,46 +147,52 @@ class AdaptiveEngineV2:
         else:
             return f"{self.TEEN_AGE_MAX + 1}-99"
     
-    def generate_plan(self, user_id: str, answers: List[Dict[str, str]]) -> Dict[str, Any]:
+    def generate_plan(self, user_id: str, answers: List[Dict[str, str]], 
+                      age: int = None, goals: List[str] = None) -> Dict[str, Any]:
         """
         AE_FN_GENERATE_PLAN
         
-        Generate Financial DNA profile and personalized LPI plan based on PPI responses
+        Generate Financial DNA profile and personalized LPI plan based on:
+        - PPI responses (psychological profile)
+        - Age (developmental appropriateness)
+        - Financial goals (content prioritization)
+        
+        NEW: Now includes age + goals for enhanced personalization
         
         Args:
             user_id: User identifier
             answers: List of {"id": "PPI_Q01", "value": "A"}
+            age: User age (optional, for goal filtering)
+            goals: List of financial goal IDs (optional, for chapter prioritization)
         
         Returns:
             {
                 "dna": {
                     "profile": "Planner",
-                    "weights": {
-                        "discipline": 0.7,
-                        "impulse": 0.3,
-                        "confidence": 0.6,
-                        "tempo": "steady"
-                    }
+                    "weights": {...}
                 },
                 "lpi_plan": {
                     "version": "POC-v1.1.1",
-                    "chapters": [...]
+                    "chapters": [...],
+                    "goals_applied": 2
                 }
             }
         """
         # Convert answers to dict for easier lookup
         answer_map = {ans['id']: ans['value'] for ans in answers}
         
-        # Calculate Financial DNA weights
+        # Calculate Financial DNA weights (from PPI)
         dna = self._calculate_financial_dna(answer_map)
         
-        # Generate LPI plan based on DNA
-        lpi_plan = self._generate_lpi_plan(dna)
+        # Generate LPI plan based on DNA + Age + Goals
+        lpi_plan = self._generate_lpi_plan(dna, age=age, goals=goals)
         
         return {
             "dna": dna,
             "lpi_plan": lpi_plan,
             "user_id": user_id,
+            "age": age,
+            "goals": goals or [],
             "generated_at": datetime.utcnow().isoformat() + "Z"
         }
     
