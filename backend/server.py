@@ -2454,6 +2454,25 @@ async def get_chapter_heatmap_analytics(chapterId: Optional[str] = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get chapter heatmap analytics: {str(e)}")
 
+@api_router.get("/analytics/telemetry")
+async def get_telemetry_analytics():
+    """Get telemetry overview stats - Overview Tab"""
+    try:
+        # Count documents in each telemetry collection
+        ppi_completed = await db.telemetry_ppi_completed.count_documents({})
+        topics_completed = await db.telemetry_topic_completed.count_documents({})
+        quiz_attempts = await db.telemetry_quiz_attempt.count_documents({})
+        sessions = await db.telemetry_user_session.count_documents({})
+        
+        return {
+            "ppiCompleted": ppi_completed,
+            "topicsCompleted": topics_completed,
+            "quizAttempts": quiz_attempts,
+            "sessions": sessions
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get telemetry analytics: {str(e)}")
+
 @api_router.get("/analytics/content-engagement")
 async def get_content_engagement_analytics():
     """Get content engagement analytics - Priority 1"""
