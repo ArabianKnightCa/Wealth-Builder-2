@@ -15,6 +15,7 @@ import AdminPanel from './pages/AdminPanel';
 import FormsManager from './pages/FormsManager';
 import ProfileSelector from './pages/ProfileSelector';
 import AddProfile from './pages/AddProfile';
+import FeedbackViewer from './pages/FeedbackViewer';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
