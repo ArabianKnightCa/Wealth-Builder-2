@@ -1625,6 +1625,174 @@ async def get_collection_records(
     return {"data": records, "count": len(records)}
 
 # ===========================
+# Multi-Profile System
+# ===========================
+
+@api_router.get("/profiles")
+async def get_profiles(user_id: str = Depends(get_current_user)):
+    """Get all profiles for the logged-in account"""
+    profiles = await db.profiles.find(
+        {"account_id": user_id},
+        {"_id": 0}
+    ).sort("created_at", 1).to_list(100)
+    
+    # If no profiles exist, create primary profile from user account
+    if not profiles:
+        user = await db.users.find_one({"id": user_id}, {"_id": 0})
+        if user:
+            primary_profile = Profile(
+                account_id=user_id,
+                name=user.get('first_name', 'Me'),
+                age=calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
+                is_primary=True,
+                experience_level=user.get('experience_level', 1),
+                financial_goals=user.get('financial_goals', [])
+            )
+            await db.profiles.insert_one(primary_profile.model_dump())
+            profiles = [primary_profile.model_dump()]
+    
+    return {"profiles": profiles}
+
+@api_router.post("/profiles/create")
+async def create_profile(
+    profile_data: ProfileCreate,
+    user_id: str = Depends(get_current_user)
+):
+    """Create a new profile for the account"""
+    # Check profile limit (max 5 profiles per account)
+    existing_count = await db.profiles.count_documents({"account_id": user_id})
+    if existing_count >= 5:
+        raise HTTPException(status_code=400, detail="Maximum 5 profiles allowed per account")
+    
+    # Validate age
+    if profile_data.age < MINIMUM_USER_AGE:
+        raise HTTPException(status_code=400, detail=f"Minimum age is {MINIMUM_USER_AGE}")
+    
+    # Create profile
+    new_profile = Profile(
+        account_id=user_id,
+        name=profile_data.name,
+        age=profile_data.age,
+        avatar=profile_data.avatar,
+        is_primary=False,
+        experience_level=profile_data.experience_level,
+        financial_goals=profile_data.financial_goals
+    )
+    
+    await db.profiles.insert_one(new_profile.model_dump())
+    
+    return {
+        "profile": new_profile,
+        "message": f"Profile '{profile_data.name}' created successfully"
+    }
+
+@api_router.put("/profiles/{profile_id}")
+async def update_profile(
+    profile_id: str,
+    profile_data: ProfileUpdate,
+    user_id: str = Depends(get_current_user)
+):
+    """Update an existing profile"""
+    # Verify profile belongs to user
+    profile = await db.profiles.find_one(
+        {"id": profile_id, "account_id": user_id},
+        {"_id": 0}
+    )
+    
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    # Build update dict
+    update_data = {}
+    if profile_data.name:
+        update_data["name"] = profile_data.name
+    if profile_data.age:
+        if profile_data.age < MINIMUM_USER_AGE:
+            raise HTTPException(status_code=400, detail=f"Minimum age is {MINIMUM_USER_AGE}")
+        update_data["age"] = profile_data.age
+    if profile_data.avatar:
+        update_data["avatar"] = profile_data.avatar
+    if profile_data.experience_level:
+        update_data["experience_level"] = profile_data.experience_level
+    if profile_data.financial_goals is not None:
+        update_data["financial_goals"] = profile_data.financial_goals
+    
+    if update_data:
+        await db.profiles.update_one(
+            {"id": profile_id, "account_id": user_id},
+            {"$set": update_data}
+        )
+    
+    # Get updated profile
+    updated_profile = await db.profiles.find_one(
+        {"id": profile_id},
+        {"_id": 0}
+    )
+    
+    return {
+        "profile": updated_profile,
+        "message": "Profile updated successfully"
+    }
+
+@api_router.post("/profiles/{profile_id}/activate")
+async def activate_profile(
+    profile_id: str,
+    user_id: str = Depends(get_current_user)
+):
+    """Switch to a different profile"""
+    # Verify profile belongs to user
+    profile = await db.profiles.find_one(
+        {"id": profile_id, "account_id": user_id},
+        {"_id": 0}
+    )
+    
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    # Update last active time
+    await db.profiles.update_one(
+        {"id": profile_id},
+        {"$set": {"last_active": datetime.now(timezone.utc)}}
+    )
+    
+    return {
+        "profile": profile,
+        "message": f"Switched to {profile['name']}'s profile"
+    }
+
+@api_router.delete("/profiles/{profile_id}")
+async def delete_profile(
+    profile_id: str,
+    user_id: str = Depends(get_current_user)
+):
+    """Delete a profile (cannot delete primary profile)"""
+    # Get profile
+    profile = await db.profiles.find_one(
+        {"id": profile_id, "account_id": user_id},
+        {"_id": 0}
+    )
+    
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    if profile.get("is_primary"):
+        raise HTTPException(status_code=400, detail="Cannot delete primary profile")
+    
+    # Delete profile and associated data
+    await db.profiles.delete_one({"id": profile_id})
+    
+    # Delete profile's progress data
+    await db.progress.delete_many({"profile_id": profile_id})
+    await db.ppi_answers.delete_many({"profile_id": profile_id})
+    
+    return {"message": f"Profile '{profile['name']}' deleted successfully"}
+
+@api_router.get("/profiles/avatars")
+async def get_avatar_options():
+    """Get available avatar options"""
+    return {"avatars": AVATAR_OPTIONS}
+
+# ===========================
 # Telemetry System - Pydantic Models
 # ===========================
 
