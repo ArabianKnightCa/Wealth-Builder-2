@@ -112,51 +112,78 @@ class AdaptiveEngineTester:
             return False
     
     def cleanup_test_data(self):
-        """Clean up test data from all telemetry collections"""
+        """Clean up test data from all collections"""
         if self.db is None:
             return
             
-        collections = [
-            'telemetry_user_session',
-            'telemetry_onboarding', 
-            'telemetry_ppi_completed',
-            'telemetry_topic_completed',
-            'telemetry_quiz_attempt',
-            'telemetry_subscription_change'
-        ]
+        collections = ['users', 'progress', 'ppi_answers', 'lpi_progress']
         
-        for coll_name in collections:
+        for persona_key, persona in PERSONAS.items():
+            email = persona['email']
             try:
-                result = self.db[coll_name].delete_many({"userId": TEST_USER_ID})
-                print(f"🧹 Cleaned {result.deleted_count} records from {coll_name}")
-            except Exception as e:
-                print(f"⚠️ Error cleaning {coll_name}: {e}")
-    
-    def verify_data_in_mongo(self, collection_name, expected_count=None, filters=None):
-        """Verify data was stored correctly in MongoDB"""
-        if self.db is None:
-            return False
-            
-        try:
-            query = {"userId": TEST_USER_ID}
-            if filters:
-                query.update(filters)
-                
-            count = self.db[collection_name].count_documents(query)
-            
-            if expected_count is not None:
-                if count == expected_count:
-                    print(f"✅ {collection_name}: Found expected {count} records")
-                    return True
+                # Delete user account via API
+                delete_response = requests.post(f"{BACKEND_URL}/auth/delete-account", 
+                                              json={"email": email})
+                if delete_response.status_code == 200:
+                    print(f"🧹 Cleaned up {persona['name']} ({email})")
                 else:
-                    print(f"❌ {collection_name}: Expected {expected_count} records, found {count}")
-                    return False
+                    print(f"⚠️ Could not clean up {email}: {delete_response.status_code}")
+            except Exception as e:
+                print(f"⚠️ Error cleaning {email}: {e}")
+    
+    def register_persona(self, persona_key):
+        """Register a persona and capture access token"""
+        persona = PERSONAS[persona_key]
+        print(f"\n👤 Registering {persona['name']} (Age: {persona['age']})...")
+        
+        registration_data = {
+            "email": persona["email"],
+            "password": persona["password"],
+            "first_name": persona["name"],
+            "date_of_birth": persona["date_of_birth"],
+            "language": "en",
+            "experience_level": persona["experience_level"],
+            "user_type": "POC",
+            "occupation": persona["occupation"],
+            "state": persona["state"],
+            "financial_goals": persona["financial_goals"]
+        }
+        
+        # Add school info for minors
+        if persona["age"] < 18:
+            registration_data.update({
+                "school_name": persona["school_name"],
+                "school_city": persona["school_city"],
+                "school_state": persona["school_state"],
+                "parent_email": persona["parent_email"]
+            })
+        
+        try:
+            response = requests.post(f"{BACKEND_URL}/auth/register", json=registration_data)
+            if response.status_code == 200:
+                result = response.json()
+                self.persona_data[persona_key] = {
+                    "user_id": result["user"]["id"],
+                    "access_token": result["access_token"],
+                    "user_data": result["user"]
+                }
+                print(f"✅ Registration successful for {persona['name']}")
+                print(f"   User ID: {result['user']['id']}")
+                print(f"   Person Key: {result['user']['person_key']}")
+                print(f"   User Code: {result['user']['user_code']}")
+                self.results["registration"]["passed"] += 1
+                return True
             else:
-                print(f"ℹ️ {collection_name}: Found {count} records")
-                return count > 0
-                
+                error_msg = f"Registration failed: {response.status_code} - {response.text}"
+                print(f"❌ {error_msg}")
+                self.results["registration"]["failed"] += 1
+                self.results["registration"]["errors"].append(f"{persona['name']}: {error_msg}")
+                return False
         except Exception as e:
-            print(f"❌ Error verifying {collection_name}: {e}")
+            error_msg = f"Registration error: {str(e)}"
+            print(f"❌ {error_msg}")
+            self.results["registration"]["failed"] += 1
+            self.results["registration"]["errors"].append(f"{persona['name']}: {error_msg}")
             return False
     
     def test_session_telemetry(self):
