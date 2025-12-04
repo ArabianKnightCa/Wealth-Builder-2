@@ -53,7 +53,8 @@ class UserCreate(BaseModel):
     date_of_birth: str
     language: str = "en"
     experience_level: int = Field(ge=1, le=5)
-    user_type: str = "POC"  # POC, B1, B2, B3, COMM
+    user_type: str = "POC"  # POC, B1, B2, B3, COM
+    life_stage: str  # ES, JH, HS, CL, UN, AD (expandable)
     occupation: str  # Role selector
     state: Optional[str] = None  # US state
     school_name: Optional[str] = None
