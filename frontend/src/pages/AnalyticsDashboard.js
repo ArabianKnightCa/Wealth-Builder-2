@@ -89,13 +89,28 @@ function AnalyticsDashboard({ token }) {
 
   const loadAnalytics = async () => {
     try {
-      const [userProgress, topicPerformance, chapterHeatmap, contentEngagement, personalization, learningPatterns] = await Promise.all([
+      const [
+        userProgress, 
+        topicPerformance, 
+        chapterHeatmap, 
+        contentEngagement, 
+        personalization, 
+        learningPatterns,
+        multiProfile,
+        errorsAndFriction,
+        contentDifficulty,
+        featureUsage
+      ] = await Promise.all([
         axios.get(`${API}/analytics/user-progress`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/topic-performance`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/chapter-heatmap`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/content-engagement`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/personalization-effectiveness`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/analytics/learning-patterns`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/analytics/learning-patterns`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/analytics/multi-profile-usage`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/analytics/errors-and-friction`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/analytics/content-difficulty-heatmap`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/analytics/feature-usage`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
       setAnalytics({
@@ -113,6 +128,21 @@ function AnalyticsDashboard({ token }) {
           dayOfWeekPatterns: [],
           streakAnalysis: {},
           quizRetryBehavior: []
+        },
+        multiProfile: multiProfile.data || {
+          profileDistribution: [],
+          switchingBehavior: {}
+        },
+        errorsAndFriction: errorsAndFriction.data || {
+          apiErrors: [],
+          frictionPoints: []
+        },
+        contentDifficulty: contentDifficulty.data || {
+          quizDifficulty: [],
+          lessonEngagement: []
+        },
+        featureUsage: featureUsage.data || {
+          features: {}
         }
       });
     } catch (error) {
