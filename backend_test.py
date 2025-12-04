@@ -441,11 +441,12 @@ class FeedbackSystemTester:
 
 def main():
     """Main test execution"""
-    print("🚀 Starting Telemetry System End-to-End Testing")
+    print("🚀 Starting Feedback System End-to-End Testing")
     print(f"Backend URL: {BACKEND_URL}")
-    print(f"Test User ID: {TEST_USER_ID}")
+    print(f"MongoDB URL: {MONGO_URL}")
+    print(f"Database: {DB_NAME}")
     
-    tester = TelemetryTester()
+    tester = FeedbackSystemTester()
     
     # Setup MongoDB connection
     if not tester.setup_mongo_connection():
@@ -455,18 +456,24 @@ def main():
     tester.cleanup_test_data()
     
     try:
-        # Run all telemetry tests
-        tester.test_session_telemetry()
-        tester.test_onboarding_telemetry()
-        tester.test_ppi_completed_telemetry()
-        tester.test_topic_completed_telemetry()
-        tester.test_quiz_attempt_telemetry()
-        tester.test_subscription_change_telemetry()
+        # Step 1: Register test user
+        if not tester.register_test_user():
+            print("❌ Failed to register test user - aborting tests")
+            return 1
         
-        # Test data integrity
-        tester.test_data_integrity()
+        # Step 2: Test feedback submission (both endpoints)
+        tester.test_feedback_submission()
         
-        # Print summary
+        # Step 3: Test feedback retrieval
+        tester.test_feedback_retrieval()
+        
+        # Step 4: Database verification
+        tester.test_database_verification()
+        
+        # Step 5: Issue identification
+        tester.identify_issues()
+        
+        # Print comprehensive summary
         success = tester.print_summary()
         
         # Clean up test data
@@ -480,6 +487,8 @@ def main():
         return 1
     except Exception as e:
         print(f"\n❌ Unexpected error during testing: {e}")
+        import traceback
+        traceback.print_exc()
         return 1
     finally:
         if tester.mongo_client:
