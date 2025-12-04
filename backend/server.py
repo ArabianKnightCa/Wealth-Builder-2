@@ -19,6 +19,7 @@ from ae_engine_v2 import get_adaptive_engine_v2
 from quiz_validator import validate_quiz_integrity
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
 from content_transformer import get_content_transformer
+from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
