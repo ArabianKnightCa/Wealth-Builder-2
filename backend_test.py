@@ -59,15 +59,28 @@ class AnalyticsDashboardTester:
     def __init__(self):
         self.results = {
             "registration": {"passed": 0, "failed": 0, "errors": []},
-            "feedback_submission": {"passed": 0, "failed": 0, "errors": []},
-            "feedback_retrieval": {"passed": 0, "failed": 0, "errors": []},
+            "analytics_endpoints": {"passed": 0, "failed": 0, "errors": []},
+            "data_structure_validation": {"passed": 0, "failed": 0, "errors": []},
             "database_verification": {"passed": 0, "failed": 0, "errors": []},
-            "issue_identification": {"passed": 0, "failed": 0, "errors": []}
+            "endpoint_summary": {"passed": 0, "failed": 0, "errors": []}
         }
         self.user_data = {}
         self.mongo_client = None
         self.db = None
-        self.submitted_feedback = []
+        self.analytics_endpoints = [
+            {"name": "Overview Tab Stats", "endpoint": "/analytics/telemetry", "expected_fields": ["ppiCompleted", "topicsCompleted", "quizAttempts", "sessions"]},
+            {"name": "Users Tab", "endpoint": "/analytics/user-progress", "expected_fields": []},
+            {"name": "Content Tab - Topic Performance", "endpoint": "/analytics/topic-performance", "expected_fields": []},
+            {"name": "Content Tab - Chapter Heatmap", "endpoint": "/analytics/chapter-heatmap", "expected_fields": []},
+            {"name": "Engagement Tab", "endpoint": "/analytics/content-engagement", "expected_fields": []},
+            {"name": "Personalization Tab", "endpoint": "/analytics/personalization-effectiveness", "expected_fields": ["personalizedVsBaseline", "dnaProfilePerformance", "experienceLevelEffectiveness"]},
+            {"name": "Patterns Tab", "endpoint": "/analytics/learning-patterns", "expected_fields": ["sessionPatterns", "dayOfWeekPatterns", "streakAnalysis", "quizRetryBehavior"]},
+            {"name": "Profiles Tab", "endpoint": "/analytics/multi-profile-usage", "expected_fields": ["profileDistribution", "switchingBehavior"]},
+            {"name": "Difficulty Tab", "endpoint": "/analytics/content-difficulty-heatmap", "expected_fields": ["quizDifficulty", "lessonEngagement"]},
+            {"name": "Features Tab", "endpoint": "/analytics/feature-usage", "expected_fields": []},
+            {"name": "Errors Tab", "endpoint": "/analytics/errors-and-friction", "expected_fields": ["apiErrors", "frictionPoints"]}
+        ]
+        self.endpoint_results = []
         
     def setup_mongo_connection(self):
         """Setup MongoDB connection for data verification"""
