@@ -345,11 +345,7 @@ async def get_personalized_ppi(user_id: str = Depends(get_current_user)):
         age -= 1
     
     # Get financial experience
-    financial_experience = user.get('experience_level', 'beginner')
-    if isinstance(financial_experience, int):
-        # Map numeric to string
-        exp_map = {1: 'beginner', 2: 'beginner', 3: 'intermediate', 4: 'advanced', 5: 'advanced'}
-        financial_experience = exp_map.get(financial_experience, 'beginner')
+    financial_experience = map_experience_level(user.get('experience_level', 1))
     
     # Call AE compose_ppi
     ae_v2 = get_adaptive_engine_v2()
