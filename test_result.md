@@ -505,10 +505,11 @@ frontend:
 
 metadata:
   created_by: "main_agent_fork"
-  version: "2.0"
-  test_sequence: 1
+  version: "2.1"
+  test_sequence: 2
   run_ui: false
   session_date: "2024-12-04"
+  last_tested: "feedback_system"
 
 test_plan:
   current_focus:
