@@ -251,6 +251,100 @@ function AnalyticsDashboard({ token }) {
               </div>
             )}
 
+            {/* Engagement Tab - NEW! */}
+            {activeTab === 'engagement' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">📊 Content Engagement Metrics</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Time spent, completion rates, and re-reads per lesson
+                  </p>
+                  
+                  {analytics.contentEngagement.length === 0 ? (
+                    <div className="text-center p-8 bg-gray-50 rounded-lg">
+                      <p className="text-gray-600">No engagement data yet.</p>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Data will appear once users start viewing lessons.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-3 py-2 text-left font-medium text-gray-700">Lesson</th>
+                            <th className="px-3 py-2 text-center font-medium text-gray-700">Views</th>
+                            <th className="px-3 py-2 text-center font-medium text-gray-700">Completion</th>
+                            <th className="px-3 py-2 text-center font-medium text-gray-700">Re-reads</th>
+                            <th className="px-3 py-2 text-center font-medium text-gray-700">Avg Time</th>
+                            <th className="px-3 py-2 text-center font-medium text-gray-700">Scroll %</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.contentEngagement.map((lesson, idx) => (
+                            <tr key={idx} className="border-t hover:bg-gray-50">
+                              <td className="px-3 py-3">
+                                <div className="font-medium text-gray-800">{lesson.lessonTitle}</div>
+                                <div className="text-xs text-gray-500">{lesson.chapterId} / {lesson.lessonId}</div>
+                              </td>
+                              <td className="px-3 py-3 text-center text-gray-700">
+                                {lesson.totalViews}
+                              </td>
+                              <td className="px-3 py-3 text-center">
+                                <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                                  lesson.completionRate >= 80 ? 'bg-green-100 text-green-700' :
+                                  lesson.completionRate >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
+                                }`}>
+                                  {lesson.completionRate?.toFixed(0) || 0}%
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 text-center">
+                                {lesson.rereads > 0 ? (
+                                  <span className="text-blue-600 font-medium">
+                                    {lesson.rereads} ({lesson.rereadRate?.toFixed(0)}%)
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400">0</span>
+                                )}
+                              </td>
+                              <td className="px-3 py-3 text-center text-gray-700">
+                                {Math.floor(lesson.avgTimeSpent / 60)}m {lesson.avgTimeSpent % 60}s
+                              </td>
+                              <td className="px-3 py-3 text-center">
+                                <div className="flex items-center justify-center gap-2">
+                                  <div className="w-12 bg-gray-200 rounded-full h-1.5">
+                                    <div
+                                      className="bg-blue-600 h-1.5 rounded-full"
+                                      style={{ width: `${lesson.avgScrollDepth}%` }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-xs text-gray-600">{lesson.avgScrollDepth}%</span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* Insights */}
+                {analytics.contentEngagement.length > 0 && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-900 mb-2">💡 Insights</h3>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• <strong>Low completion rate?</strong> Content might be too long or complex</li>
+                      <li>• <strong>High re-reads?</strong> Content is either confusing or very valuable</li>
+                      <li>• <strong>Low scroll depth?</strong> Users losing interest early</li>
+                      <li>• <strong>Short time spent?</strong> Content might need more depth</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Feedback Tab */}
             {activeTab === 'feedback' && (
               <div className="bg-white rounded-lg shadow-md p-6">
