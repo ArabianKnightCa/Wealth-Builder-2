@@ -2584,6 +2584,125 @@ async def get_personalization_effectiveness():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get personalization effectiveness: {str(e)}")
 
+@api_router.get("/analytics/learning-patterns")
+async def get_learning_patterns():
+    """Get learning patterns analytics - Priority 3"""
+    try:
+        # Session duration patterns
+        session_duration_pipeline = [
+            {
+                "$group": {
+                    "_id": "$timeOfDay",
+                    "avgDuration": {"$avg": "$durationSeconds"},
+                    "sessionCount": {"$sum": 1},
+                    "avgLessonsPerSession": {"$avg": "$lessonsViewed"},
+                    "avgQuizzesPerSession": {"$avg": "$quizzesAttempted"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "timeOfDay": "$_id",
+                    "avgDurationMinutes": {"$round": [{"$divide": ["$avgDuration", 60]}, 1]},
+                    "sessionCount": 1,
+                    "avgLessonsPerSession": {"$round": ["$avgLessonsPerSession", 1]},
+                    "avgQuizzesPerSession": {"$round": ["$avgQuizzesPerSession", 1]}
+                }
+            },
+            {"$sort": {"sessionCount": -1}}
+        ]
+        
+        session_results = await db.telemetry_session_pattern.aggregate(session_duration_pipeline).to_list(1000)
+        
+        # Day of week patterns
+        day_pipeline = [
+            {
+                "$group": {
+                    "_id": "$dayOfWeek",
+                    "sessionCount": {"$sum": 1},
+                    "avgDuration": {"$avg": "$durationSeconds"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "dayOfWeek": "$_id",
+                    "sessionCount": 1,
+                    "avgDurationMinutes": {"$round": [{"$divide": ["$avgDuration", 60]}, 1]}
+                }
+            }
+        ]
+        
+        day_results = await db.telemetry_session_pattern.aggregate(day_pipeline).to_list(1000)
+        
+        # Streak analysis
+        streak_pipeline = [
+            {
+                "$match": {"isConsecutiveDay": True}
+            },
+            {
+                "$group": {
+                    "_id": "$userId",
+                    "maxStreak": {"$max": "$streakCount"},
+                    "activeDays": {"$sum": 1}
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "avgMaxStreak": {"$avg": "$maxStreak"},
+                    "usersWithStreaks": {"$sum": 1}
+                }
+            }
+        ]
+        
+        streak_results = await db.telemetry_session_pattern.aggregate(streak_pipeline).to_list(1)
+        
+        # Quiz retry behavior from existing telemetry
+        retry_pipeline = [
+            {
+                "$group": {
+                    "_id": {
+                        "userId": "$userId",
+                        "quizId": "$quizId"
+                    },
+                    "attempts": {"$sum": 1},
+                    "passed": {"$max": "$passed"}
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$attempts",
+                    "quizCount": {"$sum": 1},
+                    "passRate": {"$avg": {"$cond": ["$passed", 100, 0]}}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "attemptNumber": "$_id",
+                    "quizCount": 1,
+                    "passRate": {"$round": ["$passRate", 1]}
+                }
+            },
+            {"$sort": {"attemptNumber": 1}}
+        ]
+        
+        retry_results = await db.telemetry_quiz_attempt.aggregate(retry_pipeline).to_list(1000)
+        
+        return {
+            "sessionPatterns": session_results,
+            "dayOfWeekPatterns": day_results,
+            "streakAnalysis": streak_results[0] if streak_results else {},
+            "quizRetryBehavior": retry_results,
+            "summary": {
+                "message": "Learning patterns and habits",
+                "sessionsAnalyzed": sum(s.get('sessionCount', 0) for s in session_results)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get learning patterns: {str(e)}")
+
 # ===========================
 # Users Management (Enhanced)
 # ===========================
