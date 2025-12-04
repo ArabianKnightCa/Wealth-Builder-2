@@ -1,19 +1,28 @@
 #!/usr/bin/env python3
 """
-FEEDBACK SYSTEM END-TO-END TESTING
+ANALYTICS DASHBOARD COMPREHENSIVE TESTING
 
-**Objective:** Test the complete feedback system to identify issues with feedback submission and viewing.
+**Objective:** Test ALL analytics endpoints in the dashboard to verify they work correctly.
 
 **Test Focus:**
-1. Submit Feedback Test - POST /api/feedback
-2. View Feedback Test - GET /api/admin/feedback  
-3. Database Check - Direct MongoDB queries
-4. Issue Identification - Duplicate endpoints, data structure problems
+1. Overview Tab Stats - GET /api/analytics/telemetry
+2. Users Tab - GET /api/analytics/user-progress
+3. Content Tab - GET /api/analytics/topic-performance, /api/analytics/chapter-heatmap
+4. Engagement Tab - GET /api/analytics/content-engagement
+5. Personalization Tab - GET /api/analytics/personalization-effectiveness
+6. Patterns Tab - GET /api/analytics/learning-patterns
+7. Profiles Tab - GET /api/analytics/multi-profile-usage
+8. Difficulty Tab - GET /api/analytics/content-difficulty-heatmap
+9. Features Tab - GET /api/analytics/feature-usage
+10. Errors Tab - GET /api/analytics/errors-and-friction
 
-**Known Issues to Investigate:**
-- Two duplicate feedback endpoints in server.py (lines 872 and 992)
-- User reports feedback not showing up in feedback viewer dashboard
-- Potential data structure mismatch between submission and retrieval
+**Verification for each endpoint:**
+- ✅ Endpoint exists and responds (not 404)
+- ✅ Returns correct data structure (not empty or null)
+- ✅ No 500 errors or exceptions
+- ✅ Response matches expected format from frontend
+- ✅ MongoDB queries work without ObjectId issues
+- ✅ No duplicate endpoint conflicts
 """
 
 import requests
