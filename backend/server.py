@@ -2715,6 +2715,338 @@ async def get_learning_patterns():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get learning patterns: {str(e)}")
 
+@api_router.get("/analytics/multi-profile-usage")
+async def get_multi_profile_usage():
+    """Get multi-profile usage analytics - Priority 4"""
+    try:
+        # Profile creation and usage patterns
+        profile_usage_pipeline = [
+            {
+                "$group": {
+                    "_id": "$account_id",
+                    "profileCount": {"$sum": 1},
+                    "profileNames": {"$push": "$name"},
+                    "avgAge": {"$avg": "$age"}
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$profileCount",
+                    "accountCount": {"$sum": 1},
+                    "avgProfileAge": {"$avg": "$avgAge"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "profilesPerAccount": "$_id",
+                    "accountCount": 1,
+                    "avgProfileAge": {"$round": ["$avgProfileAge", 1]}
+                }
+            },
+            {"$sort": {"profilesPerAccount": 1}}
+        ]
+        
+        profile_usage = await db.profiles.aggregate(profile_usage_pipeline).to_list(1000)
+        
+        # Profile switching behavior
+        profile_switch_pipeline = [
+            {
+                "$group": {
+                    "_id": "$account_id",
+                    "totalSessions": {"$sum": 1},
+                    "uniqueProfiles": {"$addToSet": "$profileId"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "accountId": "$_id",
+                    "totalSessions": 1,
+                    "profilesUsed": {"$size": "$uniqueProfiles"}
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "avgSessionsPerAccount": {"$avg": "$totalSessions"},
+                    "avgProfilesUsed": {"$avg": "$profilesUsed"},
+                    "totalAccounts": {"$sum": 1}
+                }
+            }
+        ]
+        
+        switch_behavior = await db.telemetry_user_session.aggregate(profile_switch_pipeline).to_list(1)
+        
+        return {
+            "profileDistribution": profile_usage,
+            "switchingBehavior": switch_behavior[0] if switch_behavior else {},
+            "summary": {
+                "message": "Multi-profile usage patterns",
+                "totalProfiles": await db.profiles.count_documents({})
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get multi-profile usage: {str(e)}")
+
+@api_router.get("/analytics/errors-and-friction")
+async def get_errors_and_friction():
+    """Get error and friction tracking analytics - Priority 5"""
+    try:
+        # API error tracking
+        error_pipeline = [
+            {
+                "$match": {"eventType": "api_error"}
+            },
+            {
+                "$group": {
+                    "_id": {
+                        "endpoint": "$endpoint",
+                        "statusCode": "$statusCode"
+                    },
+                    "errorCount": {"$sum": 1},
+                    "lastOccurred": {"$max": "$timestamp"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "endpoint": "$_id.endpoint",
+                    "statusCode": "$_id.statusCode",
+                    "errorCount": 1,
+                    "lastOccurred": 1
+                }
+            },
+            {"$sort": {"errorCount": -1}}
+        ]
+        
+        error_results = await db.telemetry_errors.aggregate(error_pipeline).to_list(1000)
+        
+        # Friction points (pages with high bounce/exit rates)
+        friction_pipeline = [
+            {
+                "$match": {
+                    "completed": False,
+                    "timeSpentSeconds": {"$lt": 30}  # Users who left quickly
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$lessonId",
+                    "quickExits": {"$sum": 1},
+                    "avgTimeBeforeExit": {"$avg": "$timeSpentSeconds"}
+                }
+            },
+            {
+                "$match": {"quickExits": {"$gte": 3}}  # Only show significant friction points
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "lessonId": "$_id",
+                    "quickExits": 1,
+                    "avgTimeBeforeExit": {"$round": ["$avgTimeBeforeExit", 1]}
+                }
+            },
+            {"$sort": {"quickExits": -1}}
+        ]
+        
+        friction_results = await db.telemetry_lesson_engagement.aggregate(friction_pipeline).to_list(1000)
+        
+        return {
+            "apiErrors": error_results,
+            "frictionPoints": friction_results,
+            "summary": {
+                "message": "Error and friction tracking",
+                "totalErrors": sum(e.get('errorCount', 0) for e in error_results),
+                "frictionPointsDetected": len(friction_results)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get errors and friction: {str(e)}")
+
+@api_router.get("/analytics/content-difficulty-heatmap")
+async def get_content_difficulty_heatmap():
+    """Get content difficulty heatmap analytics - Priority 6"""
+    try:
+        # Analyze quiz pass rates by chapter/lesson
+        difficulty_pipeline = [
+            {
+                "$group": {
+                    "_id": {
+                        "chapterId": "$chapterId",
+                        "quizId": "$quizId"
+                    },
+                    "totalAttempts": {"$sum": 1},
+                    "passCount": {"$sum": {"$cond": ["$passed", 1, 0]}},
+                    "avgScore": {"$avg": "$score"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "chapterId": "$_id.chapterId",
+                    "quizId": "$_id.quizId",
+                    "totalAttempts": 1,
+                    "passRate": {
+                        "$round": [
+                            {"$multiply": [{"$divide": ["$passCount", "$totalAttempts"]}, 100]},
+                            1
+                        ]
+                    },
+                    "avgScore": {"$round": ["$avgScore", 1]},
+                    "difficulty": {
+                        "$switch": {
+                            "branches": [
+                                {
+                                    "case": {"$gte": [{"$divide": ["$passCount", "$totalAttempts"]}, 0.8]},
+                                    "then": "easy"
+                                },
+                                {
+                                    "case": {"$gte": [{"$divide": ["$passCount", "$totalAttempts"]}, 0.5]},
+                                    "then": "medium"
+                                }
+                            ],
+                            "default": "hard"
+                        }
+                    }
+                }
+            },
+            {"$sort": {"chapterId": 1, "quizId": 1}}
+        ]
+        
+        difficulty_results = await db.telemetry_quiz_attempt.aggregate(difficulty_pipeline).to_list(1000)
+        
+        # Lesson completion rates as difficulty indicator
+        lesson_difficulty_pipeline = [
+            {
+                "$group": {
+                    "_id": {
+                        "chapterId": "$chapterId",
+                        "lessonId": "$lessonId"
+                    },
+                    "totalViews": {"$sum": 1},
+                    "completions": {"$sum": {"$cond": ["$completed", 1, 0]}},
+                    "avgTimeSpent": {"$avg": "$timeSpentSeconds"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "chapterId": "$_id.chapterId",
+                    "lessonId": "$_id.lessonId",
+                    "totalViews": 1,
+                    "completionRate": {
+                        "$round": [
+                            {"$multiply": [{"$divide": ["$completions", "$totalViews"]}, 100]},
+                            1
+                        ]
+                    },
+                    "avgTimeSpent": {"$round": ["$avgTimeSpent", 0]},
+                    "engagement": {
+                        "$switch": {
+                            "branches": [
+                                {
+                                    "case": {"$gte": [{"$divide": ["$completions", "$totalViews"]}, 0.8]},
+                                    "then": "high"
+                                },
+                                {
+                                    "case": {"$gte": [{"$divide": ["$completions", "$totalViews"]}, 0.5]},
+                                    "then": "medium"
+                                }
+                            ],
+                            "default": "low"
+                        }
+                    }
+                }
+            },
+            {"$sort": {"chapterId": 1, "lessonId": 1}}
+        ]
+        
+        lesson_results = await db.telemetry_lesson_engagement.aggregate(lesson_difficulty_pipeline).to_list(1000)
+        
+        return {
+            "quizDifficulty": difficulty_results,
+            "lessonEngagement": lesson_results,
+            "summary": {
+                "message": "Content difficulty heatmap",
+                "quizzesAnalyzed": len(difficulty_results),
+                "lessonsAnalyzed": len(lesson_results)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get content difficulty heatmap: {str(e)}")
+
+@api_router.get("/analytics/feature-usage")
+async def get_feature_usage():
+    """Get feature usage analytics - Priority 7"""
+    try:
+        # Track which features are being used
+        feature_usage = {}
+        
+        # PPI completion rate
+        total_users = await db.users.count_documents({})
+        ppi_completed = await db.telemetry_ppi_completed.count_documents({})
+        feature_usage['ppi'] = {
+            "totalUsers": total_users,
+            "completed": ppi_completed,
+            "completionRate": round((ppi_completed / total_users * 100), 1) if total_users > 0 else 0
+        }
+        
+        # Onboarding completion
+        onboarding_completed = await db.telemetry_onboarding.count_documents({})
+        feature_usage['onboarding'] = {
+            "completed": onboarding_completed,
+            "completionRate": round((onboarding_completed / total_users * 100), 1) if total_users > 0 else 0
+        }
+        
+        # Quiz attempts
+        quiz_attempts = await db.telemetry_quiz_attempt.count_documents({})
+        users_with_quiz_attempts = len(await db.telemetry_quiz_attempt.distinct("userId"))
+        feature_usage['quizzes'] = {
+            "totalAttempts": quiz_attempts,
+            "usersAttempting": users_with_quiz_attempts,
+            "adoptionRate": round((users_with_quiz_attempts / total_users * 100), 1) if total_users > 0 else 0
+        }
+        
+        # Lesson engagement
+        lesson_views = await db.telemetry_lesson_engagement.count_documents({})
+        users_viewing_lessons = len(await db.telemetry_lesson_engagement.distinct("userId"))
+        feature_usage['lessons'] = {
+            "totalViews": lesson_views,
+            "usersViewing": users_viewing_lessons,
+            "adoptionRate": round((users_viewing_lessons / total_users * 100), 1) if total_users > 0 else 0
+        }
+        
+        # Multi-profile usage
+        total_profiles = await db.profiles.count_documents({})
+        accounts_with_profiles = len(await db.profiles.distinct("account_id"))
+        feature_usage['multiProfile'] = {
+            "totalProfiles": total_profiles,
+            "accountsUsing": accounts_with_profiles,
+            "avgProfilesPerAccount": round((total_profiles / accounts_with_profiles), 1) if accounts_with_profiles > 0 else 0
+        }
+        
+        # Feedback submissions
+        feedback_count = await db.feedback.count_documents({})
+        users_with_feedback = len(await db.feedback.distinct("user_id"))
+        feature_usage['feedback'] = {
+            "totalFeedback": feedback_count,
+            "usersSubmitting": users_with_feedback,
+            "adoptionRate": round((users_with_feedback / total_users * 100), 1) if total_users > 0 else 0
+        }
+        
+        return {
+            "features": feature_usage,
+            "summary": {
+                "message": "Feature adoption and usage metrics",
+                "totalUsers": total_users
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get feature usage: {str(e)}")
+
+
 # ===========================
 # Users Management (Enhanced)
 # ===========================
