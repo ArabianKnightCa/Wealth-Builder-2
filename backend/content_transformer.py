@@ -241,7 +241,6 @@ class ContentTransformer:
         - Builders: Emphasize progress, achievement
         """
         adaptation = self.personality_adaptations.get(dna_profile, self.personality_adaptations['Balanced'])
-        motivators = adaptation['motivators']
         
         # Add personality-specific motivational framing at key points
         # This is algorithmic transformation, not pre-written variants
