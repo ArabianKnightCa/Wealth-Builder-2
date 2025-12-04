@@ -269,7 +269,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         return user_id
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except Exception:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
 def calculate_age(date_of_birth: str) -> int:
