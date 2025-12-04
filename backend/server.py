@@ -1978,6 +1978,19 @@ async def log_subscription_change(data: TelemetrySubscriptionChange):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to log subscription change: {str(e)}")
 
+@api_router.post("/telemetry/lesson-engagement")
+async def log_lesson_engagement(data: TelemetryLessonEngagement):
+    """Log detailed lesson engagement telemetry"""
+    try:
+        doc = data.model_dump()
+        doc["startedAt"] = doc["startedAt"].isoformat() if isinstance(doc["startedAt"], datetime) else doc["startedAt"]
+        if doc.get("completedAt"):
+            doc["completedAt"] = doc["completedAt"].isoformat() if isinstance(doc["completedAt"], datetime) else doc["completedAt"]
+        await db.telemetry_lesson_engagement.insert_one(doc)
+        return {"message": "Lesson engagement logged", "id": doc["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log lesson engagement: {str(e)}")
+
 # ===========================
 # Analytics System - Pydantic Models
 # ===========================
