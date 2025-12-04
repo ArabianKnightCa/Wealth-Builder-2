@@ -1633,6 +1633,26 @@ async def update_form(
 # ===========================
 # Admin Endpoints - Collection Management
 # ===========================
+# Feedback Admin Endpoints (MUST be before generic admin/{collection_name})
+# ===========================
+
+@api_router.get("/admin/feedback")
+async def get_all_feedback(user_id: str = Depends(get_current_user)):
+    """Get all user feedback for admin review"""
+    feedback = await db.feedback.find({}, {"_id": 0}).sort("submitted_at", -1).to_list(1000)
+    return {"feedback": feedback, "count": len(feedback)}
+
+@api_router.delete("/admin/feedback/{feedback_id}")
+async def delete_feedback(feedback_id: str, user_id: str = Depends(get_current_user)):
+    """Delete a feedback entry"""
+    result = await db.feedback.delete_one({"id": feedback_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Feedback not found")
+    return {"message": "Feedback deleted successfully"}
+
+# ===========================
+# Generic Admin Collection Access
+# ===========================
 
 @api_router.get("/admin/{collection_name}")
 async def get_collection_records(
@@ -1653,24 +1673,6 @@ async def get_collection_records(
     ).limit(limit).to_list(limit)
     
     return {"data": records, "count": len(records)}
-
-@api_router.get("/admin/feedback")
-async def get_all_feedback(user_id: str = Depends(get_current_user)):
-    """Get all user feedback for admin review"""
-    feedback = await db.feedback.find({}).sort("submitted_at", -1).to_list(1000)
-    return {"feedback": feedback, "count": len(feedback)}
-
-@api_router.delete("/admin/feedback/{feedback_id}")
-async def delete_feedback(feedback_id: str, user_id: str = Depends(get_current_user)):
-    """Delete a feedback entry"""
-    from bson import ObjectId
-    try:
-        result = await db.feedback.delete_one({"_id": ObjectId(feedback_id)})
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Feedback not found")
-        return {"message": "Feedback deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 # ===========================
 # Multi-Profile System
