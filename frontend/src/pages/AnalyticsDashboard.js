@@ -144,7 +144,7 @@ function AnalyticsDashboard({ token }) {
         {/* Tabs */}
         <div className="bg-white rounded-lg shadow-md mb-6">
           <div className="flex border-b overflow-x-auto">
-            {['overview', 'users', 'content', 'engagement', 'personalization', 'feedback'].map(tab => (
+            {['overview', 'users', 'content', 'engagement', 'personalization', 'patterns', 'feedback'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
