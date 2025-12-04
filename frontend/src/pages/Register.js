@@ -404,6 +404,22 @@ function Register({ onLogin }) {
               </div>
 
               <div>
+                <label className="block text-gray-700 font-semibold mb-2">Life Stage</label>
+                <select
+                  className="input-field"
+                  value={formData.life_stage}
+                  onChange={(e) => setFormData({ ...formData, life_stage: e.target.value })}
+                  required
+                  data-testid="life-stage-select"
+                >
+                  <option value="">Select your life stage...</option>
+                  {lifeStageOptions.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-gray-700 font-semibold mb-2">Which best describes your current role?</label>
                 <select
                   className="input-field"
