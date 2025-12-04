@@ -761,6 +761,16 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         "ae_version": "v2.0"
     }
     
+    # Generate UID at onboarding completion (before Chapter 1 access)
+    current_time = datetime.now(timezone.utc)
+    uid = await generate_uid(user['user_type'], user['life_stage'], current_time)
+    
+    # Save UID to user record
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"uid": uid}}
+    )
+    
     # Save learning map to user progress
     await db.progress.update_one(
         {"user_id": user_id},
