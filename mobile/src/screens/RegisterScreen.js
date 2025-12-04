@@ -110,6 +110,18 @@ export default function RegisterScreen({ navigation }) {
             onChangeText={(value) => updateField('date_of_birth', value)}
           />
 
+          <Text style={styles.label}>Life Stage *</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="ES, JH, HS, CL, UN, or AD"
+            value={formData.life_stage}
+            onChangeText={(value) => updateField('life_stage', value.toUpperCase())}
+            autoCapitalize="characters"
+          />
+          <Text style={styles.helpText}>
+            ES=Elementary, JH=Junior High, HS=High School, CL=College, UN=University, AD=Adult
+          </Text>
+
           <Text style={styles.label}>Financial Experience Level (1-5)</Text>
           <TextInput
             style={styles.input}
