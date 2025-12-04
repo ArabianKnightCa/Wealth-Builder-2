@@ -321,7 +321,7 @@ class AnalyticsDashboardTester:
         return len(structure_issues) == 0
     
     def test_database_verification(self):
-        """Test direct database queries to verify feedback storage"""
+        """Test direct database queries to verify analytics data"""
         print(f"\n🔍 Testing Database Verification...")
         
         if self.db is None:
@@ -331,57 +331,65 @@ class AnalyticsDashboardTester:
             return False
         
         try:
-            # Query feedback collection directly
-            feedback_collection = self.db.feedback
-            all_feedback = list(feedback_collection.find({}))
-            
             print(f"✅ Database connection successful")
-            print(f"   📊 Total feedback entries in database: {len(all_feedback)}")
             
-            # Look for our test user's feedback
-            user_feedback = list(feedback_collection.find({"user_id": self.user_data.get("user_id")}))
-            print(f"   📋 Feedback from our test user: {len(user_feedback)}")
+            # Check telemetry collections
+            telemetry_collections = [
+                "telemetry_user_session",
+                "telemetry_onboarding", 
+                "telemetry_ppi_completed",
+                "telemetry_topic_completed",
+                "telemetry_quiz_attempt",
+                "telemetry_subscription_change",
+                "telemetry_lesson_engagement",
+                "telemetry_session_pattern"
+            ]
             
-            # Show field structure analysis
-            if all_feedback:
-                sample_feedback = all_feedback[0]
-                print(f"\n📋 Database feedback structure analysis:")
-                print(f"   Fields found in sample feedback:")
-                for key, value in sample_feedback.items():
-                    field_type = type(value).__name__
-                    print(f"   • {key}: {field_type} = {str(value)[:100]}...")
-                
-                # Check for _id field issues
-                has_object_id = any("_id" in fb and str(type(fb["_id"])) == "<class 'bson.objectid.ObjectId'>" for fb in all_feedback)
-                has_string_id = any("id" in fb and isinstance(fb["id"], str) for fb in all_feedback)
-                
-                print(f"\n🔍 ID Field Analysis:")
-                print(f"   • MongoDB ObjectId (_id): {'Yes' if has_object_id else 'No'}")
-                print(f"   • String ID (id): {'Yes' if has_string_id else 'No'}")
-                
-                if has_object_id and not has_string_id:
-                    print("   ⚠️ POTENTIAL ISSUE: Only ObjectId found, may cause JSON serialization issues")
+            print(f"\n📊 Telemetry Collections Analysis:")
+            for collection_name in telemetry_collections:
+                try:
+                    collection = self.db[collection_name]
+                    count = collection.count_documents({})
+                    print(f"   • {collection_name}: {count} records")
+                    
+                    if count > 0:
+                        # Sample one record to check structure
+                        sample = collection.find_one({})
+                        if sample and "_id" in sample:
+                            # Check for ObjectId issues
+                            if str(type(sample["_id"])) == "<class 'bson.objectid.ObjectId'>":
+                                print(f"     ⚠️ Contains MongoDB ObjectId (potential serialization issue)")
+                except Exception as e:
+                    print(f"   • {collection_name}: Error accessing - {str(e)}")
             
-            # Check for different field naming patterns
-            field_patterns = {
-                "feedback_text": 0,
-                "feedback": 0,
-                "context_page": 0,
-                "user_id": 0,
-                "user_email": 0,
-                "submitted_at": 0,
-                "created_at": 0
-            }
+            # Check analytics collections
+            analytics_collections = [
+                "analytics_user_progress",
+                "analytics_topic_performance", 
+                "analytics_chapter_heatmap"
+            ]
             
-            for fb in all_feedback:
-                for field in field_patterns:
-                    if field in fb:
-                        field_patterns[field] += 1
+            print(f"\n📊 Analytics Collections Analysis:")
+            for collection_name in analytics_collections:
+                try:
+                    collection = self.db[collection_name]
+                    count = collection.count_documents({})
+                    print(f"   • {collection_name}: {count} records")
+                except Exception as e:
+                    print(f"   • {collection_name}: Error accessing - {str(e)}")
             
-            print(f"\n📊 Field Usage Patterns:")
-            for field, count in field_patterns.items():
-                if count > 0:
-                    print(f"   • {field}: {count} entries")
+            # Check if we have any data to work with
+            total_telemetry = sum([
+                self.db[col].count_documents({}) 
+                for col in telemetry_collections 
+                if col in self.db.list_collection_names()
+            ])
+            
+            if total_telemetry == 0:
+                print(f"\n⚠️ No telemetry data found - analytics endpoints may return empty results")
+                self.results["database_verification"]["errors"].append("No telemetry data available for analytics")
+            else:
+                print(f"\n✅ Found {total_telemetry} total telemetry records")
             
             self.results["database_verification"]["passed"] += 1
             return True
