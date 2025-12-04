@@ -109,6 +109,16 @@ function App() {
     }
   };
 
+  const handleProfileSelected = (profile) => {
+    setCurrentProfile(profile);
+    localStorage.setItem('currentProfile', JSON.stringify(profile));
+    setShowProfileSelector(false);
+  };
+
+  const handleProfileSwitch = () => {
+    setShowProfileSelector(true);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-navy-900 to-navy-700">
