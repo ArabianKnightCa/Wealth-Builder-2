@@ -12,6 +12,7 @@ import LPIChapter from './pages/LPIChapter';
 import Settings from './pages/Settings';
 import Completed from './pages/Completed';
 import AdminPanel from './pages/AdminPanel';
+import FormsManager from './pages/FormsManager';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
