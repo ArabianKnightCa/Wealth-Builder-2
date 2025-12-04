@@ -186,62 +186,80 @@ class AdaptiveEngineTester:
             self.results["registration"]["errors"].append(f"{persona['name']}: {error_msg}")
             return False
     
-    def test_session_telemetry(self):
-        """Test session telemetry endpoint"""
-        print("\n🔍 Testing Session Telemetry...")
+    def test_ppi_personalization(self, persona_key):
+        """Test PPI personalization - age-appropriate questions"""
+        persona = PERSONAS[persona_key]
+        persona_data = self.persona_data[persona_key]
         
-        # Test Case 1: Session with start and end
-        test_data = {
-            "userId": TEST_USER_ID,
-            "sessionId": TEST_SESSION_ID,
-            "sessionStart": datetime.now(timezone.utc).isoformat(),
-            "sessionEnd": datetime.now(timezone.utc).isoformat(),
-            "deviceType": "desktop",
-            "userTier": "premium",
-            "appVersion": "1.0.0"
-        }
+        print(f"\n📋 Testing PPI Personalization for {persona['name']} (Age: {persona['age']})...")
+        
+        headers = {"Authorization": f"Bearer {persona_data['access_token']}"}
         
         try:
-            response = requests.post(f"{BACKEND_URL}/telemetry/session", json=test_data)
+            response = requests.get(f"{BACKEND_URL}/content/ppi/personalized", headers=headers)
             if response.status_code == 200:
-                result = response.json()
-                print(f"✅ Session with end time: {result['message']}")
-                self.results["session"]["passed"] += 1
+                ppi_data = response.json()
+                
+                # Store PPI data for later use
+                self.persona_data[persona_key]["ppi_questions"] = ppi_data
+                
+                # Analyze questions
+                questions = ppi_data.get("questions", [])
+                question_count = len(questions)
+                
+                print(f"✅ PPI Questions Retrieved: {question_count} questions")
+                
+                # Check age-appropriate filtering
+                age_ranges = []
+                sample_questions = []
+                
+                for i, q in enumerate(questions[:3]):  # Show first 3 questions
+                    age_range = f"{q.get('age_min', 'N/A')}-{q.get('age_max', 'N/A')}"
+                    age_ranges.append(age_range)
+                    sample_questions.append({
+                        "id": q.get("id"),
+                        "prompt": q.get("prompt", "")[:100] + "..." if len(q.get("prompt", "")) > 100 else q.get("prompt", ""),
+                        "age_range": age_range
+                    })
+                
+                print(f"   📝 Sample Questions:")
+                for sq in sample_questions:
+                    print(f"      • {sq['id']}: {sq['prompt']} (Age: {sq['age_range']})")
+                
+                # Verify age appropriateness
+                user_age = persona["age"]
+                age_appropriate = True
+                for q in questions:
+                    age_min = q.get("age_min", 0)
+                    age_max = q.get("age_max", 100)
+                    if not (age_min <= user_age <= age_max):
+                        age_appropriate = False
+                        break
+                
+                if age_appropriate:
+                    print(f"✅ Age Filtering: All questions appropriate for age {user_age}")
+                    self.results["ppi_personalization"]["passed"] += 1
+                else:
+                    error_msg = f"Age filtering failed for {user_age}-year-old"
+                    print(f"❌ {error_msg}")
+                    self.results["ppi_personalization"]["failed"] += 1
+                    self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
+                
+                return True
+                
             else:
-                print(f"❌ Session with end time failed: {response.status_code} - {response.text}")
-                self.results["session"]["failed"] += 1
-                self.results["session"]["errors"].append(f"Status {response.status_code}: {response.text}")
+                error_msg = f"PPI retrieval failed: {response.status_code} - {response.text}"
+                print(f"❌ {error_msg}")
+                self.results["ppi_personalization"]["failed"] += 1
+                self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
+                return False
+                
         except Exception as e:
-            print(f"❌ Session with end time error: {e}")
-            self.results["session"]["failed"] += 1
-            self.results["session"]["errors"].append(str(e))
-        
-        # Test Case 2: Session with only start (end is null)
-        test_data_no_end = {
-            "userId": TEST_USER_ID,
-            "sessionId": f"session-{uuid.uuid4()}",
-            "sessionStart": datetime.now(timezone.utc).isoformat(),
-            "deviceType": "mobile",
-            "userTier": "free"
-        }
-        
-        try:
-            response = requests.post(f"{BACKEND_URL}/telemetry/session", json=test_data_no_end)
-            if response.status_code == 200:
-                result = response.json()
-                print(f"✅ Session without end time: {result['message']}")
-                self.results["session"]["passed"] += 1
-            else:
-                print(f"❌ Session without end time failed: {response.status_code} - {response.text}")
-                self.results["session"]["failed"] += 1
-                self.results["session"]["errors"].append(f"Status {response.status_code}: {response.text}")
-        except Exception as e:
-            print(f"❌ Session without end time error: {e}")
-            self.results["session"]["failed"] += 1
-            self.results["session"]["errors"].append(str(e))
-        
-        # Verify data in MongoDB
-        self.verify_data_in_mongo('telemetry_user_session', expected_count=2)
+            error_msg = f"PPI personalization error: {str(e)}"
+            print(f"❌ {error_msg}")
+            self.results["ppi_personalization"]["failed"] += 1
+            self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
+            return False
     
     def test_onboarding_telemetry(self):
         """Test onboarding telemetry endpoint"""
