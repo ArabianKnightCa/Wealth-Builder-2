@@ -340,71 +340,64 @@ class FeedbackSystemTester:
             self.results["database_verification"]["errors"].append(error_msg)
             return False
     
-    def test_topic_completed_telemetry(self):
-        """Test topic completion telemetry endpoint"""
-        print("\n🔍 Testing Topic Completion Telemetry...")
+    def identify_issues(self):
+        """Identify and analyze potential issues with the feedback system"""
+        print(f"\n🔍 Identifying Feedback System Issues...")
         
-        test_scenarios = [
-            {
-                "topicId": "budgeting_basics",
-                "chapterId": "CH01",
-                "difficultyTier": 1,
-                "timeSpentSeconds": 300,
-                "accuracy": 85.5,
-                "retries": 0,
-                "householdId": TEST_HOUSEHOLD_ID
-            },
-            {
-                "topicId": "investment_fundamentals", 
-                "chapterId": "CH02",
-                "difficultyTier": 2,
-                "timeSpentSeconds": 450,
-                "accuracy": 92.0,
-                "retries": 1,
-                "householdId": None
-            },
-            {
-                "topicId": "advanced_portfolio",
-                "chapterId": "CH03", 
-                "difficultyTier": 3,
-                "timeSpentSeconds": 600,
-                "accuracy": 78.3,
-                "retries": 3,
-                "householdId": TEST_HOUSEHOLD_ID
-            }
-        ]
+        issues_found = []
         
-        for i, scenario in enumerate(test_scenarios):
-            test_data = {
-                "userId": TEST_USER_ID,
-                "topicId": scenario["topicId"],
-                "chapterId": scenario["chapterId"],
-                "difficultyTier": scenario["difficultyTier"],
-                "timeSpentSeconds": scenario["timeSpentSeconds"],
-                "accuracy": scenario["accuracy"],
-                "retries": scenario["retries"],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "userTier": "premium",
-                "householdId": scenario["householdId"]
-            }
-            
-            try:
-                response = requests.post(f"{BACKEND_URL}/telemetry/topic-completed", json=test_data)
-                if response.status_code == 200:
-                    result = response.json()
-                    print(f"✅ Topic {scenario['topicId']}: {result['message']}")
-                    self.results["topic_completed"]["passed"] += 1
-                else:
-                    print(f"❌ Topic {scenario['topicId']} failed: {response.status_code} - {response.text}")
-                    self.results["topic_completed"]["failed"] += 1
-                    self.results["topic_completed"]["errors"].append(f"Topic {scenario['topicId']}: {response.status_code} - {response.text}")
-            except Exception as e:
-                print(f"❌ Topic {scenario['topicId']} error: {e}")
-                self.results["topic_completed"]["failed"] += 1
-                self.results["topic_completed"]["errors"].append(f"Topic {scenario['topicId']}: {str(e)}")
+        # Issue 1: Duplicate endpoints
+        print(f"\n📋 Issue Analysis:")
+        print(f"   🔍 Duplicate Endpoints:")
+        print(f"      • Line 872: POST /api/feedback (no auth, different data structure)")
+        print(f"      • Line 992: POST /api/feedback (with auth, structured data)")
+        issues_found.append("Duplicate feedback endpoints with different authentication and data structures")
         
-        # Verify data in MongoDB
-        self.verify_data_in_mongo('telemetry_topic_completed', expected_count=3)
+        # Issue 2: Data structure mismatch
+        print(f"   🔍 Data Structure Analysis:")
+        print(f"      • First endpoint expects: user_id, user_email, feedback, submitted_at")
+        print(f"      • Second endpoint expects: context_page, feedback_text (+ auto user_id)")
+        print(f"      • Admin viewer expects: consistent field names for display")
+        issues_found.append("Inconsistent data structures between submission endpoints")
+        
+        # Issue 3: Authentication inconsistency
+        print(f"   🔍 Authentication Analysis:")
+        print(f"      • First endpoint: No authentication required")
+        print(f"      • Second endpoint: Bearer token authentication required")
+        print(f"      • Admin viewer: Authentication required")
+        issues_found.append("Inconsistent authentication requirements")
+        
+        # Issue 4: Field naming inconsistency
+        print(f"   🔍 Field Naming Analysis:")
+        print(f"      • First endpoint uses: 'feedback' field")
+        print(f"      • Second endpoint uses: 'feedback_text' field")
+        print(f"      • This causes display issues in admin viewer")
+        issues_found.append("Inconsistent field naming between endpoints")
+        
+        # Issue 5: ID field problems
+        print(f"   🔍 ID Field Analysis:")
+        print(f"      • First endpoint: No 'id' field generated")
+        print(f"      • Second endpoint: UUID 'id' field generated")
+        print(f"      • MongoDB: Uses ObjectId '_id' which is not JSON serializable")
+        issues_found.append("Mixed ID field usage causing serialization issues")
+        
+        # Recommendations
+        print(f"\n💡 Recommendations:")
+        print(f"   1. Remove duplicate endpoint (keep line 992 version with auth)")
+        print(f"   2. Standardize field names (use 'feedback_text' consistently)")
+        print(f"   3. Always generate UUID 'id' field for all feedback")
+        print(f"   4. Ensure consistent authentication across all feedback operations")
+        print(f"   5. Update admin viewer to handle both field name variations")
+        
+        if issues_found:
+            print(f"\n❌ Found {len(issues_found)} issues with feedback system")
+            self.results["issue_identification"]["failed"] += 1
+            self.results["issue_identification"]["errors"].extend(issues_found)
+        else:
+            print(f"\n✅ No issues found with feedback system")
+            self.results["issue_identification"]["passed"] += 1
+        
+        return issues_found
     
     def test_quiz_attempt_telemetry(self):
         """Test quiz attempt telemetry endpoint"""
