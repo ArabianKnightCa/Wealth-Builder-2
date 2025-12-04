@@ -801,6 +801,7 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     
     return {
         "message": "PPI submitted successfully",
+        "uid": uid,
         "next_step": "lpi",
         "financial_dna": plan['dna'],
         "lpi_plan": plan['lpi_plan'],
