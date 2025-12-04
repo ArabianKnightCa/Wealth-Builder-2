@@ -72,8 +72,10 @@ class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     person_key: str  # PK-XXXXXXXX
-    user_code: str  # UID-ENV-COHORT-SEQ-TIMESTAMP
-    user_type: str  # POC, B1, B2, B3, COMM
+    user_code: str  # UID-ENV-COHORT-SEQ-TIMESTAMP (legacy)
+    uid: Optional[str] = None  # New UID: APP_STAGE-LIFE_STAGE-SEQ-DATEBLOCK-TIMEBLOCK
+    user_type: str  # POC, B1, B2, B3, COM
+    life_stage: str  # ES, JH, HS, CL, UN, AD (expandable)
     cohort: str  # EDU or GEN
     email: EmailStr
     first_name: str
