@@ -406,6 +406,18 @@ backend:
           agent: "main"
           comment: "✅ COMPLETED - New endpoint /api/analytics/feature-usage created. Tracks adoption rates for all major features: PPI, onboarding, quizzes, lessons, multi-profile, and feedback. Returns comprehensive feature usage metrics with adoption rates. Tested via curl successfully."
 
+  - task: "Feedback System Bug Fix"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ CRITICAL ISSUES IDENTIFIED - Feedback system has multiple critical bugs: (1) Duplicate endpoints at lines 872 and 992 with conflicting data structures, (2) Route conflict where /admin/{collection_name} intercepts /admin/feedback causing 400 errors, (3) Data structure mismatch causing NULL values in database - first endpoint expects {user_id, user_email, feedback, submitted_at} but receives {context_page, feedback_text}, (4) Authentication inconsistency between endpoints. EVIDENCE: 5 feedback entries in database with NULL data, admin retrieval fails with 'Access to collection feedback not allowed'. Feedback submissions appear successful (200 OK) but data is not properly stored or retrievable."
+
 frontend:
   - task: "Remove Age Band UI Labels from Personalization Tab"
     implemented: true
