@@ -13,6 +13,8 @@ import Settings from './pages/Settings';
 import Completed from './pages/Completed';
 import AdminPanel from './pages/AdminPanel';
 import FormsManager from './pages/FormsManager';
+import ProfileSelector from './pages/ProfileSelector';
+import AddProfile from './pages/AddProfile';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
