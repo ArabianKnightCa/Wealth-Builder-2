@@ -172,6 +172,18 @@ function Settings({ user, token }) {
           </div>
         </div>
 
+        {/* Profile Manager */}
+        <div className="mb-6">
+          <ProfileManager 
+            token={token} 
+            currentProfile={user} 
+            onProfileSwitch={(profile) => {
+              // Reload page to refresh with new profile
+              window.location.reload();
+            }} 
+          />
+        </div>
+
         <div className="card">
           <h2 className="text-2xl font-bold text-navy-900 mb-6">Your Preferences</h2>
 
