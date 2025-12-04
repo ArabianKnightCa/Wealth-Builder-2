@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 """
-COMPREHENSIVE ADAPTIVE ENGINE (AE) PROOF OF CONCEPT TESTING
+FEEDBACK SYSTEM END-TO-END TESTING
 
-**Objective:** Demonstrate the power and accuracy of the Adaptive Engine by testing complete user journeys 
-for different personas, showing how personalization works at each stage.
+**Objective:** Test the complete feedback system to identify issues with feedback submission and viewing.
 
-**Test Personas:**
-1. 8-Year-Old Child - Creative & Analytical
-2. 16-Year-Old Teen - Organized Planner  
-3. 30-Year-Old Adult - Ambitious Builder
+**Test Focus:**
+1. Submit Feedback Test - POST /api/feedback
+2. View Feedback Test - GET /api/admin/feedback  
+3. Database Check - Direct MongoDB queries
+4. Issue Identification - Duplicate endpoints, data structure problems
 
-**Testing Flow for Each Persona:**
-1. Registration
-2. PPI Stage - Age-appropriate questions
-3. Submit PPI Answers - Persona-appropriate responses
-4. LPI Content Retrieval - Personalized content
-5. Content Comparison Analysis
+**Known Issues to Investigate:**
+- Two duplicate feedback endpoints in server.py (lines 872 and 992)
+- User reports feedback not showing up in feedback viewer dashboard
+- Potential data structure mismatch between submission and retrieval
 """
 
 import requests
