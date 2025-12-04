@@ -370,15 +370,24 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Fetch user's PPI results to get DNA profile
-    ppi_answers = await db.ppi_answers.find_one({"user_id": user_id}, {"_id": 0})
+    # Fetch user's progress to get DNA profile (stored after PPI submission)
+    progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
+    
+    # Extract DNA profile from progress if available
+    dna_profile = 'Balanced'
+    dna_weights = {}
+    if progress and 'learning_map' in progress:
+        learning_map = progress['learning_map']
+        if 'financial_dna' in learning_map:
+            dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
+            dna_weights = learning_map['financial_dna'].get('weights', {})
     
     # Build user profile for content transformation
     user_profile = {
         'age': calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
         'financial_experience': map_experience_level(user.get('experience_level', 1)),
-        'dna_profile': ppi_answers.get('dna', {}).get('profile', 'Balanced') if ppi_answers else 'Balanced',
-        'dna_weights': ppi_answers.get('dna', {}).get('weights', {}) if ppi_answers else {},
+        'dna_profile': dna_profile,
+        'dna_weights': dna_weights,
         'goals': user.get('financial_goals', [])
     }
     
