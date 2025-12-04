@@ -2449,6 +2449,118 @@ async def get_content_engagement_analytics():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get content engagement analytics: {str(e)}")
 
+@api_router.get("/analytics/personalization-effectiveness")
+async def get_personalization_effectiveness():
+    """Get personalization effectiveness analytics - Priority 2"""
+    try:
+        # Compare personalized vs baseline performance
+        # Group by age band and DNA profile
+        pipeline = [
+            {
+                "$group": {
+                    "_id": {
+                        "ageBand": "$ageBand",
+                        "dnaProfile": "$dnaProfile",
+                        "wasPersonalized": "$wasPersonalized"
+                    },
+                    "avgCompletionRate": {
+                        "$avg": {"$cond": ["$completed", 100, 0]}
+                    },
+                    "avgTimeSpent": {"$avg": "$timeSpentSeconds"},
+                    "avgScrollDepth": {"$avg": "$scrollDepth"},
+                    "totalLessons": {"$sum": 1},
+                    "users": {"$addToSet": "$userId"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "ageBand": "$_id.ageBand",
+                    "dnaProfile": "$_id.dnaProfile",
+                    "wasPersonalized": "$_id.wasPersonalized",
+                    "avgCompletionRate": {"$round": ["$avgCompletionRate", 1]},
+                    "avgTimeSpent": {"$round": ["$avgTimeSpent", 0]},
+                    "avgScrollDepth": {"$round": ["$avgScrollDepth", 0]},
+                    "totalLessons": 1,
+                    "uniqueUsers": {"$size": "$users"}
+                }
+            },
+            {"$sort": {"ageBand": 1, "dnaProfile": 1}}
+        ]
+        
+        results = await db.telemetry_lesson_engagement.aggregate(pipeline).to_list(1000)
+        
+        # DNA Profile Performance Analysis
+        dna_pipeline = [
+            {
+                "$match": {"dnaProfile": {"$ne": None}}
+            },
+            {
+                "$group": {
+                    "_id": "$dnaProfile",
+                    "avgCompletionRate": {
+                        "$avg": {"$cond": ["$completed", 100, 0]}
+                    },
+                    "avgTimeSpent": {"$avg": "$timeSpentSeconds"},
+                    "totalUsers": {"$addToSet": "$userId"},
+                    "chaptersCompleted": {"$sum": {"$cond": ["$completed", 1, 0]}}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "dnaProfile": "$_id",
+                    "avgCompletionRate": {"$round": ["$avgCompletionRate", 1]},
+                    "avgTimeSpent": {"$round": ["$avgTimeSpent", 0]},
+                    "userCount": {"$size": "$totalUsers"},
+                    "chaptersCompleted": 1
+                }
+            },
+            {"$sort": {"avgCompletionRate": -1}}
+        ]
+        
+        dna_results = await db.telemetry_lesson_engagement.aggregate(dna_pipeline).to_list(1000)
+        
+        # Age-appropriate effectiveness
+        age_pipeline = [
+            {
+                "$group": {
+                    "_id": "$ageBand",
+                    "avgCompletionRate": {
+                        "$avg": {"$cond": ["$completed", 100, 0]}
+                    },
+                    "avgTimeSpent": {"$avg": "$timeSpentSeconds"},
+                    "avgScrollDepth": {"$avg": "$scrollDepth"},
+                    "totalLessons": {"$sum": 1}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "ageBand": "$_id",
+                    "avgCompletionRate": {"$round": ["$avgCompletionRate", 1]},
+                    "avgTimeSpent": {"$round": ["$avgTimeSpent", 0]},
+                    "avgScrollDepth": {"$round": ["$avgScrollDepth", 0]},
+                    "totalLessons": 1
+                }
+            },
+            {"$sort": {"ageBand": 1}}
+        ]
+        
+        age_results = await db.telemetry_lesson_engagement.aggregate(age_pipeline).to_list(1000)
+        
+        return {
+            "personalizedVsBaseline": results,
+            "dnaProfilePerformance": dna_results,
+            "ageEffectiveness": age_results,
+            "summary": {
+                "message": "Personalization effectiveness metrics",
+                "dataPoints": len(results)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get personalization effectiveness: {str(e)}")
+
 # ===========================
 # Users Management (Enhanced)
 # ===========================
