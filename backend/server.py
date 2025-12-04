@@ -1882,6 +1882,30 @@ class TelemetrySubscriptionChange(BaseModel):
     householdId: Optional[str] = None
     householdSize: Optional[int] = None
 
+# NEW: Content Engagement Telemetry
+class TelemetryLessonEngagement(BaseModel):
+    """Track detailed lesson engagement metrics"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    profileId: Optional[str] = None  # For multi-profile support
+    chapterId: str
+    lessonId: str
+    lessonTitle: str
+    # Engagement metrics
+    startedAt: datetime
+    completedAt: Optional[datetime] = None
+    timeSpentSeconds: int  # Actual time spent reading
+    scrollDepth: int = 0  # Percentage scrolled (0-100)
+    completed: bool = False  # Did they reach the end?
+    isReread: bool = False  # Second+ time viewing this lesson
+    interactions: Optional[dict] = None  # Clicks, highlights, etc.
+    # User context
+    age: int
+    experienceLevel: int
+    dnaProfile: Optional[str] = None
+    wasPersonalized: bool = True
+
 # ===========================
 # Telemetry API Endpoints
 # ===========================
