@@ -74,12 +74,13 @@ function AnalyticsDashboard({ token }) {
 
   const loadAnalytics = async () => {
     try {
-      const [userProgress, topicPerformance, chapterHeatmap, contentEngagement, personalization] = await Promise.all([
+      const [userProgress, topicPerformance, chapterHeatmap, contentEngagement, personalization, learningPatterns] = await Promise.all([
         axios.get(`${API}/analytics/user-progress`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/topic-performance`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/chapter-heatmap`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/analytics/content-engagement`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/analytics/personalization-effectiveness`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/analytics/personalization-effectiveness`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/analytics/learning-patterns`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
       setAnalytics({
@@ -91,6 +92,12 @@ function AnalyticsDashboard({ token }) {
           personalizedVsBaseline: [],
           dnaProfilePerformance: [],
           ageEffectiveness: []
+        },
+        learningPatterns: learningPatterns.data || {
+          sessionPatterns: [],
+          dayOfWeekPatterns: [],
+          streakAnalysis: {},
+          quizRetryBehavior: []
         }
       });
     } catch (error) {
