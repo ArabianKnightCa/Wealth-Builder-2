@@ -77,11 +77,20 @@ function PPI({ token, user, onPPIComplete }) {
         selected_option
       }));
 
-      await axios.post(
+      const response = await axios.post(
         `${API}/ppi/submit`,
         { answers: formattedAnswers },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
+      // Update user state with PPI completion data
+      if (response.data && onPPIComplete) {
+        onPPIComplete({
+          ppi_completed: true,
+          financial_dna: response.data.dna,
+          lpi_plan: response.data.lpi_plan
+        });
+      }
       
       // Log PPI completion telemetry
       if (user?.id) {
