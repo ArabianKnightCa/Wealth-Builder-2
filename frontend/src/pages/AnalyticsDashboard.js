@@ -13,7 +13,8 @@ function AnalyticsDashboard({ token }) {
   const [analytics, setAnalytics] = useState({
     userProgress: [],
     topicPerformance: [],
-    chapterHeatmap: []
+    chapterHeatmap: [],
+    contentEngagement: []
   });
   const [telemetry, setTelemetry] = useState({
     sessions: 0,
