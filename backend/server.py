@@ -365,8 +365,8 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     Get personalized LPI chapters with dynamically generated content
     Content is transformed at runtime based on user's Age, Experience, PPI, and Goals
     """
-    # Fetch user profile
-    user = await db.users.find_one({"person_key": user_id}, {"_id": 0})
+    # Fetch user profile using id field (from JWT token)
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
