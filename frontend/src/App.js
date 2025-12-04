@@ -32,6 +32,18 @@ function App() {
     }
   }, [token]);
   
+  // Handle session end telemetry
+  const handleUnload = () => {
+    if (user?.id) {
+      telemetryService.logSessionEnd(
+        user.id,
+        user.user_type || 'free',
+        'web',
+        '1.0.0'
+      );
+    }
+  };
+
   // Track session start/end
   useEffect(() => {
     if (user?.id) {
@@ -42,16 +54,6 @@ function App() {
         'web',
         '1.0.0'
       );
-      
-      // Log session end on page unload
-      const handleUnload = () => {
-        telemetryService.logSessionEnd(
-          user.id,
-          user.user_type || 'free',
-          'web',
-          '1.0.0'
-        );
-      };
       
       window.addEventListener('beforeunload', handleUnload);
       
