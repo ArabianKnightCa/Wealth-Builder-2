@@ -76,74 +76,61 @@ class FeedbackSystemTester:
         if self.db is None:
             return
             
-        collections = ['users', 'progress', 'ppi_answers', 'lpi_progress']
-        
-        for persona_key, persona in PERSONAS.items():
-            email = persona['email']
-            try:
-                # Delete user account via API
-                delete_response = requests.post(f"{BACKEND_URL}/auth/delete-account", 
-                                              json={"email": email})
-                if delete_response.status_code == 200:
-                    print(f"🧹 Cleaned up {persona['name']} ({email})")
-                else:
-                    print(f"⚠️ Could not clean up {email}: {delete_response.status_code}")
-            except Exception as e:
-                print(f"⚠️ Error cleaning {email}: {e}")
+        email = TEST_USER['email']
+        try:
+            # Delete user account via API
+            delete_response = requests.post(f"{BACKEND_URL}/auth/delete-account", 
+                                          json={"email": email})
+            if delete_response.status_code == 200:
+                print(f"🧹 Cleaned up test user ({email})")
+            else:
+                print(f"⚠️ Could not clean up {email}: {delete_response.status_code}")
+        except Exception as e:
+            print(f"⚠️ Error cleaning {email}: {e}")
     
-    def register_persona(self, persona_key):
-        """Register a persona and capture access token"""
-        persona = PERSONAS[persona_key]
-        print(f"\n👤 Registering {persona['name']} (Age: {persona['age']})...")
+    def register_test_user(self):
+        """Register test user and capture access token"""
+        print(f"\n👤 Registering test user: {TEST_USER['name']}...")
         
         registration_data = {
-            "email": persona["email"],
-            "password": persona["password"],
-            "first_name": persona["name"],
-            "date_of_birth": persona["date_of_birth"],
+            "email": TEST_USER["email"],
+            "password": TEST_USER["password"],
+            "first_name": TEST_USER["name"],
+            "date_of_birth": TEST_USER["date_of_birth"],
             "language": "en",
-            "experience_level": persona["experience_level"],
+            "experience_level": TEST_USER["experience_level"],
             "user_type": "POC",
-            "occupation": persona["occupation"],
-            "state": persona["state"],
-            "financial_goals": persona["financial_goals"]
+            "life_stage": "AD",
+            "occupation": TEST_USER["occupation"],
+            "state": TEST_USER["state"],
+            "financial_goals": TEST_USER["financial_goals"]
         }
-        
-        # Add school info for minors
-        if persona["age"] < 18:
-            registration_data.update({
-                "school_name": persona["school_name"],
-                "school_city": persona["school_city"],
-                "school_state": persona["school_state"],
-                "parent_email": persona["parent_email"]
-            })
         
         try:
             response = requests.post(f"{BACKEND_URL}/auth/register", json=registration_data)
             if response.status_code == 200:
                 result = response.json()
-                self.persona_data[persona_key] = {
+                self.user_data = {
                     "user_id": result["user"]["id"],
                     "access_token": result["access_token"],
                     "user_data": result["user"]
                 }
-                print(f"✅ Registration successful for {persona['name']}")
+                print(f"✅ Registration successful for {TEST_USER['name']}")
                 print(f"   User ID: {result['user']['id']}")
-                print(f"   Person Key: {result['user']['person_key']}")
-                print(f"   User Code: {result['user']['user_code']}")
+                print(f"   Email: {TEST_USER['email']}")
                 self.results["registration"]["passed"] += 1
                 return True
             else:
                 error_msg = f"Registration failed: {response.status_code} - {response.text}"
                 print(f"❌ {error_msg}")
                 self.results["registration"]["failed"] += 1
-                self.results["registration"]["errors"].append(f"{persona['name']}: {error_msg}")
+                self.results["registration"]["errors"].append(error_msg)
                 return False
         except Exception as e:
             error_msg = f"Registration error: {str(e)}"
             print(f"❌ {error_msg}")
             self.results["registration"]["failed"] += 1
-            self.results["registration"]["errors"].append(f"{persona['name']}: {error_msg}")
+            self.results["registration"]["errors"].append(error_msg)
             return False
     
     def test_ppi_personalization(self, persona_key):
