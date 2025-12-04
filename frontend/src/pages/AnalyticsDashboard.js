@@ -14,7 +14,12 @@ function AnalyticsDashboard({ token }) {
     userProgress: [],
     topicPerformance: [],
     chapterHeatmap: [],
-    contentEngagement: []
+    contentEngagement: [],
+    personalization: {
+      personalizedVsBaseline: [],
+      dnaProfilePerformance: [],
+      ageEffectiveness: []
+    }
   });
   const [telemetry, setTelemetry] = useState({
     sessions: 0,
