@@ -515,6 +515,15 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         }
         await db.ppi_answers.insert_one(ppi_answer)
     
+    # Get user info for age and goals
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Calculate age
+    age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
+    goals = user.get('financial_goals', [])
+    
     # Call AE V2 generate_plan
     ae_v2 = get_adaptive_engine_v2()
     
@@ -526,8 +535,8 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
             "value": answer['selected_option']  # "A", "B", "C", or "D"
         })
     
-    # Generate plan
-    plan = ae_v2.generate_plan(user_id, answers_formatted)
+    # Generate plan with age + goals for full personalization
+    plan = ae_v2.generate_plan(user_id, answers_formatted, age=age, goals=goals)
     
     # Extract chapter order from plan
     chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
