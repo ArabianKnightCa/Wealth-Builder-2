@@ -204,86 +204,67 @@ class FeedbackSystemTester:
         
         return len(self.submitted_feedback) > 0
     
-    def submit_ppi_answers(self, persona_key):
-        """Submit PPI answers based on persona characteristics"""
-        persona = PERSONAS[persona_key]
-        persona_data = self.persona_data[persona_key]
+    def test_feedback_retrieval(self):
+        """Test feedback retrieval via admin endpoint"""
+        print(f"\n📋 Testing Feedback Retrieval...")
         
-        print(f"\n🧬 Submitting PPI Answers for {persona['name']}...")
-        
-        if "ppi_questions" not in persona_data:
-            print("❌ No PPI questions available - skipping submission")
+        if not self.user_data:
+            print("❌ No user data available - skipping feedback retrieval test")
             return False
         
-        questions = persona_data["ppi_questions"].get("questions", [])
-        answers = []
-        
-        # Generate persona-appropriate answers
-        answer_pattern = persona["ppi_answers"]
-        
-        for i, question in enumerate(questions):
-            options = question.get("options", [])
-            if not options:
-                continue
-                
-            # Select answer based on persona pattern
-            if answer_pattern == "mostly_A_and_D":  # Child: Simple, curious
-                selected = "A" if i % 2 == 0 else "D"
-            elif answer_pattern == "mostly_A_and_B":  # Teen: Structured, organized
-                selected = "A" if i % 2 == 0 else "B"
-            elif answer_pattern == "mostly_A_and_C":  # Adult: Ambitious, goal-focused
-                selected = "A" if i % 2 == 0 else "C"
-            else:
-                selected = "A"  # Default
-            
-            # Ensure selected option exists
-            if selected not in [opt.get("id", "") for opt in options]:
-                selected = options[0].get("id", "A")
-            
-            answers.append({
-                "question_id": question.get("id"),
-                "selected_option": selected
-            })
-        
-        submission_data = {"answers": answers}
-        headers = {"Authorization": f"Bearer {persona_data['access_token']}"}
+        headers = {"Authorization": f"Bearer {self.user_data['access_token']}"}
         
         try:
-            response = requests.post(f"{BACKEND_URL}/ppi/submit", json=submission_data, headers=headers)
+            response = requests.get(f"{BACKEND_URL}/admin/feedback", headers=headers)
             if response.status_code == 200:
                 result = response.json()
+                feedback_list = result.get("feedback", [])
+                feedback_count = result.get("count", 0)
                 
-                # Store Financial DNA profile
-                self.persona_data[persona_key]["financial_dna"] = result.get("financial_dna", {})
-                self.persona_data[persona_key]["lpi_plan"] = result.get("lpi_plan", {})
+                print(f"✅ Feedback retrieval successful")
+                print(f"   📊 Total feedback entries: {feedback_count}")
+                print(f"   📋 Feedback list length: {len(feedback_list)}")
                 
-                dna_profile = result.get("financial_dna", {}).get("profile", "Unknown")
-                weights = result.get("financial_dna", {}).get("weights", {})
+                # Check if our submitted feedback appears
+                found_feedback = []
+                for feedback in feedback_list:
+                    # Check for feedback from our test user
+                    if feedback.get("user_id") == self.user_data["user_id"]:
+                        found_feedback.append(feedback)
+                        print(f"   ✅ Found our feedback: {feedback.get('feedback_text', feedback.get('feedback', 'N/A'))[:50]}...")
                 
-                print(f"✅ PPI Submission successful")
-                print(f"   🧬 Generated Financial DNA: {dna_profile}")
-                print(f"   📊 Weights: Tempo={weights.get('tempo', 'N/A')}, Discipline={weights.get('discipline', 'N/A')}, Confidence={weights.get('confidence', 'N/A')}")
+                if found_feedback:
+                    print(f"✅ Found {len(found_feedback)} feedback entries from our test user")
+                    self.results["feedback_retrieval"]["passed"] += 1
+                else:
+                    error_msg = "No feedback found from our test user in admin view"
+                    print(f"❌ {error_msg}")
+                    self.results["feedback_retrieval"]["failed"] += 1
+                    self.results["feedback_retrieval"]["errors"].append(error_msg)
                 
-                # Verify expected profile (if specified)
-                expected_profile = persona.get("expected_profile")
-                if expected_profile and expected_profile.lower() in dna_profile.lower():
-                    print(f"✅ Profile matches expectation: {expected_profile}")
+                # Show sample feedback structure
+                if feedback_list:
+                    sample = feedback_list[0]
+                    print(f"\n📋 Sample feedback structure:")
+                    for key, value in sample.items():
+                        if key == "_id":
+                            continue
+                        print(f"   • {key}: {str(value)[:100]}...")
                 
-                self.results["ppi_submission"]["passed"] += 1
-                return True
+                return len(found_feedback) > 0
                 
             else:
-                error_msg = f"PPI submission failed: {response.status_code} - {response.text}"
+                error_msg = f"Feedback retrieval failed: {response.status_code} - {response.text}"
                 print(f"❌ {error_msg}")
-                self.results["ppi_submission"]["failed"] += 1
-                self.results["ppi_submission"]["errors"].append(f"{persona['name']}: {error_msg}")
+                self.results["feedback_retrieval"]["failed"] += 1
+                self.results["feedback_retrieval"]["errors"].append(error_msg)
                 return False
                 
         except Exception as e:
-            error_msg = f"PPI submission error: {str(e)}"
+            error_msg = f"Feedback retrieval error: {str(e)}"
             print(f"❌ {error_msg}")
-            self.results["ppi_submission"]["failed"] += 1
-            self.results["ppi_submission"]["errors"].append(f"{persona['name']}: {error_msg}")
+            self.results["feedback_retrieval"]["failed"] += 1
+            self.results["feedback_retrieval"]["errors"].append(error_msg)
             return False
     
     def test_ppi_completed_telemetry(self):
