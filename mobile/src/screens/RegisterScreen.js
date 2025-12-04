@@ -46,7 +46,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const handleRegister = async () => {
-    if (!formData.email || !formData.password || !formData.first_name || !formData.date_of_birth) {
+    if (!formData.email || !formData.password || !formData.first_name || !formData.date_of_birth || !formData.life_stage) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
