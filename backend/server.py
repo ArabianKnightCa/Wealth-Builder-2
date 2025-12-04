@@ -2363,6 +2363,65 @@ async def get_chapter_heatmap_analytics(chapterId: Optional[str] = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get chapter heatmap analytics: {str(e)}")
 
+@api_router.get("/analytics/content-engagement")
+async def get_content_engagement_analytics():
+    """Get content engagement analytics - Priority 1"""
+    try:
+        # Aggregate lesson engagement data
+        pipeline = [
+            {
+                "$group": {
+                    "_id": {
+                        "chapterId": "$chapterId",
+                        "lessonId": "$lessonId",
+                        "lessonTitle": "$lessonTitle"
+                    },
+                    "totalViews": {"$sum": 1},
+                    "completions": {
+                        "$sum": {"$cond": ["$completed", 1, 0]}
+                    },
+                    "rereads": {
+                        "$sum": {"$cond": ["$isReread", 1, 0]}
+                    },
+                    "avgTimeSpent": {"$avg": "$timeSpentSeconds"},
+                    "avgScrollDepth": {"$avg": "$scrollDepth"},
+                    "ageGroups": {"$push": "$age"},
+                    "experienceLevels": {"$push": "$experienceLevel"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "chapterId": "$_id.chapterId",
+                    "lessonId": "$_id.lessonId",
+                    "lessonTitle": "$_id.lessonTitle",
+                    "totalViews": 1,
+                    "completions": 1,
+                    "completionRate": {
+                        "$multiply": [
+                            {"$divide": ["$completions", "$totalViews"]},
+                            100
+                        ]
+                    },
+                    "rereads": 1,
+                    "rereadRate": {
+                        "$multiply": [
+                            {"$divide": ["$rereads", "$totalViews"]},
+                            100
+                        ]
+                    },
+                    "avgTimeSpent": {"$round": ["$avgTimeSpent", 0]},
+                    "avgScrollDepth": {"$round": ["$avgScrollDepth", 0]}
+                }
+            },
+            {"$sort": {"totalViews": -1}}
+        ]
+        
+        results = await db.telemetry_lesson_engagement.aggregate(pipeline).to_list(1000)
+        return {"data": results, "count": len(results)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get content engagement analytics: {str(e)}")
+
 # ===========================
 # Users Management (Enhanced)
 # ===========================
