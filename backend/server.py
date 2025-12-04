@@ -1933,6 +1933,26 @@ class TelemetryQuizPersonalized(BaseModel):
     dnaProfile: Optional[str] = None
     wasPersonalized: bool = True
 
+# NEW: Session Patterns Telemetry (Priority 3)
+class TelemetrySessionPattern(BaseModel):
+    """Track user session patterns and learning habits"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    profileId: Optional[str] = None
+    sessionId: str
+    sessionStart: datetime
+    sessionEnd: datetime
+    durationSeconds: int
+    lessonsViewed: int
+    quizzesAttempted: int
+    chaptersAccessed: List[str]
+    timeOfDay: str  # morning, afternoon, evening, night
+    dayOfWeek: str
+    deviceType: Optional[str] = None
+    isConsecutiveDay: bool = False  # Part of a streak
+    streakCount: int = 0
+
 # ===========================
 # Telemetry API Endpoints
 # ===========================
