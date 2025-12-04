@@ -261,43 +261,87 @@ class AdaptiveEngineTester:
             self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
             return False
     
-    def test_onboarding_telemetry(self):
-        """Test onboarding telemetry endpoint"""
-        print("\n🔍 Testing Onboarding Telemetry...")
+    def submit_ppi_answers(self, persona_key):
+        """Submit PPI answers based on persona characteristics"""
+        persona = PERSONAS[persona_key]
+        persona_data = self.persona_data[persona_key]
         
-        onboarding_steps = [
-            {"stepName": "welcome", "completed": True},
-            {"stepName": "profile_setup", "completed": True},
-            {"stepName": "preferences", "completed": False},
-            {"stepName": "tutorial", "completed": True}
-        ]
+        print(f"\n🧬 Submitting PPI Answers for {persona['name']}...")
         
-        for i, step in enumerate(onboarding_steps):
-            test_data = {
-                "userId": TEST_USER_ID,
-                "stepName": step["stepName"],
-                "completed": step["completed"],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "userTier": "premium"
-            }
+        if "ppi_questions" not in persona_data:
+            print("❌ No PPI questions available - skipping submission")
+            return False
+        
+        questions = persona_data["ppi_questions"].get("questions", [])
+        answers = []
+        
+        # Generate persona-appropriate answers
+        answer_pattern = persona["ppi_answers"]
+        
+        for i, question in enumerate(questions):
+            options = question.get("options", [])
+            if not options:
+                continue
+                
+            # Select answer based on persona pattern
+            if answer_pattern == "mostly_A_and_D":  # Child: Simple, curious
+                selected = "A" if i % 2 == 0 else "D"
+            elif answer_pattern == "mostly_A_and_B":  # Teen: Structured, organized
+                selected = "A" if i % 2 == 0 else "B"
+            elif answer_pattern == "mostly_A_and_C":  # Adult: Ambitious, goal-focused
+                selected = "A" if i % 2 == 0 else "C"
+            else:
+                selected = "A"  # Default
             
-            try:
-                response = requests.post(f"{BACKEND_URL}/telemetry/onboarding", json=test_data)
-                if response.status_code == 200:
-                    result = response.json()
-                    print(f"✅ Onboarding step {step['stepName']}: {result['message']}")
-                    self.results["onboarding"]["passed"] += 1
-                else:
-                    print(f"❌ Onboarding step {step['stepName']} failed: {response.status_code} - {response.text}")
-                    self.results["onboarding"]["failed"] += 1
-                    self.results["onboarding"]["errors"].append(f"Step {step['stepName']}: {response.status_code} - {response.text}")
-            except Exception as e:
-                print(f"❌ Onboarding step {step['stepName']} error: {e}")
-                self.results["onboarding"]["failed"] += 1
-                self.results["onboarding"]["errors"].append(f"Step {step['stepName']}: {str(e)}")
+            # Ensure selected option exists
+            if selected not in [opt.get("id", "") for opt in options]:
+                selected = options[0].get("id", "A")
+            
+            answers.append({
+                "question_id": question.get("id"),
+                "selected_option": selected
+            })
         
-        # Verify data in MongoDB
-        self.verify_data_in_mongo('telemetry_onboarding', expected_count=4)
+        submission_data = {"answers": answers}
+        headers = {"Authorization": f"Bearer {persona_data['access_token']}"}
+        
+        try:
+            response = requests.post(f"{BACKEND_URL}/ppi/submit", json=submission_data, headers=headers)
+            if response.status_code == 200:
+                result = response.json()
+                
+                # Store Financial DNA profile
+                self.persona_data[persona_key]["financial_dna"] = result.get("financial_dna", {})
+                self.persona_data[persona_key]["lpi_plan"] = result.get("lpi_plan", {})
+                
+                dna_profile = result.get("financial_dna", {}).get("profile", "Unknown")
+                weights = result.get("financial_dna", {}).get("weights", {})
+                
+                print(f"✅ PPI Submission successful")
+                print(f"   🧬 Generated Financial DNA: {dna_profile}")
+                print(f"   📊 Weights: Tempo={weights.get('tempo', 'N/A')}, Discipline={weights.get('discipline', 'N/A')}, Confidence={weights.get('confidence', 'N/A')}")
+                
+                # Verify expected profile (if specified)
+                expected_profile = persona.get("expected_profile")
+                if expected_profile and expected_profile.lower() in dna_profile.lower():
+                    print(f"✅ Profile matches expectation: {expected_profile}")
+                
+                self.results["ppi_submission"]["passed"] += 1
+                return True
+                
+            else:
+                error_msg = f"PPI submission failed: {response.status_code} - {response.text}"
+                print(f"❌ {error_msg}")
+                self.results["ppi_submission"]["failed"] += 1
+                self.results["ppi_submission"]["errors"].append(f"{persona['name']}: {error_msg}")
+                return False
+                
+        except Exception as e:
+            error_msg = f"PPI submission error: {str(e)}"
+            print(f"❌ {error_msg}")
+            self.results["ppi_submission"]["failed"] += 1
+            self.results["ppi_submission"]["errors"].append(f"{persona['name']}: {error_msg}")
+            return False
     
     def test_ppi_completed_telemetry(self):
         """Test PPI completion telemetry endpoint"""
