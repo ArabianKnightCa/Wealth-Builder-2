@@ -133,80 +133,76 @@ class FeedbackSystemTester:
             self.results["registration"]["errors"].append(error_msg)
             return False
     
-    def test_ppi_personalization(self, persona_key):
-        """Test PPI personalization - age-appropriate questions"""
-        persona = PERSONAS[persona_key]
-        persona_data = self.persona_data[persona_key]
+    def test_feedback_submission(self):
+        """Test feedback submission using both duplicate endpoints"""
+        print(f"\n📝 Testing Feedback Submission...")
         
-        print(f"\n📋 Testing PPI Personalization for {persona['name']} (Age: {persona['age']})...")
+        if not self.user_data:
+            print("❌ No user data available - skipping feedback submission test")
+            return False
         
-        headers = {"Authorization": f"Bearer {persona_data['access_token']}"}
+        headers = {"Authorization": f"Bearer {self.user_data['access_token']}"}
+        
+        # Test Case 1: Submit feedback using the first endpoint (line 872) - no auth required
+        print("\n🔍 Testing First Feedback Endpoint (line 872 - no auth)...")
+        feedback_data_1 = {
+            "context_page": "Dashboard",
+            "feedback_text": "This is a test feedback from endpoint 1"
+        }
         
         try:
-            response = requests.get(f"{BACKEND_URL}/content/ppi/personalized", headers=headers)
+            response = requests.post(f"{BACKEND_URL}/feedback", json=feedback_data_1)
             if response.status_code == 200:
-                ppi_data = response.json()
-                
-                # Store PPI data for later use
-                self.persona_data[persona_key]["ppi_questions"] = ppi_data
-                
-                # Analyze questions
-                questions = ppi_data.get("questions", [])
-                question_count = len(questions)
-                
-                print(f"✅ PPI Questions Retrieved: {question_count} questions")
-                
-                # Check age-appropriate filtering
-                age_ranges = []
-                sample_questions = []
-                
-                for i, q in enumerate(questions[:3]):  # Show first 3 questions
-                    age_range = f"{q.get('age_min', 'N/A')}-{q.get('age_max', 'N/A')}"
-                    age_ranges.append(age_range)
-                    sample_questions.append({
-                        "id": q.get("id"),
-                        "prompt": q.get("prompt", "")[:100] + "..." if len(q.get("prompt", "")) > 100 else q.get("prompt", ""),
-                        "age_range": age_range
-                    })
-                
-                print(f"   📝 Sample Questions:")
-                for sq in sample_questions:
-                    print(f"      • {sq['id']}: {sq['prompt']} (Age: {sq['age_range']})")
-                
-                # Verify age appropriateness
-                user_age = persona["age"]
-                age_appropriate = True
-                for q in questions:
-                    age_min = q.get("age_min", 0)
-                    age_max = q.get("age_max", 100)
-                    if not (age_min <= user_age <= age_max):
-                        age_appropriate = False
-                        break
-                
-                if age_appropriate:
-                    print(f"✅ Age Filtering: All questions appropriate for age {user_age}")
-                    self.results["ppi_personalization"]["passed"] += 1
-                else:
-                    error_msg = f"Age filtering failed for {user_age}-year-old"
-                    print(f"❌ {error_msg}")
-                    self.results["ppi_personalization"]["failed"] += 1
-                    self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
-                
-                return True
-                
+                result = response.json()
+                print(f"✅ First endpoint submission: {result['message']}")
+                self.submitted_feedback.append({
+                    "endpoint": "first",
+                    "data": feedback_data_1,
+                    "success": True
+                })
+                self.results["feedback_submission"]["passed"] += 1
             else:
-                error_msg = f"PPI retrieval failed: {response.status_code} - {response.text}"
+                error_msg = f"First endpoint failed: {response.status_code} - {response.text}"
                 print(f"❌ {error_msg}")
-                self.results["ppi_personalization"]["failed"] += 1
-                self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
-                return False
-                
+                self.results["feedback_submission"]["failed"] += 1
+                self.results["feedback_submission"]["errors"].append(error_msg)
         except Exception as e:
-            error_msg = f"PPI personalization error: {str(e)}"
+            error_msg = f"First endpoint error: {str(e)}"
             print(f"❌ {error_msg}")
-            self.results["ppi_personalization"]["failed"] += 1
-            self.results["ppi_personalization"]["errors"].append(f"{persona['name']}: {error_msg}")
-            return False
+            self.results["feedback_submission"]["failed"] += 1
+            self.results["feedback_submission"]["errors"].append(error_msg)
+        
+        # Test Case 2: Submit feedback using the second endpoint (line 992) - with auth
+        print("\n🔍 Testing Second Feedback Endpoint (line 992 - with auth)...")
+        feedback_data_2 = {
+            "context_page": "Dashboard",
+            "feedback_text": "This is a test feedback from endpoint 2"
+        }
+        
+        try:
+            response = requests.post(f"{BACKEND_URL}/feedback", json=feedback_data_2, headers=headers)
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Second endpoint submission: {result['message']}")
+                self.submitted_feedback.append({
+                    "endpoint": "second",
+                    "data": feedback_data_2,
+                    "success": True,
+                    "user_id": self.user_data['user_id']
+                })
+                self.results["feedback_submission"]["passed"] += 1
+            else:
+                error_msg = f"Second endpoint failed: {response.status_code} - {response.text}"
+                print(f"❌ {error_msg}")
+                self.results["feedback_submission"]["failed"] += 1
+                self.results["feedback_submission"]["errors"].append(error_msg)
+        except Exception as e:
+            error_msg = f"Second endpoint error: {str(e)}"
+            print(f"❌ {error_msg}")
+            self.results["feedback_submission"]["failed"] += 1
+            self.results["feedback_submission"]["errors"].append(error_msg)
+        
+        return len(self.submitted_feedback) > 0
     
     def submit_ppi_answers(self, persona_key):
         """Submit PPI answers based on persona characteristics"""
