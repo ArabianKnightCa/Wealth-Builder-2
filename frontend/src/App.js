@@ -87,9 +87,22 @@ function App() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     setToken(null);
-    localStorage.removeItem('token');
+    
+    // End session telemetry
+    handleUnload();
+  };
+
+  const handlePPIComplete = (updatedUserData) => {
+    // Update user state with new data after PPI completion
+    if (updatedUserData) {
+      const mergedUser = { ...user, ...updatedUserData };
+      setUser(mergedUser);
+      localStorage.setItem('user', JSON.stringify(mergedUser));
+    }
   };
 
   if (loading) {
