@@ -452,9 +452,9 @@ class AnalyticsDashboardTester:
     
     def print_summary(self):
         """Print comprehensive test summary"""
-        print("\n" + "="*60)
-        print("📋 FEEDBACK SYSTEM TEST SUMMARY")
-        print("="*60)
+        print("\n" + "="*80)
+        print("📊 ANALYTICS DASHBOARD TEST SUMMARY")
+        print("="*80)
         
         total_passed = 0
         total_failed = 0
@@ -466,27 +466,51 @@ class AnalyticsDashboardTester:
             total_failed += failed
             
             status = "✅ PASS" if failed == 0 else "❌ FAIL"
-            print(f"{test_name.upper():25} | {status} | {passed} passed, {failed} failed")
+            print(f"{test_name.upper():30} | {status} | {passed} passed, {failed} failed")
             
             if results["errors"]:
                 for error in results["errors"]:
-                    print(f"{'':27} |      | Error: {error}")
+                    print(f"{'':32} |      | Error: {error}")
         
-        print("-" * 60)
-        print(f"{'TOTAL':25} | {'✅ PASS' if total_failed == 0 else '❌ FAIL'} | {total_passed} passed, {total_failed} failed")
+        print("-" * 80)
+        print(f"{'TOTAL':30} | {'✅ PASS' if total_failed == 0 else '❌ FAIL'} | {total_passed} passed, {total_failed} failed")
         
-        # Detailed findings
-        print(f"\n📋 DETAILED FINDINGS:")
-        print(f"   • Duplicate endpoints found at lines 872 and 992")
-        print(f"   • Data structure inconsistencies between endpoints")
-        print(f"   • Authentication requirement differences")
-        print(f"   • Field naming inconsistencies (feedback vs feedback_text)")
-        print(f"   • MongoDB ObjectId serialization issues")
+        # Endpoint Summary Table
+        print(f"\n📋 ENDPOINT SUMMARY TABLE:")
+        print(f"{'Endpoint':<45} | {'Status':<8} | {'Issues'}")
+        print(f"{'-'*45} | {'-'*8} | {'-'*30}")
+        
+        working_count = 0
+        broken_count = 0
+        
+        for result in self.endpoint_results:
+            endpoint = result["endpoint"]
+            status = "✅ PASS" if result["status"] == "PASS" else "❌ FAIL"
+            issues = result["issues"][0] if result["issues"] else "None"
+            
+            print(f"{endpoint:<45} | {status:<8} | {issues}")
+            
+            if result["status"] == "PASS":
+                working_count += 1
+            else:
+                broken_count += 1
+        
+        print(f"\n📊 BOTTOM LINE: {working_count} endpoints work vs. {broken_count} broken")
+        
+        # Critical Issues
+        critical_issues = []
+        if any("/analytics/telemetry" in result["endpoint"] and result["status"] == "FAIL" for result in self.endpoint_results):
+            critical_issues.append("Missing /analytics/telemetry endpoint (Overview Tab)")
+        
+        if critical_issues:
+            print(f"\n🚨 CRITICAL ISSUES:")
+            for issue in critical_issues:
+                print(f"   • {issue}")
         
         if total_failed == 0:
-            print("\n✅ All tests completed successfully!")
+            print("\n✅ All analytics endpoints are working correctly!")
         else:
-            print(f"\n❌ {total_failed} test(s) failed. Issues identified above.")
+            print(f"\n❌ {broken_count} endpoint(s) broken. See details above.")
         
         return total_failed == 0
 
