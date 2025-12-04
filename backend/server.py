@@ -1905,6 +1905,33 @@ class TelemetryLessonEngagement(BaseModel):
     experienceLevel: int
     dnaProfile: Optional[str] = None
     wasPersonalized: bool = True
+    # Personalization details (for effectiveness tracking)
+    ageBand: Optional[str] = None  # child, teen, adult
+    personalizedFor: Optional[str] = None  # age, experience, dna, goals
+    baselineComparison: Optional[dict] = None  # Store baseline metrics for A/B
+
+# NEW: Quiz Performance with Personalization Context
+class TelemetryQuizPersonalized(BaseModel):
+    """Enhanced quiz telemetry with personalization context"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    profileId: Optional[str] = None
+    chapterId: str
+    quizId: str
+    score: int
+    totalQuestions: int
+    accuracy: float
+    timeSpentSeconds: int
+    attemptNumber: int
+    passed: bool
+    timestamp: datetime
+    # Personalization context
+    age: int
+    ageBand: str
+    experienceLevel: int
+    dnaProfile: Optional[str] = None
+    wasPersonalized: bool = True
 
 # ===========================
 # Telemetry API Endpoints
