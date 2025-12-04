@@ -692,6 +692,492 @@ function AnalyticsDashboard({ token }) {
               </div>
             )}
 
+            {/* Multi-Profile Usage Tab - Priority 4 */}
+            {activeTab === 'profiles' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">👨‍👩‍👧‍👦 Profile Distribution</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    How many profiles families are creating per account
+                  </p>
+                  
+                  {analytics.multiProfile.profileDistribution.length === 0 ? (
+                    <p className="text-gray-600">No multi-profile data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {analytics.multiProfile.profileDistribution.map((dist, idx) => (
+                        <div key={idx} className="border border-indigo-200 bg-indigo-50 rounded-lg p-6 text-center">
+                          <div className="text-3xl font-bold text-indigo-600 mb-2">
+                            {dist.profilesPerAccount}
+                          </div>
+                          <div className="text-sm text-gray-700 mb-1">Profiles per Account</div>
+                          <div className="text-2xl font-bold text-gray-800 mt-2">{dist.accountCount}</div>
+                          <div className="text-xs text-gray-600">accounts</div>
+                          {dist.avgProfileAge && (
+                            <div className="text-sm text-gray-600 mt-2">Avg Age: {dist.avgProfileAge} years</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🔄 Profile Switching Behavior</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    How actively families use multiple profiles
+                  </p>
+                  
+                  {!analytics.multiProfile.switchingBehavior || Object.keys(analytics.multiProfile.switchingBehavior).length === 0 ? (
+                    <p className="text-gray-600">No switching behavior data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="border border-blue-200 bg-blue-50 rounded-lg p-6 text-center">
+                        <div className="text-4xl mb-2">📊</div>
+                        <div className="text-3xl font-bold text-blue-600 mb-1">
+                          {analytics.multiProfile.switchingBehavior.avgSessionsPerAccount?.toFixed(1) || 0}
+                        </div>
+                        <div className="text-sm text-gray-700">Avg Sessions per Account</div>
+                      </div>
+                      <div className="border border-green-200 bg-green-50 rounded-lg p-6 text-center">
+                        <div className="text-4xl mb-2">👥</div>
+                        <div className="text-3xl font-bold text-green-600 mb-1">
+                          {analytics.multiProfile.switchingBehavior.avgProfilesUsed?.toFixed(1) || 0}
+                        </div>
+                        <div className="text-sm text-gray-700">Avg Profiles Used</div>
+                      </div>
+                      <div className="border border-purple-200 bg-purple-50 rounded-lg p-6 text-center">
+                        <div className="text-4xl mb-2">🏠</div>
+                        <div className="text-3xl font-bold text-purple-600 mb-1">
+                          {analytics.multiProfile.switchingBehavior.totalAccounts || 0}
+                        </div>
+                        <div className="text-sm text-gray-700">Total Accounts</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Content Difficulty Heatmap Tab - Priority 6 */}
+            {activeTab === 'difficulty' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🎯 Quiz Difficulty Analysis</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Pass rates and difficulty levels for each quiz
+                  </p>
+                  
+                  {analytics.contentDifficulty.quizDifficulty.length === 0 ? (
+                    <p className="text-gray-600">No quiz difficulty data yet.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Chapter</th>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Quiz</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Attempts</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Pass Rate</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Avg Score</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Difficulty</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.contentDifficulty.quizDifficulty.map((quiz, idx) => (
+                            <tr key={idx} className="border-t hover:bg-gray-50">
+                              <td className="px-4 py-3 font-medium text-gray-800">{quiz.chapterId}</td>
+                              <td className="px-4 py-3 text-gray-700">{quiz.quizId}</td>
+                              <td className="px-4 py-3 text-center text-gray-700">{quiz.totalAttempts}</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                                  quiz.passRate >= 80 ? 'bg-green-100 text-green-700' :
+                                  quiz.passRate >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
+                                }`}>
+                                  {quiz.passRate}%
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">{quiz.avgScore}%</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`inline-block px-2 py-1 rounded text-xs font-medium capitalize ${
+                                  quiz.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
+                                  quiz.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
+                                }`}>
+                                  {quiz.difficulty}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">📚 Lesson Engagement Heatmap</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Completion rates and engagement levels for each lesson
+                  </p>
+                  
+                  {analytics.contentDifficulty.lessonEngagement.length === 0 ? (
+                    <p className="text-gray-600">No lesson engagement data yet.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Chapter</th>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Lesson</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Views</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Completion Rate</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Avg Time</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Engagement</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.contentDifficulty.lessonEngagement.map((lesson, idx) => (
+                            <tr key={idx} className="border-t hover:bg-gray-50">
+                              <td className="px-4 py-3 font-medium text-gray-800">{lesson.chapterId}</td>
+                              <td className="px-4 py-3 text-gray-700">{lesson.lessonId}</td>
+                              <td className="px-4 py-3 text-center text-gray-700">{lesson.totalViews}</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                                  lesson.completionRate >= 80 ? 'bg-green-100 text-green-700' :
+                                  lesson.completionRate >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
+                                }`}>
+                                  {lesson.completionRate}%
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">
+                                {Math.floor(lesson.avgTimeSpent / 60)}m {lesson.avgTimeSpent % 60}s
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`inline-block px-2 py-1 rounded text-xs font-medium capitalize ${
+                                  lesson.engagement === 'high' ? 'bg-green-100 text-green-700' :
+                                  lesson.engagement === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
+                                }`}>
+                                  {lesson.engagement}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-6">
+                  <h3 className="font-bold text-orange-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">🔍</span>
+                    Difficulty Insights
+                  </h3>
+                  <ul className="text-sm text-orange-800 space-y-2">
+                    <li>• <strong>Hard Quizzes:</strong> Low pass rates indicate content may need simplification</li>
+                    <li>• <strong>Easy Quizzes:</strong> High pass rates suggest content could be more challenging</li>
+                    <li>• <strong>Low Engagement:</strong> Lessons with low completion need investigation</li>
+                    <li>• <strong>High Time Spent:</strong> May indicate confusion or deep interest</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Feature Usage Tab - Priority 7 */}
+            {activeTab === 'features' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🎯 Feature Adoption Metrics</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Which features users are actively using
+                  </p>
+                  
+                  {!analytics.featureUsage.features || Object.keys(analytics.featureUsage.features).length === 0 ? (
+                    <p className="text-gray-600">No feature usage data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* PPI */}
+                      {analytics.featureUsage.features.ppi && (
+                        <div className="border-2 border-purple-200 bg-purple-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-purple-900">🧬 PPI Assessment</h3>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Total Users:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.ppi.totalUsers}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Completed:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.ppi.completed}</span>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-purple-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Completion Rate:</span>
+                                <span className="text-2xl font-bold text-purple-600">
+                                  {analytics.featureUsage.features.ppi.completionRate}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Onboarding */}
+                      {analytics.featureUsage.features.onboarding && (
+                        <div className="border-2 border-blue-200 bg-blue-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-blue-900">🚀 Onboarding</h3>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Completed:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.onboarding.completed}</span>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-blue-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Completion Rate:</span>
+                                <span className="text-2xl font-bold text-blue-600">
+                                  {analytics.featureUsage.features.onboarding.completionRate}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Quizzes */}
+                      {analytics.featureUsage.features.quizzes && (
+                        <div className="border-2 border-green-200 bg-green-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-green-900">✅ Quizzes</h3>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Total Attempts:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.quizzes.totalAttempts}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Users Attempting:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.quizzes.usersAttempting}</span>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-green-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Adoption Rate:</span>
+                                <span className="text-2xl font-bold text-green-600">
+                                  {analytics.featureUsage.features.quizzes.adoptionRate}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Lessons */}
+                      {analytics.featureUsage.features.lessons && (
+                        <div className="border-2 border-orange-200 bg-orange-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-orange-900">📚 Lessons</h3>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Total Views:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.lessons.totalViews}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Users Viewing:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.lessons.usersViewing}</span>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-orange-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Adoption Rate:</span>
+                                <span className="text-2xl font-bold text-orange-600">
+                                  {analytics.featureUsage.features.lessons.adoptionRate}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Multi-Profile */}
+                      {analytics.featureUsage.features.multiProfile && (
+                        <div className="border-2 border-indigo-200 bg-indigo-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-indigo-900">👨‍👩‍👧‍👦 Multi-Profile</h3>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Total Profiles:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.multiProfile.totalProfiles}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Accounts Using:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.multiProfile.accountsUsing}</span>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-indigo-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Avg per Account:</span>
+                                <span className="text-2xl font-bold text-indigo-600">
+                                  {analytics.featureUsage.features.multiProfile.avgProfilesPerAccount}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Feedback */}
+                      {analytics.featureUsage.features.feedback && (
+                        <div className="border-2 border-yellow-200 bg-yellow-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-yellow-900">💬 Feedback</h3>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Total Feedback:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.feedback.totalFeedback}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-700">Users Submitting:</span>
+                              <span className="font-medium">{analytics.featureUsage.features.feedback.usersSubmitting}</span>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-yellow-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Adoption Rate:</span>
+                                <span className="text-2xl font-bold text-yellow-600">
+                                  {analytics.featureUsage.features.feedback.adoptionRate}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+                  <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">📈</span>
+                    Feature Usage Insights
+                  </h3>
+                  <ul className="text-sm text-blue-800 space-y-2">
+                    <li>• <strong>High Adoption:</strong> Features used by &gt;70% of users are core to the experience</li>
+                    <li>• <strong>Medium Adoption:</strong> 30-70% adoption indicates optional but valuable features</li>
+                    <li>• <strong>Low Adoption:</strong> &lt;30% may need better discovery or simplification</li>
+                    <li>• <strong>Engagement Tracking:</strong> Monitor total usage vs. unique users for depth insights</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Errors & Friction Tab - Priority 5 */}
+            {activeTab === 'errors' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">⚠️ API Errors</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Track API failures and error patterns
+                  </p>
+                  
+                  {analytics.errorsAndFriction.apiErrors.length === 0 ? (
+                    <div className="text-center p-8 bg-green-50 rounded-lg border border-green-200">
+                      <div className="text-4xl mb-2">✅</div>
+                      <p className="text-green-700 font-medium">No API errors detected!</p>
+                      <p className="text-sm text-green-600 mt-1">All systems running smoothly</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-red-50">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Endpoint</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Status Code</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Error Count</th>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Last Occurred</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.errorsAndFriction.apiErrors.map((error, idx) => (
+                            <tr key={idx} className="border-t hover:bg-red-50">
+                              <td className="px-4 py-3 font-medium text-gray-800">{error.endpoint}</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700">
+                                  {error.statusCode}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">{error.errorCount}</td>
+                              <td className="px-4 py-3 text-gray-700">
+                                {error.lastOccurred ? new Date(error.lastOccurred).toLocaleString() : 'N/A'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🚧 Friction Points</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Lessons where users exit quickly (high bounce rate)
+                  </p>
+                  
+                  {analytics.errorsAndFriction.frictionPoints.length === 0 ? (
+                    <div className="text-center p-8 bg-green-50 rounded-lg border border-green-200">
+                      <div className="text-4xl mb-2">✨</div>
+                      <p className="text-green-700 font-medium">No significant friction points detected!</p>
+                      <p className="text-sm text-green-600 mt-1">Users are engaging well with content</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-yellow-50">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Lesson ID</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Quick Exits</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Avg Time Before Exit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.errorsAndFriction.frictionPoints.map((friction, idx) => (
+                            <tr key={idx} className="border-t hover:bg-yellow-50">
+                              <td className="px-4 py-3 font-medium text-gray-800">{friction.lessonId}</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-700">
+                                  {friction.quickExits}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">{friction.avgTimeBeforeExit}s</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg p-6">
+                  <h3 className="font-bold text-red-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">🔧</span>
+                    Error & Friction Insights
+                  </h3>
+                  <ul className="text-sm text-red-800 space-y-2">
+                    <li>• <strong>API Errors:</strong> Track and fix recurring errors to improve reliability</li>
+                    <li>• <strong>Friction Points:</strong> Lessons with quick exits may need content revision</li>
+                    <li>• <strong>User Experience:</strong> Monitor these metrics to identify pain points</li>
+                    <li>• <strong>Proactive Monitoring:</strong> Catch issues before they impact many users</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
             {/* Feedback Tab */}
             {activeTab === 'feedback' && (
               <div className="bg-white rounded-lg shadow-md p-6">
