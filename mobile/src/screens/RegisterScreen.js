@@ -34,6 +34,7 @@ export default function RegisterScreen({ navigation }) {
     date_of_birth: '',
     language: 'en',
     experience_level: '3',
+    life_stage: '',
     occupation: '',
     state: '',
     financial_goals: [],
