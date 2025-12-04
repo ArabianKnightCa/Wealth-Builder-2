@@ -472,6 +472,169 @@ function AnalyticsDashboard({ token }) {
               </div>
             )}
 
+            {/* Learning Patterns Tab - Priority 3 */}
+            {activeTab === 'patterns' && (
+              <div className="space-y-6">
+                {/* Session Time Patterns */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">⏰ Session Time Patterns</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    When users are most active and how long they study
+                  </p>
+                  
+                  {analytics.learningPatterns.sessionPatterns.length === 0 ? (
+                    <p className="text-gray-600">No session data yet.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Time of Day</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Sessions</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Avg Duration</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Lessons/Session</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Quizzes/Session</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.learningPatterns.sessionPatterns.map((pattern, idx) => (
+                            <tr key={idx} className="border-t hover:bg-gray-50">
+                              <td className="px-4 py-3 font-medium text-gray-800 capitalize">
+                                {pattern.timeOfDay || 'Unknown'}
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">
+                                {pattern.sessionCount}
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">
+                                {pattern.avgDurationMinutes} min
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">
+                                {pattern.avgLessonsPerSession}
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">
+                                {pattern.avgQuizzesPerSession}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* Day of Week Patterns */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">📅 Day of Week Activity</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Which days see the most engagement
+                  </p>
+                  
+                  {analytics.learningPatterns.dayOfWeekPatterns.length === 0 ? (
+                    <p className="text-gray-600">No day-of-week data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                      {analytics.learningPatterns.dayOfWeekPatterns.map((day, idx) => (
+                        <div key={idx} className="border border-gray-200 rounded-lg p-4 text-center">
+                          <div className="font-bold text-gray-800 mb-2">{day.dayOfWeek}</div>
+                          <div className="text-2xl font-bold text-blue-600 mb-1">{day.sessionCount}</div>
+                          <div className="text-xs text-gray-600">sessions</div>
+                          <div className="text-sm text-gray-600 mt-2">{day.avgDurationMinutes} min avg</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Streak Analysis */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🔥 Learning Streaks</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    User engagement and consistency metrics
+                  </p>
+                  
+                  {!analytics.learningPatterns.streakAnalysis || Object.keys(analytics.learningPatterns.streakAnalysis).length === 0 ? (
+                    <p className="text-gray-600">No streak data yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="border border-orange-200 bg-orange-50 rounded-lg p-6 text-center">
+                        <div className="text-4xl mb-2">🔥</div>
+                        <div className="text-3xl font-bold text-orange-600 mb-1">
+                          {analytics.learningPatterns.streakAnalysis.avgMaxStreak?.toFixed(1) || 0}
+                        </div>
+                        <div className="text-sm text-gray-700">Average Max Streak (days)</div>
+                      </div>
+                      <div className="border border-green-200 bg-green-50 rounded-lg p-6 text-center">
+                        <div className="text-4xl mb-2">👥</div>
+                        <div className="text-3xl font-bold text-green-600 mb-1">
+                          {analytics.learningPatterns.streakAnalysis.usersWithStreaks || 0}
+                        </div>
+                        <div className="text-sm text-gray-700">Users with Active Streaks</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Quiz Retry Behavior */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">🎯 Quiz Retry Patterns</h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    How many attempts users need to pass quizzes
+                  </p>
+                  
+                  {analytics.learningPatterns.quizRetryBehavior.length === 0 ? (
+                    <p className="text-gray-600">No retry data yet.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-medium text-gray-700">Attempt Number</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Quiz Count</th>
+                            <th className="px-4 py-2 text-center font-medium text-gray-700">Pass Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {analytics.learningPatterns.quizRetryBehavior.map((retry, idx) => (
+                            <tr key={idx} className="border-t hover:bg-gray-50">
+                              <td className="px-4 py-3 font-medium text-gray-800">
+                                Attempt {retry.attemptNumber}
+                              </td>
+                              <td className="px-4 py-3 text-center text-gray-700">
+                                {retry.quizCount}
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                                  retry.passRate >= 80 ? 'bg-green-100 text-green-700' :
+                                  retry.passRate >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
+                                }`}>
+                                  {retry.passRate}%
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* Insights */}
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-lg p-6">
+                  <h3 className="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">💡</span>
+                    Learning Pattern Insights
+                  </h3>
+                  <ul className="text-sm text-indigo-800 space-y-2">
+                    <li>• <strong>Time of Day:</strong> Identify peak learning hours to optimize content delivery</li>
+                    <li>• <strong>Day Patterns:</strong> Understand weekly engagement cycles for better planning</li>
+                    <li>• <strong>Streaks:</strong> Measure user consistency and habit formation</li>
+                    <li>• <strong>Quiz Retries:</strong> Gauge content difficulty and learning curve</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
             {/* Feedback Tab */}
             {activeTab === 'feedback' && (
               <div className="bg-white rounded-lg shadow-md p-6">
