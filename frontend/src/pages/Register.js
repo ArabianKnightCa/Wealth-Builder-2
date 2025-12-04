@@ -72,6 +72,15 @@ function Register({ onLogin }) {
     'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
   ];
 
+  const lifeStageOptions = [
+    { value: 'ES', label: 'Elementary School' },
+    { value: 'JH', label: 'Junior High' },
+    { value: 'HS', label: 'High School' },
+    { value: 'CL', label: 'College' },
+    { value: 'UN', label: 'University' },
+    { value: 'AD', label: 'Adult / Non-Student' }
+  ];
+
   const occupationOptions = [
     'Middle / High School Student',
     'College / University Student',
