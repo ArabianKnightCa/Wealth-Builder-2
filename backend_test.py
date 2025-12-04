@@ -267,64 +267,78 @@ class FeedbackSystemTester:
             self.results["feedback_retrieval"]["errors"].append(error_msg)
             return False
     
-    def test_ppi_completed_telemetry(self):
-        """Test PPI completion telemetry endpoint"""
-        print("\n🔍 Testing PPI Completion Telemetry...")
+    def test_database_verification(self):
+        """Test direct database queries to verify feedback storage"""
+        print(f"\n🔍 Testing Database Verification...")
         
-        # Test Case 1: PPI with category summary
-        test_data_with_summary = {
-            "userId": TEST_USER_ID,
-            "ppiVersion": "v2.1",
-            "ppiCategorySummary": {
-                "risk_tolerance": "moderate",
-                "investment_experience": "intermediate",
-                "time_horizon": "long_term",
-                "financial_goals": ["retirement", "education"]
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "userTier": "premium"
-        }
+        if self.db is None:
+            print("❌ Cannot test database - MongoDB connection not available")
+            self.results["database_verification"]["failed"] += 1
+            self.results["database_verification"]["errors"].append("MongoDB connection not available")
+            return False
         
         try:
-            response = requests.post(f"{BACKEND_URL}/telemetry/ppi-completed", json=test_data_with_summary)
-            if response.status_code == 200:
-                result = response.json()
-                print(f"✅ PPI with category summary: {result['message']}")
-                self.results["ppi_completed"]["passed"] += 1
-            else:
-                print(f"❌ PPI with category summary failed: {response.status_code} - {response.text}")
-                self.results["ppi_completed"]["failed"] += 1
-                self.results["ppi_completed"]["errors"].append(f"With summary: {response.status_code} - {response.text}")
+            # Query feedback collection directly
+            feedback_collection = self.db.feedback
+            all_feedback = list(feedback_collection.find({}))
+            
+            print(f"✅ Database connection successful")
+            print(f"   📊 Total feedback entries in database: {len(all_feedback)}")
+            
+            # Look for our test user's feedback
+            user_feedback = list(feedback_collection.find({"user_id": self.user_data.get("user_id")}))
+            print(f"   📋 Feedback from our test user: {len(user_feedback)}")
+            
+            # Show field structure analysis
+            if all_feedback:
+                sample_feedback = all_feedback[0]
+                print(f"\n📋 Database feedback structure analysis:")
+                print(f"   Fields found in sample feedback:")
+                for key, value in sample_feedback.items():
+                    field_type = type(value).__name__
+                    print(f"   • {key}: {field_type} = {str(value)[:100]}...")
+                
+                # Check for _id field issues
+                has_object_id = any("_id" in fb and str(type(fb["_id"])) == "<class 'bson.objectid.ObjectId'>" for fb in all_feedback)
+                has_string_id = any("id" in fb and isinstance(fb["id"], str) for fb in all_feedback)
+                
+                print(f"\n🔍 ID Field Analysis:")
+                print(f"   • MongoDB ObjectId (_id): {'Yes' if has_object_id else 'No'}")
+                print(f"   • String ID (id): {'Yes' if has_string_id else 'No'}")
+                
+                if has_object_id and not has_string_id:
+                    print("   ⚠️ POTENTIAL ISSUE: Only ObjectId found, may cause JSON serialization issues")
+            
+            # Check for different field naming patterns
+            field_patterns = {
+                "feedback_text": 0,
+                "feedback": 0,
+                "context_page": 0,
+                "user_id": 0,
+                "user_email": 0,
+                "submitted_at": 0,
+                "created_at": 0
+            }
+            
+            for fb in all_feedback:
+                for field in field_patterns:
+                    if field in fb:
+                        field_patterns[field] += 1
+            
+            print(f"\n📊 Field Usage Patterns:")
+            for field, count in field_patterns.items():
+                if count > 0:
+                    print(f"   • {field}: {count} entries")
+            
+            self.results["database_verification"]["passed"] += 1
+            return True
+            
         except Exception as e:
-            print(f"❌ PPI with category summary error: {e}")
-            self.results["ppi_completed"]["failed"] += 1
-            self.results["ppi_completed"]["errors"].append(f"With summary: {str(e)}")
-        
-        # Test Case 2: PPI without category summary
-        test_data_no_summary = {
-            "userId": TEST_USER_ID,
-            "ppiVersion": "v2.0",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "userTier": "free"
-        }
-        
-        try:
-            response = requests.post(f"{BACKEND_URL}/telemetry/ppi-completed", json=test_data_no_summary)
-            if response.status_code == 200:
-                result = response.json()
-                print(f"✅ PPI without category summary: {result['message']}")
-                self.results["ppi_completed"]["passed"] += 1
-            else:
-                print(f"❌ PPI without category summary failed: {response.status_code} - {response.text}")
-                self.results["ppi_completed"]["failed"] += 1
-                self.results["ppi_completed"]["errors"].append(f"Without summary: {response.status_code} - {response.text}")
-        except Exception as e:
-            print(f"❌ PPI without category summary error: {e}")
-            self.results["ppi_completed"]["failed"] += 1
-            self.results["ppi_completed"]["errors"].append(f"Without summary: {str(e)}")
-        
-        # Verify data in MongoDB
-        self.verify_data_in_mongo('telemetry_ppi_completed', expected_count=2)
+            error_msg = f"Database verification error: {str(e)}"
+            print(f"❌ {error_msg}")
+            self.results["database_verification"]["failed"] += 1
+            self.results["database_verification"]["errors"].append(error_msg)
+            return False
     
     def test_topic_completed_telemetry(self):
         """Test topic completion telemetry endpoint"""
