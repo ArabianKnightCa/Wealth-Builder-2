@@ -55,7 +55,7 @@ TEST_USER = {
     "financial_goals": ["build_wealth", "save_for_purchase"]
 }
 
-class FeedbackSystemTester:
+class AnalyticsDashboardTester:
     def __init__(self):
         self.results = {
             "registration": {"passed": 0, "failed": 0, "errors": []},
