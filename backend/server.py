@@ -324,6 +324,41 @@ async def generate_user_code(user_type: str, cohort: str, created_at: datetime) 
     
     return f"UID-{user_type}-{cohort}-{seq}"
 
+async def generate_uid(user_type: str, life_stage: str, created_at: datetime) -> str:
+    """
+    Generate UID: APP_STAGE-LIFE_STAGE-SEQ-DATEBLOCK-TIMEBLOCK
+    
+    Format: POC-ES-1832-12042025-101300
+    
+    - APP_STAGE: POC, B1, B2, B3, COM
+    - LIFE_STAGE: ES, JH, HS, CL, UN, AD (expandable)
+    - SEQ: Sequential integer (starts at 1, increments)
+    - DATEBLOCK: MMDDYYYY
+    - TIMEBLOCK: HHMMSS (24-hour military time)
+    
+    SEQ is generated ONLY after onboarding completion (PPI submission)
+    """
+    # Get and increment SEQ counter
+    counter = await db.seq_counter.find_one_and_update(
+        {"_id": "uid_seq"},
+        {"$inc": {"seq": 1}},
+        upsert=True,
+        return_document=True
+    )
+    seq = counter.get("seq", 1)
+    
+    # Format DATEBLOCK: MMDDYYYY
+    dateblock = created_at.strftime("%m%d%Y")
+    
+    # Format TIMEBLOCK: HHMMSS (24-hour military time)
+    timeblock = created_at.strftime("%H%M%S")
+    
+    # Construct UID
+    uid = f"{user_type}-{life_stage}-{seq}-{dateblock}-{timeblock}"
+    
+    return uid
+
+
 # ===========================
 # API Endpoints
 # ===========================
