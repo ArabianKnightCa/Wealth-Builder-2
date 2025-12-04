@@ -410,49 +410,44 @@ function AnalyticsDashboard({ token }) {
                   )}
                 </div>
 
-                {/* Age Effectiveness */}
+                {/* Experience Level Effectiveness */}
                 <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">👶➡️👨 Age-Appropriate Effectiveness</h2>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">📊 Content Effectiveness by Experience Level</h2>
                   <p className="text-sm text-gray-600 mb-4">
-                    How well content works for different age groups
+                    How users at different financial experience levels engage with content
                   </p>
                   
-                  {analytics.personalization.ageEffectiveness.length === 0 ? (
-                    <p className="text-gray-600">No age data yet.</p>
+                  {analytics.personalization.experienceLevelEffectiveness?.length === 0 || !analytics.personalization.experienceLevelEffectiveness ? (
+                    <p className="text-gray-600">No experience level data yet. Generate analytics to see insights.</p>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {analytics.personalization.ageEffectiveness.map((age, idx) => (
-                        <div key={idx} className={`border-2 rounded-lg p-4 ${
-                          age.ageBand === 'child' ? 'border-yellow-300 bg-yellow-50' :
-                          age.ageBand === 'teen' ? 'border-blue-300 bg-blue-50' :
-                          'border-purple-300 bg-purple-50'
-                        }`}>
-                          <h3 className="font-bold text-lg mb-3 capitalize">{age.ageBand || 'Unknown'}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {analytics.personalization.experienceLevelEffectiveness.map((exp, idx) => (
+                        <div key={idx} className="border-2 border-indigo-200 bg-indigo-50 rounded-lg p-4">
+                          <h3 className="font-bold text-lg mb-3 text-indigo-900">
+                            Level {exp.experienceLevel} {exp.experienceLevel === 1 ? '(Beginner)' : exp.experienceLevel === 5 ? '(Expert)' : ''}
+                          </h3>
                           <div className="space-y-2 text-sm">
                             <div>
                               <span className="text-gray-600">Completion Rate:</span>
                               <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                                 <div
-                                  className={`h-2 rounded-full ${
-                                    age.ageBand === 'child' ? 'bg-yellow-500' :
-                                    age.ageBand === 'teen' ? 'bg-blue-500' : 'bg-purple-500'
-                                  }`}
-                                  style={{ width: `${age.avgCompletionRate}%` }}
+                                  className="bg-indigo-600 h-2 rounded-full"
+                                  style={{ width: `${exp.avgCompletionRate}%` }}
                                 ></div>
                               </div>
-                              <span className="font-medium">{age.avgCompletionRate}%</span>
+                              <span className="font-medium">{exp.avgCompletionRate}%</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600">Avg Time:</span>
-                              <span className="font-medium">{Math.floor(age.avgTimeSpent / 60)}m {age.avgTimeSpent % 60}s</span>
+                              <span className="font-medium">{Math.floor(exp.avgTimeSpent / 60)}m {exp.avgTimeSpent % 60}s</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600">Scroll Depth:</span>
-                              <span className="font-medium">{age.avgScrollDepth}%</span>
+                              <span className="font-medium">{exp.avgScrollDepth}%</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600">Total Lessons:</span>
-                              <span className="font-medium">{age.totalLessons}</span>
+                              <span className="font-medium">{exp.totalLessons}</span>
                             </div>
                           </div>
                         </div>
