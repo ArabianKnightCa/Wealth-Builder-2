@@ -233,6 +233,15 @@ class FamilyMemberUpdate(BaseModel):
 # Helper Functions
 # ===========================
 
+def map_experience_level(level: int) -> str:
+    """Map integer experience level (1-5) to string for AE compatibility"""
+    if level <= 2:
+        return "beginner"
+    elif level <= 4:
+        return "intermediate"
+    else:
+        return "advanced"
+
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
