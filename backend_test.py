@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
 """
-Comprehensive Telemetry System Testing
-Tests all 6 telemetry endpoints with various scenarios and data integrity checks
+COMPREHENSIVE ADAPTIVE ENGINE (AE) PROOF OF CONCEPT TESTING
+
+**Objective:** Demonstrate the power and accuracy of the Adaptive Engine by testing complete user journeys 
+for different personas, showing how personalization works at each stage.
+
+**Test Personas:**
+1. 8-Year-Old Child - Creative & Analytical
+2. 16-Year-Old Teen - Organized Planner  
+3. 30-Year-Old Adult - Ambitious Builder
+
+**Testing Flow for Each Persona:**
+1. Registration
+2. PPI Stage - Age-appropriate questions
+3. Submit PPI Answers - Persona-appropriate responses
+4. LPI Content Retrieval - Personalized content
+5. Content Comparison Analysis
 """
 
 import requests
@@ -21,11 +35,6 @@ load_dotenv('/app/backend/.env')
 BACKEND_URL = "https://dynamic-wealth.preview.emergentagent.com/api"
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'test_database')
-
-# Test data
-TEST_USER_ID = f"test-user-{uuid.uuid4()}"
-TEST_SESSION_ID = f"session-{uuid.uuid4()}"
-TEST_HOUSEHOLD_ID = f"household-{uuid.uuid4()}"
 
 class TelemetryTester:
     def __init__(self):
