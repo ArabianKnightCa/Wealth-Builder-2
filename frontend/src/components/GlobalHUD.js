@@ -43,56 +43,67 @@ function GlobalHUD({ user, token, onLogout }) {
 
   return (
     <>
-      <div className="bg-navy-900 text-white py-2 px-4 shadow-md border-b border-gold/30">
+      <div className="bg-navy-900 text-white py-2 px-3 shadow-md border-b border-gold/30">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold text-gold cursor-pointer" onClick={() => navigate('/dashboard')}>
-              Mizo Wealth Builder
+          {/* Left side - Logo/Title */}
+          <div className="flex items-center gap-2">
+            <h1 className="text-base sm:text-xl font-bold text-gold cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <span className="hidden sm:inline">Mizo Wealth Builder</span>
+              <span className="sm:hidden">MWB</span>
             </h1>
-            <span className="text-sm text-gray-300">
+            <span className="text-xs sm:text-sm text-gray-300 hidden sm:inline">
               Welcome, {user.first_name}!
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Right side - Buttons */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Help button */}
             <button
               onClick={() => navigate('/dashboard')}
-              className="text-gold hover:text-white text-2xl font-bold transition-colors"
+              className="text-gold hover:text-white text-xl sm:text-2xl font-bold transition-colors px-1"
               title="Help - Return to Dashboard"
             >
               ?
             </button>
 
+            {/* Feedback - Icon only on mobile */}
             <button
               onClick={() => setShowFeedback(true)}
-              className="px-3 py-1 bg-green-600 text-white rounded text-sm font-semibold hover:bg-green-700 transition-all"
+              className="px-2 sm:px-3 py-1 bg-green-600 text-white rounded text-xs sm:text-sm font-semibold hover:bg-green-700 transition-all"
               title="Leave Feedback"
             >
-              💬 Feedback
+              <span className="sm:hidden">💬</span>
+              <span className="hidden sm:inline">💬 Feedback</span>
             </button>
 
+            {/* Test - Hide on mobile */}
             <button
               onClick={() => navigate('/admin')}
-              className="px-3 py-1 bg-gold/20 text-gold rounded text-sm font-semibold hover:bg-gold/30 transition-all"
+              className="hidden sm:flex px-3 py-1 bg-gold/20 text-gold rounded text-sm font-semibold hover:bg-gold/30 transition-all"
               title="Testing Panel"
             >
               🧪 Test
             </button>
 
+            {/* Settings - Icon only on mobile */}
             <button
               onClick={() => navigate('/settings')}
-              className="px-3 py-1 text-gray-300 hover:text-white text-sm transition-colors"
+              className="px-2 sm:px-3 py-1 text-gray-300 hover:text-white text-xs sm:text-sm transition-colors"
               title="Settings"
             >
-              ⚙️ Settings
+              <span className="sm:hidden text-lg">⚙️</span>
+              <span className="hidden sm:inline">⚙️ Settings</span>
             </button>
 
+            {/* Logout - Compact on mobile */}
             <button
               onClick={onLogout}
-              className="px-3 py-1 bg-gold text-navy-900 rounded text-sm font-semibold hover:bg-gold-dark transition-all"
+              className="px-2 sm:px-3 py-1 bg-gold text-navy-900 rounded text-xs sm:text-sm font-semibold hover:bg-gold-dark transition-all"
               title="Logout"
             >
-              Logout
+              <span className="sm:hidden">↪</span>
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
