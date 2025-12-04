@@ -1,0 +1,89 @@
+WEALTH BUILDER POC - ARCHITECTURE SUMMARY FOR CHATGPT REVIEW
+=============================================================
+
+CRITICAL ISSUE TO ADDRESS:
+--------------------------
+Content is STATIC (same for all users). Need dynamic content selection based on:
+- Age (6-12, 13-17, 18+)
+- Experience (1-5, will be 1-15)
+- PPI Profile (Planner, Spontaneous, etc.)
+- Goals (18 defined, need 10 categories)
+
+CURRENT STATE:
+--------------
+✅ 4-layer personalization architecture implemented
+✅ Age filtering working (minimum age: 6)
+✅ Experience filtering working (1-5 scale)
+✅ PPI generates psychological profile (5 archetypes)
+✅ Goals prioritize chapter ordering (18 goals defined)
+✅ All layers feeding into LPI generation
+
+❌ Content is STATIC (all users see same lesson text)
+❌ No age-appropriate language variants
+❌ No personality-based examples
+❌ Goals not organized into 10 categories
+
+QUESTIONS FOR CHATGPT:
+----------------------
+1. Validate 4-layer personalization architecture
+2. Recommend content variant system design
+3. Review PPI psychological profiling accuracy
+4. Suggest goal category organization (10 categories)
+5. Identify any missing personalization dimensions
+
+FULL DETAILS:
+-------------
+See: /app/COMPLETE_ARCHITECTURE_EXPORT.md
+
+This 11-section document contains:
+- Complete code samples
+- Data models
+- API endpoints
+- Current implementation
+- Identified issues
+- Architecture diagrams
+
+FILE STRUCTURE:
+---------------
+/app/backend/
+  - server.py (main API)
+  - ae_engine_v2.py (adaptive engine - ACTIVE)
+  - ae_engine.py (old engine - UNUSED, should delete)
+  - config.py (minimum age = 6)
+  - content_data.py (LPI chapters - STATIC)
+  - ppi_bank_baseline_v1_1.json (20 questions)
+  - goal_chapter_mapping.json (18 goals)
+
+KEY CONCEPT:
+------------
+User requirement: "POC must show dynamic content personalization working. 
+If 8-year-old sees same content as 25-year-old, POC has no value."
+
+Example needed:
+- Same chapter (Credit)
+- 8yo: "Credit means borrowing, like borrowing a toy"
+- 25yo: "Credit is borrowed purchasing power with APRs"
+
+PERSONALIZATION FLOW:
+---------------------
+Registration → Age + Experience + Goals captured
+    ↓
+PPI Composition → Questions filtered by age/experience
+    ↓
+User Answers PPI → Psychological profile generated
+    ↓
+Adaptive Engine → Age + Experience + Profile + Goals
+    ↓
+LPI Generated → Personalized chapter order
+    ↓
+[MISSING] → Dynamic content selection based on all 4 layers
+    ↓
+User sees personalized lessons
+
+REQUEST:
+--------
+Please review /app/COMPLETE_ARCHITECTURE_EXPORT.md and provide:
+1. Architecture validation
+2. Content personalization strategy
+3. Implementation recommendations
+4. Any gaps or issues identified
