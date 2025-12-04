@@ -571,6 +571,7 @@ async def register(user_data: UserCreate):
         person_key=person_key,
         user_code=user_code,
         user_type=user_data.user_type,
+        life_stage=user_data.life_stage,
         cohort=cohort,
         occupation=user_data.occupation,
         state=user_data.state,
