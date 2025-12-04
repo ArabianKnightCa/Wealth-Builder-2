@@ -355,8 +355,46 @@ async def get_personalized_ppi(user_id: str = Depends(get_current_user)):
     return ppi_result
 
 @api_router.get("/content/lpi")
-async def get_lpi_chapters():
-    return {"chapters": LPI_CHAPTERS}
+async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
+    """
+    Get personalized LPI chapters with dynamically generated content
+    Content is transformed at runtime based on user's Age, Experience, PPI, and Goals
+    """
+    # Fetch user profile
+    user = await db.users.find_one({"person_key": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Fetch user's PPI results to get DNA profile
+    ppi_answers = await db.ppi_answers.find_one({"user_id": user_id}, {"_id": 0})
+    
+    # Build user profile for content transformation
+    user_profile = {
+        'age': calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
+        'financial_experience': user.get('experience_level', 'beginner'),
+        'dna_profile': ppi_answers.get('dna', {}).get('profile', 'Balanced') if ppi_answers else 'Balanced',
+        'dna_weights': ppi_answers.get('dna', {}).get('weights', {}) if ppi_answers else {},
+        'goals': user.get('financial_goals', [])
+    }
+    
+    # Get content transformer
+    transformer = get_content_transformer()
+    
+    # Transform all chapters dynamically
+    personalized_chapters = []
+    for chapter in LPI_CHAPTERS:
+        transformed_chapter = transformer.transform_chapter(chapter, user_profile)
+        personalized_chapters.append(transformed_chapter)
+    
+    return {
+        "chapters": personalized_chapters,
+        "personalization_applied": True,
+        "user_profile": {
+            "age_band": transformer._get_age_band(user_profile['age']),
+            "experience": user_profile['financial_experience'],
+            "dna_profile": user_profile['dna_profile']
+        }
+    }
 
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
