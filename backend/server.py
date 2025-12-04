@@ -380,7 +380,7 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     # Build user profile for content transformation
     user_profile = {
         'age': calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
-        'financial_experience': user.get('experience_level', 'beginner'),
+        'financial_experience': map_experience_level(user.get('experience_level', 1)),
         'dna_profile': ppi_answers.get('dna', {}).get('profile', 'Balanced') if ppi_answers else 'Balanced',
         'dna_weights': ppi_answers.get('dna', {}).get('weights', {}) if ppi_answers else {},
         'goals': user.get('financial_goals', [])
