@@ -5,6 +5,7 @@ import './App.css';
 import Welcome from './pages/Welcome';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import Onboarding from './pages/Onboarding';
 import PPI from './pages/PPI';
 import Dashboard from './pages/Dashboard';
