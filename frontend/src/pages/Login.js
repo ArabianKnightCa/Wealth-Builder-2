@@ -88,6 +88,16 @@ function Login({ onLogin }) {
             </button>
           </form>
 
+          <div className="mt-4 text-center">
+            <button 
+              onClick={() => navigate('/forgot-password')} 
+              className="text-gold font-semibold hover:underline text-sm"
+              data-testid="forgot-password-link"
+            >
+              Forgot Password?
+            </button>
+          </div>
+
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Don't have an account?{' '}
