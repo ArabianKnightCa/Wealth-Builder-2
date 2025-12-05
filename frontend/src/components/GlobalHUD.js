@@ -103,7 +103,7 @@ function GlobalHUD({ user, token, onLogout }) {
               className="px-2 sm:px-3 py-1 bg-gold text-navy-900 rounded text-xs sm:text-sm font-semibold hover:bg-gold-dark transition-all"
               title="Logout"
             >
-              <span className="sm:hidden">↪</span>
+              <span className="sm:hidden">🚪</span>
               <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
