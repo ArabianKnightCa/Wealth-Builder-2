@@ -93,6 +93,8 @@ class User(BaseModel):
     account_status: str = "active"  # active, restricted
     financial_goals: Optional[List[str]] = []  # Array of goal IDs
     custom_goals: Optional[List[str]] = []  # Array of custom goal texts
+    reset_token: Optional[str] = None  # Password reset token
+    reset_token_expires: Optional[datetime] = None  # Token expiration time
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
 
