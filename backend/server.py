@@ -119,6 +119,13 @@ class FeedbackSubmit(BaseModel):
     context_page: str
     feedback_text: str
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
 class SettingsUpdate(BaseModel):
     language: Optional[str] = None
     experience_level: Optional[int] = None
