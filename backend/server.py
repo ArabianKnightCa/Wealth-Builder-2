@@ -711,6 +711,104 @@ async def get_current_user_info(user_id: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """Send password reset email"""
+    import resend
+    import secrets
+    
+    # Find user by email
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        # Don't reveal if user exists or not (security best practice)
+        return {"message": "If an account with that email exists, a password reset link has been sent."}
+    
+    # Generate secure reset token
+    reset_token = secrets.token_urlsafe(32)
+    token_expires = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    # Save reset token to database
+    await db.users.update_one(
+        {"id": user['id']},
+        {"$set": {
+            "reset_token": reset_token,
+            "reset_token_expires": token_expires.isoformat()
+        }}
+    )
+    
+    # Send email via Resend
+    resend.api_key = os.getenv("RESEND_API_KEY")
+    app_domain = os.getenv("APP_DOMAIN", "http://localhost:3000")
+    reset_link = f"{app_domain}/reset-password?token={reset_token}"
+    
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #FFA500;">Password Reset Request</h2>
+                <p>Hello {user.get('first_name', 'there')},</p>
+                <p>We received a request to reset your password for your Wealth Builder account.</p>
+                <p>Click the button below to reset your password:</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{reset_link}" style="background-color: #FFA500; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Reset Password</a>
+                </div>
+                <p>Or copy and paste this link into your browser:</p>
+                <p style="word-break: break-all; color: #666;">{reset_link}</p>
+                <p><strong>This link will expire in 1 hour.</strong></p>
+                <p>If you didn't request a password reset, please ignore this email. Your password will remain unchanged.</p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+                <p style="color: #999; font-size: 12px;">Wealth Builder Team</p>
+            </div>
+        </body>
+    </html>
+    """
+    
+    try:
+        params = {
+            "from": os.getenv("SENDER_EMAIL"),
+            "to": [request.email],
+            "subject": "Password Reset Request - Wealth Builder",
+            "html": html_content,
+        }
+        resend.Emails.send(params)
+    except Exception as e:
+        print(f"Failed to send email: {str(e)}")
+        # Don't reveal email sending failure to user (security)
+    
+    return {"message": "If an account with that email exists, a password reset link has been sent."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """Reset password using token"""
+    # Find user by reset token
+    user = await db.users.find_one({"reset_token": request.token})
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    # Check if token is expired
+    if user.get('reset_token_expires'):
+        expires_at = datetime.fromisoformat(user['reset_token_expires'])
+        if datetime.now(timezone.utc) > expires_at:
+            raise HTTPException(status_code=400, detail="Reset token has expired")
+    
+    # Hash new password
+    hashed_password = hash_password(request.new_password)
+    
+    # Update password and clear reset token
+    await db.users.update_one(
+        {"id": user['id']},
+        {"$set": {
+            "password": hashed_password,
+            "reset_token": None,
+            "reset_token_expires": None
+        }}
+    )
+    
+    return {"message": "Password has been reset successfully"}
+
+
 @api_router.post("/ppi/submit")
 async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_user)):
     """
