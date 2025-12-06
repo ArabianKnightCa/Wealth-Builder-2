@@ -771,9 +771,13 @@ async def forgot_password(request: ForgotPasswordRequest):
             "subject": "Password Reset Request - Wealth Builder",
             "html": html_content,
         }
-        resend.Emails.send(params)
+        print(f"📧 Attempting to send email from {os.getenv('SENDER_EMAIL')} to {request.email}")
+        result = resend.Emails.send(params)
+        print(f"✅ Email sent successfully! Result: {result}")
     except Exception as e:
-        print(f"Failed to send email: {str(e)}")
+        print(f"❌ Failed to send email: {str(e)}")
+        print(f"   API Key present: {'Yes' if os.getenv('RESEND_API_KEY') else 'No'}")
+        print(f"   Sender email: {os.getenv('SENDER_EMAIL')}")
         # Don't reveal email sending failure to user (security)
     
     return {"message": "If an account with that email exists, a password reset link has been sent."}
