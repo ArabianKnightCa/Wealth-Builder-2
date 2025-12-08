@@ -48,8 +48,7 @@ function GlobalHUD({ user, token, onLogout }) {
           {/* Left side - Logo/Title */}
           <div className="flex items-center gap-2">
             <h1 className="text-base sm:text-xl font-bold text-gold cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <span className="hidden sm:inline">Mizo Wealth Builder</span>
-              <span className="sm:hidden">MWB</span>
+              <span>Mizo Wealth Builder</span>
             </h1>
             <span className="text-xs sm:text-sm text-gray-300 hidden sm:inline">
               Welcome, {user.first_name}!
