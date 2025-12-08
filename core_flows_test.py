@@ -70,66 +70,26 @@ class CoreFlowsTester:
             return False
     
     def authenticate_test_user(self):
-        """Authenticate with the test user specified in review request"""
-        print(f"\n🔐 Authenticating test user: {TEST_USER_EMAIL}")
+        """Create and authenticate a new test user for reliable testing"""
+        print(f"\n🔐 Creating and authenticating test user: {TEST_USER_EMAIL}")
         
-        # First, check if user exists in database
-        if self.db is not None:
-            user_doc = self.db.users.find_one({"email": TEST_USER_EMAIL})
-            if not user_doc:
-                print(f"❌ Test user {TEST_USER_EMAIL} not found in database")
-                print("   Creating test user for testing...")
-                
-                # Create test user
-                registration_data = {
-                    "email": TEST_USER_EMAIL,
-                    "password": "TestPassword123!",
-                    "first_name": "Mizo Test User",
-                    "date_of_birth": "1990-01-01",
-                    "language": "en",
-                    "experience_level": 3,
-                    "user_type": "POC",
-                    "life_stage": "AD",
-                    "occupation": "Professional / Manager",
-                    "state": "CA",
-                    "financial_goals": ["build_wealth", "save_for_purchase"]
-                }
-                
-                try:
-                    response = requests.post(f"{BACKEND_URL}/auth/register", json=registration_data)
-                    if response.status_code == 200:
-                        result = response.json()
-                        self.user_data = {
-                            "user_id": result["user"]["id"],
-                            "access_token": result["access_token"],
-                            "user_data": result["user"]
-                        }
-                        print(f"✅ Test user created and authenticated")
-                        self.results["authentication"]["passed"] += 1
-                        return True
-                    else:
-                        error_msg = f"Failed to create test user: {response.status_code} - {response.text}"
-                        print(f"❌ {error_msg}")
-                        self.results["authentication"]["failed"] += 1
-                        self.results["authentication"]["errors"].append(error_msg)
-                        return False
-                except Exception as e:
-                    error_msg = f"Error creating test user: {str(e)}"
-                    print(f"❌ {error_msg}")
-                    self.results["authentication"]["failed"] += 1
-                    self.results["authentication"]["errors"].append(error_msg)
-                    return False
-            else:
-                print(f"✅ Test user found in database")
-        
-        # Try to login with test user
-        login_data = {
+        # Create test user
+        registration_data = {
             "email": TEST_USER_EMAIL,
-            "password": "TestPassword123!"
+            "password": TEST_USER_PASSWORD,
+            "first_name": "Core Flows Test User",
+            "date_of_birth": "1990-01-01",
+            "language": "en",
+            "experience_level": 3,
+            "user_type": "POC",
+            "life_stage": "AD",
+            "occupation": "Professional / Manager",
+            "state": "CA",
+            "financial_goals": ["build_wealth", "save_for_purchase"]
         }
         
         try:
-            response = requests.post(f"{BACKEND_URL}/auth/login", json=login_data)
+            response = requests.post(f"{BACKEND_URL}/auth/register", json=registration_data)
             if response.status_code == 200:
                 result = response.json()
                 self.user_data = {
@@ -137,19 +97,19 @@ class CoreFlowsTester:
                     "access_token": result["access_token"],
                     "user_data": result["user"]
                 }
-                print(f"✅ Authentication successful")
+                print(f"✅ Test user created and authenticated")
                 print(f"   User ID: {result['user']['id']}")
                 print(f"   Email: {TEST_USER_EMAIL}")
                 self.results["authentication"]["passed"] += 1
                 return True
             else:
-                error_msg = f"Login failed: {response.status_code} - {response.text}"
+                error_msg = f"Failed to create test user: {response.status_code} - {response.text}"
                 print(f"❌ {error_msg}")
                 self.results["authentication"]["failed"] += 1
                 self.results["authentication"]["errors"].append(error_msg)
                 return False
         except Exception as e:
-            error_msg = f"Authentication error: {str(e)}"
+            error_msg = f"Error creating test user: {str(e)}"
             print(f"❌ {error_msg}")
             self.results["authentication"]["failed"] += 1
             self.results["authentication"]["errors"].append(error_msg)
