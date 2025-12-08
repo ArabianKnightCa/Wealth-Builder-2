@@ -568,6 +568,19 @@ class CoreFlowsTester:
             print("   User-reported issues may still exist")
         
         return total_failed == 0
+    
+    def cleanup_test_user(self):
+        """Clean up the test user after testing"""
+        if TEST_USER_EMAIL and "example.com" in TEST_USER_EMAIL:
+            try:
+                response = requests.post(f"{BACKEND_URL}/auth/delete-account", 
+                                       json={"email": TEST_USER_EMAIL})
+                if response.status_code == 200:
+                    print(f"🧹 Cleaned up test user ({TEST_USER_EMAIL})")
+                else:
+                    print(f"⚠️ Could not clean up {TEST_USER_EMAIL}: {response.status_code}")
+            except Exception as e:
+                print(f"⚠️ Error cleaning {TEST_USER_EMAIL}: {e}")
 
 def main():
     """Main test execution"""
