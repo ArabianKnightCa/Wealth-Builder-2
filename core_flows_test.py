@@ -73,7 +73,7 @@ class CoreFlowsTester:
         print(f"\n🔐 Authenticating test user: {TEST_USER_EMAIL}")
         
         # First, check if user exists in database
-        if self.db:
+        if self.db is not None:
             user_doc = self.db.users.find_one({"email": TEST_USER_EMAIL})
             if not user_doc:
                 print(f"❌ Test user {TEST_USER_EMAIL} not found in database")
