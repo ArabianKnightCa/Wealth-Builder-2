@@ -499,30 +499,6 @@ function Register({ onLogin }) {
                 </div>
               )}
 
-              {showParentConsent && (
-                <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
-                  <h4 className="font-semibold text-navy-900 mb-2">🛡️ Parental Consent Required</h4>
-                  <p className="text-sm text-gray-700 mb-3">
-                    Since you're under 18, we need a parent or guardian's permission. They'll receive a verification email.
-                  </p>
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Parent/Guardian Email</label>
-                    <input
-                      type="email"
-                      className="input-field"
-                      value={formData.parent_email}
-                      onChange={(e) => setFormData({ ...formData, parent_email: e.target.value })}
-                      placeholder="parent@example.com"
-                      required={showParentConsent}
-                      data-testid="parent-email-input"
-                    />
-                    <p className="text-xs text-gray-600 mt-1">
-                      Your parent will receive a verification link to approve your account.
-                    </p>
-                  </div>
-                </div>
-              )}
-
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">Financial Experience Level</label>
                 <select
