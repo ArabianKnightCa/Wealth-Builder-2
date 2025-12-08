@@ -35,8 +35,9 @@ BACKEND_URL = "https://money-mentor-380.preview.emergentagent.com/api"
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'wealth_builder')
 
-# Test User Data (as specified in review request)
-TEST_USER_EMAIL = "mizowealthbuilder@gmail.com"
+# Test User Data (create new test user for reliable testing)
+TEST_USER_EMAIL = f"core_flows_test_{int(time.time())}@example.com"
+TEST_USER_PASSWORD = "TestPassword123!"
 
 class CoreFlowsTester:
     def __init__(self):
