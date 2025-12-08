@@ -82,17 +82,14 @@ function Register({ onLogin }) {
   ];
 
   const occupationOptions = [
-    'Middle / High School Student',
-    'College / University Student',
-    'Part-Time Worker / Student',
+    'Part-Time Worker',
     'Full-Time Employee',
     'Self-Employed / Freelancer',
     'Parent / Guardian',
     'Educator / Mentor / Advisor',
-    'Unemployed / In Transition'
+    'Unemployed / In Transition',
+    'Other'
   ];
-
-  const studentRoles = ['Middle / High School Student', 'College / University Student'];
 
   const calculateAge = (dob) => {
     if (!dob) return null;
