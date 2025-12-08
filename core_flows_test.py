@@ -623,6 +623,10 @@ def main():
         # Print comprehensive summary
         success = tester.print_summary()
         
+        # Clean up test user
+        print("\n🧹 Cleaning up test data...")
+        tester.cleanup_test_user()
+        
         return 0 if success else 1
         
     except KeyboardInterrupt:
