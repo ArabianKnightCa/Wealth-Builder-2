@@ -528,6 +528,7 @@ test_plan:
     - "P0 Bug Fix 2: Chapter loading authentication headers added"
   stuck_tasks:
     - "Feedback System Bug Fix"
+    - "P0 Bug Fix: Registration Redirect to PPI"
   next_steps:
     - "TEST P0 FIXES: Run frontend testing agent to verify registration flow and chapter loading"
     - "Proceed with AE-CORE v2.0 implementation after P0 bugs confirmed fixed"
