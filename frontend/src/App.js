@@ -142,10 +142,10 @@ function App() {
         <Route path="/profiles/add" element={user ? <AddProfile token={token} /> : <Navigate to="/login" />} />
         <Route path="/feedback" element={user ? <FeedbackViewer token={token} /> : <Navigate to="/login" />} />
         <Route path="/analytics" element={user ? <AnalyticsDashboard token={token} /> : <Navigate to="/login" />} />
-        <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
-        <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
-        <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/dashboard" />} />
-        <Route path="/reset-password" element={!user ? <ResetPassword /> : <Navigate to="/dashboard" />} />
+        <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
+        <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
+        <Route path="/forgot-password" element={!user ? <ForgotPassword /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
+        <Route path="/reset-password" element={!user ? <ResetPassword /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
         <Route path="/onboarding" element={user ? <Onboarding user={user} token={token} /> : <Navigate to="/login" />} />
         <Route path="/ppi" element={user ? <PPI token={token} user={user} onPPIComplete={handlePPIComplete} /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
