@@ -579,6 +579,9 @@ test_plan:
         - working: false
           agent: "testing"
           comment: "❌ PARTIAL FIX - Registration now completes successfully and user is authenticated, but redirects to /dashboard instead of /ppi. The navigate('/ppi') call is not working as expected. User 'Test User P0' successfully registered with email testuser_p0_1765316735@example.com but skipped PPI questionnaire. Fix needs investigation - may be related to user state or routing logic."
+        - working: "NA"
+          agent: "main_fork_new"
+          comment: "🔧 ROOT CAUSE FOUND & FIX APPLIED - The issue was in App.js routing logic. After onLogin sets user state, React Router's conditional redirect on line 146 automatically redirected to /dashboard, overriding navigate('/ppi'). SOLUTION: Modified routing logic to check user.ppi_completed flag. If false, redirect to /ppi; if true, redirect to /dashboard. This ensures new users go to PPI first. Changes applied to lines 145-150 in App.js for /login, /register, /forgot-password, and /reset-password routes."
 
   - task: "P0 Bug Fix: Chapter Loading Authentication"
     implemented: true
