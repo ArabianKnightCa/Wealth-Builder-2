@@ -489,25 +489,35 @@ function AdminPanel({ onLogin }) {
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {testProfiles.map((item, index) => (
-            <div key={index} className="card">
-              <h3 className="text-xl font-bold text-navy-900 mb-3">{item.name}</h3>
+            <div key={index} className="card border-l-4 border-gold">
+              <div className="flex items-start justify-between mb-3">
+                <h3 className="text-lg font-bold text-navy-900">{item.name}</h3>
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                  {item.testCase}
+                </span>
+              </div>
               
-              <div className="bg-gray-50 p-3 rounded mb-4 text-sm">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-lg mb-4 text-sm border border-gray-200">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <span className="font-semibold">Age:</span> {new Date().getFullYear() - new Date(item.profile.date_of_birth).getFullYear()} years
+                    <span className="font-semibold text-gray-700">Age:</span> 
+                    <span className="ml-2 text-navy-900 font-mono">{new Date().getFullYear() - new Date(item.profile.date_of_birth).getFullYear()} years</span>
                   </div>
                   <div>
-                    <span className="font-semibold">Experience:</span> Level {item.profile.experience_level}
+                    <span className="font-semibold text-gray-700">Experience:</span> 
+                    <span className="ml-2 text-navy-900 font-mono">Level {item.profile.experience_level}</span>
                   </div>
-                  <div>
-                    <span className="font-semibold">Email:</span> {item.profile.email}
-                  </div>
-                  <div>
-                    <span className="font-semibold">Password:</span> {item.profile.password}
+                  <div className="col-span-2 pt-2 border-t border-gray-200">
+                    <span className="font-semibold text-gray-700">Expected Score:</span> 
+                    <span className="ml-2 text-gold font-mono text-lg font-bold">{item.profile.expectedScore.toFixed(3)}</span>
                   </div>
                   <div className="col-span-2">
-                    <span className="font-semibold">Personality:</span> {item.profile.ppi_pattern}
+                    <span className="font-semibold text-gray-700">Email:</span> 
+                    <span className="ml-2 text-gray-600 text-xs">{item.profile.email}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="font-semibold text-gray-700">Personality:</span> 
+                    <span className="ml-2 text-navy-900 capitalize">{item.profile.ppi_pattern}</span>
                   </div>
                 </div>
               </div>
