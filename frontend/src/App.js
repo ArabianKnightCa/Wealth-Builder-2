@@ -19,6 +19,7 @@ import ProfileSelector from './pages/ProfileSelector';
 import AddProfile from './pages/AddProfile';
 import FeedbackViewer from './pages/FeedbackViewer';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import AETestHarness from './pages/AETestHarness';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
