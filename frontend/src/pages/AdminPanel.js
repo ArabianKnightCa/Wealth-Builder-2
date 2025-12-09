@@ -330,7 +330,7 @@ function AdminPanel({ onLogin }) {
     setMessage('Creating test user...');
 
     try {
-      // Register user
+      // Register user with all required fields including location
       const registerResponse = await axios.post(`${API}/auth/register`, {
         email: profile.email,
         password: profile.password,
@@ -339,7 +339,14 @@ function AdminPanel({ onLogin }) {
         language: 'en',
         experience_level: profile.experience_level,
         user_type: 'POC',
-        occupation: profile.occupation || 'Full-Time Employee'
+        occupation: profile.occupation || 'Full-Time Employee',
+        location: profile.location || {
+          city: 'San Francisco',
+          country: 'United States',
+          country_code: 'US',
+          formatted_address: 'San Francisco, United States'
+        },
+        financial_goals: ['save_money', 'invest']
       });
 
       const { user, access_token } = registerResponse.data;
