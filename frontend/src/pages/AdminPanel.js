@@ -53,60 +53,245 @@ function AdminPanel({ onLogin }) {
     }
   }, [unlocked, activeTab]);
 
+  // AE-CORE v2.0 Test Cases (18 Automated Test Scenarios)
   const testProfiles = [
+    // GROUP 1: EDGE CASES
     {
-      name: '9 Year Old Beginner (Curious)',
+      name: 'Test 1: Min Age + Min Experience',
+      testCase: 'Edge Case',
       profile: {
-        email: 'test_9yo_beginner@test.com',
+        email: 'test_01_min@test.com',
         password: 'Test1234',
-        first_name: 'Alex',
-        date_of_birth: '2016-01-15',
+        first_name: 'MinUser',
+        date_of_birth: '2019-01-01', // Age 6
         experience_level: 1,
-        ppi_pattern: 'curious' // Mostly A and D answers
+        ppi_pattern: 'curious',
+        expectedScore: 0.0
       }
     },
     {
-      name: '45 Year Old Experienced (Organized)',
+      name: 'Test 2: Max Age + Max Experience',
+      testCase: 'Edge Case',
       profile: {
-        email: 'test_45yo_expert@test.com',
+        email: 'test_02_max@test.com',
         password: 'Test1234',
-        first_name: 'Jordan',
-        date_of_birth: '1980-06-20',
-        experience_level: 4,
-        ppi_pattern: 'organized' // Mostly B answers
+        first_name: 'MaxUser',
+        date_of_birth: '1926-01-01', // Age 99
+        experience_level: 5,
+        ppi_pattern: 'balanced',
+        expectedScore: 1.0
       }
     },
     {
-      name: '67 Year Old No Experience (Collaborative)',
+      name: 'Test 3: Young Expert (6yo, Exp 5)',
+      testCase: 'Edge Case',
       profile: {
-        email: 'test_67yo_novice@test.com',
+        email: 'test_03_young_expert@test.com',
         password: 'Test1234',
-        first_name: 'Morgan',
-        date_of_birth: '1958-03-10',
+        first_name: 'Prodigy',
+        date_of_birth: '2019-01-01', // Age 6
+        experience_level: 5,
+        ppi_pattern: 'competitive',
+        expectedScore: 0.6
+      }
+    },
+    {
+      name: 'Test 4: Senior Beginner (99yo, Exp 1)',
+      testCase: 'Edge Case',
+      profile: {
+        email: 'test_04_senior_beginner@test.com',
+        password: 'Test1234',
+        first_name: 'SeniorNew',
+        date_of_birth: '1926-01-01', // Age 99
         experience_level: 1,
-        ppi_pattern: 'collaborative' // Mostly D answers
+        ppi_pattern: 'collaborative',
+        expectedScore: 0.4
       }
     },
     {
-      name: '30 Year Old Intermediate (Competitive)',
+      name: 'Test 5: Child Beginner (10yo, Exp 1)',
+      testCase: 'Age Band',
       profile: {
-        email: 'test_30yo_intermediate@test.com',
+        email: 'test_05_child@test.com',
         password: 'Test1234',
-        first_name: 'Casey',
-        date_of_birth: '1995-09-25',
+        first_name: 'Child',
+        date_of_birth: '2015-06-15', // Age 10
+        experience_level: 1,
+        ppi_pattern: 'curious',
+        expectedScore: 0.017
+      }
+    },
+    {
+      name: 'Test 6: Teen Novice (15yo, Exp 2)',
+      testCase: 'Age Band',
+      profile: {
+        email: 'test_06_teen@test.com',
+        password: 'Test1234',
+        first_name: 'Teen',
+        date_of_birth: '2010-03-20', // Age 15
+        experience_level: 2,
+        ppi_pattern: 'balanced',
+        expectedScore: 0.189
+      }
+    },
+    
+    // GROUP 2: FORMULA ACCURACY
+    {
+      name: 'Test 7: Midpoint (53yo, Exp 3)',
+      testCase: 'Formula Check',
+      profile: {
+        email: 'test_07_midpoint@test.com',
+        password: 'Test1234',
+        first_name: 'MidUser',
+        date_of_birth: '1972-06-15', // Age 53
         experience_level: 3,
-        ppi_pattern: 'competitive' // Mostly C answers
+        ppi_pattern: 'balanced',
+        expectedScore: 0.5
       }
     },
     {
-      name: '55 Year Old Advanced (Balanced)',
+      name: 'Test 8: Experience Weight (30yo, Exp varies)',
+      testCase: 'Weight Test',
       profile: {
-        email: 'test_55yo_advanced@test.com',
+        email: 'test_08_exp_weight@test.com',
         password: 'Test1234',
-        first_name: 'Riley',
-        date_of_birth: '1970-12-05',
+        first_name: 'ExpTest',
+        date_of_birth: '1995-01-01', // Age 30
+        experience_level: 3,
+        ppi_pattern: 'organized',
+        expectedScore: 0.36
+      }
+    },
+    {
+      name: 'Test 9: Age Weight (varies, Exp 3)',
+      testCase: 'Weight Test',
+      profile: {
+        email: 'test_09_age_weight@test.com',
+        password: 'Test1234',
+        first_name: 'AgeTest',
+        date_of_birth: '1980-01-01', // Age 45
+        experience_level: 3,
+        ppi_pattern: 'competitive',
+        expectedScore: 0.47
+      }
+    },
+    {
+      name: 'Test 10: Linear Age Progression (28yo)',
+      testCase: 'Linearity',
+      profile: {
+        email: 'test_10_linear_age@test.com',
+        password: 'Test1234',
+        first_name: 'Linear',
+        date_of_birth: '1997-01-01', // Age 28
+        experience_level: 3,
+        ppi_pattern: 'balanced',
+        expectedScore: 0.395
+      }
+    },
+    {
+      name: 'Test 11: Linear Exp Progression (40yo)',
+      testCase: 'Linearity',
+      profile: {
+        email: 'test_11_linear_exp@test.com',
+        password: 'Test1234',
+        first_name: 'LinearExp',
+        date_of_birth: '1985-01-01', // Age 40
+        experience_level: 3,
+        ppi_pattern: 'curious',
+        expectedScore: 0.446
+      }
+    },
+    {
+      name: 'Test 12: Normalization Check (50yo, Exp 3)',
+      testCase: 'Bounds',
+      profile: {
+        email: 'test_12_normalization@test.com',
+        password: 'Test1234',
+        first_name: 'Normalized',
+        date_of_birth: '1975-01-01', // Age 50
+        experience_level: 3,
+        ppi_pattern: 'organized',
+        expectedScore: 0.489
+      }
+    },
+    
+    // GROUP 3: REAL-WORLD SCENARIOS
+    {
+      name: 'Test 13: Young Professional (25yo, Exp 3)',
+      testCase: 'Real World',
+      profile: {
+        email: 'test_13_young_pro@test.com',
+        password: 'Test1234',
+        first_name: 'YoungPro',
+        date_of_birth: '2000-05-15', // Age 25
+        experience_level: 3,
+        ppi_pattern: 'competitive',
+        expectedScore: 0.382
+      }
+    },
+    {
+      name: 'Test 14: Mid-Career Advanced (40yo, Exp 4)',
+      testCase: 'Real World',
+      profile: {
+        email: 'test_14_midcareer@test.com',
+        password: 'Test1234',
+        first_name: 'MidCareer',
+        date_of_birth: '1985-08-20', // Age 40
         experience_level: 4,
-        ppi_pattern: 'balanced' // Mix of all
+        ppi_pattern: 'organized',
+        expectedScore: 0.596
+      }
+    },
+    {
+      name: 'Test 15: Senior Expert (60yo, Exp 5)',
+      testCase: 'Real World',
+      profile: {
+        email: 'test_15_senior_expert@test.com',
+        password: 'Test1234',
+        first_name: 'SeniorExp',
+        date_of_birth: '1965-12-10', // Age 60
+        experience_level: 5,
+        ppi_pattern: 'balanced',
+        expectedScore: 0.832
+      }
+    },
+    {
+      name: 'Test 16: Career Changer (45yo, Exp 1)',
+      testCase: 'Real World',
+      profile: {
+        email: 'test_16_career_change@test.com',
+        password: 'Test1234',
+        first_name: 'Changer',
+        date_of_birth: '1980-03-15', // Age 45
+        experience_level: 1,
+        ppi_pattern: 'collaborative',
+        expectedScore: 0.168
+      }
+    },
+    {
+      name: 'Test 17: Child Prodigy (8yo, Exp 3)',
+      testCase: 'Real World',
+      profile: {
+        email: 'test_17_prodigy@test.com',
+        password: 'Test1234',
+        first_name: 'Prodigy',
+        date_of_birth: '2017-06-20', // Age 8
+        experience_level: 3,
+        ppi_pattern: 'curious',
+        expectedScore: 0.309
+      }
+    },
+    {
+      name: 'Test 18: Consistency Check (30yo, Exp 3)',
+      testCase: 'Deterministic',
+      profile: {
+        email: 'test_18_consistency@test.com',
+        password: 'Test1234',
+        first_name: 'Consistent',
+        date_of_birth: '1995-09-25', // Age 30
+        experience_level: 3,
+        ppi_pattern: 'balanced',
+        expectedScore: 0.403
       }
     }
   ];
