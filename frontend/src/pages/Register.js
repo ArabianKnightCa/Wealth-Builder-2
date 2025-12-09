@@ -171,6 +171,11 @@ function Register({ onLogin }) {
       return;
     }
     
+    if (!formData.location || !formData.location.city || !formData.location.country) {
+      setError('Please select your location (country and city)');
+      return;
+    }
+    
     if (showParentConsent && !formData.parent_email) {
       setError('Parent/Guardian email is required for users under 18');
       return;
