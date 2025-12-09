@@ -330,6 +330,16 @@ function AdminPanel({ onLogin }) {
     setMessage('Creating test user...');
 
     try {
+      // Calculate life_stage based on age
+      const birthYear = new Date(profile.date_of_birth).getFullYear();
+      const age = new Date().getFullYear() - birthYear;
+      let life_stage = 'AD'; // Default to Adult
+      if (age <= 5) life_stage = 'ES'; // Early Start
+      else if (age <= 12) life_stage = 'JH'; // Junior High
+      else if (age <= 17) life_stage = 'HS'; // High School
+      else if (age <= 22) life_stage = 'CL'; // College
+      else if (age <= 29) life_stage = 'UN'; // University
+      
       // Register user with all required fields including location
       const registerResponse = await axios.post(`${API}/auth/register`, {
         email: profile.email,
@@ -339,6 +349,7 @@ function AdminPanel({ onLogin }) {
         language: 'en',
         experience_level: profile.experience_level,
         user_type: 'POC',
+        life_stage: life_stage,
         occupation: profile.occupation || 'Full-Time Employee',
         location: profile.location || {
           city: 'San Francisco',
