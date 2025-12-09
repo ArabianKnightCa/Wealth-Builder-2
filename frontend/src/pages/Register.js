@@ -417,6 +417,16 @@ function Register({ onLogin }) {
                 </select>
               </div>
 
+              {/* Country & City Dropdowns (placed above state)
+                  Easy switching: Edit locationSelectorConfig.js to activate Google API, iOS Modal, or Autocomplete */}
+              <div>
+                <LocationSelectorWrapper
+                  value={formData.location}
+                  onChange={(location) => setFormData({ ...formData, location })}
+                  token={null}
+                />
+              </div>
+
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">State (Where are you from?)</label>
                 <select
