@@ -513,8 +513,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Analytics Endpoints Comprehensive Testing - COMPLETED"
-    - "All 11 analytics endpoints verified and working correctly"
+    - "P0 Bug Fixes Applied - Registration Redirect & Chapter Loading"
+    - "Testing Required: Complete user journey from registration to chapter access"
   completed_tasks:
     - "Priority 1: Content Engagement (Already Done)"
     - "Priority 2: Personalization Effectiveness (Already Done + Age Bands Removed)"
@@ -524,13 +524,16 @@ test_plan:
     - "Priority 6: Content Difficulty Heatmap (Full Implementation)"
     - "Priority 7: Feature Usage (Full Implementation)"
     - "Analytics Endpoints Testing (All 11 endpoints verified working)"
+    - "P0 Bug Fix 1: Registration redirect mechanism changed to React Router navigate"
+    - "P0 Bug Fix 2: Chapter loading authentication headers added"
   stuck_tasks:
     - "Feedback System Bug Fix"
   next_steps:
-    - "Analytics dashboard ready for user verification"
-    - "Consider frontend testing if needed"
-    - "Address feedback system issues if required"
-  test_priority: "completed"
+    - "TEST P0 FIXES: Run frontend testing agent to verify registration flow and chapter loading"
+    - "Proceed with AE-CORE v2.0 implementation after P0 bugs confirmed fixed"
+    - "Build Test Harness UI + 18 automated tests for AE-CORE v2.0"
+    - "Implement country/city selector UI"
+  test_priority: "p0_bug_verification"
 
   - task: "Analytics Endpoints Comprehensive Testing"
     implemented: true
