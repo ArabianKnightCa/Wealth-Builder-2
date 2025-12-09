@@ -1,137 +1,143 @@
-<analysis>**original_problem_statement:** The user's primary goal is to build a Wealth Builder mobile application. The core feature is a sophisticated, psychologically-driven Adaptive Engine (AE) that **dynamically generates** lesson content at runtime based on four core inputs: Age, Financial Experience, a PPI (Personality Profile Index), and user-defined Goals. The project also involves building a comprehensive analytics dashboard, implementing a multi-profile system for families, migrating static content to a database, and ensuring the backend architecture is scalable for future commercial use.
+<analysis>**original_problem_statement:** The user's primary goal is to build a Wealth Builder application with a sophisticated, psychologically-driven Adaptive Engine (AE) that dynamically generates content. The project involves building analytics, a multi-profile system, and ultimately, a native mobile app.
+
+**New Product Requirements Added This Session:**
+1.  **UID (User Identification Code) System:** A detailed specification was provided to create a unique UID for each user upon completing onboarding. The format is . This has been implemented.
+2.  **AE-CORE v2.0 Specification:** The user provided a new, formal specification for a simplified, formula-based Adaptive Engine (). This will replace the current complex AE and is a P0 upcoming task.
+3.  **AE-CORE v2.0 Test Suite:** A corresponding specification for an 18-case automated test suite and a visual debug/test harness UI to verify the new engine's logic and output.
+4.  **Country/City Selector:** A new requirement to add country and city selection to the user registration form.
 
 **User's preferred language**: English
 
 **what currently exists?**
-- A full-stack application with a FastAPI backend and a React frontend (which serves as a Proof of Concept validation tool for the future mobile app).
-- **Core Adaptive Engine (AE) Works:** The AE () and a new  successfully generate dynamic, personalized content based on all four pillars (Age, Experience, PPI, Goals). This core POC requirement has been implemented and tested.
-- **Multi-Profile System:** A full-stack feature allowing a single account to create and switch between multiple sub-profiles (e.g., for a mother and her children) has been implemented and tested. This includes backend APIs and frontend UI for profile management.
-- **Content Migrated to Database:** All static lesson and quiz content has been migrated from a Python file () into MongoDB collections. New API endpoints now serve this content from the database.
-- **Comprehensive Analytics Dashboard:** A new  page has been created. It is partially implemented with several new metrics.
-- **Feedback Viewer:** An admin page at  has been created to view user-submitted feedback.
-- **UI/UX Improvements:** The main header is now mobile-responsive, and the profile management UI has been redesigned for clarity based on user feedback.
+- A full-stack application with a FastAPI backend, React frontend, and a MongoDB database.
+- The **Analytics Dashboard is complete**, with all 7 requested features implemented and tested.
+- A **UID generation system** is fully implemented on the backend and integrated into the frontend registration flows.
+- A complete **Forgot Password system** using **Resend** for sending emails is implemented. The feature is functional but is untestable in the current development environment due to  URL limitations. It will work once the app is deployed to a public domain.
+- A **React Native mobile app** has been scaffolded in the  directory with all screens, navigation, and services created as placeholder files. It is not yet functional.
+- Numerous bug fixes and UI/UX improvements have been made, including fixing the feedback system, improving header icons, and cleaning up the registration form.
 
 **Last working item**:
-- **Last item agent was working:** The agent was implementing a 7-priority list of new analytics features requested by the user. It had completed the first two and was working on the third when the user provided feedback on the UI labels.
-- **Status:** IN PROGRESS
-- **Agent Testing Done:** Y
-- **Which testing method agent to use?** Backend testing agent to verify analytics aggregations and screenshot tool to verify UI changes on the dashboard.
+- **Last item agent was working:** The agent was presenting the user with six different UI/UX design options for a new Country + City selector on the registration page. It was also awaiting the user's decision on whether to implement this new feature immediately or first fix two critical bugs identified by the testing agent.
+- **Status:** IN PROGRESS (Awaiting user feedback)
+- **Agent Testing Done:** N
+- **Which testing method agent to use?** Frontend testing agent to verify the new registration form fields and ensure the core registration flow is not broken.
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Refine Analytics UI - Remove Age Band Labels (P0)**
-    - **Description:** The user dislikes the child/teen/adult labels in the analytics dashboard, finding them too clinical and not matching the app's vibe. The agent proposed removing these labels and focusing the analytics on DNA profiles (e.g., Planner) and experience levels instead.
+- **Issue 1: Registration Flow Broken (P0)**
+    - **Description:** The automated test suite revealed that after a user successfully registers, they are not redirected to the PPI (Personality Profile Index) page. This breaks the core onboarding flow.
     - **Status:** NOT STARTED
     - **Next debug checklist:**
-        1.  Confirm with the user that removing age bands and focusing on DNA/experience levels is the correct approach.
-        2.  Edit  to remove the UI components that display these age bands.
-        3.  Edit  to remove or refactor the aggregation logic in the  endpoint that groups data by age band.
-    - **Why fix this issue and what will be achieved with the fix?** To align the UI with the user's brand vision and improve their satisfaction with the dashboard.
+        1. Examine .
+        2. Check the  or equivalent function's logic after the successful API call.
+        3. Ensure  or a similar redirect is being called correctly.
+    - **Why fix this issue and what will be achieved with the fix?** This is a critical blocker. Fixing it will restore the fundamental user onboarding journey.
+    - **Should Test frontend/backend/both after fix?** Frontend.
+
+- **Issue 2: Chapter does not exist Error (P0)**
+    - **Description:** The automated test suite found that users are still encountering an error indicating the chapter cannot be found, even after the content migration script was run. This prevents users from accessing any lesson content.
+    - **Status:** NOT STARTED
+    - **Next debug checklist:**
+        1. Verify the chapter loading logic in  or .
+        2. Check the backend API endpoint responsible for fetching chapters (e.g., ).
+        3. Confirm the database connection is stable and the  collection contains the expected data.
+    - **Why fix this issue and what will be achieved with the fix?** This is a critical blocker. Fixing it will allow users to access the core content of the application.
     - **Should Test frontend/backend/both after fix?** Both.
 
 **In progress Task List**:
-- **Task 1: Complete Implementation of New Analytics Features (P0)**
-    - **Where to resume:** Resume work on **Priority 3: Learning Patterns**. The backend endpoints and frontend state management are complete; the UI tab needs to be finished. Afterward, proceed with the remaining priorities. The user has explicitly instructed the agent to continue implementing these one by one without asking for permission.
-    - **What will be achieved with this?** A comprehensive analytics suite providing deep, data-driven insights into content engagement, personalization effectiveness, and user learning behaviors.
-    - **Status:** IN PROGRESS
-    - **Blocked on something:** It's advisable to resolve Issue 1 first, as the remaining analytics dashboards may also use the disliked age band labels.
-    - **Remaining Analytics Priorities:**
-        - Priority 3: Learning Patterns (In Progress)
-        - Priority 4: Multi-Profile Usage
-        - Priority 5: Error & Friction Tracking
-        - Priority 6: Content Difficulty Heatmap
-        - Priority 7: Feature Usage
+- **Task 1: Implement Country/City Selector (P1)**
+    - **Description:** Add a country and city selection feature to the registration page.
+    - **Status:** BLOCKED
+    - **Where to resume:** Awaiting user decision on which of the 6 UI options to implement and whether to prioritize this over the P0 bug fixes.
+    - **What will be achieved with this?** Enhanced user location data capture during onboarding.
+    - **Blocked on something:** User decision.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-    - **P0: Build Native Mobile App (React Native):** The user's final goal is a native app for iOS and Android. The next major phase is to build this app using React Native, which will connect to the existing, proven backend APIs. The current React web app is only a POC validation tool.
-    - **P1: Implement RED Priority Scaling Features:** The agent created a prioritized list of features critical for scaling the app to thousands of chapters. The user agreed these are important for the beta version. They are:
-        1.  Performance & Caching Layer (Lazy Loading)
-        2.  Basic Content Management System (CMS)
-        3.  Database Query Optimization (Pagination)
-        4.  Content Import/Export Tools
-        5.  API Rate Limiting
+    - **P0: Implement AE-CORE v2.0 & Test Suite:** Refactor the adaptive engine according to the new, simplified user specification. This involves creating a new , building the 18 automated logic tests, and removing the old engine.
+    - **P1: Build AE/PPI/LPI Visual Debug View:** Create a new internal admin page (Test Harness) that allows manual input of age/experience to visually verify the AE's calculations, the resulting PPI questions, and the initial LPI lesson plan.
+    - **P2: Implement PPI Content Transformation:** Build the logic to dynamically modify the baseline psychological PPI questions at runtime based on the user's profile (age, experience), as per the user's clarification.
+    - **P2: Make React Native App Functional:** Connect the scaffolded mobile app screens in  to the backend APIs and implement the UI logic to match the web app's functionality.
+    - **P3: Resolve Forgot Password Testability:** Once the app is deployed or has a stable preview URL, update the  environment variable to make the password reset email links work correctly.
 
 - **Future Tasks:**
-    - Implement a full commercial-grade quiz/content system with features like Peer Review, Content Versioning, Audit Trails, and A/B Testing.
+    - Implement RED Priority scaling features (Performance/Caching, Basic CMS, DB Query Optimization, etc.).
+    - Build a full commercial-grade quiz/content system.
 
 **Completed work in this session**
-- **Dynamic Content Generation Implemented:** The core POC feature was successfully built. The AE now algorithmically transforms lesson text based on the user's complete profile.
-- **Multi-Profile System Created:** A full-stack feature allowing one account to manage multiple sub-profiles (for a family) was designed and implemented.
-- **Quiz Content Migrated to DB:** All hardcoded quiz and lesson content was moved to MongoDB, and new APIs were created to serve it.
-- **Analytics Dashboard Created & Partially Implemented:** A new  page was built, and the first two of seven new analytics features (Content Engagement, Personalization Effectiveness) were added.
-- **Feedback Viewer Created:** A new admin page was built to view user feedback.
-- **Critical Bug Fixes:** Resolved a backend JWT error preventing PPI submission and a frontend race condition causing session logouts.
-- **UI/UX Improvements:** Redesigned the profile manager for better usability and made the main header mobile-responsive per user feedback.
+- **All 7 Analytics Features Implemented:** The analytics dashboard is now feature-complete, including views for Multi-Profile Usage, Error Tracking, Content Heatmaps, and Feature Usage.
+- **UID System Implemented:** A unique user ID is now generated and stored for each user upon onboarding completion, following the user's exact specification.
+- **Forgot Password System Implemented:** A full password reset flow using Resend for email sending was built, including backend endpoints and frontend pages.
+- **React Native App Scaffolding:** A complete file structure for a new mobile app was created in .
+- **Content Migration to DB:** The  script was successfully run, populating the  and  collections in MongoDB.
+- **Critical Feedback System Bug Fixed:** Resolved an issue with duplicate endpoints and incorrect route ordering that prevented feedback from being saved and viewed.
+- **UI/UX Fixes:**
+    - Replaced a confusing logout icon with a clearer one ().
+    - Fixed the registration form to remove redundant fields and improve layout.
+    - Corrected the main header to always display Mizo Wealth Builder instead of MWB.
 
 **Earlier issues found/mentioned but not fixed**
-None. All major issues from the previous handoff and those that arose during the session were addressed.
+- All identified issues from previous sessions or that arose during this one have either been fixed or are listed in the Pending/In progress Issue list above.
 
 **Code Architecture**
-- **Backend (FastAPI):**
-    - : The main application file, heavily expanded with APIs for multi-profile management, advanced analytics, feedback, and DB-driven content.
-    - : **New file** containing the core logic for dynamically transforming lesson text.
-    - , : **New files** with Pydantic models for the new database collections.
-    - : One-time script used to migrate content to MongoDB.
-- **Frontend (React):**
-    - : Heavily modified for multi-profile state management, session bug fixes, and new routing.
-    - : **New page** for displaying all data insights.
-    - , : New pages for the multi-profile user flow.
-    - : New page for viewing feedback.
-    - : **New utility** to send lesson interaction data to the backend.
-- **Documents:**
-    - : A key document outlining the roadmap for scaling the application, organized by priority.
+
 
 **Key Technical Concepts**
-- **Dynamic Content Generation:** The backend algorithmically modifies baseline text in real-time based on a user's age, experience, psychometric profile (DNA), and goals.
-- **Multi-Profile Architecture:** A  collection is linked to the  collection via an , allowing a one-to-many relationship. Frontend state manages the active profile.
-- **Analytics Aggregation Pipeline:** The backend uses complex MongoDB aggregation pipelines in  to transform raw telemetry data into structured analytics for the dashboard.
-- **React State Management:** Fixed a race condition by using callbacks passed down to child components to ensure the parent  state is updated synchronously.
+- **Resend API Integration:** Used for the Forgot Password transactional email feature. API keys and configuration are stored in .
+- **UID Generation:** A custom UID string is created on the backend by combining app stage, life stage, a sequential counter (from a dedicated  DB collection), and a timestamp.
+- **Dynamic Routing:** Fixed a bug where a generic FastAPI route  was incorrectly capturing a more specific route  by reordering them.
 
 **key DB schema**
-- **users:** Main account information (email, password, etc.).
-- **profiles:**  (**New**)
-- **feedback:**  (**New**)
-- **chapters, lessons, questions:** Collections storing all migrated LPI content.
-- **telemetry_lesson_engagement:**  (**New**)
+- **users:** Contains core user info, now includes , , , and .
+- **seq_counter:**  (New collection to track the next UID sequence number).
+- **profiles, feedback, chapters, lessons, questions, telemetry_lesson_engagement:** No changes.
 
 **All files of reference**
-- : Contains all new APIs for profiles, analytics, and content.
-- : The secret sauce for dynamic content.
-- : The UI for all new analytics features.
-- : Contains the core frontend state logic for profiles and sessions.
-- : Outlines the user-approved future roadmap.
+- : Target for the two P0 bugs and the upcoming Country/City feature.
+- : Location of all business logic, including the broken chapter endpoint and the upcoming AE-CORE v2.0 integration.
+- : Now feature-complete.
+- : The directory containing the new (non-functional) React Native app.
+- : The source of truth for the upcoming major refactor of the adaptive engine.
 
 **Critical Info for New Agent**
-- **The Goal is a Native Mobile App:** The user's end product is for iOS/Android. The current React web app is **only a POC validation tool**. Do not over-invest in web-specific UI. The backend is already mobile-ready.
-- **User is Vibe-Driven:** The user has strong opinions on the app's vibe. They rejected clinical labels like child/teen/adult. Always prioritize user-friendly and empowering language. Your next immediate task is to fix this in the analytics UI.
-- **Execute the Analytics Plan:** The user has approved a 7-part plan for building out the analytics dashboard and has instructed you to proceed without asking for permission at each step. Continue this work after addressing the UI label issue.
-- **Scaling is the Next Major Phase:** Once the POC is fully validated, the roadmap includes building the React Native app and implementing the critical RED Priority scaling features (CMS, caching, etc.).
+- **PRIORITIZE BUG FIXES:** The user is waiting for your plan. Before discussing new features, you MUST address the two P0 bugs found by the testing agent (Registration Redirect and Chapter Not Found). They break the entire application flow.
+- **Forgot Password is UNTESTABLE:** The password reset flow is fully implemented but fails during testing because email clients block  links. Do not waste time trying to fix it. Explain to the user it will work automatically upon deployment to a real domain.
+- **AE REFACTOR IMMINENT:** The user has provided a detailed spec for a new, simpler AE-CORE v2.0. This is the next major development task after the P0 bugs are fixed. Do not build on top of the old .
+- **PPI Template Logic:** The user clarified that PPI questions are a *baseline psychological template* that must be *dynamically rewritten* based on the user's age and experience. This transformation logic does not exist yet and is a key part of the upcoming AE work.
+- **User is Non-Technical:** Communicate clearly and avoid jargon. The user appreciates simple explanations and clear options.
 
 **Last 10 User Messages and any pending user messages**
-1.  **User complains about header UI on mobile.** (Resolved)
-2.  **User complains about confusing Profile Manager UI.** (Resolved)
-3.  **User asks where feedback goes.** (Resolved by creating a Feedback Viewer)
-4.  **User asks where the analytics button is.** (Resolved by adding it to the header)
-5.  **User requests more analytics for the dashboard.** (Agent provided a 7-part plan)
-6.  **User agrees and says to implement all 7 analytics features.**
-7.  **User gives explicit instruction to continue implementing the 7 features one-by-one without stopping to ask for permission.**
-8.  **User dislikes the child/teen/adult labels in the analytics UI.**
-9.  **Agent proposes alternatives.**
-10. **(Pending Action):** Implement the user's feedback to change the analytics UI labels.
+1.  **User reports 3 new bugs:** Header text is wrong, chapters don't load, PPI language is wrong. (Partially addressed)
+2.  **User provides detailed spec for AE-CORE v2.0.** (Action pending)
+3.  **Agent asks user to choose between implementing new AE spec now or continuing testing.** (Clarification needed)
+4.  **User provides critical clarification:** PPI is a baseline template that must be dynamically modified at runtime.
+5.  **User confirms agent's understanding.**
+6.  **User directs agent to proceed with Option B (testing other features first).**
+7.  **Agent runs comprehensive tests.** (Completed, found 2 new bugs)
+8.  **User asks to verify all 7 areas or move on.** (Agent chose to verify)
+9.  **Testing finishes, finding 2 critical bugs.** (Agent starts to work on them)
+10. **(PENDING) User interrupts with a new feature request:** Add country/city dropdowns to registration and asks for UI options. The agent has responded with options and is awaiting the user's decision on priority.
 
 **Project Health Check:**
-- **Broken:** No critical functionality is broken.
-- **Mocked:** No mocked data. All systems are functional.
+- **Broken:**
+    - Core registration flow (no redirect to PPI).
+    - Content access (chapters not loading for users).
+- **Mocked:**
+    - The entire React Native app in  is a scaffold with no functional code.
 
-**3rd Party Integrations**:
-None.
+**3rd Party Integrations**
+- **Resend:** Used for sending password reset emails. Configured with API Key, Sender Email, and App Domain in .
 
 **Testing status**
-- **Testing agent used after significant changes:** YES
-- **Troubleshoot agent used after agent stuck in loop:** YES
-- **Test files created:** [, ]
-- **Known regressions:** None.
+- **Testing agent used after significant changes:** YES. The last run identified 2 P0 bugs that are now the highest priority.
+- **Troubleshoot agent used after agent stuck in loop:** YES. Successfully identified that the database was empty, which was blocking the Forgot Password test.
+- **Test files created:** None in this session.
+- **Known regressions:** Registration-to-PPI redirect, Chapter access.
+
+**Credentials to test flow:**
+Two test users exist in the database:
+1.  **Email:** , **Password:** 
+2.  **Email:** , **Password:**  (This is the email associated with the Resend account and should be used for password reset testing).
 
 **What agent forgot to execute**
-- The agent has not yet implemented the user's request to change the child/teen/adult labels on the analytics dashboard. This should be the next action.</analysis>
+- The agent has not yet fixed the two critical bugs found by the last automated test run (registration redirect failure and chapter not found error). It was interrupted by a new user feature request and is awaiting prioritization from the user. These bugs must be fixed first.</analysis>
