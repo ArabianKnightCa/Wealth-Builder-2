@@ -513,8 +513,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "P0 Bug Fixes Applied - Registration Redirect & Chapter Loading"
-    - "Testing Required: Complete user journey from registration to chapter access"
+    - "P0 Bug Fix: Database Integrity Issue - ppi_completed flags incorrect for existing users"
+    - "Registration Redirect Logic Working - Data Issue Blocking Proper Routing"
   completed_tasks:
     - "Priority 1: Content Engagement (Already Done)"
     - "Priority 2: Personalization Effectiveness (Already Done + Age Bands Removed)"
