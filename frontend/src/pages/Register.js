@@ -519,6 +519,15 @@ function Register({ onLogin }) {
                 </select>
               </div>
 
+              {/* Option 6: Google Places API Location Selector */}
+              <div>
+                <LocationSelectorGooglePlaces
+                  value={formData.location}
+                  onChange={(location) => setFormData({ ...formData, location })}
+                  token={null}
+                />
+              </div>
+
               <div className="flex gap-4">
                 <button 
                   type="button"
