@@ -95,6 +95,7 @@ class User(BaseModel):
     custom_goals: Optional[List[str]] = []  # Array of custom goal texts
     reset_token: Optional[str] = None  # Password reset token
     reset_token_expires: Optional[datetime] = None  # Token expiration time
+    ppi_completed: bool = False  # PPI questionnaire completion status
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
 
