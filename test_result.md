@@ -564,11 +564,11 @@ test_plan:
 
   - task: "P0 Bug Fix: Registration Redirect to PPI"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/pages/Register.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "testing"
@@ -576,14 +576,17 @@ test_plan:
         - working: "NA"
           agent: "main_fork_new"
           comment: "🔧 FIX APPLIED - Changed redirect mechanism from window.location.href to React Router navigate(). Made onLogin async and ensured it completes before navigation. Lines 200-210 in Register.js modified to use proper React navigation pattern."
+        - working: false
+          agent: "testing"
+          comment: "❌ PARTIAL FIX - Registration now completes successfully and user is authenticated, but redirects to /dashboard instead of /ppi. The navigate('/ppi') call is not working as expected. User 'Test User P0' successfully registered with email testuser_p0_1765316735@example.com but skipped PPI questionnaire. Fix needs investigation - may be related to user state or routing logic."
 
   - task: "P0 Bug Fix: Chapter Loading Authentication"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/LPIChapter.js"
     stuck_count: 0
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "testing"
@@ -591,6 +594,9 @@ test_plan:
         - working: "NA"
           agent: "main_fork_new"
           comment: "🔧 FIX APPLIED - Added missing Authorization header to fetchChapter() API call. Lines 25-36 in LPIChapter.js modified to include Bearer token in headers. Added error logging to help debug if chapter ID is not found in API response."
+        - working: true
+          agent: "testing"
+          comment: "✅ VERIFIED FIXED - Chapter loading bug completely resolved. Successfully tested with existing user (amanbazel@gmail.com). Dashboard shows 10 chapters correctly, Chapter 1 (CH01) loads without any 'Chapter not found' error. Chapter title displays as 'Money Basics: Understanding What Money Is' with lesson content loading properly. Authorization headers working correctly."
 
 agent_communication:
     - agent: "main_fork_new"
