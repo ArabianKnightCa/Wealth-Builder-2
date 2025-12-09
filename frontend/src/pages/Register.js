@@ -3,7 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import GoalSelector from './GoalSelector';
 import RegistrationIntro from './RegistrationIntro';
-import LocationSelectorGooglePlaces from '../components/LocationSelector_GooglePlaces';
+import LocationSelectorSimpleDropdowns from '../components/LocationSelector_SimpleDropdowns';
+
+// BACKGROUND: Advanced location selectors ready but not active
+// import LocationSelectorGooglePlaces from '../components/LocationSelector_GooglePlaces'; // Ready for Google API
+// import LocationSelectorModal from '../components/LocationSelector_Modal'; // Ready for iOS
+// import LocationSelectorAutocomplete from '../components/LocationSelector_Autocomplete'; // Ready for power users
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
