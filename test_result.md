@@ -566,7 +566,7 @@ test_plan:
     implemented: true
     working: false
     file: "/app/frontend/src/pages/Register.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "critical"
     needs_retesting: false
     status_history:
@@ -582,6 +582,9 @@ test_plan:
         - working: "NA"
           agent: "main_fork_new"
           comment: "🔧 ROOT CAUSE FOUND & FIX APPLIED - The issue was in App.js routing logic. After onLogin sets user state, React Router's conditional redirect on line 146 automatically redirected to /dashboard, overriding navigate('/ppi'). SOLUTION: Modified routing logic to check user.ppi_completed flag. If false, redirect to /ppi; if true, redirect to /dashboard. This ensures new users go to PPI first. Changes applied to lines 145-150 in App.js for /login, /register, /forgot-password, and /reset-password routes."
+        - working: false
+          agent: "testing"
+          comment: "❌ CRITICAL ISSUE DISCOVERED - Testing revealed that existing user 'amanbazel@gmail.com' (who should have ppi_completed=true) is being redirected to /ppi instead of /dashboard after login. This indicates the user's ppi_completed flag is incorrectly set to false in the database. The App.js routing logic fix is working correctly, but there's a data integrity issue. EVIDENCE: User redirected to /ppi page showing 'Personality Profile Questionnaire' instead of dashboard. Registration form is accessible and properly structured. REQUIRES: Database investigation to fix user.ppi_completed flags for existing users who have already completed PPI."
 
   - task: "P0 Bug Fix: Chapter Loading Authentication"
     implemented: true
