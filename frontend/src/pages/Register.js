@@ -524,11 +524,13 @@ function Register({ onLogin }) {
                 </select>
               </div>
 
-              {/* Country & City Dropdowns (placed above state) */}
+              {/* Country & City Dropdowns (placed above state)
+                  Easy switching: Edit locationSelectorConfig.js to activate Google API, iOS Modal, or Autocomplete */}
               <div>
-                <LocationSelectorSimpleDropdowns
+                <LocationSelectorWrapper
                   value={formData.location}
                   onChange={(location) => setFormData({ ...formData, location })}
+                  token={null}
                 />
               </div>
 
