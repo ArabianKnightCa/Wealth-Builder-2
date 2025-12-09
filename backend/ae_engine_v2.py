@@ -147,6 +147,38 @@ class AdaptiveEngineV2:
         else:
             return f"{self.TEEN_AGE_MAX + 1}-99"
     
+    def calculate_combined_score(self, age: int, experience_level: int) -> float:
+        """
+        AE-CORE v2.0 Formula: Calculate combined personalization score
+        
+        Formula: combined_score = 0.4 * age_score + 0.6 * exp_score
+        
+        Args:
+            age: User age (6-99)
+            experience_level: Financial experience level (1-5)
+                1 = Beginner
+                2 = Novice
+                3 = Intermediate
+                4 = Advanced
+                5 = Expert
+        
+        Returns:
+            float: Combined score (0.0-1.0)
+        """
+        # Normalize age to 0.0-1.0 scale
+        # Age range: 6 (min) to 99 (max)
+        age_normalized = (age - self.MINIMUM_AGE) / (99 - self.MINIMUM_AGE)
+        age_score = min(1.0, max(0.0, age_normalized))
+        
+        # Normalize experience level to 0.0-1.0 scale
+        # Experience: 1 (beginner) to 5 (expert)
+        exp_score = (experience_level - 1) / 4.0
+        
+        # Apply AE-CORE v2.0 formula
+        combined_score = 0.4 * age_score + 0.6 * exp_score
+        
+        return round(combined_score, 3)
+    
     def generate_plan(self, user_id: str, answers: List[Dict[str, str]], 
                       age: int = None, goals: List[str] = None) -> Dict[str, Any]:
         """
