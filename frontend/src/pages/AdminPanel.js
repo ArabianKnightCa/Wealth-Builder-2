@@ -450,8 +450,13 @@ function AdminPanel({ onLogin }) {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
         <div className="bg-gradient-to-r from-navy-900 to-navy-700 text-white p-6 rounded-lg mb-8">
-          <h1 className="text-3xl font-bold mb-2">🧪 Testing Admin Panel</h1>
-          <p className="text-gray-300">Create and test different user personas instantly</p>
+          <h1 className="text-3xl font-bold mb-2">🧪 AE-CORE v2.0 Testing Panel</h1>
+          <p className="text-gray-300 mb-2">18 Automated Test Cases for Adaptive Engine Verification</p>
+          <div className="flex gap-4 text-sm mt-3">
+            <span className="px-3 py-1 bg-blue-500 bg-opacity-30 rounded">6 Edge Cases</span>
+            <span className="px-3 py-1 bg-green-500 bg-opacity-30 rounded">6 Formula Tests</span>
+            <span className="px-3 py-1 bg-purple-500 bg-opacity-30 rounded">6 Real-World Scenarios</span>
+          </div>
         </div>
 
         {/* Tab Navigation */}
