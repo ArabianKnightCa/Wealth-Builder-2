@@ -559,7 +559,39 @@ test_plan:
           agent: "testing"
           comment: "✅ COMPREHENSIVE CORE FLOWS TESTING COMPLETED - All critical user journey endpoints working perfectly after database migration. TESTED FLOWS: (1) Dashboard & Chapter Loading - GET /api/content/lpi returns 10 chapters with 40 total lessons, personalization applied correctly, (2) Chapter Detail Loading - GET /api/content/chapters/CH01 returns chapter with 4 lessons, proper structure validation, (3) Lesson Content Loading - Lessons loaded in chapter response with content transformation applied, (4) Quiz Loading - GET /api/content/chapters/CH01/quiz returns 4 quiz questions with proper structure, (5) Complete User Journey - All 5 steps successful: Login → Get chapters → Open chapter → View lessons → Take quiz. DATABASE VERIFICATION: 10 chapters, 40 lessons, 40 quiz questions confirmed in database. CH01 exists with 4 lessons and 4 quiz questions. User-reported 'Chapter does not exist' error NOT reproduced - all endpoints working correctly. Database migration successful."
 
+  - task: "P0 Bug Fix: Registration Redirect to PPI"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Register.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ BUG IDENTIFIED - After successful registration, users are not redirected to PPI page. Testing showed redirect to login page instead of PPI."
+        - working: "NA"
+          agent: "main_fork_new"
+          comment: "🔧 FIX APPLIED - Changed redirect mechanism from window.location.href to React Router navigate(). Made onLogin async and ensured it completes before navigation. Lines 200-210 in Register.js modified to use proper React navigation pattern."
+
+  - task: "P0 Bug Fix: Chapter Loading Authentication"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/LPIChapter.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ BUG IDENTIFIED - Users encounter 'Chapter does not exist' error when trying to access lesson content. Chapter data not loading properly."
+        - working: "NA"
+          agent: "main_fork_new"
+          comment: "🔧 FIX APPLIED - Added missing Authorization header to fetchChapter() API call. Lines 25-36 in LPIChapter.js modified to include Bearer token in headers. Added error logging to help debug if chapter ID is not found in API response."
+
 agent_communication:
+    - agent: "main_fork_new"
+      message: "P0 BUGS FIXED - READY FOR TESTING: Fixed both critical bugs identified by testing agent. (1) Registration Redirect: Changed from window.location.href to navigate('/ppi') and ensured onLogin completes before navigation. (2) Chapter Loading: Added missing Authorization Bearer token to /api/content/lpi request in fetchChapter(). Both fixes are minimal, targeted changes. Ready for frontend testing agent to verify the complete user journey: Registration → PPI → Dashboard → Chapter Access."
     - agent: "main_fork"
       message: "ANALYTICS DASHBOARD ENHANCEMENT COMPLETED: Successfully removed age band labels (replaced with experience level analytics) and implemented all 5 remaining analytics priorities (3-7). Created 4 new backend endpoints (/api/analytics/multi-profile-usage, /api/analytics/errors-and-friction, /api/analytics/content-difficulty-heatmap, /api/analytics/feature-usage) - all tested via curl and returning correct data. Built 5 new frontend UI tabs with complete implementations: 'patterns' (learning patterns), 'profiles' (multi-profile usage), 'difficulty' (content difficulty heatmap), 'features' (feature adoption), 'errors' (error & friction tracking). All tabs include data tables, visualizations, and insight sections. Frontend state management updated to fetch and display all new data. Ready for comprehensive frontend testing and user verification."
     - agent: "testing"
