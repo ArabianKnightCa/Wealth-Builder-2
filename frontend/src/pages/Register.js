@@ -199,10 +199,12 @@ function Register({ onLogin }) {
       
       const response = await axios.post(`${API}/auth/register`, cleanData);
       console.log('Registration success:', response.data);
-      onLogin(response.data.user, response.data.access_token);
       
-      // Force navigation to PPI - use window.location for hard redirect
-      window.location.href = '/ppi';
+      // First set auth state, then navigate
+      await onLogin(response.data.user, response.data.access_token);
+      
+      // Use React Router navigate instead of window.location
+      navigate('/ppi');
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
       console.error('Registration error:', err.response?.data);
