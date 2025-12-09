@@ -513,8 +513,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "P0 Bug Fix: Database Integrity Issue - ppi_completed flags incorrect for existing users"
-    - "Registration Redirect Logic Working - Data Issue Blocking Proper Routing"
+    - "URGENT: Database ppi_completed flag fix failed - amanbazel@gmail.com still has ppi_completed=false"
+    - "Registration redirect logic working correctly but blocked by database issue"
   completed_tasks:
     - "Priority 1: Content Engagement (Already Done)"
     - "Priority 2: Personalization Effectiveness (Already Done + Age Bands Removed)"
