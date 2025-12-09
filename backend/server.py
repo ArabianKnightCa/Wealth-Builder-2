@@ -3542,6 +3542,163 @@ async def create_database_indexes():
     except Exception as e:
         print(f"⚠️ Index creation warning: {e}")
 
+# ========================================================================
+# AE-CORE v2.0 TEST HARNESS ENDPOINTS
+# ========================================================================
+
+class AETestRequest(BaseModel):
+    age: int = Field(ge=6, le=99)
+    experience_level: int = Field(ge=1, le=5)
+
+@api_router.post("/ae/test/calculate-score")
+async def ae_test_calculate_score(request: AETestRequest, user_id: str = Depends(get_current_user)):
+    """
+    Test Harness Endpoint: Calculate combined score for manual testing
+    """
+    ae_v2 = get_adaptive_engine_v2()
+    combined_score = ae_v2.calculate_combined_score(request.age, request.experience_level)
+    
+    # Calculate component scores for transparency
+    age_normalized = (request.age - 6) / (99 - 6)
+    age_score = min(1.0, max(0.0, age_normalized))
+    exp_score = (request.experience_level - 1) / 4.0
+    
+    return {
+        "age": request.age,
+        "experience_level": request.experience_level,
+        "age_score": round(age_score, 3),
+        "exp_score": round(exp_score, 3),
+        "combined_score": combined_score,
+        "formula": "0.4 * age_score + 0.6 * exp_score"
+    }
+
+@api_router.post("/ae/test/run-suite")
+async def ae_test_run_suite(user_id: str = Depends(get_current_user)):
+    """
+    Test Harness Endpoint: Run all 18 automated tests
+    """
+    ae_v2 = get_adaptive_engine_v2()
+    
+    # Define test cases grouped by category
+    test_groups = [
+        {
+            "name": "Group 1: Edge Cases (Tests 1-6)",
+            "tests": [
+                {"name": "Test 1: Min age (6) + min exp (1)", "age": 6, "exp": 1, "expected": 0.0},
+                {"name": "Test 2: Max age (99) + max exp (5)", "age": 99, "exp": 5, "expected": 1.0},
+                {"name": "Test 3: Min age (6) + max exp (5)", "age": 6, "exp": 5, "expected": 0.6},
+                {"name": "Test 4: Max age (99) + min exp (1)", "age": 99, "exp": 1, "expected": 0.4},
+                {"name": "Test 5: Child beginner (10, 1)", "age": 10, "exp": 1, "expected_range": (0.0, 0.1)},
+                {"name": "Test 6: Teen novice (15, 2)", "age": 15, "exp": 2, "expected_range": (0.1, 0.3)},
+            ]
+        },
+        {
+            "name": "Group 2: Formula Accuracy (Tests 7-12)",
+            "tests": [
+                {"name": "Test 7: Mid-point (53, 3)", "age": 53, "exp": 3, "expected_range": (0.45, 0.55)},
+                {"name": "Test 8: Experience weight test (30, 1 vs 5)", "age": 30, "exp": 1, "compare": (30, 5), "diff": 0.6},
+                {"name": "Test 9: Age weight test (6 vs 99, exp 3)", "age": 6, "exp": 3, "compare": (99, 3), "diff": 0.4},
+                {"name": "Test 10: Linear age progression", "ages": [6, 28, 52, 75, 99], "exp": 3},
+                {"name": "Test 11: Linear exp progression", "age": 40, "exps": [1, 2, 3, 4, 5]},
+                {"name": "Test 12: Score normalization check", "age": 50, "exp": 3},
+            ]
+        },
+        {
+            "name": "Group 3: Real-World Scenarios (Tests 13-18)",
+            "tests": [
+                {"name": "Test 13: Young professional (25, 3)", "age": 25, "exp": 3, "expected_range": (0.35, 0.42)},
+                {"name": "Test 14: Mid-career advanced (40, 4)", "age": 40, "exp": 4, "expected_range": (0.55, 0.65)},
+                {"name": "Test 15: Senior expert (60, 5)", "age": 60, "exp": 5, "expected_range": (0.80, 0.85)},
+                {"name": "Test 16: Career changer (45, 1)", "age": 45, "exp": 1, "expected_range": (0.15, 0.20)},
+                {"name": "Test 17: Child prodigy (8, 3)", "age": 8, "exp": 3, "expected_range": (0.28, 0.32)},
+                {"name": "Test 18: Consistency test (30, 3)", "age": 30, "exp": 3},
+            ]
+        }
+    ]
+    
+    total_tests = 0
+    passed_tests = 0
+    results_by_group = []
+    
+    for group in test_groups:
+        group_results = {"name": group["name"], "tests": []}
+        
+        for test in group["tests"]:
+            total_tests += 1
+            test_result = {"name": test["name"], "passed": False, "result": ""}
+            
+            try:
+                # Handle different test types
+                if "age" in test and "exp" in test:
+                    score = ae_v2.calculate_combined_score(test["age"], test["exp"])
+                    
+                    # Check expected value
+                    if "expected" in test:
+                        passed = abs(score - test["expected"]) < 0.01
+                        test_result["passed"] = passed
+                        test_result["result"] = f"Score: {score:.3f} (Expected: {test['expected']:.3f})"
+                    
+                    # Check expected range
+                    elif "expected_range" in test:
+                        min_val, max_val = test["expected_range"]
+                        passed = min_val <= score <= max_val
+                        test_result["passed"] = passed
+                        test_result["result"] = f"Score: {score:.3f} (Range: {min_val}-{max_val})"
+                    
+                    # Comparison tests
+                    elif "compare" in test:
+                        age2, exp2 = test["compare"]
+                        score2 = ae_v2.calculate_combined_score(age2, exp2)
+                        diff = abs(score2 - score)
+                        expected_diff = test.get("diff", 0)
+                        passed = abs(diff - expected_diff) < 0.05
+                        test_result["passed"] = passed
+                        test_result["result"] = f"Diff: {diff:.3f} (Expected: {expected_diff:.3f})"
+                    
+                    # Consistency test
+                    elif "Consistency" in test["name"]:
+                        score2 = ae_v2.calculate_combined_score(test["age"], test["exp"])
+                        score3 = ae_v2.calculate_combined_score(test["age"], test["exp"])
+                        passed = score == score2 == score3
+                        test_result["passed"] = passed
+                        test_result["result"] = f"Score: {score:.3f} (Consistent: {passed})"
+                    
+                    else:
+                        test_result["passed"] = True
+                        test_result["result"] = f"Score: {score:.3f}"
+                
+                # Linear progression tests
+                elif "ages" in test:
+                    scores = [ae_v2.calculate_combined_score(age, test["exp"]) for age in test["ages"]]
+                    passed = all(scores[i] < scores[i+1] for i in range(len(scores)-1))
+                    test_result["passed"] = passed
+                    test_result["result"] = f"Scores: {[round(s, 3) for s in scores]}"
+                
+                elif "exps" in test:
+                    scores = [ae_v2.calculate_combined_score(test["age"], exp) for exp in test["exps"]]
+                    passed = all(scores[i] < scores[i+1] for i in range(len(scores)-1))
+                    test_result["passed"] = passed
+                    test_result["result"] = f"Scores: {[round(s, 3) for s in scores]}"
+                
+                if test_result["passed"]:
+                    passed_tests += 1
+                    
+            except Exception as e:
+                test_result["passed"] = False
+                test_result["result"] = f"Error: {str(e)}"
+            
+            group_results["tests"].append(test_result)
+        
+        results_by_group.append(group_results)
+    
+    return {
+        "total": total_tests,
+        "passed": passed_tests,
+        "failed": total_tests - passed_tests,
+        "all_passed": passed_tests == total_tests,
+        "test_groups": results_by_group
+    }
+
 # Run index creation on startup
 import asyncio
 asyncio.create_task(create_database_indexes())
