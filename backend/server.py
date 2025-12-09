@@ -856,6 +856,10 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     # Generate plan with age + goals for full personalization
     plan = ae_v2.generate_plan(user_id, answers_formatted, age=age, goals=goals)
     
+    # Calculate AE-CORE v2.0 combined score
+    experience_level = user.get('experience_level', 1)
+    combined_score = ae_v2.calculate_combined_score(age, experience_level)
+    
     # Extract chapter order from plan
     chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
     
@@ -869,6 +873,7 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         "reinforcement_rate": 0.6,
         "financial_dna": plan['dna'],
         "lpi_plan": plan['lpi_plan'],
+        "combined_score": combined_score,  # AE-CORE v2.0 formula
         "generated_at": plan['generated_at'],
         "ae_version": "v2.0"
     }
