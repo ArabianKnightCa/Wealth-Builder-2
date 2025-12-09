@@ -24,8 +24,15 @@ function LPIChapter({ token, user }) {
 
   const fetchChapter = async () => {
     try {
-      const response = await axios.get(`${API}/content/lpi`);
+      const response = await axios.get(`${API}/content/lpi`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       const found = response.data.chapters.find(ch => ch.id === chapterId);
+      
+      if (!found) {
+        console.error(`Chapter ${chapterId} not found in response`);
+      }
+      
       setChapter(found);
       setLoading(false);
     } catch (error) {
