@@ -524,12 +524,11 @@ function Register({ onLogin }) {
                 </select>
               </div>
 
-              {/* Option 6: Google Places API Location Selector */}
+              {/* Country & City Dropdowns (placed above state) */}
               <div>
-                <LocationSelectorGooglePlaces
+                <LocationSelectorSimpleDropdowns
                   value={formData.location}
                   onChange={(location) => setFormData({ ...formData, location })}
-                  token={null}
                 />
               </div>
 
