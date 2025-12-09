@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import GoalSelector from './GoalSelector';
 import RegistrationIntro from './RegistrationIntro';
-import LocationSelectorSimpleDropdowns from '../components/LocationSelector_SimpleDropdowns';
+import LocationSelectorWrapper from '../components/LocationSelectorWrapper';
 
-// BACKGROUND: Advanced location selectors ready but not active
-// import LocationSelectorGooglePlaces from '../components/LocationSelector_GooglePlaces'; // Ready for Google API
-// import LocationSelectorModal from '../components/LocationSelector_Modal'; // Ready for iOS
-// import LocationSelectorAutocomplete from '../components/LocationSelector_Autocomplete'; // Ready for power users
+// LOCATION SELECTOR: Easy switching between options via config
+// Current: Simple dropdowns
+// Available: Google Places API, iOS Modal, Autocomplete
+// To switch: Edit /app/frontend/src/config/locationSelectorConfig.js
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
