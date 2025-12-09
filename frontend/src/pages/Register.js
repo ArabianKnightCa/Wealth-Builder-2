@@ -27,7 +27,8 @@ function Register({ onLogin }) {
     school_city: '',
     school_state: '',
     parent_email: '',
-    financial_goals: []
+    financial_goals: [],
+    location: null  // Will store {city, country, country_code, latitude, longitude}
   });
   const [showSchoolCapture, setShowSchoolCapture] = useState(false);
   const [showParentConsent, setShowParentConsent] = useState(false);
