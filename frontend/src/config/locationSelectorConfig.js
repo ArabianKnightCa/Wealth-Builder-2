@@ -12,7 +12,7 @@
 
 export const LOCATION_SELECTOR_CONFIG = {
   // CURRENT ACTIVE OPTION
-  activeOption: 'simple',  // Change this to 'google', 'modal', or 'autocomplete' when ready
+  activeOption: 'google',  // Changed to 'google' for geolocation + search bar
   
   // GOOGLE PLACES API SETTINGS (ready for when you add API key)
   google: {
