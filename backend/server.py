@@ -3543,6 +3543,134 @@ async def create_database_indexes():
         print(f"⚠️ Index creation warning: {e}")
 
 # ========================================================================
+# LOCATION SERVICES - GEOCODING (Mock for now, ready for Google Places API)
+# ========================================================================
+
+class LocationSearchRequest(BaseModel):
+    query: str
+
+class ReverseGeocodeRequest(BaseModel):
+    latitude: float
+    longitude: float
+
+# Mock city database (replace with Google Places API when ready)
+MOCK_CITIES = [
+    {"city": "San Francisco", "country": "United States", "country_code": "US", "latitude": 37.7749, "longitude": -122.4194},
+    {"city": "San Jose", "country": "United States", "country_code": "US", "latitude": 37.3382, "longitude": -121.8863},
+    {"city": "Los Angeles", "country": "United States", "country_code": "US", "latitude": 34.0522, "longitude": -118.2437},
+    {"city": "New York", "country": "United States", "country_code": "US", "latitude": 40.7128, "longitude": -74.0060},
+    {"city": "Chicago", "country": "United States", "country_code": "US", "latitude": 41.8781, "longitude": -87.6298},
+    {"city": "Seattle", "country": "United States", "country_code": "US", "latitude": 47.6062, "longitude": -122.3321},
+    {"city": "Boston", "country": "United States", "country_code": "US", "latitude": 42.3601, "longitude": -71.0589},
+    {"city": "Austin", "country": "United States", "country_code": "US", "latitude": 30.2672, "longitude": -97.7431},
+    {"city": "London", "country": "United Kingdom", "country_code": "GB", "latitude": 51.5074, "longitude": -0.1278},
+    {"city": "Paris", "country": "France", "country_code": "FR", "latitude": 48.8566, "longitude": 2.3522},
+    {"city": "Tokyo", "country": "Japan", "country_code": "JP", "latitude": 35.6762, "longitude": 139.6503},
+    {"city": "Sydney", "country": "Australia", "country_code": "AU", "latitude": -33.8688, "longitude": 151.2093},
+    {"city": "Toronto", "country": "Canada", "country_code": "CA", "latitude": 43.6532, "longitude": -79.3832},
+    {"city": "Mumbai", "country": "India", "country_code": "IN", "latitude": 19.0760, "longitude": 72.8777},
+    {"city": "Singapore", "country": "Singapore", "country_code": "SG", "latitude": 1.3521, "longitude": 103.8198},
+    {"city": "Dubai", "country": "United Arab Emirates", "country_code": "AE", "latitude": 25.2048, "longitude": 55.2708},
+    {"city": "Berlin", "country": "Germany", "country_code": "DE", "latitude": 52.5200, "longitude": 13.4050},
+    {"city": "Madrid", "country": "Spain", "country_code": "ES", "latitude": 40.4168, "longitude": -3.7038},
+    {"city": "Rome", "country": "Italy", "country_code": "IT", "latitude": 41.9028, "longitude": 12.4964},
+    {"city": "Amsterdam", "country": "Netherlands", "country_code": "NL", "latitude": 52.3676, "longitude": 4.9041},
+]
+
+@api_router.post("/location/search")
+async def location_search(request: LocationSearchRequest):
+    """
+    Mock geocoding search (ready for Google Places API)
+    
+    To enable Google Places API:
+    1. Add GOOGLE_PLACES_API_KEY to .env
+    2. Uncomment Google Places code below
+    3. Remove mock logic
+    """
+    query = request.query.lower().strip()
+    
+    # TODO: Replace with Google Places API when ready
+    # google_api_key = os.environ.get('GOOGLE_PLACES_API_KEY')
+    # if google_api_key:
+    #     # Use real Google Places API
+    #     import googlemaps
+    #     gmaps = googlemaps.Client(key=google_api_key)
+    #     results = gmaps.places_autocomplete(query)
+    #     suggestions = [format_google_result(r) for r in results]
+    #     return {"suggestions": suggestions}
+    
+    # Mock implementation - search in mock database
+    suggestions = []
+    for city in MOCK_CITIES:
+        city_match = query in city['city'].lower()
+        country_match = query in city['country'].lower()
+        
+        if city_match or country_match:
+            suggestions.append({
+                "city": city['city'],
+                "country": city['country'],
+                "country_code": city['country_code'],
+                "latitude": city['latitude'],
+                "longitude": city['longitude'],
+                "formatted_address": f"{city['city']}, {city['country']}"
+            })
+    
+    return {"suggestions": suggestions[:10]}  # Limit to 10 results
+
+@api_router.post("/location/reverse-geocode")
+async def reverse_geocode(request: ReverseGeocodeRequest):
+    """
+    Mock reverse geocoding (ready for Google Places API)
+    
+    Converts latitude/longitude to city/country
+    """
+    # TODO: Replace with Google Places API when ready
+    # google_api_key = os.environ.get('GOOGLE_PLACES_API_KEY')
+    # if google_api_key:
+    #     # Use real Google Places API
+    #     import googlemaps
+    #     gmaps = googlemaps.Client(key=google_api_key)
+    #     result = gmaps.reverse_geocode((request.latitude, request.longitude))
+    #     return format_google_reverse_result(result[0])
+    
+    # Mock implementation - find nearest city
+    import math
+    
+    def distance(lat1, lon1, lat2, lon2):
+        """Calculate distance between two points (Haversine formula)"""
+        R = 6371  # Earth radius in km
+        dlat = math.radians(lat2 - lat1)
+        dlon = math.radians(lon2 - lon1)
+        a = (math.sin(dlat / 2) ** 2 + 
+             math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * 
+             math.sin(dlon / 2) ** 2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return R * c
+    
+    # Find nearest city in mock database
+    nearest_city = None
+    min_distance = float('inf')
+    
+    for city in MOCK_CITIES:
+        dist = distance(request.latitude, request.longitude, city['latitude'], city['longitude'])
+        if dist < min_distance:
+            min_distance = dist
+            nearest_city = city
+    
+    if nearest_city:
+        return {
+            "city": nearest_city['city'],
+            "country": nearest_city['country'],
+            "country_code": nearest_city['country_code'],
+            "latitude": request.latitude,
+            "longitude": request.longitude,
+            "formatted_address": f"{nearest_city['city']}, {nearest_city['country']}",
+            "distance_km": round(min_distance, 2)
+        }
+    
+    raise HTTPException(status_code=404, detail="No nearby city found")
+
+# ========================================================================
 # AE-CORE v2.0 TEST HARNESS ENDPOINTS
 # ========================================================================
 
