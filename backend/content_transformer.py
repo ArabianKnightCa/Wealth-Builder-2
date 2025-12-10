@@ -247,7 +247,12 @@ class ContentTransformer:
             return text
         
         # Replace financial jargon with simpler terms
-        for jargon, replacements in self.jargon_simplification.items():
+        # Sort by length descending to replace longer phrases first (avoid partial matches)
+        sorted_jargon = sorted(self.jargon_simplification.items(), 
+                              key=lambda x: len(x[0]), 
+                              reverse=True)
+        
+        for jargon, replacements in sorted_jargon:
             if jargon in text.lower():
                 pattern = re.compile(re.escape(jargon), re.IGNORECASE)
                 replacement = replacements.get(age_band, jargon)
