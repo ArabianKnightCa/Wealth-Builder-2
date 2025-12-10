@@ -332,16 +332,22 @@ function Register({ onLogin }) {
                     {showPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
+                {fieldErrors.password && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please enter a valid password (min 8 characters)</p>
+                )}
               </div>
 
-              <div>
+              <div data-field="confirmPassword">
                 <label className="block text-gray-700 font-semibold mb-2">Confirm Password</label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    className="input-field pr-12"
+                    className={`input-field pr-12 ${fieldErrors.confirmPassword ? 'border-red-500 border-2 bg-red-50' : ''}`}
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, confirmPassword: e.target.value });
+                      setFieldErrors({ ...fieldErrors, confirmPassword: false });
+                    }}
                     minLength={8}
                     required
                     data-testid="confirm-password-input"
