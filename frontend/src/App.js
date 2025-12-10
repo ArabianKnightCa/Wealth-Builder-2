@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Welcome from './pages/Welcome';
@@ -27,12 +27,13 @@ import telemetryService from './utils/telemetry';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
   const [currentProfile, setCurrentProfile] = useState(null);
   const [showProfileSelector, setShowProfileSelector] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -90,10 +91,17 @@ function App() {
     }
   };
 
-  const handleLogin = (userData, authToken) => {
+  const handleLogin = (userData, authToken, redirectPath = null) => {
     setUser(userData);
     setToken(authToken);
     localStorage.setItem('token', authToken);
+    
+    // If a specific redirect path is provided, navigate to it
+    if (redirectPath) {
+      setTimeout(() => {
+        navigate(redirectPath);
+      }, 100);
+    }
   };
 
   const handleLogout = () => {
@@ -134,7 +142,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <>
       {user && <GlobalHUD user={user} token={token} onLogout={handleLogout} />}
       <Routes>
         <Route path="/" element={!user ? <Welcome /> : <Navigate to="/dashboard" />} />
@@ -157,6 +165,14 @@ function App() {
         <Route path="/settings" element={user ? <Settings user={user} token={token} /> : <Navigate to="/login" />} />
         <Route path="/completed" element={user ? <Completed token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

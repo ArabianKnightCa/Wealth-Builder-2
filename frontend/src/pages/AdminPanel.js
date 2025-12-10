@@ -394,21 +394,16 @@ function AdminPanel({ onLogin }) {
 
       setMessage(`✅ User created successfully! Redirecting...`);
       
-      // Set user state FIRST before navigation (critical!)
-      onLogin(user, access_token);
-      
       // Determine destination based on test type
-      let destination = '/dashboard'; // default
+      let redirectPath = '/dashboard'; // default
       if (!skipPPI && !unlockAllChapters) {
-        destination = '/ppi'; // Start Fresh - go to PPI to complete manually
+        redirectPath = '/ppi'; // Start Fresh - go to PPI to complete manually
       } else if (unlockAllChapters) {
-        destination = '/completed'; // Complete All - unlock everything
+        redirectPath = '/completed'; // Complete All - unlock everything
       }
       
-      // Use React Router navigation (avoids full page reload issues)
-      setTimeout(() => {
-        navigate(destination);
-      }, 500);
+      // Call onLogin with the redirect path parameter
+      onLogin(user, access_token, redirectPath);
 
     } catch (error) {
       if (error.response?.data?.detail?.includes('already registered')) {
@@ -419,10 +414,7 @@ function AdminPanel({ onLogin }) {
             password: profile.password
           });
           setMessage(`✅ Logged in as existing user!`);
-          setTimeout(() => {
-            onLogin(loginResponse.data.user, loginResponse.data.access_token);
-            navigate('/dashboard');
-          }, 1000);
+          onLogin(loginResponse.data.user, loginResponse.data.access_token, '/dashboard');
         } catch (loginError) {
           setMessage(`❌ Error: ${loginError.response?.data?.detail || 'Login failed'}`);
         }
