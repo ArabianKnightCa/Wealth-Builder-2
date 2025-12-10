@@ -119,31 +119,43 @@ function LocationSelectorGooglePlaces({ value, onChange, token }) {
 
   return (
     <div className="space-y-3">
-      <label className="block text-gray-700 font-semibold mb-2">
-        📍 Location (Country & City)
-      </label>
+      {/* Instruction Text */}
+      <p className="text-gray-600 text-sm mb-3">
+        Place you are mostly located
+      </p>
 
-      {/* Geolocation Button */}
-      <button
-        type="button"
-        onClick={handleUseCurrentLocation}
-        disabled={geolocating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-      >
-        {geolocating ? (
-          <>
-            <span className="animate-spin">⏳</span>
-            Detecting Location...
-          </>
-        ) : (
-          <>
-            <span>🎯</span>
-            Use Current Location
-          </>
-        )}
-      </button>
+      {!selectedLocation && !searchQuery && (
+        <>
+          {/* Geolocation Button - Show ONLY when nothing selected */}
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            disabled={geolocating}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          >
+            {geolocating ? (
+              <>
+                <span className="animate-spin">⏳</span>
+                Detecting Location...
+              </>
+            ) : (
+              <>
+                <span>🎯</span>
+                Use Current Location
+              </>
+            )}
+          </button>
 
-      {/* Manual Search */}
+          {/* OR Divider */}
+          <div className="flex items-center gap-3 my-3">
+            <div className="flex-1 border-t border-gray-300"></div>
+            <span className="text-gray-500 text-sm">OR</span>
+            <div className="flex-1 border-t border-gray-300"></div>
+          </div>
+        </>
+      )}
+
+      {/* Manual Search - Show when user starts typing OR after geolocation button clicked */}
       <div className="relative">
         <div className="flex items-center gap-2">
           <input
