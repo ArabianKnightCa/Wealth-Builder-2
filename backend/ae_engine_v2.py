@@ -130,10 +130,11 @@ class AdaptiveEngineV2:
             # Transform each option as well
             transformed_options = []
             for option in item['options']:
-                # Options are in format "A. text" or "B. text" etc.
-                if len(option) > 2 and option[1] == '.':
+                # Options are in format "A text" or "A. text" (with or without period)
+                if len(option) > 2 and option[0].isalpha() and (option[1] == ' ' or option[1] == '.'):
                     letter = option[0]
-                    option_text = option[2:].strip()
+                    # Skip the letter and the separator (space or period+space)
+                    option_text = option[2:].strip() if option[1] == '.' else option[1:].strip()
                     transformed_text = transformer.transform_ppi_question(
                         option_text,
                         age,
