@@ -321,10 +321,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Visual proof screenshots for AE personalization completed successfully"
-    - "Session management issue confirmed and documented"
+    - "PPI Language Transformation for 7-year-old children - CRITICAL ISSUE IDENTIFIED"
+    - "Language complexity too advanced for early elementary age users"
   stuck_tasks: 
     - "User Session Management"
+    - "PPI Language Transformation for Child Users"
   test_all: true
   test_priority: "high_first"
 
