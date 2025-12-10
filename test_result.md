@@ -620,6 +620,18 @@ test_plan:
           agent: "testing"
           comment: "✅ FINAL VERIFICATION PASSED - Chapter loading fix confirmed working in final P0 testing. Direct navigation to /chapter/CH01 loads successfully without 'Chapter not found' error. Chapter title 'Mizo Wealth Builder' displays correctly with 3 lesson content elements visible. Authorization headers functioning properly. This P0 bug is fully resolved."
 
+  - task: "Admin Panel Button Redirect Fix"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/pages/AdminPanel.js"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ CRITICAL ISSUE DISCOVERED - Admin panel button redirects are NOT working as expected after the claimed fix. TESTED RESULTS: (1) Button 1 'Create & Start Fresh' - ❌ FAILED: Expected /ppi, got /dashboard, (2) Button 2 'Create & Skip to Dashboard' - ✅ SUCCESS: Expected /dashboard, got /dashboard, (3) Button 3 'Create & Complete All Chapters' - ❌ FAILED: Expected /completed, got /dashboard. ROOT CAUSE: Registration API calls are failing with 400 errors (console logs: 'Failed to load resource: the server responded with a status of 400 () at /api/auth/register'), causing AdminPanel to fall back to existing user login logic which hardcodes redirect to '/dashboard' (line 417 in AdminPanel.js), completely ignoring the intended redirectPath parameter. The handleLogin redirectPath parameter fix in App.js is being bypassed by the fallback login mechanism. IMMEDIATE FIX NEEDED: Update AdminPanel.js fallback login logic (line 417) to preserve and use the intended redirectPath instead of hardcoding '/dashboard'."
+
 agent_communication:
     - agent: "main_fork_new"
       message: "P0 BUGS FIXED - READY FOR TESTING: Fixed both critical bugs identified by testing agent. (1) Registration Redirect: Changed from window.location.href to navigate('/ppi') and ensured onLogin completes before navigation. (2) Chapter Loading: Added missing Authorization Bearer token to /api/content/lpi request in fetchChapter(). Both fixes are minimal, targeted changes. Ready for frontend testing agent to verify the complete user journey: Registration → PPI → Dashboard → Chapter Access."
