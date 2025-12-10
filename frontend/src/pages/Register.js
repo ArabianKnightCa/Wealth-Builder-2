@@ -525,6 +525,9 @@ function Register({ onLogin }) {
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>
+                {fieldErrors.occupation && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please select your current role</p>
+                )}
               </div>
 
               {showSchoolCapture && (
