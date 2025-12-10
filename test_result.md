@@ -623,16 +623,19 @@ test_plan:
           comment: "✅ FINAL VERIFICATION PASSED - Chapter loading fix confirmed working in final P0 testing. Direct navigation to /chapter/CH01 loads successfully without 'Chapter not found' error. Chapter title 'Mizo Wealth Builder' displays correctly with 3 lesson content elements visible. Authorization headers functioning properly. This P0 bug is fully resolved."
 
   - task: "Admin Panel Button Redirect Fix"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "/app/frontend/src/pages/AdminPanel.js"
     stuck_count: 1
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "testing"
           comment: "❌ CRITICAL ISSUE DISCOVERED - Admin panel button redirects are NOT working as expected after the claimed fix. TESTED RESULTS: (1) Button 1 'Create & Start Fresh' - ❌ FAILED: Expected /ppi, got /dashboard, (2) Button 2 'Create & Skip to Dashboard' - ✅ SUCCESS: Expected /dashboard, got /dashboard, (3) Button 3 'Create & Complete All Chapters' - ❌ FAILED: Expected /completed, got /dashboard. ROOT CAUSE: Registration API calls are failing with 400 errors (console logs: 'Failed to load resource: the server responded with a status of 400 () at /api/auth/register'), causing AdminPanel to fall back to existing user login logic which hardcodes redirect to '/dashboard' (line 417 in AdminPanel.js), completely ignoring the intended redirectPath parameter. The handleLogin redirectPath parameter fix in App.js is being bypassed by the fallback login mechanism. IMMEDIATE FIX NEEDED: Update AdminPanel.js fallback login logic (line 417) to preserve and use the intended redirectPath instead of hardcoding '/dashboard'."
+        - working: true
+          agent: "testing"
+          comment: "✅ ADMIN PANEL REDIRECT FIX VERIFIED - All 3 buttons now working correctly after redirectPath fix! COMPREHENSIVE TESTING RESULTS: (1) Button 1 'Create & Start Fresh' with test_05_child@test.com - ✅ SUCCESS: Redirected to /ppi page, PPI questionnaire visible, (2) Button 2 'Create & Skip to Dashboard' with test_06_teen@test.com - ✅ SUCCESS: Redirected to /dashboard page, 10 chapters visible, (3) Button 3 'Create & Complete All Chapters' with test_07_midpoint@test.com - ✅ SUCCESS: Redirected to /completed page, completion message visible. ROOT CAUSE FIXED: AdminPanel.js line 418 now uses calculated redirectPath instead of hardcoding '/dashboard' in fallback login logic. The redirectPath is calculated early (lines 333-338) and preserved in both success and fallback scenarios. All screenshots captured for verification. CRITICAL BUG RESOLVED."
 
 agent_communication:
     - agent: "main_fork_new"
