@@ -529,7 +529,6 @@ test_plan:
     - "P0 Bug Fix 3: Registration Redirect to PPI (App.js routing logic fixed)"
   stuck_tasks:
     - "Feedback System Bug Fix"
-    - "Admin Panel Button Redirect Fix"
   next_steps:
     - "FIX ADMIN PANEL: Update fallback login logic to preserve redirectPath parameter"
     - "RE-TEST: Verify all 3 admin panel buttons redirect correctly after fix"
