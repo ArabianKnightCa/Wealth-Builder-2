@@ -573,12 +573,15 @@ function Register({ onLogin }) {
                 </div>
               )}
 
-              <div>
+              <div data-field="experience_level">
                 <label className="block text-gray-700 font-semibold mb-2">Financial Experience Level</label>
                 <select
-                  className="input-field"
+                  className={`input-field ${fieldErrors.experience_level ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.experience_level}
-                  onChange={(e) => setFormData({ ...formData, experience_level: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, experience_level: e.target.value });
+                    setFieldErrors({ ...fieldErrors, experience_level: false });
+                  }}
                   required
                   data-testid="experience-select"
                 >
@@ -587,6 +590,9 @@ function Register({ onLogin }) {
                     <option key={level.value} value={level.value}>{level.label}</option>
                   ))}
                 </select>
+                {fieldErrors.experience_level && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please select your financial experience level</p>
+                )}
               </div>
 
               <div className="flex gap-4">
