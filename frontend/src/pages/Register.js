@@ -113,6 +113,7 @@ function Register({ onLogin }) {
 
   const handleOccupationChange = (occupation) => {
     setFormData({ ...formData, occupation });
+    setFieldErrors({ ...fieldErrors, occupation: false });
     setShowSchoolCapture(false); // No longer showing school capture since we removed student occupations
   };
 
