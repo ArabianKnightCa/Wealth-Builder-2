@@ -8,7 +8,7 @@ const API = `${BACKEND_URL}/api`;
 function AdminPanel({ onLogin }) {
   const navigate = useNavigate();
   const [masterCode, setMasterCode] = useState('');
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(true); // Auto-unlock (no password needed)
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState('users'); // 'users' or 'quizzes'
