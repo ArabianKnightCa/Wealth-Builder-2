@@ -395,7 +395,16 @@ function AdminPanel({ onLogin }) {
       setMessage(`✅ User created successfully! Logging you in...`);
       setTimeout(() => {
         onLogin(user, access_token);
-        navigate(unlockAllChapters ? '/completed' : (skipPPI ? '/dashboard' : '/ppi'));
+        // For "Start Fresh", ensure user goes to PPI to test the AE formula
+        if (!skipPPI && !unlockAllChapters) {
+          // User should complete PPI manually to test age + experience
+          navigate('/ppi');
+        } else if (unlockAllChapters) {
+          navigate('/completed');
+        } else {
+          // skipPPI is true - go to dashboard
+          navigate('/dashboard');
+        }
       }, 1000);
 
     } catch (error) {
