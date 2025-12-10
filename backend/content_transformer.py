@@ -193,6 +193,26 @@ class ContentTransformer:
                 'child': 'keeping money',
                 'teen': 'saving money',
                 'adult': 'saving money'
+            },
+            'friends or family for advice': {
+                'child': 'mom or dad for help',
+                'teen': 'family for advice',
+                'adult': 'friends or family for advice'
+            },
+            'for advice': {
+                'child': 'for help',
+                'teen': 'for advice',
+                'adult': 'for advice'
+            },
+            'consult with': {
+                'child': 'ask',
+                'teen': 'talk to',
+                'adult': 'consult with'
+            },
+            'rely on': {
+                'child': 'ask',
+                'teen': 'count on',
+                'adult': 'rely on'
             }
         }
     
