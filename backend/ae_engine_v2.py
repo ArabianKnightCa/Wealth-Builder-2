@@ -116,15 +116,39 @@ class AdaptiveEngineV2:
         # we'll use all eligible items (should be 20 or close to it)
         final_items = eligible_items[:20]  # Take up to 20
         
-        # Format output according to contract
+        # Format output according to contract with age/experience transformation
+        transformer = get_content_transformer()
         output_items = []
         for idx, item in enumerate(final_items, 1):
+            # Transform the question prompt based on age and experience
+            transformed_prompt = transformer.transform_ppi_question(
+                item['prompt'],
+                age,
+                financial_experience
+            )
+            
+            # Transform each option as well
+            transformed_options = []
+            for option in item['options']:
+                # Options are in format "A. text" or "B. text" etc.
+                if len(option) > 2 and option[1] == '.':
+                    letter = option[0]
+                    option_text = option[2:].strip()
+                    transformed_text = transformer.transform_ppi_question(
+                        option_text,
+                        age,
+                        financial_experience
+                    )
+                    transformed_options.append(f"{letter}. {transformed_text}")
+                else:
+                    transformed_options.append(option)
+            
             output_items.append({
                 "question_id": f"PPI_Q{idx:02d}",
                 "bank_id": item['id'],
                 "type": item['type'],
-                "prompt": item['prompt'],
-                "options": item['options']
+                "prompt": transformed_prompt,
+                "options": transformed_options
             })
         
         return {
