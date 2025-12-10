@@ -555,24 +555,29 @@ function AdminPanel({ onLogin }) {
               </div>
 
               <div className="space-y-2">
+                {/* Button 1: Create & Start Fresh - Goes to PPI */}
                 <button
                   onClick={() => createTestUser(item.profile, false, false)}
                   disabled={loading}
-                  className="btn-primary w-full text-sm"
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded font-semibold text-sm hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   Create & Start Fresh
                 </button>
+                
+                {/* Button 2: Skip to Dashboard - Auto-complete PPI, go to dashboard */}
                 <button
                   onClick={() => createTestUser(item.profile, true, false)}
                   disabled={loading}
-                  className="btn-secondary w-full text-sm"
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded font-semibold text-sm hover:bg-green-700 disabled:bg-gray-400"
                 >
                   Create & Skip to Dashboard
                 </button>
+                
+                {/* Button 3: Complete All - Unlock everything */}
                 <button
                   onClick={() => createTestUser(item.profile, true, true)}
                   disabled={loading}
-                  className="bg-gold text-navy-900 px-4 py-2 rounded font-semibold w-full text-sm hover:bg-gold-hover"
+                  className="w-full px-4 py-2 bg-purple-600 text-white rounded font-semibold text-sm hover:bg-purple-700 disabled:bg-gray-400"
                 >
                   Create & Complete All Chapters
                 </button>
