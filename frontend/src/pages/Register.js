@@ -413,18 +413,24 @@ function Register({ onLogin }) {
                 </div>
               )}
 
-              <div>
+              <div data-field="date_of_birth">
                 <label className="block text-gray-700 font-semibold mb-2">Date of Birth</label>
                 <input
                   type="date"
-                  className="input-field"
+                  className={`input-field ${fieldErrors.date_of_birth ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.date_of_birth}
-                  onChange={(e) => handleDOBChange(e.target.value)}
+                  onChange={(e) => {
+                    handleDOBChange(e.target.value);
+                    setFieldErrors({ ...fieldErrors, date_of_birth: false });
+                  }}
                   required
                   data-testid="dob-input"
                 />
                 {userAge !== null && userAge < 18 && (
                   <p className="text-sm text-blue-600 mt-1">⚠️ Parental consent required for users under 18</p>
+                )}
+                {fieldErrors.date_of_birth && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please enter your date of birth</p>
                 )}
               </div>
 
