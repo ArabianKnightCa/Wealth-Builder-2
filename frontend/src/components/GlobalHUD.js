@@ -86,6 +86,16 @@ function GlobalHUD({ user, token, onLogout }) {
               <span className="hidden sm:inline">📊 Analytics</span>
             </button>
 
+            {/* Testing Panel - Show on all screens */}
+            <button
+              onClick={() => navigate('/admin')}
+              className="px-2 sm:px-3 py-1 bg-gold text-navy-900 rounded text-xs sm:text-sm font-semibold hover:bg-yellow-500 transition-all"
+              title="Testing Panel"
+            >
+              <span className="sm:hidden">🧪</span>
+              <span className="hidden sm:inline">🧪 Testing</span>
+            </button>
+
             {/* Settings - Icon only on mobile */}
             <button
               onClick={() => navigate('/settings')}
