@@ -352,6 +352,28 @@ class ContentTransformer:
         
         return text
     
+    def transform_ppi_question(self, question_text: str, age: int, experience: str) -> str:
+        """
+        Transform a PPI question to be age and experience appropriate
+        
+        Args:
+            question_text: The baseline PPI question text
+            age: User's age
+            experience: User's financial experience level ('beginner', 'intermediate', 'advanced')
+        
+        Returns:
+            Transformed question text
+        """
+        age_band = self._get_age_band(age)
+        
+        # Apply age-based adjustments
+        transformed = self._adjust_for_age(question_text, age_band)
+        
+        # Apply experience-based adjustments
+        transformed = self._adjust_for_experience(transformed, experience)
+        
+        return transformed
+    
     def transform_chapter(self, chapter_data: Dict, user_profile: Dict[str, Any]) -> Dict:
         """
         Transform an entire chapter's lessons
