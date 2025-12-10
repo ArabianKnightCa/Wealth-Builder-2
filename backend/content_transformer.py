@@ -99,6 +99,11 @@ class ContentTransformer:
                 'teen': 'I like',
                 'adult': 'I prefer'
             },
+            'research extensively before deciding': {
+                'child': 'ask mom or dad',
+                'teen': 'look things up first',
+                'adult': 'research extensively before deciding'
+            },
             'research extensively': {
                 'child': 'ask grown-ups',
                 'teen': 'find out a lot',
@@ -108,6 +113,11 @@ class ContentTransformer:
                 'child': 'a lot',
                 'teen': 'thoroughly',
                 'adult': 'extensively'
+            },
+            'before deciding': {
+                'child': 'before choosing',
+                'teen': 'before deciding',
+                'adult': 'before deciding'
             },
             'making decisions': {
                 'child': 'choosing',
