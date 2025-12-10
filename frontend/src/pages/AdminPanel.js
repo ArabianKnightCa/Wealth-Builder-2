@@ -392,22 +392,23 @@ function AdminPanel({ onLogin }) {
         }
       }
 
-      setMessage(`✅ User created successfully! Logging you in...`);
+      setMessage(`✅ User created successfully! Redirecting...`);
       
-      // Store auth in localStorage FIRST, THEN navigate
-      localStorage.setItem('user', JSON.stringify(user));
+      // Store auth in localStorage
       localStorage.setItem('token', access_token);
       
-      // Determine destination BEFORE setting React state
-      let destination = '/dashboard'; // default
-      if (!skipPPI && !unlockAllChapters) {
-        destination = '/ppi'; // Start Fresh - go to PPI
-      } else if (unlockAllChapters) {
-        destination = '/completed'; // Complete All
-      }
-      
-      // Hard redirect to bypass React Router
-      window.location.href = destination;
+      // Small delay then hard redirect (bypasses all React state/routing)
+      setTimeout(() => {
+        let destination = '/dashboard'; // default
+        if (!skipPPI && !unlockAllChapters) {
+          destination = '/ppi'; // Start Fresh - go to PPI to complete manually
+        } else if (unlockAllChapters) {
+          destination = '/completed'; // Complete All - unlock everything
+        }
+        
+        // Force full page reload to destination
+        window.location.href = destination;
+      }, 500);
 
     } catch (error) {
       if (error.response?.data?.detail?.includes('already registered')) {
