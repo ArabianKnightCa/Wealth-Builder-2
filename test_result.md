@@ -513,8 +513,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "URGENT: Database ppi_completed flag fix failed - amanbazel@gmail.com still has ppi_completed=false"
-    - "Registration redirect logic working correctly but blocked by database issue"
+    - "CRITICAL: Admin Panel Button Redirect Fix - Registration fallback logic ignoring redirectPath"
+    - "Fix AdminPanel.js line 417 to preserve intended redirect destinations"
   completed_tasks:
     - "Priority 1: Content Engagement (Already Done)"
     - "Priority 2: Personalization Effectiveness (Already Done + Age Bands Removed)"
@@ -526,15 +526,17 @@ test_plan:
     - "Analytics Endpoints Testing (All 11 endpoints verified working)"
     - "P0 Bug Fix 1: Registration redirect mechanism changed to React Router navigate"
     - "P0 Bug Fix 2: Chapter loading authentication headers added"
+    - "P0 Bug Fix 3: Registration Redirect to PPI (App.js routing logic fixed)"
   stuck_tasks:
     - "Feedback System Bug Fix"
-    - "P0 Bug Fix: Registration Redirect to PPI"
+    - "Admin Panel Button Redirect Fix"
   next_steps:
-    - "TEST P0 FIXES: Run frontend testing agent to verify registration flow and chapter loading"
-    - "Proceed with AE-CORE v2.0 implementation after P0 bugs confirmed fixed"
+    - "FIX ADMIN PANEL: Update fallback login logic to preserve redirectPath parameter"
+    - "RE-TEST: Verify all 3 admin panel buttons redirect correctly after fix"
+    - "Proceed with AE-CORE v2.0 implementation after admin panel fix confirmed"
     - "Build Test Harness UI + 18 automated tests for AE-CORE v2.0"
     - "Implement country/city selector UI"
-  test_priority: "p0_bug_verification"
+  test_priority: "admin_panel_redirect_fix"
 
   - task: "Analytics Endpoints Comprehensive Testing"
     implemented: true
