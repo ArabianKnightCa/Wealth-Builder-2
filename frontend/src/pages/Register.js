@@ -468,12 +468,18 @@ function Register({ onLogin }) {
               </div>
 
               {/* Location with Geolocation + Search Bar */}
-              <div>
+              <div data-field="location" className={`${fieldErrors.location ? 'border-2 border-red-500 bg-red-50 rounded-lg p-4' : ''}`}>
                 <LocationSelectorWrapper
                   value={formData.location}
-                  onChange={(location) => setFormData({ ...formData, location })}
+                  onChange={(location) => {
+                    setFormData({ ...formData, location });
+                    setFieldErrors({ ...fieldErrors, location: false });
+                  }}
                   token={null}
                 />
+                {fieldErrors.location && (
+                  <p className="text-red-600 text-sm mt-2">⚠️ Please select your location</p>
+                )}
               </div>
 
               <div>
