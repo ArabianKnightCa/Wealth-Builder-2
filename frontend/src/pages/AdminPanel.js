@@ -395,17 +395,17 @@ function AdminPanel({ onLogin }) {
       setMessage(`✅ User created successfully! Logging you in...`);
       setTimeout(() => {
         onLogin(user, access_token);
-        // For "Start Fresh", ensure user goes to PPI to test the AE formula
+        // Force navigation using window.location to bypass React Router redirects
         if (!skipPPI && !unlockAllChapters) {
           // User should complete PPI manually to test age + experience
-          navigate('/ppi');
+          window.location.href = '/ppi';
         } else if (unlockAllChapters) {
-          navigate('/completed');
+          window.location.href = '/completed';
         } else {
           // skipPPI is true - go to dashboard
-          navigate('/dashboard');
+          window.location.href = '/dashboard';
         }
-      }, 1000);
+      }, 1500);
 
     } catch (error) {
       if (error.response?.data?.detail?.includes('already registered')) {
