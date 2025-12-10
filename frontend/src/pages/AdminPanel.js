@@ -394,20 +394,20 @@ function AdminPanel({ onLogin }) {
 
       setMessage(`✅ User created successfully! Redirecting...`);
       
-      // Store auth in localStorage
-      localStorage.setItem('token', access_token);
+      // Set user state FIRST before navigation (critical!)
+      onLogin(user, access_token);
       
-      // Small delay then hard redirect (bypasses all React state/routing)
+      // Determine destination based on test type
+      let destination = '/dashboard'; // default
+      if (!skipPPI && !unlockAllChapters) {
+        destination = '/ppi'; // Start Fresh - go to PPI to complete manually
+      } else if (unlockAllChapters) {
+        destination = '/completed'; // Complete All - unlock everything
+      }
+      
+      // Use React Router navigation (avoids full page reload issues)
       setTimeout(() => {
-        let destination = '/dashboard'; // default
-        if (!skipPPI && !unlockAllChapters) {
-          destination = '/ppi'; // Start Fresh - go to PPI to complete manually
-        } else if (unlockAllChapters) {
-          destination = '/completed'; // Complete All - unlock everything
-        }
-        
-        // Force full page reload to destination
-        window.location.href = destination;
+        navigate(destination);
       }, 500);
 
     } catch (error) {
