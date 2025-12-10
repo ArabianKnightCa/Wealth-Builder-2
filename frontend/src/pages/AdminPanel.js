@@ -329,6 +329,14 @@ function AdminPanel({ onLogin }) {
     setLoading(true);
     setMessage('Creating test user...');
 
+    // Determine destination based on test type (calculate early so it's accessible in catch block)
+    let redirectPath = '/dashboard'; // default
+    if (!skipPPI && !unlockAllChapters) {
+      redirectPath = '/ppi'; // Start Fresh - go to PPI to complete manually
+    } else if (unlockAllChapters) {
+      redirectPath = '/completed'; // Complete All - unlock everything
+    }
+
     try {
       // Calculate life_stage based on age
       const birthYear = new Date(profile.date_of_birth).getFullYear();
@@ -394,27 +402,20 @@ function AdminPanel({ onLogin }) {
 
       setMessage(`✅ User created successfully! Redirecting...`);
       
-      // Determine destination based on test type
-      let redirectPath = '/dashboard'; // default
-      if (!skipPPI && !unlockAllChapters) {
-        redirectPath = '/ppi'; // Start Fresh - go to PPI to complete manually
-      } else if (unlockAllChapters) {
-        redirectPath = '/completed'; // Complete All - unlock everything
-      }
-      
       // Call onLogin with the redirect path parameter
       onLogin(user, access_token, redirectPath);
 
     } catch (error) {
       if (error.response?.data?.detail?.includes('already registered')) {
-        // User exists, try to login
+        // User exists, try to login and preserve intended redirect path
         try {
           const loginResponse = await axios.post(`${API}/auth/login`, {
             email: profile.email,
             password: profile.password
           });
           setMessage(`✅ Logged in as existing user!`);
-          onLogin(loginResponse.data.user, loginResponse.data.access_token, '/dashboard');
+          // Use the calculated redirectPath instead of hardcoding '/dashboard'
+          onLogin(loginResponse.data.user, loginResponse.data.access_token, redirectPath);
         } catch (loginError) {
           setMessage(`❌ Error: ${loginError.response?.data?.detail || 'Login failed'}`);
         }
