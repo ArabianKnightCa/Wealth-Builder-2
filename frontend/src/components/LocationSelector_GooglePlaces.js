@@ -121,7 +121,7 @@ function LocationSelectorGooglePlaces({ value, onChange, token }) {
     <div className="space-y-3">
       {/* Instruction Text */}
       <p className="text-gray-600 text-sm mb-3">
-        Place you are mostly located
+        The place you are located the most
       </p>
 
       {!selectedLocation && !searchQuery && (
