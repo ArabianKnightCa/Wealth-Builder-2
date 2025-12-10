@@ -272,38 +272,53 @@ function Register({ onLogin }) {
                 </div>
               )}
 
-              <div>
+              <div data-field="first_name">
                 <label className="block text-gray-700 font-semibold mb-2">First Name</label>
                 <input
                   type="text"
-                  className="input-field"
+                  className={`input-field ${fieldErrors.first_name ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.first_name}
-                  onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, first_name: e.target.value });
+                    setFieldErrors({ ...fieldErrors, first_name: false });
+                  }}
                   required
                   data-testid="first-name-input"
                 />
+                {fieldErrors.first_name && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please enter your first name</p>
+                )}
               </div>
 
-              <div>
+              <div data-field="email">
                 <label className="block text-gray-700 font-semibold mb-2">Email</label>
                 <input
                   type="email"
-                  className="input-field"
+                  className={`input-field ${fieldErrors.email ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    setFieldErrors({ ...fieldErrors, email: false });
+                  }}
                   required
                   data-testid="email-input"
                 />
+                {fieldErrors.email && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please enter your email</p>
+                )}
               </div>
 
-              <div>
+              <div data-field="password">
                 <label className="block text-gray-700 font-semibold mb-2">Password (min 8 characters)</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="input-field pr-12"
+                    className={`input-field pr-12 ${fieldErrors.password ? 'border-red-500 border-2 bg-red-50' : ''}`}
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, password: e.target.value });
+                      setFieldErrors({ ...fieldErrors, password: false });
+                    }}
                     minLength={8}
                     required
                     data-testid="password-input"
