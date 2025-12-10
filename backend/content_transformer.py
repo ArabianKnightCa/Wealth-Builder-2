@@ -68,6 +68,52 @@ class ContentTransformer:
         
         # Financial jargon simplification rules
         self.jargon_simplification = {
+            # PPI-specific simplifications for young children
+            'financial decisions': {
+                'child': 'money choices',
+                'teen': 'money decisions',
+                'adult': 'financial decisions'
+            },
+            'financial decision': {
+                'child': 'money choice',
+                'teen': 'money decision',
+                'adult': 'financial decision'
+            },
+            'financial future': {
+                'child': 'money when I grow up',
+                'teen': 'my money future',
+                'adult': 'financial future'
+            },
+            'approach to': {
+                'child': 'how I',
+                'teen': 'way I',
+                'adult': 'approach to'
+            },
+            'prefer to': {
+                'child': 'like to',
+                'teen': 'like to',
+                'adult': 'prefer to'
+            },
+            'i prefer': {
+                'child': 'I like',
+                'teen': 'I like',
+                'adult': 'I prefer'
+            },
+            'research extensively': {
+                'child': 'ask grown-ups',
+                'teen': 'find out a lot',
+                'adult': 'research extensively'
+            },
+            'extensively': {
+                'child': 'a lot',
+                'teen': 'thoroughly',
+                'adult': 'extensively'
+            },
+            'making decisions': {
+                'child': 'choosing',
+                'teen': 'deciding',
+                'adult': 'making decisions'
+            },
             'shared agreement': {
                 'child': 'something everyone agrees on',
                 'teen': 'something we all accept',
@@ -132,6 +178,11 @@ class ContentTransformer:
                 'child': 'money you owe someone',
                 'teen': 'money borrowed that must be repaid',
                 'adult': 'debt'
+            },
+            'saving money': {
+                'child': 'keeping money',
+                'teen': 'saving money',
+                'adult': 'saving money'
             }
         }
     
