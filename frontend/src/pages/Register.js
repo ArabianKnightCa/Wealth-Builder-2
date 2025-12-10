@@ -488,12 +488,15 @@ function Register({ onLogin }) {
                 )}
               </div>
 
-              <div>
+              <div data-field="life_stage">
                 <label className="block text-gray-700 font-semibold mb-2">Life Stage</label>
                 <select
-                  className="input-field"
+                  className={`input-field ${fieldErrors.life_stage ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.life_stage}
-                  onChange={(e) => setFormData({ ...formData, life_stage: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, life_stage: e.target.value });
+                    setFieldErrors({ ...fieldErrors, life_stage: false });
+                  }}
                   required
                   data-testid="life-stage-select"
                 >
@@ -502,12 +505,15 @@ function Register({ onLogin }) {
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
+                {fieldErrors.life_stage && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please select your life stage</p>
+                )}
               </div>
 
-              <div>
+              <div data-field="occupation">
                 <label className="block text-gray-700 font-semibold mb-2">Which best describes your current role?</label>
                 <select
-                  className="input-field"
+                  className={`input-field ${fieldErrors.occupation ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.occupation}
                   onChange={(e) => handleOccupationChange(e.target.value)}
                   required
