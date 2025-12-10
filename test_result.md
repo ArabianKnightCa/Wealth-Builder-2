@@ -527,15 +527,15 @@ test_plan:
     - "P0 Bug Fix 1: Registration redirect mechanism changed to React Router navigate"
     - "P0 Bug Fix 2: Chapter loading authentication headers added"
     - "P0 Bug Fix 3: Registration Redirect to PPI (App.js routing logic fixed)"
+    - "Admin Panel Button Redirect Fix (AdminPanel.js fallback login logic fixed)"
   stuck_tasks:
     - "Feedback System Bug Fix"
   next_steps:
-    - "FIX ADMIN PANEL: Update fallback login logic to preserve redirectPath parameter"
-    - "RE-TEST: Verify all 3 admin panel buttons redirect correctly after fix"
-    - "Proceed with AE-CORE v2.0 implementation after admin panel fix confirmed"
+    - "✅ ADMIN PANEL FIX COMPLETED: All 3 buttons redirect correctly to intended destinations"
+    - "Proceed with AE-CORE v2.0 implementation - admin panel testing infrastructure ready"
     - "Build Test Harness UI + 18 automated tests for AE-CORE v2.0"
     - "Implement country/city selector UI"
-  test_priority: "admin_panel_redirect_fix"
+  test_priority: "ae_core_v2_implementation"
 
   - task: "Analytics Endpoints Comprehensive Testing"
     implemented: true
