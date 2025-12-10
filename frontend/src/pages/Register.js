@@ -151,34 +151,42 @@ function Register({ onLogin }) {
 
   const handlePage2Next = async () => {
     setError('');
+    setFieldErrors({});
+    const errors = {};
     
     if (!formData.date_of_birth) {
-      setError('Please enter your date of birth');
-      return;
+      errors.date_of_birth = true;
     }
     
     if (!formData.life_stage) {
-      setError('Please select your life stage');
-      return;
+      errors.life_stage = true;
     }
     
     if (!formData.occupation) {
-      setError('Please select your current role');
-      return;
+      errors.occupation = true;
     }
     
     if (!formData.experience_level) {
-      setError('Please select your financial experience level');
-      return;
+      errors.experience_level = true;
     }
     
     if (!formData.location || !formData.location.city || !formData.location.country) {
-      setError('Please select your location (country and city)');
-      return;
+      errors.location = true;
     }
     
     if (showParentConsent && !formData.parent_email) {
-      setError('Parent/Guardian email is required for users under 18');
+      errors.parent_email = true;
+    }
+    
+    // If there are errors, highlight fields and scroll to first error
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      // Scroll to first error field
+      const firstErrorField = Object.keys(errors)[0];
+      const element = document.querySelector(`[data-field="${firstErrorField}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
     
