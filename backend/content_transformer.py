@@ -68,6 +68,21 @@ class ContentTransformer:
         
         # Financial jargon simplification rules
         self.jargon_simplification = {
+            'shared agreement': {
+                'child': 'something everyone agrees on',
+                'teen': 'something we all accept',
+                'adult': 'shared agreement'
+            },
+            'bartered': {
+                'child': 'traded things',
+                'teen': 'traded goods',
+                'adult': 'bartered'
+            },
+            'medium of exchange': {
+                'child': 'way to trade',
+                'teen': 'tool for trading',
+                'adult': 'medium of exchange'
+            },
             'compound interest': {
                 'child': 'money that grows itself',
                 'teen': 'earning interest on your interest',
@@ -87,6 +102,36 @@ class ContentTransformer:
                 'child': 'deciding where to put your money',
                 'teen': 'choosing how to split your investments',
                 'adult': 'asset allocation'
+            },
+            'inflation': {
+                'child': 'when things cost more money over time',
+                'teen': 'when prices go up',
+                'adult': 'inflation'
+            },
+            'investment': {
+                'child': 'putting money somewhere to grow it',
+                'teen': 'money you use to make more money',
+                'adult': 'investment'
+            },
+            'budget': {
+                'child': 'a plan for your money',
+                'teen': 'tracking how you spend your money',
+                'adult': 'budget'
+            },
+            'interest': {
+                'child': 'extra money you get or pay',
+                'teen': 'money earned or paid on borrowed money',
+                'adult': 'interest'
+            },
+            'credit': {
+                'child': 'borrowing money you pay back later',
+                'teen': 'borrowed money with a promise to repay',
+                'adult': 'credit'
+            },
+            'debt': {
+                'child': 'money you owe someone',
+                'teen': 'money borrowed that must be repaid',
+                'adult': 'debt'
             }
         }
     
