@@ -321,11 +321,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "PPI Language Transformation for 7-year-old children - CRITICAL ISSUE IDENTIFIED"
-    - "Language complexity too advanced for early elementary age users"
+    - "PPI Language Transformation for Child Users - MOSTLY RESOLVED"
+    - "Enhanced vocabulary transformation working for 8yo+ children"
   stuck_tasks: 
     - "User Session Management"
-    - "PPI Language Transformation for Child Users"
   test_all: true
   test_priority: "high_first"
 
