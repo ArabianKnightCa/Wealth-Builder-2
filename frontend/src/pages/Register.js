@@ -125,24 +125,39 @@ function Register({ onLogin }) {
 
   const handlePage1Next = () => {
     setError('');
+    setFieldErrors({});
+    const errors = {};
     
-    if (!formData.first_name.trim()) {
-      setError('Please enter your first name');
-      return;
+    if (!formData.first_name) {
+      errors.first_name = true;
     }
     
-    if (!formData.email.trim()) {
-      setError('Please enter your email');
-      return;
+    if (!formData.email) {
+      errors.email = true;
     }
     
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return;
+    if (!formData.password) {
+      errors.password = true;
     }
     
-    if (formData.password !== formData.confirmPassword) {
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = true;
+    }
+    
+    if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
+      errors.password = true;
+      errors.confirmPassword = true;
       setError('Passwords do not match');
+    }
+    
+    // If there are errors, highlight fields and scroll to first error
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstErrorField = Object.keys(errors)[0];
+      const element = document.querySelector(`[data-field="${firstErrorField}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
     
