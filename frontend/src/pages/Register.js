@@ -41,6 +41,7 @@ function Register({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({}); // Track which fields have errors
   const [loading, setLoading] = useState(false);
 
   const experienceLevels = [
