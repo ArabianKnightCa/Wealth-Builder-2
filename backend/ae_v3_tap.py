@@ -325,26 +325,45 @@ class TAPEngine:
         Here we lightly reword heavy finance terms for younger / lower experience users
         so they feel more like everyday language.
         """
+        import re
+        
         replacements_child = {
             "financial decisions": "money choices",
             "financial decision": "money choice",
+            "financial future": "money when I grow up",
+            "financial": "money",
+            "prefer to": "like to",
+            "I prefer": "I like",
+            "prefer": "like",
+            "approach to": "how I",
+            "my approach": "how I",
+            "research extensively before deciding": "ask mom or dad",
+            "research extensively": "ask grown-ups",
+            "before deciding": "before choosing",
             "investment": "putting money somewhere to grow it",
             "debt": "money you owe",
+            "friends or family for advice": "mom or dad for help",
+            "for advice": "for help",
         }
         replacements_teen = {
             "financial decisions": "money decisions",
             "financial decision": "money decision",
+            "financial future": "my money future",
+            "prefer to": "like to",
+            "I prefer": "I like",
         }
 
-        lowered = text.lower()
-        if age_band == "child":
-            for key, val in replacements_child.items():
-                if key in lowered:
-                    text = text.replace(key, val)
-        elif age_band == "teen":
-            for key, val in replacements_teen.items():
-                if key in lowered:
-                    text = text.replace(key, val)
+        # Choose replacement set based on age band
+        replacements = replacements_child if age_band == "child" else (replacements_teen if age_band == "teen" else {})
+        
+        # Sort by length descending to replace longer phrases first
+        sorted_replacements = sorted(replacements.items(), key=lambda x: len(x[0]), reverse=True)
+        
+        # Case-insensitive replacement
+        for key, val in sorted_replacements:
+            pattern = re.compile(re.escape(key), re.IGNORECASE)
+            text = pattern.sub(val, text)
+        
         return text
 
     def _append_personality_tail(self, text: str, dna_profile: str, soft: bool = False) -> str:
