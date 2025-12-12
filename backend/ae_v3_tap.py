@@ -194,8 +194,7 @@ class TAPEngine:
         # 2) Experience-based explanation injection (WITHOUT changing the core meaning)
         text = self._inject_experience_clarity(text, exp_band, is_ppi=True)
 
-        # 3) Remove heavy financial jargon from PPI (we care more about style than teaching here)
-        text = self._soften_overt_finance_terms_for_ppi(text, age_band)
+        # 3) Simplification is already handled by sentence structure algorithm above
 
         return text
 
