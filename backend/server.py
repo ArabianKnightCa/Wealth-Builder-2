@@ -18,7 +18,7 @@ from content_data import LPI_CHAPTERS, LPI_ANSWER_KEY
 from ae_engine_v2 import get_adaptive_engine_v2
 from quiz_validator import validate_quiz_integrity
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
-from content_transformer import get_content_transformer
+from ae_v3_tap import get_tap_engine, UserProfile, LessonContext, compute_age_band
 from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 from profile_models import Profile, ProfileCreate, ProfileUpdate, ActiveProfileResponse, AVATAR_OPTIONS
 
