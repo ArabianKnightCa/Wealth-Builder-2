@@ -13,7 +13,7 @@ from typing import Dict, List, Any, Tuple
 from datetime import datetime
 from pathlib import Path
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
-from content_transformer import get_content_transformer
+from ae_v3_tap import get_tap_engine, UserProfile, compute_experience_band
 
 
 class AdaptiveEngineV2:
