@@ -641,9 +641,9 @@ test_plan:
 
   - task: "PPI Language Transformation for Child Users"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/pages/PPI.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -659,6 +659,9 @@ test_plan:
         - working: true
           agent: "testing"
           comment: "✅ FINAL VERIFICATION COMPLETE - OPTION PARSING FIX SUCCESSFUL! Tested PPI language transformation for 8-year-old children using Test 5 (Child Beginner 10yo) after option parsing fix. CRITICAL SUCCESS CONFIRMED: (1) Question: 'When making money choices, I like to:' - ✅ Perfect transformation from 'financial decisions' to 'money choices' and 'prefer to' → 'like to', (2) Option A: 'ask mom or dad' - ✅ Successfully transformed from 'Research extensively before deciding' to age-appropriate family guidance, (3) Option C: 'Ask mom or dad for help' - ✅ Successfully transformed from 'Ask friends or family for advice' to simple parent-focused help. EVIDENCE: Screenshot captured showing all expected transformations working correctly. The option parsing fix has resolved the format issue (handling 'A text' without period). PPI language transformation now fully functional for 8-year-old children with appropriate vocabulary, simple concepts, and family-centered guidance options. System ready for young users."
+        - working: false
+          agent: "testing"
+          comment: "❌ TAP 2.0 REGRESSION CONFIRMED - Comprehensive testing of Test Profile 17 (Child Prodigy 8yo, Exp 3) reveals TAP 2.0 transformations are NOT working as expected. CRITICAL FINDINGS: (1) Question 1: 'When making financial decisions, I prefer to:.' - ❌ Complex terms still present: 'financial' (should be 'money'), 'prefer' (should be 'like'), 'decisions' (should be 'choices'), (2) Question 3: 'When I think about my financial future, I feel:.' - ❌ Complex term 'financial' still present (should be 'money when I grow up'), (3) Only Question 2: 'My approach to saving money is:.' shows proper transformation. ANALYSIS: Only 1/3 questions (33%) are age-appropriate for 7-8 year olds. Average word count 7.3 words is good (≤12), but vocabulary complexity remains too advanced. Option A still contains 'Research extensively before deciding' (4 words, too complex for children). EVIDENCE: 5 screenshots captured showing regression from previous successful transformations. TAP 2.0 system needs immediate investigation - previous fixes appear to have been reverted or are not consistently applied."
 
 agent_communication:
     - agent: "main_fork_new"
