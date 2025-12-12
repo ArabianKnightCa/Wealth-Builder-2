@@ -346,29 +346,104 @@ class TAPEngine:
             "my approach to saving money": "how i save money",
             "my approach to": "how i",
             "approach to": "how i",
-            "my how i": "how i",  # fix double replacement
+            "my how i": "how i",
             
-            # Preferences
+            # Preferences & decisions
             "prefer to": "like to",
             "i prefer": "i like",
             "prefer": "like",
+            "when setting financial goals": "when setting money goals",
+            "when setting money goals": "when i want to save money",
             
-            # Actions
+            # Actions & decision-making
             "research extensively before deciding": "ask my mom or dad",
             "research extensively": "ask a grownup",
             "before deciding": "before i pick",
             "before choosing": "before i pick",
             "making decisions": "picking",
+            "go with my gut feeling": "do what feels right",
+            
+            # Saving concepts
+            "track my spending": "watch my money",
+            "save a fixed amount each month": "save the same amount every month",
+            "save whatever is left over": "save what i have left",
+            "save only for specific goals": "save for special things i want",
+            "i struggle to save": "saving is hard for me",
+            "i struggle to save my money": "saving money is hard for me",
+            "save consistently": "save my money",
+            
+            # Future feelings
+            "excited and optimistic": "happy and good",
+            "anxious or worried": "worried or scared",
+            "uncertain but hopeful": "not sure but okay",
+            "confident and prepared": "ready and sure",
+            
+            # Frequency
+            "daily or weekly": "every day or every week",
+            "monthly": "every month",
+            "rarely or never": "almost never",
+            "only when i'm worried about money": "only when i worry about money",
             
             # Money concepts
-            "track my spending": "watch my money",
             "unexpected money": "surprise money",
             "receive unexpected money": "get surprise money",
+            "save most or all of it": "save most of it or all of it",
+            "spend it on something i've wanted": "buy something i want",
+            "split it between saving and spending": "save some and spend some",
+            "use it to pay bills or": "use it to pay for things or",
             "investment": "save money to make more",
             "debt": "money i owe",
-            "save consistently": "save my money",
             "emergency fund": "saved money for bad times",
             "paying off debt": "paying back money",
+            
+            # Learning styles
+            "i learn best through": "i learn best by",
+            "reading and research": "reading and looking things up",
+            "hands-on practice": "doing it myself",
+            "watching videos or tutorials": "watching videos",
+            "discussion and conversation": "talking with others",
+            
+            # Goals & planning
+            "detailed plans with specific timelines": "make a clear plan with dates",
+            "general direction without strict deadlines": "a loose plan without exact dates",
+            "short-term goals i can achieve quickly": "small goals i can do fast",
+            "long-term vision with flexibility": "big goals i can change",
+            
+            # Spending habits
+            "i would describe my spending habits as": "when i spend money, i am",
+            "spending habits": "how i spend",
+            "very disciplined": "very careful",
+            "mostly controlled with occasional splurges": "mostly careful but sometimes i buy fun things",
+            "impulsive at times": "sometimes i buy without thinking",
+            "often reactive to emotions": "i buy things when i feel sad or happy",
+            
+            # Setbacks & resilience  
+            "when facing a financial setback": "when something bad happens with money",
+            "when facing a money setback": "when something bad happens with money",
+            "quickly adjust my plan and move forward": "change my plan and keep going",
+            "feel discouraged but eventually recover": "feel sad but get better later",
+            "need support from others to cope": "need help from others",
+            "find it very difficult to bounce back": "have a really hard time feeling better",
+            
+            # Risk tolerance
+            "my comfort level with money risk is": "how okay i am with losing money is",
+            "my comfort level with": "how okay i am with",
+            "high – i'm willing to take calculated risks": "high - i am okay taking some risks",
+            "high – i'm willing": "high - i am okay",
+            "moderate – some risk is okay": "medium - a little risk is okay",
+            "low – i like safety and stability": "low - i like to be safe",
+            "very low – i avoid risk completely": "very low - i do not want any risk",
+            "i'm willing to take calculated risks": "i am okay taking some risks",
+            "calculated risks": "some risks",
+            "avoid risk": "stay away from risk",
+            
+            # Challenges
+            "my biggest money challenge is": "the hardest thing about money for me is",
+            "not earning enough": "not getting enough money",
+            "controlling my spending": "not spending too much",
+            "understanding money concepts": "learning about money",
+            "understanding financial concepts": "learning about money",
+            "staying motivated to save": "keeping myself saving",
             
             # Advice/help
             "friends or family for advice": "my mom or dad",
@@ -379,6 +454,7 @@ class TAPEngine:
             
             # General simplifications
             "financial": "money",
+            "finances": "money",
         }
         
         replacements_teen = {
