@@ -321,13 +321,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "PPI Language Transformation for Child Users - ✅ FULLY RESOLVED"
-    - "Option parsing fix successful - all transformations working for 8yo children"
+    - "PPI Language Transformation for Child Users - ❌ REGRESSION DETECTED"
+    - "TAP 2.0 transformations not working consistently - needs immediate investigation"
   completed_tasks:
-    - "PPI Language Transformation for Child Users - Option A and C transformations working"
-    - "Enhanced vocabulary transformation verified for 8yo+ children"
+    - "Enhanced vocabulary transformation verified for 8yo+ children (REVERTED)"
   stuck_tasks: 
     - "User Session Management"
+    - "PPI Language Transformation for Child Users"
   test_all: true
   test_priority: "high_first"
 
