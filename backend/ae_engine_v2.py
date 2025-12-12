@@ -116,16 +116,27 @@ class AdaptiveEngineV2:
         # we'll use all eligible items (should be 20 or close to it)
         final_items = eligible_items[:20]  # Take up to 20
         
-        # Format output according to contract with age/experience transformation
-        transformer = get_content_transformer()
+        # Format output according to contract with age/experience transformation using TAP 2.0
+        tap = get_tap_engine()
+        
+        # Convert experience string to level (1-5)
+        exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
+        exp_level = exp_level_map.get(financial_experience, 1)
+        
+        # Create UserProfile for TAP
+        user_profile = UserProfile(
+            user_id=user_id,
+            age=age,
+            experience_level=exp_level,
+            dna_profile="Balanced",  # Default, will be updated after PPI completion
+            dna_weights={},
+            goals=[]
+        )
+        
         output_items = []
         for idx, item in enumerate(final_items, 1):
-            # Transform the question prompt based on age and experience
-            transformed_prompt = transformer.transform_ppi_question(
-                item['prompt'],
-                age,
-                financial_experience
-            )
+            # Transform the question prompt based on age and experience using TAP
+            transformed_prompt = tap.transform_ppi_question(item['prompt'], user_profile)
             
             # Transform each option as well
             transformed_options = []
@@ -135,11 +146,7 @@ class AdaptiveEngineV2:
                     letter = option[0]
                     # Skip the letter and the separator (space or period+space)
                     option_text = option[2:].strip() if option[1] == '.' else option[1:].strip()
-                    transformed_text = transformer.transform_ppi_question(
-                        option_text,
-                        age,
-                        financial_experience
-                    )
+                    transformed_text = tap.transform_ppi_question(option_text, user_profile)
                     transformed_options.append(f"{letter}. {transformed_text}")
                 else:
                     transformed_options.append(option)
