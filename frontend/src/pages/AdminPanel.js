@@ -529,7 +529,16 @@ function AdminPanel({ onLogin }) {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <span className="font-semibold text-gray-700">Age:</span> 
-                    <span className="ml-2 text-navy-900 font-mono">{new Date().getFullYear() - new Date(item.profile.date_of_birth).getFullYear()} years</span>
+                    <span className="ml-2 text-navy-900 font-mono">{(() => {
+                      const today = new Date();
+                      const birthDate = new Date(item.profile.date_of_birth);
+                      let age = today.getFullYear() - birthDate.getFullYear();
+                      const monthDiff = today.getMonth() - birthDate.getMonth();
+                      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                      }
+                      return age;
+                    })()} years</span>
                   </div>
                   <div>
                     <span className="font-semibold text-gray-700">Experience:</span> 
