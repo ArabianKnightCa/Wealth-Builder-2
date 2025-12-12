@@ -322,35 +322,71 @@ class TAPEngine:
     def _soften_overt_finance_terms_for_ppi(self, text: str, age_band: str) -> str:
         """
         PPI is measuring style, not teaching finance concepts.
-        Here we lightly reword heavy finance terms for younger / lower experience users
-        so they feel more like everyday language.
+        For young children (4-7), use extremely simple everyday language.
         """
         import re
         
+        # Ultra-simple replacements for young children (4-7 years old)
         replacements_child = {
-            "financial decisions": "money choices",
-            "financial decision": "money choice",
-            "financial future": "money when I grow up",
-            "financial": "money",
+            # Complex sentence starters
+            "when making financial decisions, i prefer to": "when i need to pick about money, i like to",
+            "when making financial decisions": "when i pick about money",
+            "when making money choices": "when i pick about money",
+            "financial decisions": "pick about money",
+            "money choices": "pick about money",
+            "financial decision": "money pick",
+            "money choice": "money pick",
+            
+            # Future concepts
+            "when i think about my financial future": "when i think about money when i am big",
+            "financial future": "money when i am big",
+            "money when i grow up": "money when i am big",
+            
+            # Approach/method concepts  
+            "my approach to saving money": "how i save money",
+            "my approach to": "how i",
+            "approach to": "how i",
+            "my how i": "how i",  # fix double replacement
+            
+            # Preferences
             "prefer to": "like to",
-            "I prefer": "I like",
+            "i prefer": "i like",
             "prefer": "like",
-            "approach to": "how I",
-            "my approach": "how I",
-            "research extensively before deciding": "ask mom or dad",
-            "research extensively": "ask grown-ups",
-            "before deciding": "before choosing",
-            "investment": "putting money somewhere to grow it",
-            "debt": "money you owe",
-            "friends or family for advice": "mom or dad for help",
+            
+            # Actions
+            "research extensively before deciding": "ask my mom or dad",
+            "research extensively": "ask a grownup",
+            "before deciding": "before i pick",
+            "before choosing": "before i pick",
+            "making decisions": "picking",
+            
+            # Money concepts
+            "track my spending": "watch my money",
+            "unexpected money": "surprise money",
+            "receive unexpected money": "get surprise money",
+            "investment": "save money to make more",
+            "debt": "money i owe",
+            "save consistently": "save my money",
+            "emergency fund": "saved money for bad times",
+            "paying off debt": "paying back money",
+            
+            # Advice/help
+            "friends or family for advice": "my mom or dad",
+            "ask friends or family for advice": "ask my mom or dad",
             "for advice": "for help",
+            "consult with": "ask",
+            "follow what experts recommend": "do what grownups say",
+            
+            # General simplifications
+            "financial": "money",
         }
+        
         replacements_teen = {
             "financial decisions": "money decisions",
             "financial decision": "money decision",
             "financial future": "my money future",
             "prefer to": "like to",
-            "I prefer": "I like",
+            "i prefer": "i like",
         }
 
         # Choose replacement set based on age band
