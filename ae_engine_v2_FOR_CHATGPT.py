@@ -1,0 +1,440 @@
+"""
+Adaptive Engine v2.0 - Mizo Wealth Builder POC
+Implements Contract v1.1-stable
+
+Functions:
+- AE_FN_COMPOSE_PPI: Dynamically select 20 PPI questions from bank
+- AE_FN_GENERATE_PLAN: Generate Financial DNA + personalized LPI plan
+"""
+
+import json
+import random
+from typing import Dict, List, Any, Tuple
+from datetime import datetime
+from pathlib import Path
+from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
+from content_transformer import get_content_transformer
+
+
+class AdaptiveEngineV2:
+    """
+    Mizo Wealth Builder Adaptive Engine V2
+    Implements stable contract v1.1.1
+    """
+    
+    # Age band configuration - imported from config.py
+    MINIMUM_AGE = MINIMUM_USER_AGE
+    CHILD_AGE_MAX = CHILD_AGE_MAX
+    TEEN_AGE_MAX = TEEN_AGE_MAX
+    
+    def __init__(self):
+        self.contracts = self._load_json('ae_contracts_stable_v1_1.json')
+        self.rules = self._load_json('ae_rules_poc_v1_1.json')
+        # Use baseline bank with 20 standard questions
+        self.ppi_bank = self._load_json('ppi_bank_baseline_v1_1.json')
+        self.lpi_index = self._load_json('lpi_lessons_index.json')
+        # Load goal-to-chapter mapping for personalization
+        self.goal_mapping = self._load_json('goal_chapter_mapping.json')
+    
+    def _load_json(self, filename: str) -> Dict:
+        """Load JSON file from backend directory"""
+        try:
+            file_path = Path(__file__).parent / filename
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            print(f"Warning: {filename} not found")
+            return {}
+    
+    def compose_ppi(self, user_id: str, age: int, financial_experience: str, 
+                   occupation_bucket: str = None, locale: str = "en-US") -> Dict[str, Any]:
+        """
+        AE_FN_COMPOSE_PPI
+        
+        Dynamically select 20 PPI questions from bank based on:
+        - Age constraints
+        - Financial experience level
+        - Bucket weights (base:8, motivation:4, habits:4, risk_confidence:4)
+        - Deterministic selection using user_id as seed
+        
+        Args:
+            user_id: User identifier (used as deterministic seed)
+            age: User age
+            financial_experience: "beginner" | "intermediate" | "advanced"
+            occupation_bucket: Optional occupation bucket
+            locale: Locale string (default: en-US)
+        
+        Returns:
+            {
+                "ppi_version": "POC-v1.1.1",
+                "items": [20 PPI items with id, prompt, options]
+            }
+        """
+        # Set deterministic seed based on user_id
+        random.seed(user_id)
+        
+        # Get age band constraints
+        age_band = self._get_age_band(age)
+        # Try to get exact match first, then fallback to default child/teen/adult rules
+        age_constraints = self.rules['constraints']['age_bands'].get(age_band, {})
+        
+        # If no exact match, apply default rules based on age category
+        if not age_constraints:
+            if age <= self.CHILD_AGE_MAX:
+                # Child: exclude advanced content
+                age_constraints = {'exclude_tags': ['advanced'], 'reading_level': 'simple'}
+            elif age <= self.TEEN_AGE_MAX:
+                # Teen: allow most content
+                age_constraints = {'exclude_tags': [], 'reading_level': 'youth'}
+            else:
+                # Adult: allow all content
+                age_constraints = {'exclude_tags': [], 'reading_level': 'standard'}
+        
+        # Get experience constraints
+        exp_constraints = self.rules['constraints']['experience'].get(financial_experience, {})
+        
+        # SIMPLIFIED: Use all 20 baseline questions, filtered by age appropriateness
+        # All users get the same 20 questions, just filtered for age/experience
+        eligible_items = []
+        for item in self.ppi_bank['items']:
+            # Check age range
+            if not (item['age_min'] <= age <= item['age_max']):
+                continue
+            
+            # Check experience level
+            if financial_experience not in item['experience_levels']:
+                continue
+            
+            # Check age band exclusions (e.g., kids don't get "advanced" questions)
+            exclude_tags = age_constraints.get('exclude_tags', [])
+            if any(tag in item['tags'] for tag in exclude_tags):
+                continue
+            
+            eligible_items.append(item)
+        
+        # Since we have exactly 20 baseline questions and all are appropriate for most users,
+        # we'll use all eligible items (should be 20 or close to it)
+        final_items = eligible_items[:20]  # Take up to 20
+        
+        # Format output according to contract with age/experience transformation
+        transformer = get_content_transformer()
+        output_items = []
+        for idx, item in enumerate(final_items, 1):
+            # Transform the question prompt based on age and experience
+            transformed_prompt = transformer.transform_ppi_question(
+                item['prompt'],
+                age,
+                financial_experience
+            )
+            
+            # Transform each option as well
+            transformed_options = []
+            for option in item['options']:
+                # Options are in format "A text" or "A. text" (with or without period)
+                if len(option) > 2 and option[0].isalpha() and (option[1] == ' ' or option[1] == '.'):
+                    letter = option[0]
+                    # Skip the letter and the separator (space or period+space)
+                    option_text = option[2:].strip() if option[1] == '.' else option[1:].strip()
+                    transformed_text = transformer.transform_ppi_question(
+                        option_text,
+                        age,
+                        financial_experience
+                    )
+                    transformed_options.append(f"{letter}. {transformed_text}")
+                else:
+                    transformed_options.append(option)
+            
+            output_items.append({
+                "question_id": f"PPI_Q{idx:02d}",
+                "bank_id": item['id'],
+                "type": item['type'],
+                "prompt": transformed_prompt,
+                "options": transformed_options
+            })
+        
+        return {
+            "ppi_version": "POC-v1.1.1",
+            "items": output_items,
+            "user_id": user_id,
+            "age": age,
+            "financial_experience": financial_experience,
+            "composed_at": datetime.utcnow().isoformat() + "Z"
+        }
+    
+    def _get_age_band(self, age: int) -> str:
+        """
+        Determine age band from age - dynamically calculated based on constants
+        Age bands are automatically adjusted when MINIMUM_AGE is changed
+        """
+        if self.MINIMUM_AGE <= age <= self.CHILD_AGE_MAX:
+            return f"{self.MINIMUM_AGE}-{self.CHILD_AGE_MAX}"
+        elif self.CHILD_AGE_MAX < age <= self.TEEN_AGE_MAX:
+            return f"{self.CHILD_AGE_MAX + 1}-{self.TEEN_AGE_MAX}"
+        else:
+            return f"{self.TEEN_AGE_MAX + 1}-99"
+    
+    def calculate_combined_score(self, age: int, experience_level: int) -> float:
+        """
+        AE-CORE v2.0 Formula: Calculate combined personalization score
+        
+        Formula: combined_score = 0.4 * age_score + 0.6 * exp_score
+        
+        Args:
+            age: User age (6-99)
+            experience_level: Financial experience level (1-5)
+                1 = Beginner
+                2 = Novice
+                3 = Intermediate
+                4 = Advanced
+                5 = Expert
+        
+        Returns:
+            float: Combined score (0.0-1.0)
+        """
+        # Normalize age to 0.0-1.0 scale
+        # Age range: 6 (min) to 99 (max)
+        age_normalized = (age - self.MINIMUM_AGE) / (99 - self.MINIMUM_AGE)
+        age_score = min(1.0, max(0.0, age_normalized))
+        
+        # Normalize experience level to 0.0-1.0 scale
+        # Experience: 1 (beginner) to 5 (expert)
+        exp_score = (experience_level - 1) / 4.0
+        
+        # Apply AE-CORE v2.0 formula
+        combined_score = 0.4 * age_score + 0.6 * exp_score
+        
+        return round(combined_score, 3)
+    
+    def generate_plan(self, user_id: str, answers: List[Dict[str, str]], 
+                      age: int = None, goals: List[str] = None) -> Dict[str, Any]:
+        """
+        AE_FN_GENERATE_PLAN
+        
+        Generate Financial DNA profile and personalized LPI plan based on:
+        - PPI responses (psychological profile)
+        - Age (developmental appropriateness)
+        - Financial goals (content prioritization)
+        
+        NEW: Now includes age + goals for enhanced personalization
+        
+        Args:
+            user_id: User identifier
+            answers: List of {"id": "PPI_Q01", "value": "A"}
+            age: User age (optional, for goal filtering)
+            goals: List of financial goal IDs (optional, for chapter prioritization)
+        
+        Returns:
+            {
+                "dna": {
+                    "profile": "Planner",
+                    "weights": {...}
+                },
+                "lpi_plan": {
+                    "version": "POC-v1.1.1",
+                    "chapters": [...],
+                    "goals_applied": 2
+                }
+            }
+        """
+        # Convert answers to dict for easier lookup
+        answer_map = {ans['id']: ans['value'] for ans in answers}
+        
+        # Calculate Financial DNA weights (from PPI)
+        dna = self._calculate_financial_dna(answer_map)
+        
+        # Generate LPI plan based on DNA + Age + Goals
+        lpi_plan = self._generate_lpi_plan(dna, age=age, goals=goals)
+        
+        return {
+            "dna": dna,
+            "lpi_plan": lpi_plan,
+            "user_id": user_id,
+            "age": age,
+            "goals": goals or [],
+            "generated_at": datetime.utcnow().isoformat() + "Z"
+        }
+    
+    def _calculate_financial_dna(self, answers: Dict[str, str]) -> Dict[str, Any]:
+        """
+        Calculate Financial DNA profile based on PPI responses
+        
+        Weights calculated:
+        - discipline: Planning and structure tendency (0.0-1.0)
+        - impulse: Spontaneous spending tendency (0.0-1.0)
+        - confidence: Financial confidence level (0.0-1.0)
+        - tempo: Learning pace ("fast" | "steady" | "slow")
+        """
+        # Initialize weights
+        discipline_score = 0
+        impulse_score = 0
+        confidence_score = 0
+        tempo_votes = {"fast": 0, "steady": 0, "slow": 0}
+        
+        # Analyze responses (simplified mapping)
+        # In production, this would use more sophisticated analysis
+        for q_id, answer in answers.items():
+            # Discipline indicators (structure, planning)
+            if answer == "A":
+                discipline_score += 0.15
+            
+            # Impulse indicators (spontaneity)
+            if answer in ["C", "D"]:
+                impulse_score += 0.1
+            
+            # Confidence indicators
+            if answer in ["A", "C"]:
+                confidence_score += 0.1
+            
+            # Tempo indicators
+            if answer == "A":
+                tempo_votes["fast"] += 1
+            elif answer == "B":
+                tempo_votes["steady"] += 1
+            elif answer in ["C", "D"]:
+                tempo_votes["slow"] += 1
+        
+        # Normalize weights to 0.0-1.0
+        discipline = min(1.0, discipline_score)
+        impulse = min(1.0, impulse_score)
+        confidence = min(1.0, confidence_score)
+        
+        # Determine tempo
+        tempo = max(tempo_votes, key=tempo_votes.get)
+        
+        # Determine archetype profile
+        profile = self._determine_archetype(discipline, impulse, confidence, tempo)
+        
+        return {
+            "profile": profile,
+            "weights": {
+                "discipline": round(discipline, 2),
+                "impulse": round(impulse, 2),
+                "confidence": round(confidence, 2),
+                "tempo": tempo
+            }
+        }
+    
+    def _determine_archetype(self, discipline: float, impulse: float, 
+                           confidence: float, tempo: str) -> str:
+        """Determine financial archetype based on DNA weights"""
+        if discipline > 0.6 and impulse < 0.4:
+            return "Planner"
+        elif impulse > 0.6 and discipline < 0.4:
+            return "Spontaneous"
+        elif confidence > 0.6:
+            return "Confident Explorer"
+        elif confidence < 0.4:
+            return "Cautious Learner"
+        else:
+            return "Balanced Builder"
+    
+    def _apply_goal_prioritization(self, base_order: List[int], goals: List[str], age: int) -> List[int]:
+        """
+        Adjust chapter order based on user's financial goals
+        
+        Args:
+            base_order: Chapter order from PPI profile
+            goals: List of goal IDs from user registration
+            age: User age for goal filtering
+        
+        Returns:
+            Reordered chapter list prioritizing goal-relevant chapters
+        """
+        if not goals or not self.goal_mapping.get('goal_definitions'):
+            return base_order
+        
+        # Build priority scores for each chapter
+        chapter_scores = {ch: 0 for ch in base_order}
+        
+        for goal_id in goals:
+            # Find goal definition
+            goal_def = next((g for g in self.goal_mapping['goal_definitions'] if g['id'] == goal_id), None)
+            if not goal_def:
+                continue
+            
+            # Check if goal is age-appropriate
+            age_min, age_max = goal_def.get('age_appropriate', [0, 99])
+            if not (age_min <= age <= age_max):
+                continue
+            
+            # Add priority for primary chapters
+            for ch in goal_def.get('primary_chapters', []):
+                if ch in chapter_scores:
+                    chapter_scores[ch] += 10 * goal_def.get('priority_boost', 1)
+            
+            # Add priority for secondary chapters
+            for ch in goal_def.get('secondary_chapters', []):
+                if ch in chapter_scores:
+                    chapter_scores[ch] += 5 * goal_def.get('priority_boost', 1)
+        
+        # Sort chapters: high priority first, then preserve base order
+        # CH01 (Money Basics) always stays first
+        ch01 = [1] if 1 in base_order else []
+        other_chapters = [ch for ch in base_order if ch != 1]
+        
+        # Sort by priority score (desc), then by original position
+        sorted_others = sorted(other_chapters, key=lambda ch: (-chapter_scores[ch], other_chapters.index(ch)))
+        
+        return ch01 + sorted_others
+    
+    def _generate_lpi_plan(self, dna: Dict[str, Any], age: int = None, goals: List[str] = None) -> Dict[str, Any]:
+        """
+        Generate personalized LPI plan based on Financial DNA + Age + Goals
+        
+        NEW: Now incorporates user goals for chapter prioritization
+        
+        Args:
+            dna: Financial DNA profile from PPI
+            age: User age (for goal filtering)
+            goals: List of financial goal IDs
+        
+        Returns chapter order and configuration
+        """
+        profile = dna['profile']
+        tempo = dna['weights']['tempo']
+        
+        # Define base chapter orders for different profiles (from PPI)
+        chapter_orders = {
+            "Planner": [1, 2, 4, 3, 8, 7, 9, 6, 5, 10],
+            "Spontaneous": [1, 8, 2, 3, 7, 4, 6, 9, 5, 10],
+            "Confident Explorer": [1, 2, 3, 5, 4, 6, 8, 7, 9, 10],
+            "Cautious Learner": [1, 2, 8, 3, 7, 9, 4, 6, 5, 10],
+            "Balanced Builder": [1, 2, 3, 4, 8, 7, 9, 6, 5, 10]
+        }
+        
+        # Get base chapter order for profile (from PPI)
+        base_order = chapter_orders.get(profile, chapter_orders["Balanced Builder"])
+        
+        # Apply goal-based prioritization if goals provided
+        if goals and age:
+            chapter_order = self._apply_goal_prioritization(base_order, goals, age)
+        else:
+            chapter_order = base_order
+        
+        # Build chapter plan
+        chapters = []
+        for ch_num in chapter_order:
+            chapters.append({
+                "ch": ch_num,
+                "lessons": [1, 2, 3, 4],  # All 4 lessons per chapter
+                "quiz_mode": "choice_abcd"
+            })
+        
+        return {
+            "version": "POC-v1.1.1",
+            "chapters": chapters,
+            "tempo": tempo,
+            "profile": profile,
+            "goals_applied": len(goals) if goals else 0
+        }
+
+
+# Singleton instance
+_ae_v2_instance = None
+
+def get_adaptive_engine_v2() -> AdaptiveEngineV2:
+    """Get or create singleton AE V2 instance"""
+    global _ae_v2_instance
+    if _ae_v2_instance is None:
+        _ae_v2_instance = AdaptiveEngineV2()
+    return _ae_v2_instance
