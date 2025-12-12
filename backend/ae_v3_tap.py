@@ -241,39 +241,144 @@ class TAPEngine:
     # INTERNAL HELPERS
     # ------------------------------
 
+    def _count_syllables(self, word: str) -> int:
+        """
+        Estimate syllables in a word using vowel counting heuristic.
+        Not perfect but good enough for readability scoring.
+        """
+        word = word.lower().strip()
+        vowels = "aeiouy"
+        syllable_count = 0
+        previous_was_vowel = False
+        
+        for char in word:
+            is_vowel = char in vowels
+            if is_vowel and not previous_was_vowel:
+                syllable_count += 1
+            previous_was_vowel = is_vowel
+        
+        # Adjust for silent 'e'
+        if word.endswith('e'):
+            syllable_count -= 1
+        
+        # Every word has at least 1 syllable
+        if syllable_count == 0:
+            syllable_count = 1
+            
+        return syllable_count
+    
+    def _simplify_word(self, word: str, target_syllables: int) -> str:
+        """
+        Algorithmically simplify a word if it exceeds target syllable count.
+        Uses linguistic rules, not dictionaries.
+        """
+        syllables = self._count_syllables(word)
+        
+        # If word is already simple enough, return as-is
+        if syllables <= target_syllables:
+            return word
+        
+        # Apply simplification rules based on common patterns
+        word_lower = word.lower()
+        
+        # Multi-syllable -> simpler synonyms (pattern-based, not dictionary)
+        # Rule 1: Words ending in -tion/-sion (3+ syllables) -> root
+        if syllables >= 3:
+            if word_lower.endswith('tion'):
+                root = word_lower[:-4]
+                if len(root) > 2:
+                    return root
+            if word_lower.endswith('sion'):
+                root = word_lower[:-4]
+                if len(root) > 2:
+                    return root
+        
+        # Rule 2: Words ending in -ly (adverbs) -> remove -ly
+        if syllables >= 2 and word_lower.endswith('ly'):
+            return word_lower[:-2]
+        
+        # Rule 3: Words ending in -ment -> root verb
+        if syllables >= 2 and word_lower.endswith('ment'):
+            root = word_lower[:-4]
+            if len(root) > 2:
+                return root
+        
+        # If can't simplify, return original
+        return word
+    
     def _simplify_sentence_structure(self, text: str, age_band: str, dvcl: float) -> str:
         """
-        Very lightweight structural adjustment:
-            - Children: shorter sentences, fewer clauses.
-            - Teens: moderate simplification of formal words.
-            - Adults: mostly untouched unless dvcl is very low.
+        Algorithmic sentence simplification based on:
+        - Target syllable count per word
+        - Target words per sentence
+        - Complexity reduction via syllable analysis
         """
+        # Calculate targets based on DVCL
+        # DVCL 0.3 (age 6) -> 1-2 syllables/word, 6-8 words/sentence
+        # DVCL 0.5 (age 12) -> 2-3 syllables/word, 10-12 words/sentence
+        # DVCL 1.0 (adult) -> any syllables, 15-20 words/sentence
+        
+        if age_band == "child":
+            target_syllables_per_word = 1 + int(dvcl * 2)  # 1-2 syllables for young kids
+            max_words_per_sentence = 6 + int(dvcl * 6)     # 6-12 words
+        elif age_band == "teen":
+            target_syllables_per_word = 2 + int(dvcl * 2)  # 2-4 syllables
+            max_words_per_sentence = 10 + int(dvcl * 8)    # 10-18 words
+        else:
+            # Adult - minimal changes
+            return text
+        
+        # Split into sentences
         sentences = [s.strip() for s in text.replace("?", ".").split(".") if s.strip()]
         new_sentences: List[str] = []
-
+        
         for sent in sentences:
             words = sent.split()
-            # If dvcl is low, enforce shorter sentences.
-            max_len = 12 if age_band == "child" else (18 if age_band == "teen" else 30)
-            if dvcl < 0.5:
-                max_len = max_len - 3
-
-            if len(words) > max_len and age_band in ("child", "teen"):
-                # naive split at the midpoint
-                mid = len(words) // 2
-                first = " ".join(words[:mid])
-                second = " ".join(words[mid:])
-                if first:
-                    new_sentences.append(first)
-                if second:
-                    new_sentences.append(second)
+            
+            # Step 1: Simplify complex words
+            simplified_words = []
+            for word in words:
+                # Keep punctuation attached
+                clean_word = word.strip('.,!?;:')
+                punct = word[len(clean_word):] if len(word) > len(clean_word) else ''
+                
+                if clean_word.isalpha():
+                    simple = self._simplify_word(clean_word, target_syllables_per_word)
+                    simplified_words.append(simple + punct)
+                else:
+                    simplified_words.append(word)
+            
+            # Step 2: Split long sentences
+            if len(simplified_words) > max_words_per_sentence:
+                # Split at natural break points (and, but, or, because)
+                mid = len(simplified_words) // 2
+                # Look for conjunction near midpoint
+                conjunctions = ['and', 'but', 'or', 'so', 'because']
+                split_point = mid
+                for i in range(max(0, mid-3), min(len(simplified_words), mid+3)):
+                    if simplified_words[i].lower() in conjunctions:
+                        split_point = i
+                        break
+                
+                first_half = " ".join(simplified_words[:split_point])
+                second_half = " ".join(simplified_words[split_point:])
+                
+                if first_half:
+                    new_sentences.append(first_half)
+                if second_half:
+                    new_sentences.append(second_half)
             else:
-                new_sentences.append(sent)
-
-        # Re-join with periods
+                new_sentences.append(" ".join(simplified_words))
+        
+        # Rejoin with periods
         text = ". ".join(new_sentences)
-        if text and not text.endswith("."):
+        if text and not text.endswith((".", "!", "?")):
             text += "."
+        
+        # Lowercase for young children (more approachable)
+        if age_band == "child" and dvcl < 0.6:
+            text = text.lower()
+        
         return text
 
     def _inject_experience_clarity(
