@@ -432,31 +432,50 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
             dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
             dna_weights = learning_map['financial_dna'].get('weights', {})
     
-    # Build user profile for content transformation
-    user_profile = {
-        'age': calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
-        'financial_experience': map_experience_level(user.get('experience_level', 1)),
-        'dna_profile': dna_profile,
-        'dna_weights': dna_weights,
-        'goals': user.get('financial_goals', [])
-    }
+    # Build TAP UserProfile for content transformation
+    from ae_v3_tap import get_tap_engine, UserProfile, LessonContext, compute_age_band
+    exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
+    financial_exp = map_experience_level(user.get('experience_level', 1))
+    exp_level = exp_level_map.get(financial_exp, 1)
+    user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
     
-    # Get content transformer
-    transformer = get_content_transformer()
+    tap_user = UserProfile(
+        user_id=user_id,
+        age=user_age,
+        experience_level=exp_level,
+        dna_profile=dna_profile,
+        dna_weights=dna_weights,
+        goals=user.get('financial_goals', [])
+    )
     
-    # Transform all chapters dynamically
+    # Transform all chapters dynamically using TAP 2.0
+    tap = get_tap_engine()
     personalized_chapters = []
     for chapter in LPI_CHAPTERS:
-        transformed_chapter = transformer.transform_chapter(chapter, user_profile)
-        personalized_chapters.append(transformed_chapter)
+        transformed_lessons = []
+        for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
+            ctx = LessonContext(
+                chapter_id=chapter['id'],
+                lesson_id=f"{chapter['id']}_L{lesson_idx}",
+                attempt_number=1
+            )
+            transformed_lessons.append({
+                **lesson,
+                'text': tap.transform_lpi_lesson(lesson['text'], tap_user, ctx),
+                'takeaway': tap.transform_lpi_takeaway(lesson.get('takeaway', ''), tap_user, ctx) if lesson.get('takeaway') else ''
+            })
+        personalized_chapters.append({
+            **chapter,
+            'lessons': transformed_lessons
+        })
     
     return {
         "chapters": personalized_chapters,
         "personalization_applied": True,
         "user_profile": {
-            "age_band": transformer._get_age_band(user_profile['age']),
-            "experience": user_profile['financial_experience'],
-            "dna_profile": user_profile['dna_profile']
+            "age_band": compute_age_band(user_age),
+            "experience": financial_exp,
+            "dna_profile": dna_profile
         }
     }
 
