@@ -562,8 +562,8 @@ async def get_chapter_with_lessons(chapter_id: str, user_id: str = Depends(get_c
     }
 
 @api_router.get("/content/chapters/{chapter_id}/quiz")
-async def get_chapter_quiz(chapter_id: str):
-    """Get quiz questions for a chapter from database"""
+async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_user)):
+    """Get quiz questions for a chapter from database with age-appropriate transformation"""
     # Fetch chapter
     chapter = await db.chapters.find_one({"id": chapter_id, "is_active": True}, {"_id": 0})
     if not chapter:
@@ -575,15 +575,54 @@ async def get_chapter_quiz(chapter_id: str):
         {"_id": 0}
     ).sort("order", 1).to_list(100)
     
-    # Remove rationale and correct_answer from response (for quiz taking)
-    quiz_questions = []
-    for q in questions:
-        quiz_questions.append({
-            "id": q['id'],
-            "question_text": q['question_text'],
-            "options": q['options'],
-            "order": q['order']
-        })
+    # Get user profile for transformation
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if user:
+        from ae_v3_tap import get_tap_engine, UserProfile
+        
+        # Get DNA profile from progress
+        progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
+        dna_profile = 'Balanced'
+        if progress and 'learning_map' in progress:
+            learning_map = progress['learning_map']
+            if 'financial_dna' in learning_map:
+                dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
+        
+        exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
+        financial_exp = map_experience_level(user.get('experience_level', 1))
+        exp_level = exp_level_map.get(financial_exp, 1)
+        
+        tap_user = UserProfile(
+            user_id=user_id,
+            age=calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
+            experience_level=exp_level,
+            dna_profile=dna_profile,
+            dna_weights={},
+            goals=user.get('financial_goals', [])
+        )
+        
+        # Transform quiz questions using TAP (treat like PPI questions)
+        tap = get_tap_engine()
+        quiz_questions = []
+        for q in questions:
+            transformed_question = tap.transform_ppi_question(q['question_text'], tap_user)
+            transformed_options = [tap.transform_ppi_question(opt, tap_user) for opt in q['options']]
+            quiz_questions.append({
+                "id": q['id'],
+                "question_text": transformed_question,
+                "options": transformed_options,
+                "order": q['order']
+            })
+    else:
+        # Fallback: no transformation if user not found
+        quiz_questions = []
+        for q in questions:
+            quiz_questions.append({
+                "id": q['id'],
+                "question_text": q['question_text'],
+                "options": q['options'],
+                "order": q['order']
+            })
     
     return {
         "chapter": chapter,
