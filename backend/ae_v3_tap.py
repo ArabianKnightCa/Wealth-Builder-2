@@ -1,8 +1,12 @@
 """
 AE v3.55-RE + TAP 2.0 Enhanced
 ===============================
-Enhanced with multi-NLP approach: spaCy + NLTK (WordNet) + Gensim
-for comprehensive synonym finding and word simplification.
+Multi-NLP Stack:
+- spaCy: POS tagging, semantic similarity
+- NLTK/WordNet: Synonym database
+- Gensim: Word embeddings (optional)
+- sentence-transformers: Semantic sentence understanding
+- textdescriptives: Readability metrics (Flesch-Kincaid, etc.)
 """
 
 from dataclasses import dataclass, field
@@ -12,18 +16,34 @@ import spacy
 from nltk.corpus import wordnet
 from nltk.tokenize import word_tokenize
 import nltk
+from sentence_transformers import SentenceTransformer
+import textdescriptives as td
 
 # Import from config
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
 
 # Load NLP models (singleton pattern)
 _nlp = None
+_sentence_model = None
+_td_model = None
 
 def get_nlp():
     global _nlp
     if _nlp is None:
         _nlp = spacy.load('en_core_web_sm')
     return _nlp
+
+def get_sentence_model():
+    global _sentence_model
+    if _sentence_model is None:
+        _sentence_model = SentenceTransformer('all-MiniLM-L6-v2')  # Fast, lightweight model
+    return _sentence_model
+
+def get_td_model():
+    global _td_model
+    if _td_model is None:
+        _td_model = td.load_spacy_model()
+    return _td_model
 
 ADAPTIVE_ENGINE_VERSION = "3.55-RE"
 TAP_VERSION = "2.0"
