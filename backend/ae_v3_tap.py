@@ -211,7 +211,7 @@ class TAPEngine:
             overlap = len(words1 & words2) / max(len(words1 | words2), 1)
             return overlap
     
-    def _find_simpler_word(self, word: str, target_complexity: float) -> str:
+    def _find_simpler_word(self, word: str, target_complexity: float, pos_tag: Optional[str] = None) -> str:
         """
         Multi-NLP approach: Uses spaCy + NLTK (WordNet) + Gensim to find simpler synonyms.
         Returns simpler word or original if none found.
