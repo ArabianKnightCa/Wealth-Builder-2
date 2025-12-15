@@ -213,6 +213,42 @@ class LanguageShaper:
         
         return text
     
+    def _add_beginner_clarifications(self, text: str, cd: float) -> str:
+        """
+        Add clarifications for users with low Conceptual Depth.
+        This applies to adults with low financial experience.
+        
+        Args:
+            text: Input text
+            cd: Conceptual Depth scalar
+        
+        Returns:
+            str: Text with clarifications
+        """
+        if cd < 0.3:
+            # Very low CD: Add basic explanations
+            clarifications = {
+                "financial": "money-related",
+                "decisions": "choices",
+                "research": "learn about",
+                "extensively": "carefully",
+            }
+            for term, clarification in clarifications.items():
+                if term in text.lower() and '(' not in text:
+                    text = re.sub(
+                        rf'\b{term}\b',
+                        f"{term} ({clarification})",
+                        text,
+                        count=1,
+                        flags=re.IGNORECASE
+                    )
+        elif cd < 0.5:
+            # Medium-low CD: Add brief context
+            if "financial decisions" in text.lower() and "about money" not in text.lower():
+                text += " This is about how you handle money choices."
+        
+        return text
+    
     def _adjust_definitions(self, text: str, lc: float, scalars: TAPScalars) -> str:
         """
         Add or remove definitions based on LC.
