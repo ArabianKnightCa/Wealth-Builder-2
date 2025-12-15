@@ -716,5 +716,211 @@ TAP 2.0 will be successful when:
 **Please provide a comprehensive redesign that makes TAP 2.0 truly adaptive and comprehension-focused, not just a synonym replacer. We need architectural design, implementation approach, context adaptation framework, and sample code.**
 
 ================================================================================
+CRITICAL REQUIREMENTS (NON-NEGOTIABLE)
+================================================================================
+
+## 1) Age Must Be Continuous (NO BUCKETS ALLOWED)
+
+**BAN age bands completely. Do NOT use:**
+- "child" / "teen" / "adult" labels
+- compute_age_band() function
+- CHILD_AGE_MAX, TEEN_AGE_MAX constants
+- ANY age-range grouping
+
+**REQUIREMENT:** 
+`age: int` must flow end-to-end and influence outputs continuously.
+- age=6 differs from age=7 differs from age=8
+- age=12 differs from age=13
+- age=35 differs from age=36
+
+No bucketing. Pure continuous age-based adaptation.
+
+---
+
+## 2) Experience Level Must Be Discrete Rungs (Expandable) and Mostly Upward
+
+**Experience is REQUIRED - it's a core onboarding input.**
+
+**Rung Structure:**
+- POC: EL1..EL5 (Experience Level 1 to 5)
+- Beta: EL1..EL10
+- Commercial: EL1..EL15
+
+**Rules:**
+1. Store user's declared rung as `EL_declared` (1..N)
+2. TAP must NEVER downshift EL (don't output as if user is EL2 when they are EL3)
+3. If user struggles, add scaffolding (more examples, more clarity)
+4. Do NOT "talk down" or revert to lower-rung terminology
+
+**Key Principle:** Upward momentum only. Add support, don't demote.
+
+---
+
+## 3) DVCL Is Defunct — Replace With CL (But Keep "DVCL" as Deprecated Alias)
+
+**We are NOT using DVCL anymore.**
+
+**New name:** CL = Clarity Level (continuous scalar used by TAP internally)
+
+**Implementation Requirements:**
+1. Primary field/function names must use `CL`:
+   - `compute_clarity_level(age, exp_level)`
+   - `clarity_level` (variable)
+
+2. Still accept `dvcl` as DEPRECATED ALIAS for backwards compatibility:
+   - If input payload includes `dvcl`, map it to `clarity_level`
+   - Log warning: "dvcl is deprecated; use clarity_level (CL)"
+
+**So:** DVCL label remains as legacy compatibility hook ONLY.
+
+---
+
+## 4) Remove Synonym-Only Rewriting — TAP Must Be Concept/Lens-Based
+
+**Current failure:** Replacing words breaks grammar and psychological intent.
+
+**Required change:** TAP must adapt at multiple layers:
+
+1. **Concept framing** - What idea is being taught/measured
+2. **Life-stage context** - Age-driven references (school vs career vs retirement)
+3. **Domain depth** - Experience rung-driven terminology density
+4. **Psychology** - PPI DNA (cautious vs explorer vs planner)
+5. **Learning state** - AE v3.55 signals (momentum, friction, exposure count)
+
+**Rules:**
+- NO "dumb down" behavior
+- NO broken grammar
+- Preserve meaning while adapting expression
+
+---
+
+## 5) Add TAP Check-and-Balance Loop for Financial Terms (Dictionary Governance)
+
+**We are building a Financial Concept Dictionary.**
+
+Every time a concept term appears (e.g., "real estate"), TAP must:
+
+**Step 1:** Detect the concept
+**Step 2:** Resolve to CONCEPT_ID
+**Step 3:** Select expression appropriate to (age, EL_declared, PPI DNA, AE state)
+**Step 4:** Verify with gates:
+- Semantic preservation check (sentence-transformers)
+- Readability metrics (textdescriptives)
+- Protected-terms integrity
+
+**Step 5:** Log outcome and update confidence/weights for future runs
+
+**This creates a self-correcting loop that increases dictionary validity over time.**
+
+---
+
+## 6) AE v3.55 → TAP Integration Required (State Packet)
+
+**TAP must consume an AE state packet** so it can accelerate/slow explanation density without changing the user's experience rung.
+
+**Minimum AE → TAP State Packet fields:**
+```python
+@dataclass
+class AEStatePacket:
+    momentum: float              # 0.0 to 1.0 (low to high)
+    friction_score: float        # 0.0 to 1.0 (smooth to struggling)
+    exposure_count: int          # First time vs repeat
+    confidence_band: float       # 0.0 to 1.0 (uncertain to confident)
+    rolling_mastery: Optional[float]  # 0.0 to 1.0 if available
+```
+
+**TAP uses this to tune scaffolding + clarity dynamically** without downshifting the user's EL.
+
+---
+
+## 7) Hard Requirement: Psychological Intent Preservation for PPI
+
+**For PPI questions:** TAP must preserve the measurement intent (risk tolerance, planning style, etc.) even as language changes for age + EL.
+
+**Verification Methods:**
+1. Use sentence-transformers similarity checks
+2. Rule constraints to prevent "meaning drift"
+3. Validate that transformed question still measures the same psychological trait
+
+**Example:**
+- Baseline measures: Risk tolerance
+- 6yo version must still measure: Risk tolerance (not something else)
+- 66yo version must still measure: Risk tolerance (not something else)
+
+---
+
+## 8) Implementation Notes (Stack + Performance)
+
+**Tech Stack:**
+- Python 3.11
+- FastAPI backend
+- MongoDB database
+- React frontend
+
+**Performance Requirements:**
+- Must handle 20 PPI questions + 80 options in <3 seconds (POC)
+- Must scale to 100+ questions later (commercial)
+
+**NLP Tools Allowed:**
+- spaCy (POS tagging, dependency parsing)
+- NLTK/WordNet (concept relationships)
+- sentence-transformers (semantic preservation)
+- textdescriptives (readability validation)
+- Gensim (optional, if useful)
+
+---
+
+## DELIVERABLES REQUIRED FROM CHATGPT
+
+Please return:
+
+**1. Updated TAP Architecture/Module Map**
+- Reflecting no age buckets
+- Using EL rungs (not downshifting)
+- Using CL (keeping dvcl alias)
+- Concept/lens-based adaptation layers
+
+**2. Refactored Code Plan**
+- Remove all age bucketing
+- Implement EL rung system
+- Replace DVCL with CL
+- Add dvcl backwards compatibility
+
+**3. Financial Concept Dictionary Spec**
+- Schema for concept mapping
+- Check-and-balance loop design
+- Confidence/weight tracking system
+
+**4. AE State Packet Interface**
+- Exact schema/dataclass
+- How TAP consumes it
+- How it affects adaptation without downshifting EL
+
+**5. Psychological Intent Preservation System**
+- How to verify PPI questions preserve measurement intent
+- Semantic similarity thresholds
+- Rule constraints
+
+**6. Sample Implementation Code**
+- Core transformation algorithm
+- Concept detection and resolution
+- Life-stage context mapping
+- AE state integration
+
+---
+
+**CRITICAL SUCCESS CRITERIA:**
+
+✅ Age is continuous (no child/teen/adult buckets)
+✅ Experience levels are discrete rungs (never downshift)
+✅ CL replaces DVCL (with dvcl as deprecated alias)
+✅ Concept/lens-based adaptation (not synonym replacement)
+✅ Financial Concept Dictionary with check-and-balance loop
+✅ AE state packet integration
+✅ Psychological intent preserved for PPI
+✅ Natural grammar, appropriate references
+✅ Performance: <3 seconds for 20 questions
+
+================================================================================
 END OF REQUEST - COPY EVERYTHING ABOVE TO CHATGPT
 ================================================================================
