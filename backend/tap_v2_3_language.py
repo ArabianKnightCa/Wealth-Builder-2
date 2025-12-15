@@ -185,6 +185,35 @@ class LanguageShaper:
                 chunks.append(chunk)
             return ' '.join(chunks)
     
+    def _adjust_complexity(self, text: str, lc: float, age: int) -> str:
+        """
+        Adjust overall complexity - vocabulary, structure, terminology.
+        
+        Args:
+            text: Input text
+            lc: Language Complexity scalar
+            age: User age
+        
+        Returns:
+            str: Text with adjusted complexity
+        """
+        if lc < 0.15:
+            # Very simple - child under 8
+            # Replace complex words with simple ones
+            replacements = {
+                "extensively": "a lot",
+                "decisions": "choices",
+                "before deciding": "first",
+                "thoroughly": "carefully",
+                "comprehensive": "complete",
+                "utilize": "use",
+                "facilitate": "help",
+            }
+            for old, new in replacements.items():
+                text = re.sub(rf'\b{old}\b', new, text, flags=re.IGNORECASE)
+        
+        return text
+    
     def _adjust_definitions(self, text: str, lc: float, scalars: TAPScalars) -> str:
         """
         Add or remove definitions based on LC.
