@@ -230,9 +230,13 @@ class TAPEngine:
         
         candidates = []
         
-        # Method 1: NLTK WordNet - Get synonyms from lexical database
+        # Method 1: NLTK WordNet - Get synonyms from lexical database (with POS matching)
         try:
-            synsets = wordnet.synsets(word)
+            # Map spaCy POS to WordNet POS
+            pos_map = {'NOUN': 'n', 'VERB': 'v', 'ADJ': 'a', 'ADV': 'r'}
+            wn_pos = pos_map.get(pos_tag) if pos_tag else None
+            
+            synsets = wordnet.synsets(word, pos=wn_pos) if wn_pos else wordnet.synsets(word)
             for syn in synsets[:3]:  # Check first 3 synsets
                 for lemma in syn.lemmas():
                     synonym = lemma.name().replace('_', ' ')
