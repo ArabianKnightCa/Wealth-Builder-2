@@ -115,11 +115,12 @@ class LanguageShaper:
         
         return text
     
-    def _adjust_sentence_length(self, text: str, lc: float) -> str:
+    def _adjust_sentence_length(self, text: str, lc: float, age: int) -> str:
         """
-        Adjust sentence length based on LC.
+        Adjust sentence length and structure based on LC and age.
         
         Rules:
+        - LC < 0.15 (very young): 4-6 word sentences, very simple
         - LC < 0.3: Break into 6-10 word sentences
         - LC < 0.6: Allow 10-15 word sentences
         - LC >= 0.6: Allow 15-25 word sentences
@@ -127,6 +128,7 @@ class LanguageShaper:
         Args:
             text: Input text
             lc: Language Complexity scalar
+            age: User age
         
         Returns:
             str: Text with adjusted sentence length
@@ -139,41 +141,49 @@ class LanguageShaper:
             return text
         
         elif lc >= 0.3:
-            # Medium LC: Keep moderate sentences
-            return text
-        
-        else:
-            # Low LC: Break long sentences
+            # Medium LC: Keep moderate sentences but simplify structure
             result = []
             for sentence in sentences:
-                words = sentence.split()
-                if len(words) > 12:
-                    # Break at conjunctions
-                    mid = len(words) // 2
-                    # Try to find a good break point
-                    for i in range(mid - 2, mid + 3):
-                        if i < len(words) and words[i].lower() in ['and', 'but', 'or', 'so']:
-                            first = ' '.join(words[:i])
-                            second = ' '.join(words[i+1:])
-                            if first and not first.endswith('.'):
-                                first += '.'
-                            result.append(first)
-                            if second:
-                                result.append(second)
-                            break
-                    else:
-                        # No good break point, just split in half
-                        first = ' '.join(words[:mid])
-                        second = ' '.join(words[mid:])
-                        if first and not first.endswith('.'):
-                            first += '.'
-                        result.append(first)
-                        if second:
-                            result.append(second)
-                else:
-                    result.append(sentence)
-            
+                # Remove parenthetical phrases for medium LC
+                sentence = re.sub(r'\s*\([^)]*\)', '', sentence)
+                result.append(sentence)
             return ' '.join(result)
+        
+        elif lc >= 0.15:
+            # Low LC: Break long sentences, simplify
+            result = []
+            for sentence in sentences:
+                # Remove commas and parentheses
+                sentence = re.sub(r'\s*\([^)]*\)', '', sentence)
+                sentence = sentence.replace(',', '.')
+                
+                words = sentence.split()
+                if len(words) > 10:
+                    # Break at period or natural breaks
+                    parts = sentence.split('.')
+                    for part in parts:
+                        part = part.strip()
+                        if part and not part.endswith('.'):
+                            part += '.'
+                        if part:
+                            result.append(part)
+                else:
+                    if sentence.strip():
+                        result.append(sentence)
+            return ' '.join(result)
+        
+        else:
+            # Very low LC (< 0.15): Very simple, short sentences
+            # Convert complex sentence to very simple form
+            words = text.split()
+            # Create 4-6 word chunks
+            chunks = []
+            for i in range(0, len(words), 5):
+                chunk = ' '.join(words[i:i+5])
+                if chunk and not chunk.endswith('.'):
+                    chunk += '.'
+                chunks.append(chunk)
+            return ' '.join(chunks)
     
     def _adjust_definitions(self, text: str, lc: float, scalars: TAPScalars) -> str:
         """
