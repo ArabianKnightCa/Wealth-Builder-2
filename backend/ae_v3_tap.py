@@ -104,6 +104,89 @@ class TAPEngine:
                 "tagline": "This keeps things realistic and moving forward.",
             },
         }
+        
+        # Core financial vocabulary (minimal, focused)
+        self.core_financial_terms = {
+            "financial": {"child": "money", "teen": "money", "adult": "financial"},
+            "finances": {"child": "money", "teen": "money", "adult": "finances"},
+            "investment": {"child": "saving", "teen": "investing", "adult": "investment"},
+            "debt": {"child": "owe", "teen": "debt", "adult": "debt"},
+        }
+    
+    def _count_syllables(self, word: str) -> int:
+        """Count syllables in a word using vowel counting."""
+        word = word.lower().strip()
+        vowels = "aeiouy"
+        syllable_count = 0
+        previous_was_vowel = False
+        
+        for char in word:
+            is_vowel = char in vowels
+            if is_vowel and not previous_was_vowel:
+                syllable_count += 1
+            previous_was_vowel = is_vowel
+        
+        if word.endswith('e'):
+            syllable_count -= 1
+        
+        return max(1, syllable_count)
+    
+    def _calculate_word_complexity(self, word: str) -> float:
+        """
+        Calculate word complexity score (0.0 = simple, 1.0 = complex)
+        Based on: syllables, word length, frequency
+        """
+        syllables = self._count_syllables(word)
+        length = len(word)
+        
+        # Formula: weighted combination
+        syllable_score = min(syllables / 4.0, 1.0)  # 4+ syllables = max complexity
+        length_score = min(length / 12.0, 1.0)      # 12+ chars = max complexity
+        
+        complexity = (syllable_score * 0.6) + (length_score * 0.4)
+        return min(complexity, 1.0)
+    
+    def _find_simpler_word(self, word: str, target_complexity: float) -> str:
+        """
+        Use spaCy to find a simpler synonym if word is too complex.
+        Returns simpler word or original if none found.
+        """
+        current_complexity = self._calculate_word_complexity(word)
+        
+        # If word is already simple enough, return it
+        if current_complexity <= target_complexity:
+            return word
+        
+        # Check core financial terms first
+        word_lower = word.lower()
+        if word_lower in self.core_financial_terms:
+            age_band = "child" if target_complexity < 0.4 else ("teen" if target_complexity < 0.7 else "adult")
+            return self.core_financial_terms[word_lower].get(age_band, word)
+        
+        # Use spaCy to find simpler synonyms
+        nlp = get_nlp()
+        doc = nlp(word)
+        
+        if len(doc) > 0 and doc[0].has_vector:
+            # Find similar words in vocabulary
+            similar_words = []
+            for token in nlp.vocab:
+                if token.has_vector and token.is_alpha and len(token.text) > 2:
+                    similarity = doc[0].similarity(token)
+                    if similarity > 0.6:  # Reasonably similar
+                        word_complexity = self._calculate_word_complexity(token.text)
+                        if word_complexity < current_complexity:
+                            similar_words.append((token.text, word_complexity, similarity))
+            
+            # Sort by: 1) simplicity 2) similarity
+            similar_words.sort(key=lambda x: (x[1], -x[2]))
+            
+            # Return simplest word that's similar enough
+            if similar_words:
+                return similar_words[0][0]
+        
+        # Fallback: return original
+        return word
 
     def transform_ppi_question(self, baseline_text: str, user: UserProfile) -> str:
         age_band = compute_age_band(user.age)
