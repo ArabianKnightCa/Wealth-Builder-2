@@ -437,42 +437,94 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
             dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
             dna_weights = learning_map['financial_dna'].get('weights', {})
     
-    # Build TAP UserProfile for content transformation
-    from ae_v3_tap import get_tap_engine, UserProfile, LessonContext, compute_age_band
+    # Get user age and experience level
     exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
     financial_exp = map_experience_level(user.get('experience_level', 1))
     exp_level = exp_level_map.get(financial_exp, 1)
     user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
     
-    tap_user = UserProfile(
-        user_id=user_id,
-        age=user_age,
-        experience_level=exp_level,
-        dna_profile=dna_profile,
-        dna_weights=dna_weights,
-        goals=user.get('financial_goals', [])
-    )
+    # Check which TAP version to use
+    use_v23 = is_tap_v2_3_enabled()
     
-    # Transform all chapters dynamically using TAP 2.0
-    tap = get_tap_engine()
-    personalized_chapters = []
-    for chapter in LPI_CHAPTERS:
-        transformed_lessons = []
-        for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
-            ctx = LessonContext(
-                chapter_id=chapter['id'],
-                lesson_id=f"{chapter['id']}_L{lesson_idx}",
-                attempt_number=1
-            )
-            transformed_lessons.append({
-                **lesson,
-                'text': tap.transform_lpi_lesson(lesson['text'], tap_user, ctx),
-                'takeaway': tap.transform_lpi_takeaway(lesson.get('takeaway', ''), tap_user, ctx) if lesson.get('takeaway') else ''
+    if use_v23:
+        # TAP v2.3: Formula-driven transformation
+        tap_v23 = get_tap_v23_engine()
+        el_max = get_el_max()
+        
+        # Create AE state packet (optional, can be enhanced later)
+        ae_state = AEStatePacket(
+            friction=0.0,
+            momentum=0.5,
+            exposure=1,
+            confidence_band=0.5
+        )
+        
+        personalized_chapters = []
+        for chapter in LPI_CHAPTERS:
+            transformed_lessons = []
+            for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
+                # Transform lesson text
+                lesson_text = tap_v23.transform_content(
+                    baseline_text=lesson['text'],
+                    user_age=user_age,
+                    user_experience_level=exp_level,
+                    el_max=el_max,
+                    ae_state=ae_state,
+                    apply_language_shaping=True
+                )
+                
+                # Transform takeaway
+                takeaway = ''
+                if lesson.get('takeaway'):
+                    takeaway = tap_v23.transform_content(
+                        baseline_text=lesson['takeaway'],
+                        user_age=user_age,
+                        user_experience_level=exp_level,
+                        el_max=el_max,
+                        ae_state=ae_state,
+                        apply_language_shaping=True
+                    )
+                
+                transformed_lessons.append({
+                    **lesson,
+                    'text': lesson_text,
+                    'takeaway': takeaway
+                })
+            
+            personalized_chapters.append({
+                **chapter,
+                'lessons': transformed_lessons
             })
-        personalized_chapters.append({
-            **chapter,
-            'lessons': transformed_lessons
-        })
+    else:
+        # TAP v2.0: Legacy transformation
+        tap_user = UserProfile(
+            user_id=user_id,
+            age=user_age,
+            experience_level=exp_level,
+            dna_profile=dna_profile,
+            dna_weights=dna_weights,
+            goals=user.get('financial_goals', [])
+        )
+        
+        tap = get_tap_engine()
+        personalized_chapters = []
+        for chapter in LPI_CHAPTERS:
+            transformed_lessons = []
+            for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
+                ctx = LessonContext(
+                    chapter_id=chapter['id'],
+                    lesson_id=f"{chapter['id']}_L{lesson_idx}",
+                    attempt_number=1
+                )
+                transformed_lessons.append({
+                    **lesson,
+                    'text': tap.transform_lpi_lesson(lesson['text'], tap_user, ctx),
+                    'takeaway': tap.transform_lpi_takeaway(lesson.get('takeaway', ''), tap_user, ctx) if lesson.get('takeaway') else ''
+                })
+            personalized_chapters.append({
+                **chapter,
+                'lessons': transformed_lessons
+            })
     
     return {
         "chapters": personalized_chapters,
