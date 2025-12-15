@@ -667,41 +667,74 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
     # Get user profile for transformation
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if user:
-        from ae_v3_tap import get_tap_engine, UserProfile
-        
-        # Get DNA profile from progress
-        progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
-        dna_profile = 'Balanced'
-        if progress and 'learning_map' in progress:
-            learning_map = progress['learning_map']
-            if 'financial_dna' in learning_map:
-                dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
-        
+        # Get user attributes
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
         financial_exp = map_experience_level(user.get('experience_level', 1))
         exp_level = exp_level_map.get(financial_exp, 1)
+        user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
         
-        tap_user = UserProfile(
-            user_id=user_id,
-            age=calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
-            experience_level=exp_level,
-            dna_profile=dna_profile,
-            dna_weights={},
-            goals=user.get('financial_goals', [])
-        )
+        # Check which TAP version to use
+        use_v23 = is_tap_v2_3_enabled()
         
-        # Transform quiz questions using TAP (treat like PPI questions)
-        tap = get_tap_engine()
-        quiz_questions = []
-        for q in questions:
-            transformed_question = tap.transform_ppi_question(q['question_text'], tap_user)
-            transformed_options = [tap.transform_ppi_question(opt, tap_user) for opt in q['options']]
-            quiz_questions.append({
-                "id": q['id'],
-                "question_text": transformed_question,
-                "options": transformed_options,
-                "order": q['order']
-            })
+        if use_v23:
+            # TAP v2.3: Formula-driven transformation
+            tap_v23 = get_tap_v23_engine()
+            el_max = get_el_max()
+            ae_state = AEStatePacket(friction=0.0, momentum=0.5, exposure=1)
+            
+            quiz_questions = []
+            for q in questions:
+                transformed_question = tap_v23.transform_content(
+                    baseline_text=q['question_text'],
+                    user_age=user_age,
+                    user_experience_level=exp_level,
+                    el_max=el_max,
+                    ae_state=ae_state
+                )
+                transformed_options = [
+                    tap_v23.transform_content(
+                        baseline_text=opt,
+                        user_age=user_age,
+                        user_experience_level=exp_level,
+                        el_max=el_max,
+                        ae_state=ae_state
+                    ) for opt in q['options']
+                ]
+                quiz_questions.append({
+                    "id": q['id'],
+                    "question_text": transformed_question,
+                    "options": transformed_options,
+                    "order": q['order']
+                })
+        else:
+            # TAP v2.0: Legacy transformation
+            progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
+            dna_profile = 'Balanced'
+            if progress and 'learning_map' in progress:
+                learning_map = progress['learning_map']
+                if 'financial_dna' in learning_map:
+                    dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
+            
+            tap_user = UserProfile(
+                user_id=user_id,
+                age=user_age,
+                experience_level=exp_level,
+                dna_profile=dna_profile,
+                dna_weights={},
+                goals=user.get('financial_goals', [])
+            )
+            
+            tap = get_tap_engine()
+            quiz_questions = []
+            for q in questions:
+                transformed_question = tap.transform_ppi_question(q['question_text'], tap_user)
+                transformed_options = [tap.transform_ppi_question(opt, tap_user) for opt in q['options']]
+                quiz_questions.append({
+                    "id": q['id'],
+                    "question_text": transformed_question,
+                    "options": transformed_options,
+                    "order": q['order']
+                })
     else:
         # Fallback: no transformation if user not found
         quiz_questions = []
