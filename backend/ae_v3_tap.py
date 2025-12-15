@@ -196,7 +196,7 @@ class TAPEngine:
         text = baseline_text
         text = self._simplify_sentence_structure(text, age_band, dvcl)
         text = self._inject_experience_clarity(text, exp_band, is_ppi=True)
-        text = self._soften_overt_finance_terms_for_ppi(text, age_band)
+        # Financial terms now handled by word complexity formula in _simplify_sentence_structure
         return text
 
     def transform_lpi_lesson(self, baseline_text: str, user: UserProfile, ctx: LessonContext) -> str:
