@@ -1,15 +1,25 @@
 """
-AE v3.55-RE + TAP 2.0
-=====================
-This is the ORIGINAL ChatGPT version with minimal core vocabulary (4 phrases only).
+AE v3.55-RE + TAP 2.0 Enhanced
+===============================
+Enhanced with spaCy for intelligent synonym finding and word weighting formula.
 """
 
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional, Tuple
 import datetime
+import spacy
 
 # Import from config
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
+
+# Load spaCy model (singleton pattern)
+_nlp = None
+
+def get_nlp():
+    global _nlp
+    if _nlp is None:
+        _nlp = spacy.load('en_core_web_sm')
+    return _nlp
 
 ADAPTIVE_ENGINE_VERSION = "3.55-RE"
 TAP_VERSION = "2.0"
