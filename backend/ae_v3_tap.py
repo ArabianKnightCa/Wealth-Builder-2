@@ -223,25 +223,48 @@ class TAPEngine:
         return text
 
     def _simplify_sentence_structure(self, text: str, age_band: str, dvcl: float) -> str:
+        """
+        Simplify sentence structure AND vocabulary based on DVCL.
+        Uses word complexity formula + spaCy synonym finding.
+        """
+        # Target complexity based on DVCL
+        target_word_complexity = dvcl * 0.7  # DVCL 0.3 → 0.21, DVCL 1.0 → 0.70
+        
         sentences = [s.strip() for s in text.replace("?", ".").split(".") if s.strip()]
         new_sentences: List[str] = []
 
         for sent in sentences:
             words = sent.split()
+            
+            # Step 1: Simplify complex words
+            simplified_words = []
+            for word in words:
+                # Preserve punctuation
+                clean_word = word.strip('.,!?;:')
+                punct = word[len(clean_word):] if len(word) > len(clean_word) else ''
+                
+                if clean_word.isalpha() and len(clean_word) > 2:
+                    # Try to find simpler synonym
+                    simpler = self._find_simpler_word(clean_word, target_word_complexity)
+                    simplified_words.append(simpler + punct)
+                else:
+                    simplified_words.append(word)
+            
+            # Step 2: Control sentence length
             max_len = 12 if age_band == "child" else (18 if age_band == "teen" else 30)
             if dvcl < 0.5:
                 max_len = max_len - 3
 
-            if len(words) > max_len and age_band in ("child", "teen"):
-                mid = len(words) // 2
-                first = " ".join(words[:mid])
-                second = " ".join(words[mid:])
+            if len(simplified_words) > max_len and age_band in ("child", "teen"):
+                mid = len(simplified_words) // 2
+                first = " ".join(simplified_words[:mid])
+                second = " ".join(simplified_words[mid:])
                 if first:
                     new_sentences.append(first)
                 if second:
                     new_sentences.append(second)
             else:
-                new_sentences.append(sent)
+                new_sentences.append(" ".join(simplified_words))
 
         text = ". ".join(new_sentences)
         if text and not text.endswith("."):
