@@ -170,6 +170,47 @@ class TAPEngine:
         complexity = (syllable_score * 0.6) + (length_score * 0.4)
         return min(complexity, 1.0)
     
+    def _calculate_text_readability(self, text: str) -> Dict[str, float]:
+        """
+        Use textdescriptives to calculate readability metrics.
+        Returns: {
+            'flesch_reading_ease': 0-100 (higher = easier),
+            'flesch_kincaid_grade': grade level,
+            'smog': grade level
+        }
+        """
+        try:
+            nlp = get_td_model()
+            doc = nlp(text)
+            metrics = td.extract_metrics(doc, metrics=['readability'])
+            return {
+                'flesch_reading_ease': metrics.get('flesch_reading_ease', 50),
+                'flesch_kincaid_grade': metrics.get('flesch_kincaid_grade', 10),
+                'smog': metrics.get('smog', 10)
+            }
+        except Exception:
+            # Fallback to defaults
+            return {'flesch_reading_ease': 50, 'flesch_kincaid_grade': 10, 'smog': 10}
+    
+    def _get_semantic_similarity(self, text1: str, text2: str) -> float:
+        """
+        Use sentence-transformers to compute semantic similarity between texts.
+        Returns: 0.0 (different) to 1.0 (identical meaning)
+        """
+        try:
+            model = get_sentence_model()
+            embeddings = model.encode([text1, text2])
+            # Cosine similarity
+            from scipy.spatial.distance import cosine
+            similarity = 1 - cosine(embeddings[0], embeddings[1])
+            return max(0.0, min(1.0, similarity))
+        except Exception:
+            # Fallback: basic word overlap
+            words1 = set(text1.lower().split())
+            words2 = set(text2.lower().split())
+            overlap = len(words1 & words2) / max(len(words1 | words2), 1)
+            return overlap
+    
     def _find_simpler_word(self, word: str, target_complexity: float) -> str:
         """
         Multi-NLP approach: Uses spaCy + NLTK (WordNet) + Gensim to find simpler synonyms.
