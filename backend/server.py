@@ -22,6 +22,11 @@ from ae_v3_tap import get_tap_engine, UserProfile, LessonContext, compute_age_ba
 from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 from profile_models import Profile, ProfileCreate, ProfileUpdate, ActiveProfileResponse, AVATAR_OPTIONS
 
+# TAP v2.3 imports
+from feature_flags import is_tap_v2_3_enabled, get_el_max
+from tap_v2_3_engine import get_tap_v23_engine
+from tap_v2_3_ae_integration import AEStatePacket
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
