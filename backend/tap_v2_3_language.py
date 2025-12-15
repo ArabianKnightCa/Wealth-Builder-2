@@ -178,10 +178,19 @@ class LanguageShaper:
             text = text.replace(',', '.')
             # Remove multiple periods
             text = re.sub(r'\.+', '.', text)
+            # Remove period-space-period patterns
+            text = re.sub(r'\.\s+\.', '.', text)
             # Split into sentences
             parts = [p.strip() for p in text.split('.') if p.strip()]
-            # Add period to each part
-            result = [p + '.' if not p.endswith('.') else p for p in parts]
+            # Add period to each part and capitalize first letter
+            result = []
+            for part in parts:
+                if part:
+                    # Capitalize first letter
+                    part = part[0].upper() + part[1:] if len(part) > 1 else part.upper()
+                    if not part.endswith('.'):
+                        part += '.'
+                    result.append(part)
             return ' '.join(result)
     
     def _adjust_complexity(self, text: str, lc: float, age: int) -> str:
