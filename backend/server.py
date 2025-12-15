@@ -4022,6 +4022,54 @@ async def ae_test_run_suite(user_id: str = Depends(get_current_user)):
         "test_groups": results_by_group
     }
 
+# ===========================
+# TAP v2.3 Test Endpoint
+# ===========================
+
+@api_router.get("/tap/test")
+async def test_tap_v23():
+    """Test TAP v2.3 with sample transformations"""
+    from tap_v2_3_templates import create_sample_template
+    
+    tap_v23 = get_tap_v23_engine()
+    
+    # Test users
+    test_users = [
+        {"age": 7, "el": 1, "name": "Child Beginner"},
+        {"age": 29, "el": 9, "name": "Adult Intermediate"},
+        {"age": 67, "el": 15, "name": "Senior Expert"}
+    ]
+    
+    results = []
+    template = create_sample_template()
+    
+    for user in test_users:
+        # Get scalars
+        scalars = tap_v23.get_user_scalars(user["age"], user["el"])
+        
+        # Transform with template
+        transformed = tap_v23.transform_with_template(
+            template=template,
+            user_age=user["age"],
+            user_experience_level=user["el"],
+            el_max=15
+        )
+        
+        results.append({
+            "user": user["name"],
+            "age": user["age"],
+            "el": user["el"],
+            "scalars": scalars,
+            "transformed_content": transformed
+        })
+    
+    return {
+        "tap_version": "2.3",
+        "enabled": is_tap_v2_3_enabled(),
+        "el_max": get_el_max(),
+        "test_results": results
+    }
+
 # Run index creation on startup
 import asyncio
 asyncio.create_task(create_database_indexes())
