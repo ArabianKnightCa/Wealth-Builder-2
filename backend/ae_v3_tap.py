@@ -296,30 +296,6 @@ class TAPEngine:
 
         return text
 
-    def _soften_overt_finance_terms_for_ppi(self, text: str, age_band: str) -> str:
-        """ORIGINAL ChatGPT version - only 4 core replacements"""
-        replacements_child = {
-            "financial decisions": "money choices",
-            "financial decision": "money choice",
-            "investment": "putting money somewhere to grow it",
-            "debt": "money you owe",
-        }
-        replacements_teen = {
-            "financial decisions": "money decisions",
-            "financial decision": "money decision",
-        }
-
-        lowered = text.lower()
-        if age_band == "child":
-            for key, val in replacements_child.items():
-                if key in lowered:
-                    text = text.replace(key, val)
-        elif age_band == "teen":
-            for key, val in replacements_teen.items():
-                if key in lowered:
-                    text = text.replace(key, val)
-        return text
-
     def _append_personality_tail(self, text: str, dna_profile: str, soft: bool = False) -> str:
         archetype = self._resolve_archetype(dna_profile)
         tagline = archetype.get("tagline", "").strip()
