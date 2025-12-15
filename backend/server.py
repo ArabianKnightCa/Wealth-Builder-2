@@ -576,41 +576,73 @@ async def get_chapter_with_lessons(chapter_id: str, user_id: str = Depends(get_c
                 dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
                 dna_weights = learning_map['financial_dna'].get('weights', {})
         
-        # Build TAP UserProfile
-        from ae_v3_tap import get_tap_engine, UserProfile, LessonContext
+        # Get user attributes
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
         financial_exp = map_experience_level(user.get('experience_level', 1))
         exp_level = exp_level_map.get(financial_exp, 1)
+        user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
         
-        tap_user = UserProfile(
-            user_id=user_id,
-            age=calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01"),
-            experience_level=exp_level,
-            dna_profile=dna_profile,
-            dna_weights=dna_weights,
-            goals=user.get('financial_goals', [])
-        )
+        # Check which TAP version to use
+        use_v23 = is_tap_v2_3_enabled()
         
-        # Transform lessons using TAP 2.0
-        tap = get_tap_engine()
-        personalized_lessons = []
-        for lesson in lessons:
-            ctx = LessonContext(
-                chapter_id=chapter_id,
-                lesson_id=lesson['id'],
-                attempt_number=1,
-                last_score=None,
-                rolling_mastery=None,
-                fatigue_score=None
+        if use_v23:
+            # TAP v2.3: Formula-driven transformation
+            tap_v23 = get_tap_v23_engine()
+            el_max = get_el_max()
+            ae_state = AEStatePacket(friction=0.0, momentum=0.5, exposure=1)
+            
+            personalized_lessons = []
+            for lesson in lessons:
+                transformed_text = tap_v23.transform_content(
+                    baseline_text=lesson['text'],
+                    user_age=user_age,
+                    user_experience_level=exp_level,
+                    el_max=el_max,
+                    ae_state=ae_state
+                )
+                transformed_takeaway = tap_v23.transform_content(
+                    baseline_text=lesson['takeaway'],
+                    user_age=user_age,
+                    user_experience_level=exp_level,
+                    el_max=el_max,
+                    ae_state=ae_state
+                )
+                personalized_lessons.append({
+                    **lesson,
+                    'text': transformed_text,
+                    'takeaway': transformed_takeaway
+                })
+            lessons = personalized_lessons
+        else:
+            # TAP v2.0: Legacy transformation
+            tap_user = UserProfile(
+                user_id=user_id,
+                age=user_age,
+                experience_level=exp_level,
+                dna_profile=dna_profile,
+                dna_weights=dna_weights,
+                goals=user.get('financial_goals', [])
             )
-            transformed_text = tap.transform_lpi_lesson(lesson['text'], tap_user, ctx)
-            transformed_takeaway = tap.transform_lpi_takeaway(lesson['takeaway'], tap_user, ctx)
-            personalized_lessons.append({
-                **lesson,
-                'text': transformed_text,
-                'takeaway': transformed_takeaway
-            })
-        lessons = personalized_lessons
+            
+            tap = get_tap_engine()
+            personalized_lessons = []
+            for lesson in lessons:
+                ctx = LessonContext(
+                    chapter_id=chapter_id,
+                    lesson_id=lesson['id'],
+                    attempt_number=1,
+                    last_score=None,
+                    rolling_mastery=None,
+                    fatigue_score=None
+                )
+                transformed_text = tap.transform_lpi_lesson(lesson['text'], tap_user, ctx)
+                transformed_takeaway = tap.transform_lpi_takeaway(lesson['takeaway'], tap_user, ctx)
+                personalized_lessons.append({
+                    **lesson,
+                    'text': transformed_text,
+                    'takeaway': transformed_takeaway
+                })
+            lessons = personalized_lessons
     
     return {
         "chapter": chapter,
