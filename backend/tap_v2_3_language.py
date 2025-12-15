@@ -252,8 +252,11 @@ class LanguageShaper:
                         flags=re.IGNORECASE
                     )
         elif cd < 0.5:
-            # Medium-low CD: Add brief context
-            if "financial decisions" in text.lower() and "about money" not in text.lower():
+            # Medium-low CD: Add brief context at the end
+            if "financial decisions" in text.lower() and "money choices" not in text.lower():
+                # Add period if missing
+                if not text.endswith('.'):
+                    text += '.'
                 text += " This is about how you handle money choices."
         
         return text
