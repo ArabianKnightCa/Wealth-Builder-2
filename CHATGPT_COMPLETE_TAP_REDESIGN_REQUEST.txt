@@ -1,0 +1,720 @@
+================================================================================
+TAP 2.0 REDESIGN REQUEST - COMPLETE PACKAGE FOR CHATGPT
+================================================================================
+
+# THE PROBLEM WE'RE FACING
+
+We implemented TAP 2.0 (Text Adaptation Processor) with multi-NLP libraries (spaCy, NLTK, sentence-transformers, textdescriptives, Gensim) but it's doing **surface-level word replacement** instead of **true adaptive comprehension**.
+
+### Current Flawed Approach:
+Input:  "When making financial decisions, I prefer to research extensively before deciding"
+Output: "When do money decision, I like to look up a lot before settle"
+
+**Problems:**
+- Grammar broken
+- Loses psychological intent
+- Just smaller words, not better comprehension
+- Doesn't adapt to user's life context
+
+### What We ACTUALLY Need:
+```
+6-year-old, beginner:
+"When I need to choose about my money, I like to ask my mom or dad first"
+
+36-year-old, intermediate:
+"When making money decisions, I prefer to research options carefully before choosing"
+
+66-year-old, advanced:
+"When making financial decisions, I prefer to conduct thorough research and analysis before committing"
+```
+
+## THE BIGGER PICTURE - WHY TAP 2.0 EXISTS
+
+### Application: Mizo Wealth Builder
+- **PPI (Personal Personality Inventory)**: Discovers user's financial DNA (Planner, Builder, Cautious, etc.)
+- **LPI (Learning Path Inventory)**: Teaches financial concepts adapted to their profile
+- **TAP 2.0**: The brain that adapts ALL content to user comprehension level
+
+### User Profile Inputs to TAP:
+```python
+UserProfile:
+  - age: 6-99 years
+  - experience_level: 1-5 (POC), expandable to 1-15 (commercial)
+  - dna_profile: "Planner", "Spontaneous", "Builder", etc.
+  - dna_weights: {"Planner": 0.6, "Builder": 0.4}
+  - goals: ["save_for_purchase", "build_wealth", "retirement"]
+  - culture_code: "US_EN", "US_PUNJABI", etc. (future)
+  - religion_code: "MUSLIM", "HINDU", "CHRISTIAN" (future)
+```
+
+### The DVCL Formula (Dynamic Verbal Challenge Level):
+```python
+def compute_dvcl_factor(age: int, exp_level: int) -> float:
+    age_norm = (age - 6) / 30.0  # 0.0 to 1.0
+    age_component = 0.3 + 0.9 * age_norm  # 0.3 to 1.2
+    
+    exp_norm = (exp_level - 1) / 4.0  # 0.0 to 1.0
+    exp_component = 0.3 * exp_norm  # 0.0 to 0.3
+    
+    dvcl = age_component + exp_component  # 0.3 to 1.5
+    return clamp(dvcl, 0.3, 1.4)
+```
+
+**DVCL Examples:**
+- Age 6, Exp 1 → DVCL 0.3 (very simple)
+- Age 36, Exp 3 → DVCL 0.75 (moderate)
+- Age 66, Exp 5 → DVCL 1.2 (complex)
+
+## WHAT TAP 2.0 SHOULD DO (NOT JUST SYNONYMS!)
+
+### 1. Life Stage Context Adaptation
+
+**6-year-old:**
+- Reference: Family (mom, dad, allowance, toys)
+- Timeframe: "today", "tomorrow", "when I'm big"
+- Concepts: Concrete (piggy bank, coins, buying candy)
+
+**36-year-old:**
+- Reference: Career (salary, bills, investments, retirement planning)
+- Timeframe: "this month", "5 years", "retirement in 30 years"
+- Concepts: Mixed (budget, 401k, emergency fund, compound interest)
+
+**66-year-old:**
+- Reference: Retirement (pension, social security, estate planning, legacy)
+- Timeframe: "now", "next decade", "for my grandchildren"
+- Concepts: Advanced (portfolio rebalancing, tax strategies, wealth transfer)
+
+### 2. Cognitive Complexity Adaptation
+
+**Beginner (Exp 1-2):**
+- One concept at a time
+- Explicit cause-effect relationships
+- Add clarifiers: "Saving (keeping money for later)"
+- Use analogies: "Like putting toys in a box for later"
+
+**Intermediate (Exp 3):**
+- Can handle 2-3 related concepts
+- Implicit relationships okay
+- Light technical terms with context
+- Real-world examples
+
+**Advanced (Exp 4-5):**
+- Multi-layered concepts
+- Technical precision
+- Efficiency-focused (no over-explanation)
+- Nuanced trade-offs
+
+### 3. Psychological Intent Preservation (CRITICAL!)
+
+TAP transforms PPI questions that measure psychological traits. The **intent must stay intact** even as language adapts.
+
+**Example - Measuring Risk Tolerance:**
+
+Baseline: "My comfort level with financial risk is: High – I'm willing to take calculated risks"
+
+**6yo:** "How I feel about trying new things with money: I like trying new things if grown-ups say it's okay"
+- Preserves: Risk tolerance concept
+- Adapts: Authority figures (parents) as safety net
+
+**36yo:** "My comfort with money risk: High – I'm willing to take smart risks after research"
+- Preserves: Risk tolerance + calculated approach
+- Adapts: Professional context
+
+**66yo:** "My risk tolerance for investments: High – I'm comfortable with strategic portfolio risk"
+- Preserves: Risk tolerance + strategic thinking
+- Adapts: Investment-specific language
+
+## EXAMPLE TRANSFORMATIONS WE NEED
+
+### PPI Question 1:
+**Baseline:** "When making financial decisions, I prefer to:"
+**Options:** 
+- A. Research extensively before deciding
+- B. Go with my gut feeling
+- C. Ask friends or family for advice
+- D. Follow what experts recommend
+
+**6yo, Exp 1 (DVCL 0.3):**
+"When I need to choose about my money, I like to:"
+- A. Ask my mom or dad
+- B. Do what feels right to me
+- C. Ask my friends or family
+- D. Do what teachers or grownups say
+
+**16yo, Exp 2 (DVCL 0.47):**
+"When making money decisions, I prefer to:"
+- A. Look things up and think about it first
+- B. Trust my instincts
+- C. Get advice from people I trust
+- D. Follow expert recommendations
+
+**36yo, Exp 3 (DVCL 0.75):**
+"When making financial decisions, I prefer to:"
+- A. Research thoroughly before committing
+- B. Go with my intuition
+- C. Consult with trusted advisors
+- D. Follow professional guidance
+
+**66yo, Exp 5 (DVCL 1.2):**
+"When making financial decisions, I prefer to:"
+- A. Conduct comprehensive due diligence
+- B. Rely on decades of experience and intuition
+- C. Leverage my network for diverse perspectives
+- D. Defer to specialized expertise when appropriate
+
+### PPI Question 5:
+**Baseline:** "When I receive unexpected money, I usually:"
+**Options:**
+- A. Save most or all of it
+- B. Spend it on something I've wanted
+- C. Split it between saving and spending
+- D. Use it to pay bills or debt
+
+**6yo, Exp 1:**
+"When I get surprise money (like for my birthday), I usually:"
+- A. Put it in my piggy bank
+- B. Buy a toy or candy I want
+- C. Save some and spend some
+- D. Give it to mom or dad
+
+**36yo, Exp 3:**
+"When I receive unexpected money (bonus, gift, refund), I usually:"
+- A. Save or invest most of it
+- B. Use it for something I've been wanting
+- C. Split between savings and discretionary spending
+- D. Apply it to financial obligations or debt
+
+**66yo, Exp 5:**
+"When receiving unexpected income (inheritance, portfolio gains), I typically:"
+- A. Allocate it to long-term investment vehicles
+- B. Utilize it for planned major purchases or experiences
+- C. Strategically balance between reinvestment and lifestyle enhancement
+- D. Direct it toward estate optimization or legacy planning
+
+## TECHNICAL CONSTRAINTS
+
+- **Language:** Python 3.11
+- **Stack:** FastAPI backend, MongoDB, React frontend
+- **NLP Libraries Available:** spaCy, NLTK, Gensim, sentence-transformers, textdescriptives
+- **Performance:** Must handle 20 PPI questions + 80 options in <3 seconds
+- **Scalability:** Will expand from 20 questions (POC) to 100+ (commercial)
+- **Experience Levels:** Currently 1-5, will expand to 1-15
+
+## WHAT WE NEED FROM YOU (CHATGPT)
+
+### Design a TAP 2.0 that:
+
+1. **Understands Context, Not Just Words**
+   - What is this question measuring? (risk tolerance, planning style, etc.)
+   - What life stage is the user in? (school, career, retirement)
+   - What financial concepts are relevant to their age?
+
+2. **Adapts at Multiple Levels Simultaneously**
+   - Vocabulary (words)
+   - Syntax (sentence structure)
+   - Semantics (meaning/concepts)
+   - Pragmatics (real-world relevance)
+   - Psychological frame (maintains measurement intent)
+
+3. **Uses Formula-Based Approach (Not Dictionaries)**
+   - DVCL formula drives complexity
+   - Age drives life-stage references
+   - Experience drives concept depth
+   - DNA profile drives tone/motivation
+
+4. **Leverages Our NLP Stack Intelligently**
+   - spaCy: POS tagging, dependency parsing
+   - NLTK/WordNet: Concept relationships
+   - sentence-transformers: Semantic preservation
+   - textdescriptives: Readability validation
+
+5. **Grows Organically**
+   - Track which transformations work best
+   - Learn from user progress
+   - Weight successful patterns higher
+
+## DELIVERABLES WE NEED
+
+1. **Architectural Design:**
+   - How should TAP 2.0 be structured?
+   - What modules/layers does it need?
+
+2. **Implementation Approach:**
+   - Step-by-step plan
+   - Which NLP libraries for what purpose
+   - Code structure/pseudocode
+
+3. **Context Adaptation Framework:**
+   - How to map age → life context
+   - How to map experience → concept depth
+   - How to preserve psychological intent
+
+4. **Sample Code:**
+   - Core transformation algorithm
+   - Context mapping logic
+   - Semantic preservation check
+
+## CURRENT TAP 2.0 CODE (FLAWED - NEEDS REDESIGN)
+
+Here is our current implementation that's doing word replacement instead of contextual adaptation:
+
+```python
+"""
+AE v3.55-RE + TAP 2.0 Enhanced
+===============================
+Multi-NLP Stack:
+- spaCy: POS tagging, semantic similarity
+- NLTK/WordNet: Synonym database
+- Gensim: Word embeddings (optional)
+- sentence-transformers: Semantic sentence understanding
+- textdescriptives: Readability metrics (Flesch-Kincaid, etc.)
+"""
+
+from dataclasses import dataclass, field
+from typing import Dict, Any, List, Optional, Tuple
+import datetime
+import spacy
+from nltk.corpus import wordnet
+from nltk.tokenize import word_tokenize
+import nltk
+from sentence_transformers import SentenceTransformer
+import textdescriptives as td
+
+# Import from config
+from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
+
+# Load NLP models (singleton pattern)
+_nlp = None
+_sentence_model = None
+_td_model = None
+
+def get_nlp():
+    global _nlp
+    if _nlp is None:
+        _nlp = spacy.load('en_core_web_sm')
+    return _nlp
+
+def get_sentence_model():
+    global _sentence_model
+    if _sentence_model is None:
+        _sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+    return _sentence_model
+
+def get_td_model():
+    global _td_model
+    if _td_model is None:
+        _td_model = td.load_spacy_model()
+    return _td_model
+
+
+ADAPTIVE_ENGINE_VERSION = "3.55-RE"
+TAP_VERSION = "2.0"
+
+MIN_EXP_LEVEL = 1
+MAX_EXP_LEVEL = 5
+
+
+@dataclass
+class UserProfile:
+    user_id: str
+    age: int
+    experience_level: int
+    dna_profile: str
+    dna_weights: Dict[str, float] = field(default_factory=dict)
+    goals: List[str] = field(default_factory=list)
+    culture_code: Optional[str] = None
+    religion_code: Optional[str] = None
+
+
+@dataclass
+class LessonContext:
+    chapter_id: str
+    lesson_id: str
+    attempt_number: int = 1
+    last_score: Optional[float] = None
+    rolling_mastery: Optional[float] = None
+    fatigue_score: Optional[float] = None
+
+
+def _clamp(val: float, lo: float, hi: float) -> float:
+    return max(lo, min(hi, val))
+
+
+def compute_age_band(age: int) -> str:
+    if age <= CHILD_AGE_MAX:
+        return "child"
+    elif age <= TEEN_AGE_MAX:
+        return "teen"
+    return "adult"
+
+
+def compute_experience_band(exp_level: int) -> str:
+    lvl = _clamp(exp_level, MIN_EXP_LEVEL, MAX_EXP_LEVEL)
+    if lvl <= 2:
+        return "beginner"
+    if lvl == 3:
+        return "intermediate"
+    return "advanced"
+
+
+def compute_dvcl_factor(age: int, exp_level: int) -> float:
+    age_norm = _clamp((age - MINIMUM_USER_AGE) / 30.0, 0.0, 1.0)
+    age_component = 0.3 + 0.9 * age_norm
+    exp_norm = (exp_level - MIN_EXP_LEVEL) / (MAX_EXP_LEVEL - MIN_EXP_LEVEL) if MAX_EXP_LEVEL > MIN_EXP_LEVEL else 0.0
+    exp_component = 0.3 * exp_norm
+    dvcl = age_component + exp_component
+    return _clamp(dvcl, 0.3, 1.4)
+
+
+class TAPEngine:
+    def __init__(self):
+        self.personality_adaptations = {
+            "Planner": {
+                "tone": "structured",
+                "tagline": "Having a clear system gives you confidence and control.",
+            },
+            "Spontaneous": {
+                "tone": "flexible",
+                "tagline": "This keeps your options open for opportunities ahead.",
+            },
+            "Cautious": {
+                "tone": "reassuring",
+                "tagline": "This builds your safety net and peace of mind.",
+            },
+            "Builder": {
+                "tone": "achievement-focused",
+                "tagline": "Each step forward is real progress toward your goals.",
+            },
+            "Balanced": {
+                "tone": "practical",
+                "tagline": "This keeps things realistic and moving forward.",
+            },
+        }
+        
+        # Core financial vocabulary (minimal, focused)
+        self.core_financial_terms = {
+            "financial": {"child": "money", "teen": "money", "adult": "financial"},
+            "finances": {"child": "money", "teen": "money", "adult": "finances"},
+            "investment": {"child": "saving", "teen": "investing", "adult": "investment"},
+            "debt": {"child": "owe", "teen": "debt", "adult": "debt"},
+        }
+    
+    def _count_syllables(self, word: str) -> int:
+        """Count syllables in a word using vowel counting."""
+        word = word.lower().strip()
+        vowels = "aeiouy"
+        syllable_count = 0
+        previous_was_vowel = False
+        
+        for char in word:
+            is_vowel = char in vowels
+            if is_vowel and not previous_was_vowel:
+                syllable_count += 1
+            previous_was_vowel = is_vowel
+        
+        if word.endswith('e'):
+            syllable_count -= 1
+        
+        return max(1, syllable_count)
+    
+    def _calculate_word_complexity(self, word: str) -> float:
+        """Calculate word complexity score (0.0 = simple, 1.0 = complex)"""
+        syllables = self._count_syllables(word)
+        length = len(word)
+        
+        syllable_score = min(syllables / 4.0, 1.0)
+        length_score = min(length / 12.0, 1.0)
+        
+        complexity = (syllable_score * 0.6) + (length_score * 0.4)
+        return min(complexity, 1.0)
+    
+    def _calculate_text_readability(self, text: str) -> Dict[str, float]:
+        """Use textdescriptives to calculate readability metrics."""
+        try:
+            nlp = get_td_model()
+            doc = nlp(text)
+            metrics = td.extract_metrics(doc, metrics=['readability'])
+            return {
+                'flesch_reading_ease': metrics.get('flesch_reading_ease', 50),
+                'flesch_kincaid_grade': metrics.get('flesch_kincaid_grade', 10),
+                'smog': metrics.get('smog', 10)
+            }
+        except Exception:
+            return {'flesch_reading_ease': 50, 'flesch_kincaid_grade': 10, 'smog': 10}
+    
+    def _get_semantic_similarity(self, text1: str, text2: str) -> float:
+        """Use sentence-transformers to compute semantic similarity."""
+        try:
+            model = get_sentence_model()
+            embeddings = model.encode([text1, text2])
+            from scipy.spatial.distance import cosine
+            similarity = 1 - cosine(embeddings[0], embeddings[1])
+            return max(0.0, min(1.0, similarity))
+        except Exception:
+            words1 = set(text1.lower().split())
+            words2 = set(text2.lower().split())
+            overlap = len(words1 & words2) / max(len(words1 | words2), 1)
+            return overlap
+    
+    def _find_simpler_word(self, word: str, target_complexity: float, pos_tag: Optional[str] = None) -> str:
+        """Multi-NLP approach: Uses spaCy + NLTK (WordNet) to find simpler synonyms."""
+        current_complexity = self._calculate_word_complexity(word)
+        
+        if current_complexity <= target_complexity:
+            return word
+        
+        word_lower = word.lower()
+        if word_lower in self.core_financial_terms:
+            age_band = "child" if target_complexity < 0.4 else ("teen" if target_complexity < 0.7 else "adult")
+            return self.core_financial_terms[word_lower].get(age_band, word)
+        
+        candidates = []
+        
+        # Method 1: NLTK WordNet - Get synonyms with POS matching
+        try:
+            pos_map = {'NOUN': 'n', 'VERB': 'v', 'ADJ': 'a', 'ADV': 'r'}
+            wn_pos = pos_map.get(pos_tag) if pos_tag else None
+            
+            synsets = wordnet.synsets(word, pos=wn_pos) if wn_pos else wordnet.synsets(word)
+            for syn in synsets[:3]:
+                for lemma in syn.lemmas():
+                    synonym = lemma.name().replace('_', ' ')
+                    if synonym.lower() != word_lower:
+                        syn_complexity = self._calculate_word_complexity(synonym)
+                        if syn_complexity < current_complexity:
+                            candidates.append((synonym, syn_complexity, 0.9, 'wordnet'))
+        except Exception:
+            pass
+        
+        # Method 2: spaCy - Semantic similarity
+        try:
+            nlp = get_nlp()
+            doc = nlp(word)
+            
+            if len(doc) > 0 and doc[0].has_vector:
+                similarity_threshold = 0.5 if target_complexity < 0.4 else 0.6
+                vocab_sample = list(nlp.vocab)[:10000]
+                for token in vocab_sample:
+                    if token.has_vector and token.is_alpha and len(token.text) > 2:
+                        similarity = doc[0].similarity(token)
+                        if similarity > similarity_threshold:
+                            word_complexity = self._calculate_word_complexity(token.text)
+                            if word_complexity < current_complexity:
+                                candidates.append((token.text, word_complexity, similarity, 'spacy'))
+        except Exception:
+            pass
+        
+        # Method 3: Common word mappings
+        common_simplifications = {
+            "prefer": ("like", 0.2, 1.0),
+            "approach": ("way", 0.15, 1.0),
+            "extensively": ("a lot", 0.2, 1.0),
+            "research": ("look up", 0.2, 1.0),
+            "anxious": ("worried", 0.3, 1.0),
+            "optimistic": ("hopeful", 0.3, 1.0),
+            "uncertain": ("not sure", 0.25, 1.0),
+            "confident": ("sure", 0.2, 1.0),
+            "disciplined": ("careful", 0.3, 1.0),
+            "impulsive": ("fast", 0.2, 0.8),
+            "reactive": ("quick", 0.2, 0.8),
+            "discouraged": ("sad", 0.15, 1.0),
+            "motivated": ("want to", 0.25, 1.0),
+        }
+        
+        if word_lower in common_simplifications:
+            simple_word, complexity, confidence = common_simplifications[word_lower]
+            candidates.append((simple_word, complexity, confidence, 'common'))
+        
+        source_priority = {'common': 0, 'wordnet': 1, 'spacy': 2}
+        candidates.sort(key=lambda x: (x[1], -x[2], source_priority.get(x[3], 3)))
+        
+        if candidates:
+            return candidates[0][0]
+        
+        return word
+
+    def transform_ppi_question(self, baseline_text: str, user: UserProfile) -> str:
+        age_band = compute_age_band(user.age)
+        exp_band = compute_experience_band(user.experience_level)
+        dvcl = compute_dvcl_factor(user.age, user.experience_level)
+
+        text = baseline_text
+        text = self._simplify_sentence_structure(text, age_band, dvcl)
+        text = self._inject_experience_clarity(text, exp_band, is_ppi=True)
+        return text
+
+    def transform_lpi_lesson(self, baseline_text: str, user: UserProfile, ctx: LessonContext) -> str:
+        age_band = compute_age_band(user.age)
+        exp_band = compute_experience_band(user.experience_level)
+        dvcl = compute_dvcl_factor(user.age, user.experience_level)
+
+        text = baseline_text
+        text = self._simplify_sentence_structure(text, age_band, dvcl)
+        text = self._inject_experience_clarity(text, exp_band, is_ppi=False)
+        text = self._append_personality_tail(text, user.dna_profile)
+        text = self._add_goal_hook(text, user.goals)
+        return text
+
+    def transform_lpi_takeaway(self, baseline_text: str, user: UserProfile, ctx: LessonContext) -> str:
+        age_band = compute_age_band(user.age)
+        exp_band = compute_experience_band(user.experience_level)
+        dvcl = compute_dvcl_factor(user.age, user.experience_level)
+
+        text = baseline_text
+        text = self._simplify_sentence_structure(text, age_band, dvcl)
+        text = self._inject_experience_clarity(text, exp_band, is_ppi=False, is_takeaway=True)
+        text = self._append_personality_tail(text, user.dna_profile, soft=True)
+        return text
+
+    def _simplify_sentence_structure(self, text: str, age_band: str, dvcl: float) -> str:
+        """Simplify using POS tagging and multi-NLP synonym finding."""
+        target_word_complexity = dvcl * 0.7
+        
+        nlp = get_nlp()
+        doc = nlp(text)
+        
+        sentences = []
+        current_sent = []
+        
+        for token in doc:
+            clean_word = token.text
+            
+            if token.pos_ in ['NOUN', 'VERB', 'ADJ', 'ADV'] and len(clean_word) > 2:
+                simpler = self._find_simpler_word(clean_word, target_word_complexity, token.pos_)
+                current_sent.append(simpler)
+            else:
+                current_sent.append(clean_word)
+            
+            if token.is_sent_end:
+                sentences.append(" ".join(current_sent))
+                current_sent = []
+        
+        if current_sent:
+            sentences.append(" ".join(current_sent))
+        
+        new_sentences = []
+        max_len = 12 if age_band == "child" else (18 if age_band == "teen" else 30)
+        if dvcl < 0.5:
+            max_len = max_len - 3
+
+        for sent in sentences:
+            words = sent.split()
+            if len(words) > max_len and age_band in ("child", "teen"):
+                mid = len(words) // 2
+                first = " ".join(words[:mid])
+                second = " ".join(words[mid:])
+                if first:
+                    new_sentences.append(first)
+                if second:
+                    new_sentences.append(second)
+            else:
+                new_sentences.append(sent)
+
+        text = ". ".join(new_sentences)
+        if text and not text.endswith("."):
+            text += "."
+        
+        if age_band == "child":
+            metrics = self._calculate_text_readability(text)
+        
+        return text
+
+    def _inject_experience_clarity(self, text: str, exp_band: str, is_ppi: bool = False, is_takeaway: bool = False) -> str:
+        lowered = text.lower()
+
+        def add_clarifier(original: str, clarifier: str) -> str:
+            if clarifier.lower() in lowered:
+                return text
+            return text.replace(original, f"{original} ({clarifier})")
+
+        if exp_band == "beginner":
+            if "saving" in lowered and "set aside" not in lowered and not is_ppi:
+                text = add_clarifier("Saving", "setting aside money for later")
+            if "interest" in lowered and not is_ppi:
+                text = add_clarifier("interest", "extra money you earn or pay")
+            if "budget" in lowered and not is_ppi:
+                text = add_clarifier("budget", "a simple plan for your money")
+            if is_takeaway and not text.startswith("Remember"):
+                text = "Remember: " + text
+        elif exp_band == "advanced":
+            if "saving" in lowered and "opportunity cost" not in lowered and not is_ppi:
+                text += " You're also managing opportunity cost when you choose where that money sits."
+            if "interest" in lowered and "compound" not in lowered and not is_ppi:
+                text += " Over time, compound effects matter more than one-time gains."
+
+        return text
+
+    def _append_personality_tail(self, text: str, dna_profile: str, soft: bool = False) -> str:
+        archetype = self._resolve_archetype(dna_profile)
+        tagline = archetype.get("tagline", "").strip()
+        if not tagline:
+            return text
+        if tagline.lower() in text.lower():
+            return text
+        sep = " " if text.endswith((".", "!", "?")) else ". "
+        if soft:
+            tagline = tagline.replace("This", "It")
+        return text + sep + tagline
+
+    def _resolve_archetype(self, dna_profile: str) -> Dict[str, str]:
+        for key in self.personality_adaptations.keys():
+            if key.lower() in dna_profile.lower():
+                return self.personality_adaptations[key]
+        return self.personality_adaptations["Balanced"]
+
+    def _add_goal_hook(self, text: str, goals: List[str]) -> str:
+        if not goals:
+            return text
+
+        goal_connections = {
+            "save_for_purchase": ("saving", "saving for something you really want"),
+            "learn_money_basics": ("money", "understanding money step by step"),
+            "build_wealth": ("grow", "building long-term wealth"),
+            "pay_off_debt": ("debt", "becoming debt-free"),
+            "buy_home": ("save", "buying a home"),
+            "retirement": ("future", "planning for your future self"),
+            "start_business": ("earn", "starting or growing a business"),
+        }
+
+        lowered = text.lower()
+        for goal in goals:
+            if goal not in goal_connections:
+                continue
+            concept, phrase = goal_connections[goal]
+            if concept in lowered:
+                if phrase.lower() in lowered:
+                    return text
+                if not text.endswith((".", "!", "?")):
+                    text += "."
+                return text + f" This directly helps with {phrase}."
+        return text
+
+
+_tap_instance: Optional[TAPEngine] = None
+
+
+def get_tap_engine() -> TAPEngine:
+    global _tap_instance
+    if _tap_instance is None:
+        _tap_instance = TAPEngine()
+    return _tap_instance
+```
+
+## SUCCESS CRITERIA
+
+TAP 2.0 will be successful when:
+1. ✅ 6-year-old can understand and answer PPI questions authentically
+2. ✅ 66-year-old doesn't feel patronized or over-simplified
+3. ✅ Psychological measurement intent preserved across all ages
+4. ✅ Grammar is natural and correct
+5. ✅ Life-stage references are appropriate and relatable
+6. ✅ No hardcoded dictionaries (formula-driven)
+7. ✅ System learns and improves organically from user data
+
+---
+
+**Please provide a comprehensive redesign that makes TAP 2.0 truly adaptive and comprehension-focused, not just a synonym replacer. We need architectural design, implementation approach, context adaptation framework, and sample code.**
+
+================================================================================
+END OF REQUEST - COPY EVERYTHING ABOVE TO CHATGPT
+================================================================================
