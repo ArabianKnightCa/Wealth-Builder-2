@@ -155,35 +155,27 @@ class LanguageShaper:
             for sentence in sentences:
                 # Remove commas and parentheses
                 sentence = re.sub(r'\s*\([^)]*\)', '', sentence)
-                sentence = sentence.replace(',', '.')
-                
-                words = sentence.split()
-                if len(words) > 10:
-                    # Break at period or natural breaks
-                    parts = sentence.split('.')
-                    for part in parts:
-                        part = part.strip()
-                        if part and not part.endswith('.'):
+                # Replace commas with periods to break up clauses
+                parts = sentence.split(',')
+                for part in parts:
+                    part = part.strip()
+                    if part:
+                        if not part.endswith('.'):
                             part += '.'
-                        if part:
-                            result.append(part)
-                else:
-                    if sentence.strip():
-                        result.append(sentence)
+                        result.append(part)
             return ' '.join(result)
         
         else:
             # Very low LC (< 0.15): Very simple, short sentences
-            # Convert complex sentence to very simple form
-            words = text.split()
-            # Create 4-6 word chunks
-            chunks = []
-            for i in range(0, len(words), 5):
-                chunk = ' '.join(words[i:i+5])
-                if chunk and not chunk.endswith('.'):
-                    chunk += '.'
-                chunks.append(chunk)
-            return ' '.join(chunks)
+            # Split by commas first to break clauses
+            text = text.replace(',', '.')
+            # Remove multiple periods
+            text = re.sub(r'\.+', '.', text)
+            # Split into sentences
+            parts = [p.strip() for p in text.split('.') if p.strip()]
+            # Add period to each part
+            result = [p + '.' if not p.endswith('.') else p for p in parts]
+            return ' '.join(result)
     
     def _adjust_complexity(self, text: str, lc: float, age: int) -> str:
         """
