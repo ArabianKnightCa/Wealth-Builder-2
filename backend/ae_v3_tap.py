@@ -1,18 +1,22 @@
 """
 AE v3.55-RE + TAP 2.0 Enhanced
 ===============================
-Enhanced with spaCy for intelligent synonym finding and word weighting formula.
+Enhanced with multi-NLP approach: spaCy + NLTK (WordNet) + Gensim
+for comprehensive synonym finding and word simplification.
 """
 
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional, Tuple
 import datetime
 import spacy
+from nltk.corpus import wordnet
+from nltk.tokenize import word_tokenize
+import nltk
 
 # Import from config
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
 
-# Load spaCy model (singleton pattern)
+# Load NLP models (singleton pattern)
 _nlp = None
 
 def get_nlp():
