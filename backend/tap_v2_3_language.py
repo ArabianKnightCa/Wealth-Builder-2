@@ -342,6 +342,38 @@ class LanguageShaper:
             
             return text
     
+    def _add_advanced_enhancements(self, text: str, cd: float) -> str:
+        """
+        Add advanced-level enhancements for CD 0.6-0.8 users.
+        
+        Args:
+            text: Input text
+            cd: Conceptual Depth scalar
+        
+        Returns:
+            str: Text with advanced enhancements
+        """
+        # Add professional financial terminology
+        advanced_additions = {
+            "financial decisions": "financial decisions with careful risk assessment",
+            "research extensively": "conduct thorough research and analysis",
+            "manage money": "manage finances strategically",
+            "thinking about": "considering and planning for",
+        }
+        
+        for phrase, enhancement in advanced_additions.items():
+            if phrase in text.lower() and enhancement not in text.lower():
+                text = re.sub(
+                    rf'\b{phrase}\b',
+                    enhancement,
+                    text,
+                    count=1,
+                    flags=re.IGNORECASE
+                )
+                break
+        
+        return text
+    
     def _add_expert_enhancements(self, text: str, cd: float, lc: float) -> str:
         """
         Add expert-level enhancements for high CD users.
