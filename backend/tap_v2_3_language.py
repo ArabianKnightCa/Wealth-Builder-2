@@ -73,6 +73,7 @@ class LanguageShaper:
     def shape_text(self, text: str, scalars: TAPScalars) -> str:
         """
         Apply language shaping based on LC and CD scalars.
+        ALWAYS transforms - never returns baseline unchanged.
         
         Args:
             text: Input text to shape
@@ -83,6 +84,7 @@ class LanguageShaper:
         """
         lc = scalars.lc
         cd = scalars.cd
+        ia = scalars.ia
         age = scalars.age
         
         # Apply age-appropriate contextual framing first
@@ -97,6 +99,14 @@ class LanguageShaper:
         # For low CD (< 0.5), add clarifications regardless of LC
         if cd < 0.5:
             text = self._add_beginner_clarifications(text, cd)
+        
+        # For high CD (>= 0.8), add expert-level enhancements
+        if cd >= 0.8:
+            text = self._add_expert_enhancements(text, cd, lc)
+        
+        # For high IA (>= 0.8), add sophisticated framing
+        if ia >= 0.8:
+            text = self._add_sophisticated_framing(text, ia, age)
         
         return text
     
