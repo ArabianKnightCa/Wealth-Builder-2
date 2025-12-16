@@ -410,6 +410,30 @@ class LanguageShaper:
         
         return text
     
+    def _add_practical_framing(self, text: str, ia: float, age: int) -> str:
+        """
+        Add practical framing for intermediate IA users.
+        
+        Args:
+            text: Input text
+            ia: Ideological Abstraction scalar
+            age: User age
+        
+        Returns:
+            str: Text with practical framing
+        """
+        if ia >= 0.5 and ia < 0.8:
+            if not text.endswith('.'):
+                text += '.'
+            
+            # Add practical, goal-oriented framing
+            if age >= 40:
+                text += " This approach supports building stable financial security."
+            elif age >= 25:
+                text += " This helps establish solid financial habits for the future."
+        
+        return text
+    
     def _add_sophisticated_framing(self, text: str, ia: float, age: int) -> str:
         """
         Add sophisticated life-stage framing for high IA users.
