@@ -333,6 +333,79 @@ class LanguageShaper:
             
             return text
     
+    def _add_expert_enhancements(self, text: str, cd: float, lc: float) -> str:
+        """
+        Add expert-level enhancements for high CD users.
+        These are sophisticated, advanced insights.
+        
+        Args:
+            text: Input text
+            cd: Conceptual Depth scalar
+            lc: Language Complexity scalar
+        
+        Returns:
+            str: Text with expert enhancements
+        """
+        if cd >= 0.9:
+            # Guru level: Add strategic/tactical insights
+            expert_additions = {
+                "financial decisions": "strategic financial decisions, considering opportunity costs and risk-adjusted returns",
+                "research extensively": "conduct comprehensive due diligence across multiple data sources and analytical frameworks",
+                "prefer to": "prioritize a systematic approach that integrates",
+                "thinking about": "analyzing and strategizing regarding",
+                "manage money": "optimize capital allocation and maintain robust financial governance",
+            }
+            
+            for phrase, enhancement in expert_additions.items():
+                if phrase in text.lower() and enhancement not in text.lower():
+                    text = re.sub(
+                        rf'\b{phrase}\b',
+                        enhancement,
+                        text,
+                        count=1,
+                        flags=re.IGNORECASE
+                    )
+                    break  # Only apply one enhancement
+        
+        return text
+    
+    def _add_sophisticated_framing(self, text: str, ia: float, age: int) -> str:
+        """
+        Add sophisticated life-stage framing for high IA users.
+        
+        Args:
+            text: Input text
+            ia: Ideological Abstraction scalar
+            age: User age
+        
+        Returns:
+            str: Text with sophisticated framing
+        """
+        if ia >= 0.9 and age >= 60:
+            # Senior expert: Add legacy/strategic framing
+            if not text.endswith('.'):
+                text += '.'
+            
+            framing_additions = [
+                " This reflects long-term wealth preservation and legacy planning principles.",
+                " This aligns with sophisticated portfolio management and estate optimization strategies.",
+                " This represents decades of accumulated financial wisdom and risk management experience.",
+            ]
+            
+            # Add appropriate framing based on content
+            if "decisions" in text.lower() or "prefer" in text.lower():
+                text += framing_additions[0]
+            elif "financial" in text.lower():
+                text += framing_additions[1]
+        
+        elif ia >= 0.8 and age >= 40:
+            # Mature professional: Add wealth-building framing
+            if not text.endswith('.'):
+                text += '.'
+            text += " This is key to building long-term financial security and wealth accumulation."
+        
+        return text
+    
     def add_examples(self, text: str, lc: float, count: int = 1) -> str:
         """
         Add examples based on LC.
