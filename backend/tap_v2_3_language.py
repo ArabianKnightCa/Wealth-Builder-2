@@ -100,13 +100,22 @@ class LanguageShaper:
         if cd < 0.5:
             text = self._add_beginner_clarifications(text, cd)
         
-        # For high CD (>= 0.8), add expert-level enhancements
+        # For intermediate to high CD, add appropriate enhancements
         if cd >= 0.8:
+            # Expert level
             text = self._add_expert_enhancements(text, cd, lc)
+        elif cd >= 0.6:
+            # Advanced level
+            text = self._add_advanced_enhancements(text, cd)
+        elif cd >= 0.4:
+            # Intermediate level - already handled by beginner clarifications being absent
+            pass
         
         # For high IA (>= 0.8), add sophisticated framing
         if ia >= 0.8:
             text = self._add_sophisticated_framing(text, ia, age)
+        elif ia >= 0.5:
+            text = self._add_practical_framing(text, ia, age)
         
         return text
     
