@@ -254,6 +254,68 @@ class SafeRewritePipeline:
                         result.append(part + '.')
             return ' '.join(result)
     
+    def _rewrite_for_child(self, text: str, age: int) -> str:
+        """
+        Complete rewrite for children (age <= 12, LC < 0.15).
+        Uses pattern matching to create grammatically correct child sentences.
+        """
+        # Common sentence patterns for child rewriting
+        patterns = [
+            # "X is the ability to Y" -> "X means you can Y"
+            (r'(\w+(?:\s+\w+)*) is the ability to (\w+(?:\s+\w+)*)', r'\1 means you can \2'),
+            # "including X, Y, and Z" -> "like X, Y, and Z"
+            (r'including ([^.]+)', r'like \1'),
+            # "understand and effectively use" -> "learn about and use"
+            (r'understand and effectively use', 'learn about and use'),
+            # "various/different X" -> "different X"
+            (r'various (\w+)', r'different \1'),
+        ]
+        
+        result = text
+        for pattern, replacement in patterns:
+            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+        
+        # Apply child-friendly vocabulary
+        child_vocab = {
+            'financial literacy': 'learning about money',
+            'financial skills': 'money skills',
+            'financial management': 'how to use money',
+            'personal financial management': 'taking care of your money',
+            'budgeting': 'planning your money',
+            'investing': 'saving money to grow it',
+            'effectively': 'well',
+        }
+        
+        for term, child_term in sorted(child_vocab.items(), key=lambda x: len(x[0]), reverse=True):
+            result = re.sub(rf'\b{re.escape(term)}\b', child_term, result, flags=re.IGNORECASE)
+        
+        # Break into simple sentences (max 8 words)
+        sentences = re.split(r'(?<=[.!?])\s+', result)
+        final = []
+        for sent in sentences:
+            words = sent.split()
+            if len(words) > 10:
+                # Split long sentence at 'and' or comma
+                if ' and ' in sent:
+                    parts = sent.split(' and ', 1)
+                    final.append(parts[0].strip() + '.')
+                    if parts[1]:
+                        final.append(parts[1].strip().capitalize() + '.')
+                elif ',' in sent:
+                    parts = sent.split(',', 1)
+                    final.append(parts[0].strip() + '.')
+                    if parts[1]:
+                        cleaned = parts[1].strip()
+                        if cleaned:
+                            final.append(cleaned.capitalize() + '.')
+                else:
+                    final.append(sent)
+            else:
+                if sent.strip():
+                    final.append(sent.strip() if sent.strip().endswith('.') else sent.strip() + '.')
+        
+        return ' '.join(final)
+    
     def _apply_child_context(self, text: str, age: int) -> str:
         """
         Apply child-appropriate contextual reframing.
