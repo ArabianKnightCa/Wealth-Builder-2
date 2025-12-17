@@ -222,24 +222,9 @@ class SafeRewritePipeline:
         
         else:
             # Very low LC (< 0.15): Maximum simplification
-            # Context-based rewrite for children
+            # For children, need complete sentence restructuring
             if age <= 12:
-                # Child-appropriate transformation FIRST
-                text = self._apply_child_context(text, age)
-            
-            # After context transformation, check if already simple enough
-            sentences = re.split(r'(?<=[.!?])\s+', text)
-            if len(sentences) <= 2:
-                # Already simple, just ensure proper capitalization
-                result = []
-                for sent in sentences:
-                    sent = sent.strip()
-                    if sent:
-                        sent = sent[0].upper() + sent[1:] if len(sent) > 1 else sent.upper()
-                        if not sent.endswith('.'):
-                            sent += '.'
-                        result.append(sent)
-                return ' '.join(result)
+                return self._rewrite_for_child(text, age)
             
             # Otherwise, break into very short sentences
             text = text.replace(',', '.')
