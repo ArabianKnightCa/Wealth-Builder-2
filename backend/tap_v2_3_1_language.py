@@ -193,19 +193,31 @@ class SafeRewritePipeline:
         
         elif lc >= 0.15:
             # Low LC: Significant simplification
-            # Break all compound sentences
-            text = text.replace(',', '.')
-            text = text.replace(';', '.')
-            # Clean up multiple periods
-            text = re.sub(r'\.+', '.', text)
-            # Split and capitalize
-            parts = [p.strip() for p in text.split('.') if p.strip()]
+            # Break all compound sentences BUT avoid creating fragments
+            # Replace commas with periods only if not creating a fragment
+            sentences = re.split(r'(?<=[.!?])\s+', text)
             result = []
-            for part in parts:
-                if part:
-                    # Capitalize first letter
-                    part = part[0].upper() + part[1:] if len(part) > 1 else part.upper()
-                    result.append(part + '.')
+            
+            for sent in sentences:
+                # Split by commas
+                parts = sent.split(',')
+                for i, part in enumerate(parts):
+                    part = part.strip()
+                    if not part:
+                        continue
+                    
+                    # Check if this would be a fragment (starts with subordinate word)
+                    first_word = part.split()[0].lower() if part.split() else ''
+                    is_fragment = first_word in ['including', 'and', 'or', 'but', 'because', 'although', 'while', 'when', 'if']
+                    
+                    if is_fragment and result:
+                        # Attach to previous sentence instead of creating fragment
+                        result[-1] = result[-1].rstrip('.') + ' ' + part + '.'
+                    else:
+                        # Capitalize and add as new sentence
+                        part = part[0].upper() + part[1:] if len(part) > 1 else part.upper()
+                        result.append(part + '.')
+            
             return ' '.join(result)
         
         else:
