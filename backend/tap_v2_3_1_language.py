@@ -171,8 +171,20 @@ class SafeRewritePipeline:
         
         elif lc >= 0.3:
             # Medium LC: Moderate simplification
-            # Split on semicolons and long commas
+            # Apply some vocabulary simplification for teens
+            if age <= 20:
+                teen_vocab = {
+                    'financial literacy': 'understanding money',
+                    'ability to': 'can',
+                    'effectively': 'well',
+                    'various': 'different',
+                }
+                for term, simple in teen_vocab.items():
+                    text = re.sub(rf'\b{re.escape(term)}\b', simple, text, flags=re.IGNORECASE)
+            
+            # Split on semicolons
             text = text.replace(';', '.')
+            
             # Break sentences longer than 15 words at natural boundaries
             sentences = re.split(r'(?<=[.!?])\s+', text)
             result = []
@@ -183,10 +195,15 @@ class SafeRewritePipeline:
                     parts = sent.split(',', 1)
                     result.append(parts[0].strip() + '.')
                     if len(parts) > 1 and parts[1].strip():
-                        # Capitalize first letter
+                        # Capitalize first letter and check if fragment
                         remaining = parts[1].strip()
-                        remaining = remaining[0].upper() + remaining[1:] if len(remaining) > 1 else remaining.upper()
-                        result.append(remaining if remaining.endswith('.') else remaining + '.')
+                        first_word = remaining.split()[0].lower() if remaining.split() else ''
+                        if first_word in ['including', 'and', 'or']:
+                            # Keep with previous sentence
+                            result[-1] = result[-1].rstrip('.') + ', ' + remaining + '.'
+                        else:
+                            remaining = remaining[0].upper() + remaining[1:] if len(remaining) > 1 else remaining.upper()
+                            result.append(remaining if remaining.endswith('.') else remaining + '.')
                 else:
                     result.append(sent)
             return ' '.join(result)
