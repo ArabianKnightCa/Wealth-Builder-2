@@ -116,27 +116,26 @@ class AdaptiveEngineV2:
         # we'll use all eligible items (should be 20 or close to it)
         final_items = eligible_items[:20]  # Take up to 20
         
-        # Format output according to contract with age/experience transformation using TAP 2.0
-        tap = get_tap_engine()
+        # Format output according to contract with age/experience transformation using TAP v2.3
+        from tap_v2_3_engine import get_tap_v23_engine
+        from feature_flags import get_el_max
+        tap_v23 = get_tap_v23_engine()
         
-        # Convert experience string to level (1-5)
+        # Convert experience string to level (1-5 for POC)
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
         exp_level = exp_level_map.get(financial_experience, 1)
-        
-        # Create UserProfile for TAP
-        user_profile = UserProfile(
-            user_id=user_id,
-            age=age,
-            experience_level=exp_level,
-            dna_profile="Balanced",  # Default, will be updated after PPI completion
-            dna_weights={},
-            goals=[]
-        )
+        el_max = get_el_max()
         
         output_items = []
         for idx, item in enumerate(final_items, 1):
-            # Transform the question prompt based on age and experience using TAP
-            transformed_prompt = tap.transform_ppi_question(item['prompt'], user_profile)
+            # Transform the question prompt based on age and experience using TAP v2.3
+            transformed_prompt = tap_v23.transform_content(
+                baseline_text=item['prompt'],
+                user_age=age,
+                user_experience_level=exp_level,
+                el_max=el_max,
+                apply_language_shaping=True
+            )
             
             # Transform each option as well
             transformed_options = []
@@ -146,8 +145,15 @@ class AdaptiveEngineV2:
                     letter = option[0]
                     # Skip the letter and the separator (space or period+space)
                     option_text = option[2:].strip() if option[1] == '.' else option[1:].strip()
-                    transformed_text = tap.transform_ppi_question(option_text, user_profile)
-                    transformed_options.append(f"{letter}. {transformed_text}")
+                    transformed_text = tap_v23.transform_content(
+                        baseline_text=option_text,
+                        user_age=age,
+                        user_experience_level=exp_level,
+                        el_max=el_max,
+                        apply_language_shaping=True
+                    )
+                    # DON'T add period to options - they're not sentences
+                    transformed_options.append(f"{letter} {transformed_text}")
                 else:
                     transformed_options.append(option)
             
