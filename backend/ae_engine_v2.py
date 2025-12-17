@@ -128,32 +128,16 @@ class AdaptiveEngineV2:
         
         output_items = []
         for idx, item in enumerate(final_items, 1):
-            # Transform the question prompt based on age and experience using TAP v2.3
-            transformed_prompt = tap_v23.transform_content(
-                baseline_text=item['prompt'],
-                user_age=age,
-                user_experience_level=exp_level,
-                el_max=el_max,
-                apply_language_shaping=True
-            )
+            # For PPI questions: Keep baseline as-is (no transformation)
+            # PPI questions are carefully crafted and should not be modified
+            transformed_prompt = item['prompt']
             
-            # Transform each option as well
+            # Transform each option - keep letter format but no transformation
             transformed_options = []
             for option in item['options']:
                 # Options are in format "A text" or "A. text" (with or without period)
-                if len(option) > 2 and option[0].isalpha() and (option[1] == ' ' or option[1] == '.'):
-                    letter = option[0]
-                    # Skip the letter and the separator (space or period+space)
-                    option_text = option[2:].strip() if option[1] == '.' else option[1:].strip()
-                    transformed_text = tap_v23.transform_content(
-                        baseline_text=option_text,
-                        user_age=age,
-                        user_experience_level=exp_level,
-                        el_max=el_max,
-                        apply_language_shaping=True
-                    )
-                    # DON'T add period to options - they're not sentences
-                    transformed_options.append(f"{letter} {transformed_text}")
+                # Keep baseline text unchanged
+                transformed_options.append(option)
                 else:
                     transformed_options.append(option)
             
