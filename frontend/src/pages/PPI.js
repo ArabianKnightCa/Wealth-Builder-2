@@ -231,12 +231,12 @@ function PPI({ token, user, onPPIComplete }) {
 
         {currentQuestion && (
           <div className="card" data-testid="question-card">
-            <h3 className="text-2xl font-semibold text-navy-900 mb-6">{currentQuestion.text}</h3>
+            <h3 className="text-2xl font-semibold text-navy-900 mb-6 text-center">{currentQuestion.text}</h3>
             <div className="space-y-3">
               {Object.entries(currentQuestion.options).map(([key, value]) => (
                 <div
                   key={key}
-                  className={`quiz-option ${answers[currentQuestion.id] === key ? 'selected' : ''}`}
+                  className={`quiz-option text-center ${answers[currentQuestion.id] === key ? 'selected' : ''}`}
                   onClick={() => handleAnswer(currentQuestion.id, key)}
                   data-testid={`option-${key}`}
                 >
