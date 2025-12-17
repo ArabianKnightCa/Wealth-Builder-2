@@ -510,13 +510,16 @@ class SafeRewritePipeline:
         # Remove trailing spaces
         text = text.strip()
         
-        # DON'T add period if text is a question or multiple choice option
-        # Questions typically start with interrogative words or "I" statements
+        # DON'T add period if text is:
+        # 1. A question or "I" statement (PPI questions)
+        # 2. A short phrase (multiple choice option)
+        # 3. Already has punctuation
         first_words = text.lower().split()[:3] if text else []
-        is_question_like = any(word in ['i', 'when', 'how', 'what', 'why', 'do', 'does', 'am', 'are', 'is'] for word in first_words)
+        is_question_like = any(word in ['i', 'when', 'how', 'what', 'why', 'do', 'does', 'am', 'are', 'is', 'my'] for word in first_words)
+        is_short_phrase = len(text.split()) <= 6  # Multiple choice options are usually short
         
-        # Only add period if it's a statement AND doesn't already have punctuation
-        if text and not text[-1] in '.!?' and not is_question_like:
+        # Only add period if it's a statement AND doesn't already have punctuation AND not short phrase
+        if text and not text[-1] in '.!?' and not is_question_like and not is_short_phrase:
             text += '.'
         
         return text
