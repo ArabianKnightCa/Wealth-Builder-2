@@ -249,8 +249,10 @@ class SafeRewritePipeline:
         child_contexts = {
             'making financial decisions': 'choosing about my money',
             'financial decision': 'money choice',
+            'research extensively before deciding': 'ask my mom or dad what to do',
             'research extensively': 'ask my mom or dad',
-            'research': 'ask questions about',
+            'research before deciding': 'ask my parents what to do',
+            'research': 'ask questions',
             'I prefer to': 'I like to',
             'prefer': 'like',
             'manage money': 'take care of my money',
