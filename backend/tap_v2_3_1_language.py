@@ -212,10 +212,24 @@ class SafeRewritePipeline:
             # Very low LC (< 0.15): Maximum simplification
             # Context-based rewrite for children
             if age <= 12:
-                # Child-appropriate transformation
+                # Child-appropriate transformation FIRST
                 text = self._apply_child_context(text, age)
             
-            # Break into very short sentences
+            # After context transformation, check if already simple enough
+            sentences = re.split(r'(?<=[.!?])\s+', text)
+            if len(sentences) <= 2:
+                # Already simple, just ensure proper capitalization
+                result = []
+                for sent in sentences:
+                    sent = sent.strip()
+                    if sent:
+                        sent = sent[0].upper() + sent[1:] if len(sent) > 1 else sent.upper()
+                        if not sent.endswith('.'):
+                            sent += '.'
+                        result.append(sent)
+                return ' '.join(result)
+            
+            # Otherwise, break into very short sentences
             text = text.replace(',', '.')
             text = text.replace(';', '.')
             text = re.sub(r'\.+', '.', text)
@@ -227,11 +241,17 @@ class SafeRewritePipeline:
                     # Limit to 6-8 words per sentence
                     words = part.split()
                     if len(words) > 8:
-                        # Split into chunks of ~6 words
-                        for i in range(0, len(words), 6):
-                            chunk = ' '.join(words[i:i+6])
+                        # Split into chunks of ~6 words, but keep conjunctions with next word
+                        i = 0
+                        while i < len(words):
+                            # Take up to 6 words, but don't split "or/and" from following word
+                            end = min(i + 6, len(words))
+                            if end < len(words) and words[end-1].lower() in ['or', 'and', 'but']:
+                                end = min(end + 1, len(words))  # Include next word
+                            chunk = ' '.join(words[i:end])
                             chunk = chunk[0].upper() + chunk[1:] if len(chunk) > 1 else chunk.upper()
                             result.append(chunk + '.')
+                            i = end
                     else:
                         part = part[0].upper() + part[1:] if len(part) > 1 else part.upper()
                         result.append(part + '.')
