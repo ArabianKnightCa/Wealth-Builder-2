@@ -132,14 +132,8 @@ class AdaptiveEngineV2:
             # PPI questions are carefully crafted and should not be modified
             transformed_prompt = item['prompt']
             
-            # Transform each option - keep letter format but no transformation
-            transformed_options = []
-            for option in item['options']:
-                # Options are in format "A text" or "A. text" (with or without period)
-                # Keep baseline text unchanged
-                transformed_options.append(option)
-                else:
-                    transformed_options.append(option)
+            # Keep options unchanged (no transformation needed for PPI)
+            transformed_options = item['options']
             
             output_items.append({
                 "question_id": f"PPI_Q{idx:02d}",
