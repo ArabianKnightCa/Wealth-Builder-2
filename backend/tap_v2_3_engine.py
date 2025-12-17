@@ -61,7 +61,12 @@ class TAPv23Engine:
         
         # Apply language shaping if requested
         if apply_language_shaping:
-            text = self.language_shaper.shape_text(text, scalars)
+            # Use safe rewrite pipeline if enabled (v2.3.1)
+            if use_safe_rewrite_pipeline():
+                text = self.safe_pipeline.process(text, scalars)
+            else:
+                # Legacy language shaper (v2.3.0)
+                text = self.language_shaper.shape_text(text, scalars)
         
         # Apply AE modifications if provided
         if ae_state:
