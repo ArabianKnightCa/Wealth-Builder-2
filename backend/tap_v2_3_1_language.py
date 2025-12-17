@@ -209,9 +209,20 @@ class SafeRewritePipeline:
             return ' '.join(result)
         
         elif lc >= 0.15:
-            # Low LC: Significant simplification
+            # Low LC: Significant simplification (ages ~12-25)
+            # Apply some vocabulary simplification
+            if age <= 25:
+                simple_vocab = {
+                    'financial literacy': 'understanding money',
+                    'ability to': 'can',
+                    'effectively': 'well',
+                    'various': 'different',
+                    'utilize': 'use',
+                }
+                for term, simple in simple_vocab.items():
+                    text = re.sub(rf'\b{re.escape(term)}\b', simple, text, flags=re.IGNORECASE)
+            
             # Break all compound sentences BUT avoid creating fragments
-            # Replace commas with periods only if not creating a fragment
             sentences = re.split(r'(?<=[.!?])\s+', text)
             result = []
             
