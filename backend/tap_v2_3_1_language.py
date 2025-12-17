@@ -276,57 +276,57 @@ class SafeRewritePipeline:
         Complete rewrite for children (age <= 12, LC < 0.15).
         Uses pattern matching to create grammatically correct child sentences.
         """
-        # Common sentence patterns for child rewriting
-        patterns = [
-            # "X is the ability to Y" -> "X means you can Y"
-            (r'(\w+(?:\s+\w+)*) is the ability to (\w+(?:\s+\w+)*)', r'\1 means you can \2'),
-            # "including X, Y, and Z" -> "like X, Y, and Z"
-            (r'including ([^.]+)', r'like \1'),
-            # "understand and effectively use" -> "learn about and use"
-            (r'understand and effectively use', 'learn about and use'),
-            # "various/different X" -> "different X"
-            (r'various (\w+)', r'different \1'),
-        ]
-        
         result = text
-        for pattern, replacement in patterns:
-            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
         
-        # Apply child-friendly vocabulary
+        # Apply child-friendly vocabulary FIRST (before pattern matching)
         child_vocab = {
             'financial literacy': 'learning about money',
             'financial skills': 'money skills',
-            'financial management': 'how to use money',
+            'financial management': 'taking care of money',
             'personal financial management': 'taking care of your money',
             'budgeting': 'planning your money',
             'investing': 'saving money to grow it',
             'effectively': 'well',
+            'ability to': 'you can',
+            'various': 'different',
         }
         
         for term, child_term in sorted(child_vocab.items(), key=lambda x: len(x[0]), reverse=True):
             result = re.sub(rf'\b{re.escape(term)}\b', child_term, result, flags=re.IGNORECASE)
         
-        # Break into simple sentences (max 8 words)
+        # Fix common grammar patterns AFTER vocabulary replacement
+        # "X is the you can Y" -> "X means you can Y"
+        result = re.sub(r'(\w+(?:\s+\w+)*) is the you can', r'\1 means you can', result, flags=re.IGNORECASE)
+        
+        # "including X" -> "like X" 
+        result = re.sub(r'including\s+', 'like ', result, flags=re.IGNORECASE)
+        
+        # "understand and use" -> "learn and use"
+        result = re.sub(r'understand and (\w+) use', r'learn and \1 use', result, flags=re.IGNORECASE)
+        
+        # Break into simple sentences (max 10 words)
         sentences = re.split(r'(?<=[.!?])\s+', result)
         final = []
         for sent in sentences:
             words = sent.split()
             if len(words) > 10:
-                # Split long sentence at 'and' or comma
-                if ' and ' in sent:
-                    parts = sent.split(' and ', 1)
-                    final.append(parts[0].strip() + '.')
-                    if parts[1]:
-                        final.append(parts[1].strip().capitalize() + '.')
-                elif ',' in sent:
-                    parts = sent.split(',', 1)
-                    final.append(parts[0].strip() + '.')
-                    if parts[1]:
-                        cleaned = parts[1].strip()
-                        if cleaned:
-                            final.append(cleaned.capitalize() + '.')
+                # Split at commas first
+                if ',' in sent:
+                    parts = [p.strip() for p in sent.split(',')]
+                    for i, part in enumerate(parts):
+                        if part:
+                            if i == 0:
+                                final.append(part + '.')
+                            else:
+                                # Check if fragment
+                                first_word = part.split()[0].lower() if part.split() else ''
+                                if first_word not in ['like', 'and', 'or']:
+                                    final.append(part.capitalize() + '.')
+                                else:
+                                    # Keep as continuation
+                                    final.append(part.capitalize() + '.')
                 else:
-                    final.append(sent)
+                    final.append(sent if sent.endswith('.') else sent + '.')
             else:
                 if sent.strip():
                     final.append(sent.strip() if sent.strip().endswith('.') else sent.strip() + '.')
