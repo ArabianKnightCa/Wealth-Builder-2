@@ -492,7 +492,7 @@ class SafeRewritePipeline:
         # Remove multiple spaces
         text = re.sub(r'\s+', ' ', text)
         
-        # Fix period spacing
+        # Fix period spacing (but not if it's a question mark)
         text = re.sub(r'\s*\.\s*', '. ', text)
         text = re.sub(r'\.+', '.', text)
         
@@ -510,8 +510,13 @@ class SafeRewritePipeline:
         # Remove trailing spaces
         text = text.strip()
         
-        # Ensure ends with punctuation
-        if text and not text[-1] in '.!?':
+        # DON'T add period if text is a question or multiple choice option
+        # Questions typically start with interrogative words or "I" statements
+        first_words = text.lower().split()[:3] if text else []
+        is_question_like = any(word in ['i', 'when', 'how', 'what', 'why', 'do', 'does', 'am', 'are', 'is'] for word in first_words)
+        
+        # Only add period if it's a statement AND doesn't already have punctuation
+        if text and not text[-1] in '.!?' and not is_question_like:
             text += '.'
         
         return text
