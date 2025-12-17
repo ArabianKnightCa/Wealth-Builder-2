@@ -27,6 +27,7 @@ class TAPv23Engine:
     
     def __init__(self):
         self.language_shaper = get_language_shaper()
+        self.safe_pipeline = get_safe_rewrite_pipeline()
         self.ae_modifier = get_ae_modifier()
     
     def transform_content(
