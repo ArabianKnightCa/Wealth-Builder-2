@@ -10,7 +10,9 @@ from typing import Dict, Any, Optional, List
 from tap_v2_3_formulas import compute_tap_scalars, TAPScalars
 from tap_v2_3_templates import ContentTemplate, ContentBlock
 from tap_v2_3_language import get_language_shaper
+from tap_v2_3_1_language import get_safe_rewrite_pipeline
 from tap_v2_3_ae_integration import AEStatePacket, get_ae_modifier
+from feature_flags import use_safe_rewrite_pipeline
 
 
 class TAPv23Engine:
