@@ -442,6 +442,10 @@ class SafeRewritePipeline:
         Step 4: IA-based framing (content-aware, minimal).
         Add at most ONE "why it matters" sentence.
         
+        SKIP framing for:
+        - Short text (< 10 words) - likely a question or option
+        - Questions starting with "I"
+        
         Args:
             text: Clarified text
             ia: Ideological Abstraction
@@ -451,6 +455,14 @@ class SafeRewritePipeline:
         Returns:
             str: Text with framing
         """
+        # Skip framing for short text or questions
+        word_count = len(text.split())
+        first_word = text.split()[0].lower() if text.split() else ''
+        
+        if word_count < 10 or first_word in ['i', 'when', 'strongly', 'somewhat', 'neither']:
+            # Don't add framing to questions or short options
+            return text
+        
         if not text.endswith('.'):
             text += '.'
         
