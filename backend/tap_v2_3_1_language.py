@@ -265,18 +265,41 @@ class SafeRewritePipeline:
         if age > 12:
             return text
         
-        # Context reframings for children
+        # Context reframings for children (comprehensive)
         child_contexts = {
+            # Financial concepts
+            'financial literacy': 'learning about money',
+            'financial skills': 'money skills',
+            'financial management': 'taking care of money',
+            'personal financial management': 'taking care of your money',
             'making financial decisions': 'choosing about my money',
             'financial decision': 'money choice',
+            'financial goals': 'money goals',
+            'financial future': 'money future',
+            'financial setback': 'money problem',
+            
+            # Actions
             'research extensively before deciding': 'ask my mom or dad what to do',
             'research extensively': 'ask my mom or dad',
             'research before deciding': 'ask my parents what to do',
+            'understand and effectively use': 'learn and use',
+            'effectively use': 'use',
             'research': 'ask questions',
+            'budgeting': 'planning how to spend money',
+            'investing': 'saving money to make more',
+            
+            # Preferences
             'I prefer to': 'I like to',
             'prefer': 'like',
             'manage money': 'take care of my money',
+            'manage': 'take care of',
             'thinking about': 'thinking about',
+            
+            # Complex terms
+            'ability to': 'can',
+            'various': 'different',
+            'achieve': 'reach',
+            'informed decisions': 'smart choices',
         }
         
         # Apply contextual reframings (longest first)
