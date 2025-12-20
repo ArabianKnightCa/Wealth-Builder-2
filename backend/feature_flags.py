@@ -20,6 +20,9 @@ USE_SAFE_REWRITE_PIPELINE = os.environ.get('USE_SAFE_REWRITE_PIPELINE', 'true').
 USE_LLM_REWRITE_LAYER = os.environ.get('USE_LLM_REWRITE_LAYER', 'false').lower() == 'true'
 LLM_REWRITE_ONLY_ON_RISK = os.environ.get('LLM_REWRITE_ONLY_ON_RISK', 'true').lower() == 'true'
 
+# CLG (Controlled Language Generator) - Grammar-safe realization layer
+USE_CLG_ENGINE = os.environ.get('USE_CLG_ENGINE', 'true').lower() == 'true'
+
 
 def is_tap_v2_3_enabled() -> bool:
     """
