@@ -22,13 +22,17 @@ class TAPv23Engine:
     
     Formula-driven, deterministic text adaptation.
     NO age buckets, NO experience buckets, NO synonym replacement.
+    
+    Version 2.3.1 adds CLG (Controlled Language Generator) as the
+    grammar-safe realization layer.
     """
     
-    VERSION = "2.3"
+    VERSION = "2.3.1"
     
     def __init__(self):
         self.language_shaper = get_language_shaper()
         self.safe_pipeline = get_safe_rewrite_pipeline()
+        self.clg_engine = get_clg_engine()
         self.ae_modifier = get_ae_modifier()
     
     def transform_content(
