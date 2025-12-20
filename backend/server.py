@@ -4071,6 +4071,73 @@ async def test_tap_v23():
         "test_results": results
     }
 
+
+@api_router.get("/clg/test")
+async def test_clg():
+    """
+    Test CLG (Controlled Language Generator) - TAP v2.3.1 grammar-safe realization layer.
+    
+    Runs the 9-case step test:
+    - P1: age=8, EL=1 (child)
+    - P2: age=28, EL=4 (adult)
+    - P3: age=60, EL=14 (senior expert)
+    
+    For each of 3 concepts: CREDIT_CARD, PAYING_BILLS, INVESTING
+    """
+    results = run_clg_step_test()
+    return {
+        "clg_version": "1.0.0",
+        "clg_enabled": use_clg_engine(),
+        "test_results": results
+    }
+
+
+@api_router.post("/clg/render")
+async def render_clg_content(
+    concept_ids: List[str],
+    age: int,
+    el_declared: int,
+    el_max: int = 15,
+    tone: str = "direct",
+    template_type: str = "lpi"
+):
+    """
+    Render content using CLG for specific concepts and user profile.
+    
+    Args:
+        concept_ids: List of concept IDs (e.g., ["CREDIT_CARD", "INVESTING"])
+        age: User age
+        el_declared: User's declared experience level
+        el_max: Maximum experience level (default 15)
+        tone: Tone variant (supportive, direct, playful)
+        template_type: "lpi" or "ppi"
+    
+    Returns:
+        Rendered content with debug information
+    """
+    if not use_clg_engine():
+        raise HTTPException(
+            status_code=503,
+            detail="CLG engine is disabled. Enable via USE_CLG_ENGINE=true"
+        )
+    
+    tap_v23 = get_tap_v23_engine()
+    result = tap_v23.render_concepts(
+        concept_ids=concept_ids,
+        user_age=age,
+        user_experience_level=el_declared,
+        el_max=el_max,
+        tone=tone,
+        template_type=template_type
+    )
+    
+    return {
+        "clg_version": "1.0.0",
+        "rendered_text": result["text"],
+        "scalars": result["scalars"],
+        "debug": result["debug"]
+    }
+
 # Run index creation on startup
 import asyncio
 asyncio.create_task(create_database_indexes())
