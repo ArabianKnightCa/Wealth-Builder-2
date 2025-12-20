@@ -74,6 +74,25 @@ The user's primary Financial DNA classification. One of: **Planner**, **Spontane
 
 ---
 
+## CLG (Controlled Language Generator) Terms — NEW in v2.3.1
+
+### CLG — Controlled Language Generator
+The grammar-safe realization layer inside TAP. Unlike the old paraphrasing approach, CLG uses pre-approved phrases and sentence templates to guarantee grammatical correctness. CLG decides HOW to say things; TAP CoreLogic decides WHAT to say.
+
+### PBM — Phrase Bank Matrix
+A dictionary of approved phrases organized by concept ID and band score. Each entry contains a term, definition, example, and optional analogy. CLG selects the nearest band_score to the user's CD (Conceptual Depth) to choose the appropriate phrase.
+
+### STL — Sentence Template Library
+A collection of grammar-safe sentence frames with slots (like `{TERM}` and `{DEFINITION}`). Templates include T_DEF for definitions, T_EXAMPLE for examples, T_ANALOGY for analogies, and T_STRETCH for growth content. Templates guarantee grammatical output.
+
+### Band Score
+A float from 0.0 to 1.0 indicating the sophistication level of a phrase in the PBM. Low scores (0.10) = child-friendly language; high scores (0.90) = expert terminology. CLG selects the band nearest to the user's CD.
+
+### Slot Fill
+The process of inserting approved phrases from PBM into STL templates. No paraphrasing or synonym replacement occurs—only exact slot filling.
+
+---
+
 ## TAP v2.3.1 Pipeline Terms
 
 ### Baseline Text
