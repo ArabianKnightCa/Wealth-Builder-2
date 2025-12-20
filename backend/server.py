@@ -23,9 +23,10 @@ from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 from profile_models import Profile, ProfileCreate, ProfileUpdate, ActiveProfileResponse, AVATAR_OPTIONS
 
 # TAP v2.3 imports
-from feature_flags import is_tap_v2_3_enabled, get_el_max
+from feature_flags import is_tap_v2_3_enabled, get_el_max, use_clg_engine
 from tap_v2_3_engine import get_tap_v23_engine
 from tap_v2_3_ae_integration import AEStatePacket
+from clg_engine import get_clg_engine, run_clg_step_test
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
