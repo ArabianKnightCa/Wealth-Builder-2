@@ -522,6 +522,10 @@ class CLGTester:
         if re.search(r'\?\.', text):
             return False
         
+        # Check for redundant "like" phrases (e.g., "like: like something")
+        if re.search(r'like:\s+like\b', text):
+            return False
+        
         # Check sentences start with capital (basic check)
         sentences = re.split(r'[.!?]\s+', text)
         for sent in sentences:
