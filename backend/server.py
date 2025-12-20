@@ -451,49 +451,33 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     use_v23 = is_tap_v2_3_enabled()
     
     if use_v23:
-        # TAP v2.3: Formula-driven transformation
-        tap_v23 = get_tap_v23_engine()
+        # TAP v2.3: Formula-driven transformation using AGE + EL + DNA
         el_max = get_el_max()
         
-        # Create AE state packet (optional, can be enhanced later)
-        ae_state = AEStatePacket(
-            friction=0.0,
-            momentum=0.5,
-            exposure=1,
-            confidence_band=0.5
-        )
+        # Build FinancialDNA object from stored weights
+        dna = None
+        if dna_weights:
+            dna = FinancialDNA(
+                discipline=dna_weights.get('discipline', 0.5),
+                impulse=dna_weights.get('impulse', 0.5),
+                confidence=dna_weights.get('confidence', 0.5),
+                tempo=dna_weights.get('tempo', 'steady'),
+                profile=dna_profile
+            )
         
         personalized_chapters = []
         for chapter in LPI_CHAPTERS:
             transformed_lessons = []
             for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
-                # Transform lesson text
-                lesson_text = tap_v23.transform_content(
-                    baseline_text=lesson['text'],
-                    user_age=user_age,
-                    user_experience_level=exp_level,
+                # Transform lesson using AGE + EL + DNA
+                transformed = transform_lpi_lesson(
+                    lesson=lesson,
+                    age=user_age,
+                    el=exp_level,
                     el_max=el_max,
-                    ae_state=ae_state,
-                    apply_language_shaping=True
+                    dna=dna
                 )
-                
-                # Transform takeaway
-                takeaway = ''
-                if lesson.get('takeaway'):
-                    takeaway = tap_v23.transform_content(
-                        baseline_text=lesson['takeaway'],
-                        user_age=user_age,
-                        user_experience_level=exp_level,
-                        el_max=el_max,
-                        ae_state=ae_state,
-                        apply_language_shaping=True
-                    )
-                
-                transformed_lessons.append({
-                    **lesson,
-                    'text': lesson_text,
-                    'takeaway': takeaway
-                })
+                transformed_lessons.append(transformed)
             
             personalized_chapters.append({
                 **chapter,
