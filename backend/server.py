@@ -32,6 +32,7 @@ from feature_flags import is_tap_v2_3_enabled, get_el_max, use_clg_engine
 from tap_v2_3_engine import get_tap_v23_engine
 from tap_v2_3_ae_integration import AEStatePacket
 from clg_engine import get_clg_engine, run_clg_step_test
+from lpi_transform import transform_lpi_lesson, compute_lpi_scalars, FinancialDNA
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
