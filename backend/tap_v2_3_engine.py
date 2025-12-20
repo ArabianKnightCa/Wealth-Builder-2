@@ -149,6 +149,72 @@ class TAPv23Engine:
             "stretch_el": scalars.stretch_el,
             "stretch_norm": round(scalars.stretch_norm, 4)
         }
+    
+    def render_concepts(
+        self,
+        concept_ids: List[str],
+        user_age: int,
+        user_experience_level: int,
+        el_max: int = 15,
+        tone: str = "direct",
+        template_type: str = "lpi"
+    ) -> Dict[str, Any]:
+        """
+        Render concepts using CLG (Controlled Language Generator).
+        
+        This is the NEW grammar-safe approach that uses:
+        - Phrase Bank Matrix (approved phrases by concept)
+        - Sentence Template Library (grammar-safe frames)
+        - Slot fill + assembly (NO paraphrasing)
+        
+        Args:
+            concept_ids: List of concept IDs (e.g., ["CREDIT_CARD", "INVESTING"])
+            user_age: User's age
+            user_experience_level: User's EL (1..EL_MAX)
+            el_max: Maximum experience level
+            tone: Tone variant (supportive, direct, playful)
+            template_type: "lpi" or "ppi"
+        
+        Returns:
+            dict: {
+                "text": rendered text,
+                "scalars": TAP scalars used,
+                "debug": CLG debug log
+            }
+        """
+        if not use_clg_engine():
+            # Fallback to legacy transformation
+            return {
+                "text": "CLG disabled - use transform_content instead",
+                "scalars": self.get_user_scalars(user_age, user_experience_level, el_max),
+                "debug": None
+            }
+        
+        # Use CLG engine
+        output = self.clg_engine.render_for_user(
+            concept_ids=concept_ids,
+            age=user_age,
+            el_declared=user_experience_level,
+            el_max=el_max,
+            tone=tone,
+            template_type=template_type
+        )
+        
+        return {
+            "text": output.rendered_text,
+            "scalars": self.get_user_scalars(user_age, user_experience_level, el_max),
+            "debug": {
+                "lc": output.debug_log.lc,
+                "cd": output.debug_log.cd,
+                "ia": output.debug_log.ia,
+                "selected_bands": output.debug_log.selected_bands,
+                "templates_used": output.debug_log.templates_used,
+                "include_example": output.debug_log.include_example,
+                "include_analogy": output.debug_log.include_analogy,
+                "ppi_integrity_passed": output.ppi_integrity_passed,
+                "fallback_used": output.fallback_used
+            }
+        }
 
 
 # Singleton instance
