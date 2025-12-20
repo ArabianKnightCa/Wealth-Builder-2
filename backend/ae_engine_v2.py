@@ -141,10 +141,12 @@ class AdaptiveEngineV2:
                 # Use CLG-adapted prompt and options
                 transformed_prompt = clg_question['prompt']
                 transformed_options = clg_question['options']
+                lc_applied = clg_question.get('lc_applied', scalars.lc)
             else:
                 # Fallback to baseline (no CLG entry for this question)
                 transformed_prompt = item['prompt']
                 transformed_options = item['options']
+                lc_applied = None
             
             output_items.append({
                 "question_id": f"PPI_Q{idx:02d}",
@@ -153,7 +155,7 @@ class AdaptiveEngineV2:
                 "prompt": transformed_prompt,
                 "options": transformed_options,
                 "clg_adapted": clg_question is not None,
-                "lc_used": round(scalars.lc, 3) if clg_question else None
+                "lc_applied": round(lc_applied, 4) if lc_applied else None
             })
         
         return {
