@@ -364,6 +364,167 @@ TONE_PREPENDS = {
 
 
 # =============================================================================
+# PPI QUESTION BANK (Pre-approved rewrites by band score)
+# =============================================================================
+# These are grammar-safe rewrites of PPI questions at different complexity levels
+# Key: question_id -> list of band entries
+
+PPI_QUESTION_BANK: Dict[str, List[Dict]] = {
+    "PPI_Q01": [
+        {
+            "band_score": 0.10,
+            "prompt": "When I need to choose about money, I like to:",
+            "options": [
+                "A Ask lots of questions first",
+                "B Just decide quickly",
+                "C Ask my family what to do",
+                "D Do what smart people say"
+            ]
+        },
+        {
+            "band_score": 0.35,
+            "prompt": "When making money choices, I prefer to:",
+            "options": [
+                "A Research before deciding",
+                "B Go with my gut feeling",
+                "C Ask friends or family",
+                "D Follow expert advice"
+            ]
+        },
+        {
+            "band_score": 0.70,
+            "prompt": "When making financial decisions, I prefer to:",
+            "options": [
+                "A Research extensively before deciding",
+                "B Go with my gut feeling",
+                "C Ask friends or family for advice",
+                "D Follow what experts recommend"
+            ]
+        },
+    ],
+    "PPI_Q02": [
+        {
+            "band_score": 0.10,
+            "prompt": "How I save my money:",
+            "options": [
+                "A Put away the same amount each time",
+                "B Save what I have left",
+                "C Save for special things I want",
+                "D I find it hard to save"
+            ]
+        },
+        {
+            "band_score": 0.35,
+            "prompt": "My way of saving money is:",
+            "options": [
+                "A Save a set amount each month",
+                "B Save whatever is left over",
+                "C Save only for specific goals",
+                "D I struggle to save regularly"
+            ]
+        },
+        {
+            "band_score": 0.70,
+            "prompt": "My approach to saving money is:",
+            "options": [
+                "A Save a fixed amount each month",
+                "B Save whatever is left over",
+                "C Save only for specific goals",
+                "D I struggle to save consistently"
+            ]
+        },
+    ],
+    "PPI_Q03": [
+        {
+            "band_score": 0.10,
+            "prompt": "When I think about money in the future, I feel:",
+            "options": [
+                "A Happy and hopeful",
+                "B Worried or scared",
+                "C Okay, not too worried",
+                "D I try not to think about it"
+            ]
+        },
+        {
+            "band_score": 0.35,
+            "prompt": "When I think about my money future, I feel:",
+            "options": [
+                "A Excited and hopeful",
+                "B Anxious or worried",
+                "C Mostly confident",
+                "D I prefer not to think about it"
+            ]
+        },
+        {
+            "band_score": 0.70,
+            "prompt": "When I think about my financial future, I feel:",
+            "options": [
+                "A Excited and optimistic",
+                "B Anxious or worried",
+                "C Mostly confident",
+                "D I prefer not to think about it"
+            ]
+        },
+    ],
+    "PPI_Q04": [
+        {
+            "band_score": 0.10,
+            "prompt": "I keep track of what I spend:",
+            "options": [
+                "A Every day or almost every day",
+                "B Once a week",
+                "C Once a month",
+                "D Not very often"
+            ]
+        },
+        {
+            "band_score": 0.35,
+            "prompt": "I track my spending:",
+            "options": [
+                "A Daily or almost daily",
+                "B Weekly",
+                "C Monthly",
+                "D Rarely or never"
+            ]
+        },
+        {
+            "band_score": 0.70,
+            "prompt": "I track my spending:",
+            "options": [
+                "A Daily or almost daily",
+                "B Weekly",
+                "C Monthly",
+                "D Rarely or never"
+            ]
+        },
+    ],
+}
+
+
+def get_ppi_question(question_id: str, target_lc: float) -> Optional[Dict]:
+    """
+    Get the nearest PPI question variant based on target LC.
+    
+    Args:
+        question_id: The PPI question ID (e.g., "PPI_Q01")
+        target_lc: Target language complexity (0.0-1.0)
+    
+    Returns:
+        Dict with prompt and options, or None if not found
+    """
+    if question_id not in PPI_QUESTION_BANK:
+        return None
+    
+    entries = PPI_QUESTION_BANK[question_id]
+    if not entries:
+        return None
+    
+    # Find entry with band_score nearest to target_lc
+    nearest = min(entries, key=lambda e: abs(e["band_score"] - target_lc))
+    return nearest
+
+
+# =============================================================================
 # PPI INTEGRITY GATE DATA
 # =============================================================================
 # Required keywords and forbidden drift phrases per trait
