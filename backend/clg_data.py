@@ -332,7 +332,7 @@ SENTENCE_TEMPLATES: Dict[str, SentenceTemplate] = {
     # Analogy template
     "T_ANALOGY": SentenceTemplate(
         template_id="T_ANALOGY",
-        frame="Think of it like: {ANALOGY}.",
+        frame="Think of it {ANALOGY}.",
         use_when="has_analogy"
     ),
     
