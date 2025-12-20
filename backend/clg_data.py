@@ -369,6 +369,10 @@ TONE_PREPENDS = {
 # Each question has a BASELINE (expert level) and transformation rules
 # that apply based on continuous LC value derived from user's age.
 # NO BUCKETS - LC is used as a continuous parameter.
+#
+# Substitution format: (original_phrase, simplified_phrase, lc_threshold)
+# If user's LC < threshold, the substitution is applied.
+# Substitutions with LOWER thresholds are more aggressive simplifications.
 
 @dataclass
 class PPIQuestion:
@@ -376,15 +380,18 @@ class PPIQuestion:
     question_id: str
     baseline_prompt: str
     baseline_options: List[str]
-    # Word substitutions: (original, simple, lc_threshold)
-    # Applied when LC < threshold
+    # Word substitutions: list of (original, simple, lc_threshold)
+    # Applied when LC < threshold. Lower threshold = more simplified.
     prompt_substitutions: List[tuple] = field(default_factory=list)
     option_substitutions: List[tuple] = field(default_factory=list)
 
 
-# Transformation rules based on LC thresholds
-# These create GRADUAL transitions, not discrete buckets
-# Lower LC = more simplification
+# All 20 PPI Questions with transformation rules
+# Thresholds are set so that:
+# - LC < 0.15: Maximum simplification (children ~6-10)
+# - LC 0.15-0.30: Moderate simplification (teens ~11-18)  
+# - LC 0.30-0.50: Light simplification (young adults ~19-30)
+# - LC > 0.50: Minimal/no simplification (adults 30+)
 
 PPI_QUESTIONS: Dict[str, PPIQuestion] = {
     "PPI_Q01": PPIQuestion(
@@ -397,15 +404,16 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             "D Follow what experts recommend"
         ],
         prompt_substitutions=[
+            # LC < 0.40: "financial decisions" -> "money choices"
             ("financial decisions", "money choices", 0.40),
-            ("money choices", "choose about money", 0.20),
+            # LC < 0.25: also simplify "I prefer to" -> "I like to"
             ("I prefer to", "I like to", 0.25),
         ],
         option_substitutions=[
-            ("Research extensively before deciding", "Ask lots of questions first", 0.20),
-            ("Research extensively", "Research", 0.40),
-            ("Ask friends or family for advice", "Ask my family what to do", 0.20),
-            ("Follow what experts recommend", "Do what smart people say", 0.20),
+            ("Research extensively before deciding", "Ask lots of questions first", 0.15),
+            ("Research extensively", "Research", 0.35),
+            ("Ask friends or family for advice", "Ask my family what to do", 0.15),
+            ("Follow what experts recommend", "Do what smart people say", 0.15),
         ]
     ),
     "PPI_Q02": PPIQuestion(
@@ -421,9 +429,9 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             ("My approach to saving money is", "How I save my money", 0.25),
         ],
         option_substitutions=[
-            ("Save a fixed amount each month", "Put away the same amount each time", 0.20),
+            ("Save a fixed amount each month", "Put away the same amount each time", 0.15),
             ("Save whatever is left over", "Save what I have left", 0.25),
-            ("Save only for specific goals", "Save for special things I want", 0.20),
+            ("Save only for specific goals", "Save for special things I want", 0.15),
             ("I struggle to save consistently", "I find it hard to save", 0.25),
         ]
     ),
@@ -437,14 +445,13 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             "D Confident and prepared"
         ],
         prompt_substitutions=[
-            ("my financial future", "my money future", 0.40),
-            ("my money future", "money in the future", 0.20),
+            ("my financial future", "money in the future", 0.25),
         ],
         option_substitutions=[
             ("Excited and optimistic", "Happy and hopeful", 0.25),
-            ("Anxious or worried", "Worried or scared", 0.20),
-            ("Uncertain but hopeful", "Okay, not too worried", 0.20),
-            ("Confident and prepared", "Ready and not worried", 0.20),
+            ("Anxious or worried", "Worried or scared", 0.15),
+            ("Uncertain but hopeful", "Okay, not too worried", 0.15),
+            ("Confident and prepared", "Ready and not worried", 0.15),
         ]
     ),
     "PPI_Q04": PPIQuestion(
@@ -460,9 +467,9 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             ("I track my spending", "I keep track of what I spend", 0.25),
         ],
         option_substitutions=[
-            ("Daily or weekly", "Every day or almost every day", 0.20),
+            ("Daily or weekly", "Every day or almost every day", 0.15),
             ("Rarely or never", "Not very often", 0.25),
-            ("Only when I'm worried about money", "Only when I need to", 0.20),
+            ("Only when I'm worried about money", "Only when I need to", 0.15),
         ]
     ),
     "PPI_Q05": PPIQuestion(
@@ -475,12 +482,12 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             "D Learning to budget better"
         ],
         prompt_substitutions=[
-            ("My biggest financial priority", "The most important money thing for me", 0.20),
+            ("My biggest financial priority right now is", "The most important money thing for me is", 0.15),
             ("financial priority", "money goal", 0.35),
         ],
         option_substitutions=[
             ("Building an emergency fund", "Saving money for emergencies", 0.25),
-            ("Paying off debt", "Paying back money I owe", 0.20),
+            ("Paying off debt", "Paying back money I owe", 0.15),
             ("Saving for a specific goal", "Saving for something special", 0.25),
             ("Learning to budget better", "Learning to plan my money better", 0.25),
         ]
@@ -498,10 +505,8 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             ("receive unexpected money", "get extra money I didn't expect", 0.25),
         ],
         option_substitutions=[
-            ("Save most or all of it", "Save most of it", 0.30),
-            ("Spend it on something I've wanted", "Buy something I wanted", 0.25),
             ("Split it between saving and spending", "Save some and spend some", 0.25),
-            ("Use it to pay bills or debt", "Use it to pay for things I owe", 0.20),
+            ("Use it to pay bills or debt", "Use it to pay for things I owe", 0.15),
         ]
     ),
     "PPI_Q07": PPIQuestion(
@@ -513,12 +518,10 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             "C Watching videos or tutorials",
             "D Discussion and conversation"
         ],
-        prompt_substitutions=[
-            ("I learn best through", "I learn best by", 0.30),
-        ],
+        prompt_substitutions=[],
         option_substitutions=[
             ("Reading and research", "Reading and looking things up", 0.25),
-            ("Hands-on practice", "Trying things myself", 0.20),
+            ("Hands-on practice", "Trying things myself", 0.15),
             ("Watching videos or tutorials", "Watching videos", 0.30),
             ("Discussion and conversation", "Talking with others", 0.25),
         ]
@@ -534,13 +537,12 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("My relationship with credit cards is", "How I use credit cards", 0.30),
-            ("How I use credit cards", "About credit cards", 0.20),
         ],
         option_substitutions=[
             ("I use them responsibly and pay in full", "I use them carefully and pay everything back", 0.25),
             ("I avoid them completely", "I don't use them at all", 0.25),
             ("I sometimes carry a balance", "I sometimes owe money on them", 0.25),
-            ("I struggle with credit card debt", "I have trouble paying them back", 0.20),
+            ("I struggle with credit card debt", "I have trouble paying them back", 0.15),
         ]
     ),
     "PPI_Q09": PPIQuestion(
@@ -554,12 +556,11 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("setting financial goals", "making money goals", 0.30),
-            ("making money goals", "planning what to do with money", 0.20),
         ],
         option_substitutions=[
             ("Detailed plans with specific timelines", "Plans with exact dates", 0.25),
             ("General direction without strict deadlines", "A general idea without deadlines", 0.25),
-            ("Short-term goals I can achieve quickly", "Small goals I can reach soon", 0.20),
+            ("Short-term goals I can achieve quickly", "Small goals I can reach soon", 0.15),
             ("Long-term vision with flexibility", "Big goals that can change", 0.25),
         ]
     ),
@@ -574,12 +575,11 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("Financial stress affects me by", "When I worry about money, it", 0.25),
-            ("Financial stress", "Money worries", 0.35),
         ],
         option_substitutions=[
             ("Making me more motivated to improve", "Makes me want to do better", 0.25),
-            ("Causing me to avoid thinking about money", "Makes me not want to think about it", 0.20),
-            ("Impacting my sleep or mood significantly", "Makes me feel bad or lose sleep", 0.20),
+            ("Causing me to avoid thinking about money", "Makes me not want to think about it", 0.15),
+            ("Impacting my sleep or mood significantly", "Makes me feel bad or lose sleep", 0.15),
             ("I don't experience much financial stress", "I don't worry much about money", 0.25),
         ]
     ),
@@ -597,9 +597,9 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         option_substitutions=[
             ("Very disciplined", "Very careful", 0.25),
-            ("Mostly controlled with occasional splurges", "Mostly careful but sometimes I spend a lot", 0.20),
-            ("Impulsive at times", "Sometimes I buy things without thinking", 0.20),
-            ("Often reactive to emotions", "I often buy things based on how I feel", 0.20),
+            ("Mostly controlled with occasional splurges", "Mostly careful but sometimes I spend a lot", 0.15),
+            ("Impulsive at times", "Sometimes I buy things without thinking", 0.15),
+            ("Often reactive to emotions", "I often buy things based on how I feel", 0.15),
         ]
     ),
     "PPI_Q12": PPIQuestion(
@@ -612,14 +612,14 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
             "D None – It seems too complicated"
         ],
         prompt_substitutions=[
-            ("My knowledge of investing is", "What I know about investing", 0.30),
-            ("What I know about investing", "What I know about growing money", 0.20),
+            ("My knowledge of investing is", "What I know about growing money", 0.15),
+            ("My knowledge of investing", "What I know about investing", 0.35),
         ],
         option_substitutions=[
             ("Strong – I actively invest", "A lot – I invest my money", 0.30),
             ("Basic – I understand the concepts", "Some – I understand the basics", 0.30),
             ("Limited – I'm just starting to learn", "A little – I'm still learning", 0.25),
-            ("None – It seems too complicated", "Not much – It seems hard", 0.20),
+            ("None – It seems too complicated", "Not much – It seems hard", 0.15),
         ]
     ),
     "PPI_Q13": PPIQuestion(
@@ -633,13 +633,12 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("facing a financial setback", "something goes wrong with money", 0.25),
-            ("a financial setback", "a money problem", 0.35),
         ],
         option_substitutions=[
             ("Quickly adjust my plan and move forward", "Change my plan and keep going", 0.25),
-            ("Feel discouraged but eventually recover", "Feel sad but get better", 0.20),
+            ("Feel discouraged but eventually recover", "Feel sad but get better", 0.15),
             ("Need support from others to cope", "Need help from others", 0.25),
-            ("Find it very difficult to bounce back", "Find it hard to feel better", 0.20),
+            ("Find it very difficult to bounce back", "Find it hard to feel better", 0.15),
         ]
     ),
     "PPI_Q14": PPIQuestion(
@@ -656,9 +655,7 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         option_substitutions=[
             ("After careful comparison shopping", "After looking at different options", 0.25),
-            ("When I find a good deal", "When I find a good price", 0.30),
-            ("When I need or want something", "When I need or want it", 0.35),
-            ("Impulsively if it feels right", "Right away if I want it", 0.20),
+            ("Impulsively if it feels right", "Right away if I want it", 0.15),
         ]
     ),
     "PPI_Q15": PPIQuestion(
@@ -672,13 +669,11 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("My comfort level with financial risk is", "How I feel about taking chances with money", 0.25),
-            ("financial risk", "money risk", 0.35),
         ],
         option_substitutions=[
             ("High – I'm willing to take calculated risks", "I like taking smart chances", 0.25),
-            ("Moderate – Some risk is okay", "Some risk is okay with me", 0.30),
             ("Low – I prefer safety and stability", "I like to be safe", 0.25),
-            ("Very low – I avoid risk completely", "I don't like taking any chances", 0.20),
+            ("Very low – I avoid risk completely", "I don't like taking any chances", 0.15),
         ]
     ),
     "PPI_Q16": PPIQuestion(
@@ -696,7 +691,7 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         option_substitutions=[
             ("Openly and regularly", "Often and freely", 0.30),
             ("Occasionally when relevant", "Sometimes when it comes up", 0.25),
-            ("Rarely – it feels uncomfortable", "Not much – it feels weird", 0.20),
+            ("Rarely – it feels uncomfortable", "Not much – it feels weird", 0.15),
             ("Never – it's too personal", "Never – it's private", 0.25),
         ]
     ),
@@ -711,12 +706,11 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("My biggest financial challenge is", "The hardest thing about money for me is", 0.25),
-            ("financial challenge", "money problem", 0.35),
         ],
         option_substitutions=[
             ("Not earning enough", "Not having enough money", 0.25),
             ("Controlling my spending", "Not spending too much", 0.25),
-            ("Understanding financial concepts", "Understanding money stuff", 0.20),
+            ("Understanding financial concepts", "Understanding money stuff", 0.15),
             ("Staying motivated to save", "Wanting to keep saving", 0.25),
         ]
     ),
@@ -735,8 +729,6 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         option_substitutions=[
             ("Use detailed spreadsheets or apps", "Use apps or charts", 0.30),
             ("Keep a rough mental estimate", "Keep track in my head", 0.25),
-            ("Follow a simple system", "Use a simple way", 0.30),
-            ("Don't really budget", "Don't really plan it", 0.30),
         ]
     ),
     "PPI_Q19": PPIQuestion(
@@ -750,13 +742,11 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("I would describe my financial personality as", "When it comes to money, I am", 0.25),
-            ("my financial personality", "how I am with money", 0.35),
         ],
         option_substitutions=[
             ("Planner and saver", "Someone who plans and saves", 0.25),
             ("Balanced and practical", "Careful and sensible", 0.25),
-            ("Spontaneous spender", "Someone who spends when I want to", 0.20),
-            ("Still figuring it out", "Still learning", 0.25),
+            ("Spontaneous spender", "Someone who spends when I want to", 0.15),
         ]
     ),
     "PPI_Q20": PPIQuestion(
@@ -770,13 +760,12 @@ PPI_QUESTIONS: Dict[str, PPIQuestion] = {
         ],
         prompt_substitutions=[
             ("My motivation for improving financial literacy is", "I want to learn about money because", 0.25),
-            ("improving financial literacy", "learning about money", 0.35),
         ],
         option_substitutions=[
             ("Achieving specific financial goals", "I want to reach my money goals", 0.25),
             ("Reducing stress and anxiety", "I want to worry less", 0.25),
-            ("Building long-term wealth", "I want to have more money later", 0.20),
-            ("Feeling more confident and in control", "I want to feel sure about money", 0.20),
+            ("Building long-term wealth", "I want to have more money later", 0.15),
+            ("Feeling more confident and in control", "I want to feel sure about money", 0.15),
         ]
     ),
 }
