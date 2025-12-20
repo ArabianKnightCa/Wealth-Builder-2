@@ -789,6 +789,10 @@ def transform_ppi_question(question_id: str, lc: float) -> Optional[Dict]:
     NO BUCKETS - applies substitutions based on LC thresholds.
     Lower LC = more simplification applied.
     
+    Substitutions are applied from LOWEST threshold first.
+    Once a substitution is applied for a phrase, skip higher-threshold
+    versions of the same phrase.
+    
     Args:
         question_id: The PPI question ID (e.g., "PPI_Q01")
         lc: Language Complexity (0.0-1.0) - continuous value from user's age
@@ -805,16 +809,31 @@ def transform_ppi_question(question_id: str, lc: float) -> Optional[Dict]:
     prompt = q.baseline_prompt
     options = q.baseline_options.copy()
     
-    # Apply prompt substitutions where LC < threshold
-    # Sort by threshold descending so we apply most restrictive last
-    for original, simple, threshold in sorted(q.prompt_substitutions, key=lambda x: x[2], reverse=True):
-        if lc < threshold and original in prompt:
-            prompt = prompt.replace(original, simple)
+    # Track which originals have been substituted
+    applied_prompt = set()
+    applied_options = set()
     
-    # Apply option substitutions where LC < threshold
-    for original, simple, threshold in sorted(q.option_substitutions, key=lambda x: x[2], reverse=True):
-        if lc < threshold:
-            options = [opt.replace(original, simple) for opt in options]
+    # Apply prompt substitutions - LOWEST threshold first
+    # This ensures we get the most simplified version for low LC
+    for original, simple, threshold in sorted(q.prompt_substitutions, key=lambda x: x[2]):
+        if lc < threshold and original in prompt and original not in applied_prompt:
+            prompt = prompt.replace(original, simple)
+            applied_prompt.add(original)
+            # Also mark the simple version so we don't re-substitute it
+            applied_prompt.add(simple)
+    
+    # Apply option substitutions - LOWEST threshold first
+    for original, simple, threshold in sorted(q.option_substitutions, key=lambda x: x[2]):
+        if lc < threshold and original not in applied_options:
+            new_options = []
+            for opt in options:
+                if original in opt:
+                    new_options.append(opt.replace(original, simple))
+                    applied_options.add(original)
+                    applied_options.add(simple)
+                else:
+                    new_options.append(opt)
+            options = new_options
     
     return {
         "prompt": prompt,
