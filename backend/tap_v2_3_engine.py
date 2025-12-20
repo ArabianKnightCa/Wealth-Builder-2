@@ -3,7 +3,7 @@ TAP v2.3 Main Engine
 ====================
 Complete TAP v2.3 implementation integrating all components.
 
-Version: 2.3
+Version: 2.3.1 (with CLG integration)
 """
 
 from typing import Dict, Any, Optional, List
@@ -12,7 +12,8 @@ from tap_v2_3_templates import ContentTemplate, ContentBlock
 from tap_v2_3_language import get_language_shaper
 from tap_v2_3_1_language import get_safe_rewrite_pipeline
 from tap_v2_3_ae_integration import AEStatePacket, get_ae_modifier
-from feature_flags import use_safe_rewrite_pipeline
+from feature_flags import use_safe_rewrite_pipeline, use_clg_engine
+from clg_engine import get_clg_engine, CLGInput
 
 
 class TAPv23Engine:
