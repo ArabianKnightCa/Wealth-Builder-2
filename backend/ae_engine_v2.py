@@ -14,6 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
 from ae_v3_tap import get_tap_engine, UserProfile, compute_experience_band
+from tap_v2_3_formulas import compute_tap_scalars
+from clg_data import get_ppi_question
 
 
 class AdaptiveEngineV2:
