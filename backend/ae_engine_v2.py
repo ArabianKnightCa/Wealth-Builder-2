@@ -130,19 +130,30 @@ class AdaptiveEngineV2:
         
         output_items = []
         for idx, item in enumerate(final_items, 1):
-            # For PPI questions: Keep baseline as-is (no transformation)
-            # PPI questions are carefully crafted and should not be modified
-            transformed_prompt = item['prompt']
+            # Use CLG PPI Question Bank for grammar-safe transformation
+            # Get TAP scalars first
+            scalars = compute_tap_scalars(age, exp_level, el_max)
             
-            # Keep options unchanged (no transformation needed for PPI)
-            transformed_options = item['options']
+            # Try to get CLG-adapted version of the question
+            clg_question = get_ppi_question(item['id'], scalars.lc)
+            
+            if clg_question:
+                # Use CLG-adapted prompt and options
+                transformed_prompt = clg_question['prompt']
+                transformed_options = clg_question['options']
+            else:
+                # Fallback to baseline (no CLG entry for this question)
+                transformed_prompt = item['prompt']
+                transformed_options = item['options']
             
             output_items.append({
                 "question_id": f"PPI_Q{idx:02d}",
                 "bank_id": item['id'],
                 "type": item['type'],
                 "prompt": transformed_prompt,
-                "options": transformed_options
+                "options": transformed_options,
+                "clg_adapted": clg_question is not None,
+                "lc_used": round(scalars.lc, 3) if clg_question else None
             })
         
         return {
