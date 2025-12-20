@@ -4141,6 +4141,35 @@ async def render_clg_content(request: CLGRenderRequest):
         "debug": result["debug"]
     }
 
+
+@api_router.get("/clg/ppi-test")
+async def test_clg_ppi(age: int = 8, experience: str = "beginner"):
+    """
+    Test CLG-adapted PPI questions for a specific age and experience level.
+    
+    This shows how PPI questions are adapted using the CLG Phrase Bank approach.
+    
+    Args:
+        age: User age (default: 8 for child)
+        experience: beginner, intermediate, or advanced
+    """
+    ae_v2 = get_adaptive_engine_v2()
+    
+    ppi_result = ae_v2.compose_ppi(
+        user_id=f"test_{age}_{experience}",
+        age=age,
+        financial_experience=experience
+    )
+    
+    return {
+        "clg_version": "1.0.0",
+        "test_params": {"age": age, "experience": experience},
+        "ppi_version": ppi_result["ppi_version"],
+        "total_questions": len(ppi_result["items"]),
+        "questions": ppi_result["items"][:4],  # First 4 for preview
+        "note": "CLG-adapted questions use pre-approved phrase banks for grammar-safe transformation"
+    }
+
 # Run index creation on startup
 import asyncio
 asyncio.create_task(create_database_indexes())
