@@ -108,7 +108,7 @@ PHRASE_BANK_MATRIX: Dict[str, List[PhraseEntry]] = {
             term="investing",
             definition="putting money into something that can grow over time",
             example="You put money in and it might become more later.",
-            analogy="planting a seed"
+            analogy="like planting a seed"
         ),
         PhraseEntry(
             band_score=0.35,
