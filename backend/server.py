@@ -4092,25 +4092,28 @@ async def test_clg():
     }
 
 
-@api_router.post("/clg/render")
-async def render_clg_content(
-    concept_ids: List[str],
-    age: int,
-    el_declared: int,
-    el_max: int = 15,
-    tone: str = "direct",
+class CLGRenderRequest(BaseModel):
+    """Request model for CLG render endpoint."""
+    concept_ids: List[str]
+    age: int
+    el_declared: int
+    el_max: int = 15
+    tone: str = "direct"
     template_type: str = "lpi"
-):
+
+
+@api_router.post("/clg/render")
+async def render_clg_content(request: CLGRenderRequest):
     """
     Render content using CLG for specific concepts and user profile.
     
     Args:
-        concept_ids: List of concept IDs (e.g., ["CREDIT_CARD", "INVESTING"])
-        age: User age
-        el_declared: User's declared experience level
-        el_max: Maximum experience level (default 15)
-        tone: Tone variant (supportive, direct, playful)
-        template_type: "lpi" or "ppi"
+        request.concept_ids: List of concept IDs (e.g., ["CREDIT_CARD", "INVESTING"])
+        request.age: User age
+        request.el_declared: User's declared experience level
+        request.el_max: Maximum experience level (default 15)
+        request.tone: Tone variant (supportive, direct, playful)
+        request.template_type: "lpi" or "ppi"
     
     Returns:
         Rendered content with debug information
@@ -4123,12 +4126,12 @@ async def render_clg_content(
     
     tap_v23 = get_tap_v23_engine()
     result = tap_v23.render_concepts(
-        concept_ids=concept_ids,
-        user_age=age,
-        user_experience_level=el_declared,
-        el_max=el_max,
-        tone=tone,
-        template_type=template_type
+        concept_ids=request.concept_ids,
+        user_age=request.age,
+        user_experience_level=request.el_declared,
+        el_max=request.el_max,
+        tone=request.tone,
+        template_type=request.template_type
     )
     
     return {
