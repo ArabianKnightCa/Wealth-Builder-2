@@ -142,9 +142,11 @@ When LLM layer is enabled, this flag restricts AI rewrites to only high-risk tra
 
 | File | Purpose |
 |------|---------|
+| `clg_engine.py` | **NEW** CLG engine - grammar-safe realization layer |
+| `clg_data.py` | **NEW** Phrase Bank Matrix (PBM) & templates (STL) |
 | `tap_v2_3_formulas.py` | Core scalar calculations (LC, CD, IA) |
 | `tap_v2_3_engine.py` | Main TAP orchestration engine |
-| `tap_v2_3_1_language.py` | Grammar-safe rewrite pipeline |
+| `tap_v2_3_1_language.py` | Legacy rewrite pipeline (superseded by CLG) |
 | `ae_engine_v2.py` | Adaptive Engine main logic |
 | `feature_flags.py` | Feature toggle configuration |
 
