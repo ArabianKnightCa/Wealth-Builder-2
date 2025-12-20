@@ -1,6 +1,12 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables FIRST (before any other imports that depend on them)
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
+
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, validator
@@ -13,7 +19,6 @@ import bcrypt
 import jwt
 import random
 import string
-from pathlib import Path
 from content_data import LPI_CHAPTERS, LPI_ANSWER_KEY
 from ae_engine_v2 import get_adaptive_engine_v2
 from quiz_validator import validate_quiz_integrity
@@ -22,14 +27,11 @@ from ae_v3_tap import get_tap_engine, UserProfile, LessonContext, compute_age_ba
 from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 from profile_models import Profile, ProfileCreate, ProfileUpdate, ActiveProfileResponse, AVATAR_OPTIONS
 
-# TAP v2.3 imports
+# TAP v2.3 imports (these depend on .env being loaded first)
 from feature_flags import is_tap_v2_3_enabled, get_el_max, use_clg_engine
 from tap_v2_3_engine import get_tap_v23_engine
 from tap_v2_3_ae_integration import AEStatePacket
 from clg_engine import get_clg_engine, run_clg_step_test
-
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
