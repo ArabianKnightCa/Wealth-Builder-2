@@ -72,3 +72,18 @@ def llm_rewrite_only_on_risk() -> bool:
         bool: True if LLM should only trigger on risk
     """
     return LLM_REWRITE_ONLY_ON_RISK
+
+
+def use_clg_engine() -> bool:
+    """
+    Check if CLG (Controlled Language Generator) is enabled.
+    
+    CLG is the grammar-safe realization layer that uses:
+    - Phrase Bank Matrix (approved phrases by concept)
+    - Sentence Template Library (grammar-safe frames)
+    - Slot fill + assembly (NO paraphrasing)
+    
+    Returns:
+        bool: True if CLG should be used
+    """
+    return USE_CLG_ENGINE
