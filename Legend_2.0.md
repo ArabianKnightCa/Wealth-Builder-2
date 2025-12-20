@@ -117,6 +117,9 @@ An optional feature-flagged capability (currently disabled) that uses AI to repa
 ### USE_TAP_V2_3
 Boolean flag enabling TAP v2.3 system. Default: `true`.
 
+### USE_CLG_ENGINE
+Boolean flag enabling CLG (Controlled Language Generator). Default: `true`. This is the new grammar-safe approach.
+
 ### USE_SAFE_REWRITE_PIPELINE
 Boolean flag enabling the v2.3.1 grammar-safe pipeline. Default: `true`.
 
