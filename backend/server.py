@@ -4157,6 +4157,75 @@ async def test_clg_ppi(age: int = 8, experience: str = "beginner"):
         "note": "CLG-adapted questions use pre-approved phrase banks for grammar-safe transformation"
     }
 
+
+@api_router.get("/clg/lpi-test")
+async def test_lpi_transform(
+    age: int = 25,
+    el: int = 3,
+    discipline: float = 0.5,
+    impulse: float = 0.5,
+    confidence: float = 0.5,
+    tempo: str = "steady"
+):
+    """
+    Test LPI content transformation with AGE + EL + DNA.
+    
+    Args:
+        age: User age
+        el: Experience Level (1-5)
+        discipline: DNA discipline weight (0.0-1.0)
+        impulse: DNA impulse weight (0.0-1.0)
+        confidence: DNA confidence weight (0.0-1.0)
+        tempo: DNA tempo (fast, steady, slow)
+    """
+    from content_data import LPI_CHAPTERS
+    
+    el_max = get_el_max()
+    
+    # Create DNA object
+    dna = FinancialDNA(
+        discipline=discipline,
+        impulse=impulse,
+        confidence=confidence,
+        tempo=tempo,
+        profile="Test"
+    )
+    
+    # Compute scalars
+    scalars = compute_lpi_scalars(age, el, el_max, dna)
+    
+    # Transform first lesson from first chapter
+    original_lesson = LPI_CHAPTERS[0]["lessons"][0]
+    transformed = transform_lpi_lesson(original_lesson, age, el, el_max, dna)
+    
+    return {
+        "test_params": {
+            "age": age,
+            "el": el,
+            "el_max": el_max,
+            "dna": {"discipline": discipline, "impulse": impulse, "confidence": confidence, "tempo": tempo}
+        },
+        "scalars": {
+            "lc": round(scalars.lc, 4),
+            "cd": round(scalars.cd, 4),
+            "support_level": scalars.support_level,
+            "challenge_level": scalars.challenge_level,
+            "tone_warmth": scalars.tone_warmth,
+            "pacing_density": scalars.pacing_density
+        },
+        "original": {
+            "title": original_lesson["title"],
+            "text": original_lesson["text"][:200] + "...",
+            "takeaway": original_lesson.get("takeaway", "")
+        },
+        "transformed": {
+            "title": transformed["title"],
+            "text": transformed["text"][:200] + "...",
+            "takeaway": transformed.get("takeaway", ""),
+            "meta": transformed.get("_transform_meta", {})
+        }
+    }
+
 # Run index creation on startup
 import asyncio
 asyncio.create_task(create_database_indexes())
