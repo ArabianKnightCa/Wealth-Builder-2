@@ -39,26 +39,26 @@ function Welcome() {
             {/* Opening Statement */}
             <div className="text-center mb-6">
               <p className="text-2xl md:text-3xl text-white leading-relaxed">
-                Your financial life doesn't have to feel <span className="text-gold font-semibold">overwhelming</span>.
+                Your financial life doesn't have to feel <span className="font-semibold">overwhelming</span>.
               </p>
               <p className="text-2xl md:text-3xl text-white mt-4 leading-relaxed">
-                It can feel <span className="text-gold font-semibold">intentional</span>.
+                It can feel <span className="font-semibold">intentional</span>.
               </p>
             </div>
 
             <div className="w-16 h-0.5 bg-gold mx-auto my-6"></div>
 
             {/* Core Message */}
-            <div className="space-y-5 text-lg md:text-xl text-gray-100 leading-relaxed">
+            <div className="space-y-5 text-lg md:text-xl text-white leading-relaxed">
               <p className="leading-loose">
-                This isn't about <span className="italic text-yellow-300">quick fixes</span> or empty promises.
+                This isn't about <span className="italic">quick fixes</span> or empty promises.
               </p>
               <p className="leading-loose">
-                It's about <span className="text-gold font-semibold">real clarity</span>. <span className="text-gold font-semibold">Real tools</span>. <span className="text-gold font-semibold">Real transformation</span>.
+                It's about <span className="font-semibold">real clarity</span>. <span className="font-semibold">Real tools</span>. <span className="font-semibold">Real transformation</span>.
               </p>
               <p className="leading-loose">
-                A system built for people who are ready to <span className="text-gold font-semibold">take control</span>, 
-                build <span className="text-gold font-semibold">lasting habits</span>, and create a financial future that reflects their <span className="text-gold font-semibold">values</span>.
+                A system built for people who are ready to <span className="font-semibold">take control</span>, 
+                build <span className="font-semibold">lasting habits</span>, and create a financial future that reflects their <span className="font-semibold">values</span>.
               </p>
             </div>
 
@@ -66,14 +66,14 @@ function Welcome() {
 
             {/* What You'll Get */}
             <div className="text-center space-y-4">
-              <p className="text-xl md:text-2xl text-gray-100">
-                You'll learn to <span className="text-gold font-bold">master money</span> without the stress.
+              <p className="text-xl md:text-2xl text-white">
+                You'll learn to <span className="font-bold">master money</span> without the stress.
               </p>
-              <p className="text-lg md:text-xl text-gray-100">
+              <p className="text-lg md:text-xl text-white">
                 Build wealth without losing yourself in the process.
               </p>
-              <p className="text-lg md:text-xl text-gray-100">
-                Create a life where your finances <span className="text-gold font-semibold">support your dreams</span>, not limit them.
+              <p className="text-lg md:text-xl text-white">
+                Create a life where your finances <span className="font-semibold">support your dreams</span>, not limit them.
               </p>
             </div>
 
@@ -82,21 +82,21 @@ function Welcome() {
             {/* Call to Action */}
             <div className="text-center">
               <p className="text-2xl md:text-3xl font-bold text-white mb-4">
-                If you're ready to <span className="text-gold">rise</span>...
+                If you're ready to <span className="font-semibold">rise</span>...
               </p>
-              <p className="text-xl md:text-2xl text-gray-100 mb-8">
+              <p className="text-xl md:text-2xl text-white mb-8">
                 Your journey starts here.
               </p>
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - Only Sign In, no Begin Journey button on this page */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
               <button 
                 onClick={() => navigate('/register')} 
-                className="bg-gold hover:bg-yellow-500 text-navy-900 px-10 py-4 rounded-lg text-xl font-bold transition-all transform hover:scale-105 shadow-lg hover:shadow-2xl w-full sm:w-auto"
+                className="bg-white bg-opacity-10 hover:bg-opacity-20 text-white border-2 border-gold px-10 py-4 rounded-lg text-xl font-semibold transition-all w-full sm:w-auto"
                 data-testid="get-started-btn"
               >
-                Begin Your Journey Free
+                Get Started
               </button>
               <button 
                 onClick={() => navigate('/login')} 
@@ -107,7 +107,7 @@ function Welcome() {
               </button>
             </div>
 
-            <p className="text-center text-gray-300 text-sm mt-4">
+            <p className="text-center text-white text-sm mt-4">
               100% Free for POC Testers • No Credit Card Required
             </p>
           </div>
