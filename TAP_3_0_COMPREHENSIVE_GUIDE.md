@@ -2,6 +2,8 @@
 
 **Document Purpose:** Complete reference for TAP 3.0 (Text Adaptation Processor), including mission, architecture, current status, integration points, and full source code.
 
+**Status as of December 2025:** ✅ TAP 3.0 is FULLY INTEGRATED and WORKING
+
 ---
 
 ## PART 1: WHAT IS TAP 3.0?
@@ -109,50 +111,43 @@ The CLG is the "realization layer" that decides WHAT to add. It operates by:
 
 ---
 
-## PART 3: CURRENT STATUS & ISSUES
+## PART 3: INTEGRATION STATUS (COMPLETED)
 
-### 3.1 What Exists
+### 3.1 Tested & Verified Results
 
-✅ **TAP 3.0 Engine is BUILT and VALIDATED**
-- Location: `/app/backend/tap_3_0.py`
-- Contains: `compute_scalars()`, `CLGEngine.process()`, `run_validation_test()`
-- Validation test passes all 12 test cases (ages 6/12/35/65 × ELs 1/3/5)
+**Young Beginner (Age 9, EL 1):**
+```
+TAP Version: 3.0
+Baseline Preserved: True
+Scaffolding Count: 1
+Output: "Let's learn something helpful: Money is a shared agreement..."
+```
 
-✅ **Previous Buggy Versions are ARCHIVED**
-- `tap_clg_v23_OLD.py`, `lpi_transform_OLD.py`, `clg_data_OLD.py`, `clg_engine_OLD.py`
-- These used paraphrasing and bucketing — they are decommissioned
+**Adult Expert (Age 45, EL 5):**
+```
+TAP Version: 3.0
+Baseline Preserved: True
+Scaffolding Count: 0
+Output: "Money is a shared agreement..." (no scaffolding - experts get baseline as-is)
+```
 
-### 3.2 What's BROKEN (The Critical Issue)
+### 3.2 API Endpoints Using TAP 3.0
 
-❌ **TAP 3.0 is NOT INTEGRATED into the live API endpoints**
+| Endpoint | Status | Description |
+|----------|--------|-------------|
+| `/api/content/ppi/personalized` | ✅ INTEGRATED | PPI questions with TAP 3.0 scaffolding |
+| `/api/content/lpi` | ✅ INTEGRATED | LPI lessons with TAP 3.0 scaffolding |
 
-The new engine exists but sits idle. The API endpoints in `server.py` are still using old logic:
+### 3.3 Feature Flag Control
 
-| Endpoint | Current State | Should Use |
-|----------|---------------|------------|
-| `/api/content/ppi/personalized` | Uses `ae_engine_v2.py` → calls old TAP v2.3 | Should call `TAP30.process_ppi_question()` |
-| `/api/content/lpi` | Uses `lpi_transform.py` → old broken logic | Should call `TAP30.process_lpi_lesson()` |
+TAP 3.0 can be enabled/disabled via environment variable:
+```bash
+# Enable TAP 3.0 (default)
+USE_TAP_V3_0=true
 
-**Result:** Users see unadapted or incorrectly adapted content because the working engine isn't connected.
-
-### 3.3 Integration Checklist (What Needs to Happen)
-
-1. **Modify `/api/content/ppi/personalized` endpoint in `server.py`:**
-   - Import `TAP30` from `tap_3_0.py`
-   - Get user's `age` and `EL` from database
-   - Call `TAP30.compute_scalars(age, el)` to get scalars
-   - Call `CLGEngine.process(baseline_text, scalars, content_type="ppi", concepts=[...])`
-   - Return the `final_output` from CLG
-
-2. **Modify `/api/content/lpi` endpoint in `server.py`:**
-   - Same pattern, but also pass `Financial DNA` weights for enhanced personalization
-   - Call `CLGEngine.process(baseline_text, scalars, content_type="lpi", concepts=[...])`
-
-3. **Test with multiple user profiles:**
-   - Age 6, EL 1 (young beginner)
-   - Age 12, EL 3 (teen intermediate)
-   - Age 35, EL 1 (adult beginner)
-   - Age 65, EL 5 (senior expert)
+# Disable TAP 3.0 (fallback to TAP v2.3)
+USE_TAP_V3_0=false
+```
 
 ---
 
@@ -161,10 +156,10 @@ The new engine exists but sits idle. The API endpoints in `server.py` are still 
 | File | Purpose |
 |------|---------|
 | `/app/backend/tap_3_0.py` | **THE SOURCE OF TRUTH** — TAP 3.0 implementation |
-| `/app/backend/server.py` | API endpoints (needs integration) |
-| `/app/backend/ae_engine_v2.py` | Adaptive Engine (orchestrates PPI/LPI selection) |
+| `/app/backend/server.py` | API endpoints (TAP 3.0 integrated) |
+| `/app/backend/ae_engine_v2.py` | Adaptive Engine (TAP 3.0 integrated for PPI) |
+| `/app/backend/feature_flags.py` | Feature toggles (TAP 3.0 flag added) |
 | `/app/backend/content_data.py` | LPI chapter/lesson baseline content |
-| `/app/backend/feature_flags.py` | Feature toggles (TAP version selection) |
 
 ---
 
