@@ -431,6 +431,8 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     """
     Get personalized LPI chapters with dynamically generated content
     Content is transformed at runtime based on user's Age, Experience, PPI, and Goals
+    
+    TAP 3.0: Uses immutable baseline + scaffolding injection (no paraphrasing)
     """
     # Fetch user profile using id field (from JWT token)
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
@@ -455,11 +457,56 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     exp_level = exp_level_map.get(financial_exp, 1)
     user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
     
-    # Check which TAP version to use
-    use_v23 = is_tap_v2_3_enabled()
+    # Check if TAP 3.0 is enabled (default: yes)
+    use_tap3 = is_tap_v3_0_enabled()
     
-    if use_v23:
-        # TAP v2.3: Formula-driven transformation using AGE + EL + DNA
+    if use_tap3:
+        # TAP 3.0: Immutable baseline + scaffolding injection
+        # NEVER rewrites text, only ADDS definitions, examples, analogies
+        tap3_clg = get_tap3_clg_engine()
+        scalars = tap3_compute_scalars(user_age, exp_level, EL_MAX_POC)
+        
+        personalized_chapters = []
+        for chapter in LPI_CHAPTERS:
+            transformed_lessons = []
+            for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
+                # Extract concepts from lesson text for glossary lookup
+                lesson_text = lesson.get('text', '')
+                takeaway_text = lesson.get('takeaway', '')
+                
+                concepts = extract_concepts_from_text(lesson_text)
+                takeaway_concepts = extract_concepts_from_text(takeaway_text)
+                
+                # Process through TAP 3.0 CLG (baseline immutable, scaffolding only)
+                text_output = tap3_clg.process(
+                    baseline_text=lesson_text,
+                    scalars=scalars,
+                    content_type="lpi",
+                    concepts=concepts
+                )
+                
+                takeaway_output = tap3_clg.process(
+                    baseline_text=takeaway_text,
+                    scalars=scalars,
+                    content_type="lpi",
+                    concepts=takeaway_concepts
+                ) if takeaway_text else None
+                
+                transformed_lessons.append({
+                    **lesson,
+                    'text': text_output.final_output,
+                    'takeaway': takeaway_output.final_output if takeaway_output else '',
+                    'tap_version': '3.0',
+                    'baseline_preserved': not text_output.baseline_mutated,
+                    'scaffolding_count': len(text_output.additions)
+                })
+            
+            personalized_chapters.append({
+                **chapter,
+                'lessons': transformed_lessons
+            })
+    elif is_tap_v2_3_enabled():
+        # TAP v2.3: Formula-driven transformation using AGE + EL + DNA (legacy)
         el_max = get_el_max()
         
         # Build FinancialDNA object from stored weights
@@ -525,7 +572,10 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     return {
         "chapters": personalized_chapters,
         "personalization_applied": True,
+        "tap_version": "3.0" if use_tap3 else ("2.3" if is_tap_v2_3_enabled() else "2.0"),
         "user_profile": {
+            "age": user_age,
+            "experience_level": exp_level,
             "age_band": compute_age_band(user_age),
             "experience": financial_exp,
             "dna_profile": dna_profile
