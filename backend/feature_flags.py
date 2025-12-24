@@ -3,13 +3,17 @@ Feature Flags Configuration
 ============================
 Control feature rollout and A/B testing.
 
-Version: 1.1 (TAP v2.3.1)
+Version: 1.2 (TAP 3.0)
 """
 
 import os
 
 
 # TAP Version Control
+# TAP 3.0 is the NEW clean-room implementation (default: enabled)
+USE_TAP_V3_0 = os.environ.get('USE_TAP_V3_0', 'true').lower() == 'true'
+
+# Legacy TAP v2.3 (used as fallback if TAP 3.0 is disabled)
 USE_TAP_V2_3 = os.environ.get('USE_TAP_V2_3', 'true').lower() == 'true'
 
 # EL_MAX Configuration (POC=5, Beta=10, Commercial=15)
