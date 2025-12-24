@@ -229,6 +229,22 @@ def get_definition(term: str, lc: float) -> Optional[str]:
         return entry.definition_standard
 
 
+def extract_concepts_from_text(text: str) -> List[str]:
+    """
+    Extract known concepts from text for glossary lookup.
+    Returns list of concept keys that appear in the text.
+    """
+    text_lower = text.lower()
+    found_concepts = []
+    
+    # Check for each glossary term in the text
+    for term in GLOSSARY.keys():
+        if term in text_lower:
+            found_concepts.append(term)
+    
+    return found_concepts
+
+
 # =============================================================================
 # CLG ADDITIONS LIBRARY
 # =============================================================================
