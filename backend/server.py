@@ -35,7 +35,12 @@ from clg_engine import get_clg_engine, run_clg_step_test
 from lpi_transform import transform_lpi_lesson, compute_lpi_scalars, FinancialDNA
 
 # TAP 3.0 imports - the new clean-room implementation
-from tap_3_0 import compute_scalars as tap3_compute_scalars, get_clg_engine as get_tap3_clg_engine, EL_MAX_POC
+from tap_3_0 import (
+    compute_scalars as tap3_compute_scalars, 
+    get_clg_engine as get_tap3_clg_engine, 
+    EL_MAX_POC,
+    extract_concepts_from_text
+)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
