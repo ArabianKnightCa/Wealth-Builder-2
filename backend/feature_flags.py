@@ -91,3 +91,19 @@ def use_clg_engine() -> bool:
         bool: True if CLG should be used
     """
     return USE_CLG_ENGINE
+
+
+def is_tap_v3_0_enabled() -> bool:
+    """
+    Check if TAP 3.0 is enabled.
+    
+    TAP 3.0 is the clean-room implementation that:
+    - NEVER rewrites baseline text (immutable)
+    - Only ADDS scaffolding (definitions, examples, analogies)
+    - Uses continuous formulas (no buckets/bands)
+    - Respects Cognitive Load Span (CLS)
+    
+    Returns:
+        bool: True if TAP 3.0 should be used
+    """
+    return USE_TAP_V3_0
