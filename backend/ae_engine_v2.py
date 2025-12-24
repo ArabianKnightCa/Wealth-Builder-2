@@ -118,45 +118,82 @@ class AdaptiveEngineV2:
         # we'll use all eligible items (should be 20 or close to it)
         final_items = eligible_items[:20]  # Take up to 20
         
-        # Format output according to contract with age/experience transformation using TAP v2.3
-        from tap_v2_3_engine import get_tap_v23_engine
-        from feature_flags import get_el_max
-        tap_v23 = get_tap_v23_engine()
+        # Check if TAP 3.0 is enabled
+        from feature_flags import is_tap_v3_0_enabled
+        use_tap3 = is_tap_v3_0_enabled()
         
         # Convert experience string to level (1-5 for POC)
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
         exp_level = exp_level_map.get(financial_experience, 1)
-        el_max = get_el_max()
         
         output_items = []
-        for idx, item in enumerate(final_items, 1):
-            # Use CLG PPI Question Bank for grammar-safe transformation
-            # Get TAP scalars first
-            scalars = compute_tap_scalars(age, exp_level, el_max)
+        
+        if use_tap3:
+            # TAP 3.0: Immutable baseline + scaffolding injection
+            from tap_3_0 import compute_scalars as tap3_compute_scalars, get_clg_engine as get_tap3_clg_engine, EL_MAX_POC, extract_concepts_from_text
             
-            # Try to get CLG-adapted version of the question
-            clg_question = get_ppi_question(item['id'], scalars.lc)
+            tap3_clg = get_tap3_clg_engine()
+            scalars = tap3_compute_scalars(age, exp_level, EL_MAX_POC)
             
-            if clg_question:
-                # Use CLG-adapted prompt and options
-                transformed_prompt = clg_question['prompt']
-                transformed_options = clg_question['options']
-                lc_applied = clg_question.get('lc_applied', scalars.lc)
-            else:
-                # Fallback to baseline (no CLG entry for this question)
-                transformed_prompt = item['prompt']
-                transformed_options = item['options']
-                lc_applied = None
+            for idx, item in enumerate(final_items, 1):
+                # Extract concepts from the question prompt
+                concepts = extract_concepts_from_text(item['prompt'])
+                
+                # Process through TAP 3.0 CLG (baseline immutable, scaffolding only)
+                prompt_output = tap3_clg.process(
+                    baseline_text=item['prompt'],
+                    scalars=scalars,
+                    content_type="ppi",
+                    concepts=concepts
+                )
+                
+                # For options, we keep them as-is (don't add scaffolding to options)
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": item['type'],
+                    "prompt": prompt_output.final_output,
+                    "options": item['options'],  # Options remain unchanged
+                    "tap_version": "3.0",
+                    "baseline_preserved": not prompt_output.baseline_mutated,
+                    "scaffolding_count": len(prompt_output.additions)
+                })
+        else:
+            # Legacy TAP v2.3: Use CLG PPI Question Bank
+            from tap_v2_3_engine import get_tap_v23_engine
+            from feature_flags import get_el_max
+            from tap_v2_3_formulas import compute_tap_scalars
+            from clg_data import get_ppi_question
             
-            output_items.append({
-                "question_id": f"PPI_Q{idx:02d}",
-                "bank_id": item['id'],
-                "type": item['type'],
-                "prompt": transformed_prompt,
-                "options": transformed_options,
-                "clg_adapted": clg_question is not None,
-                "lc_applied": round(lc_applied, 4) if lc_applied else None
-            })
+            el_max = get_el_max()
+            
+            for idx, item in enumerate(final_items, 1):
+                # Get TAP scalars first
+                scalars = compute_tap_scalars(age, exp_level, el_max)
+                
+                # Try to get CLG-adapted version of the question
+                clg_question = get_ppi_question(item['id'], scalars.lc)
+                
+                if clg_question:
+                    # Use CLG-adapted prompt and options
+                    transformed_prompt = clg_question['prompt']
+                    transformed_options = clg_question['options']
+                    lc_applied = clg_question.get('lc_applied', scalars.lc)
+                else:
+                    # Fallback to baseline (no CLG entry for this question)
+                    transformed_prompt = item['prompt']
+                    transformed_options = item['options']
+                    lc_applied = None
+                
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": item['type'],
+                    "prompt": transformed_prompt,
+                    "options": transformed_options,
+                    "clg_adapted": clg_question is not None,
+                    "lc_applied": round(lc_applied, 4) if lc_applied else None
+                })
         
         return {
             "ppi_version": "POC-v1.1.1",
