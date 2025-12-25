@@ -42,6 +42,15 @@ from tap_3_0 import (
     extract_concepts_from_text
 )
 
+# PPI Trait Vector System (Option A: Trait Tags + Shared Weight Templates)
+from ppi_trait_vector import (
+    compute_trait_vector,
+    trait_vector_to_dict,
+    get_trait_summary,
+    ALL_TRAIT_IDS,
+    TRAIT_NAMES
+)
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
