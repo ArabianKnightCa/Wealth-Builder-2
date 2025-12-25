@@ -450,23 +450,29 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     Content is transformed at runtime based on user's Age, Experience, PPI, and Goals
     
     TAP 3.0: Uses immutable baseline + scaffolding injection (no paraphrasing)
+    Now integrated with 8 control scalars from PPI 24-trait vector.
     """
     # Fetch user profile using id field (from JWT token)
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Fetch user's progress to get DNA profile (stored after PPI submission)
+    # Fetch user's progress to get DNA profile and TAP controls (stored after PPI submission)
     progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
     
     # Extract DNA profile from progress if available
     dna_profile = 'Balanced'
     dna_weights = {}
+    tap_controls_dict = None  # Will hold the 8 control scalars
+    
     if progress and 'learning_map' in progress:
         learning_map = progress['learning_map']
         if 'financial_dna' in learning_map:
             dna_profile = learning_map['financial_dna'].get('profile', 'Balanced')
             dna_weights = learning_map['financial_dna'].get('weights', {})
+        # Extract TAP control scalars if available
+        if 'tap_controls' in learning_map:
+            tap_controls_dict = learning_map['tap_controls']
     
     # Get user age and experience level
     exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
@@ -482,6 +488,14 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
         # NEVER rewrites text, only ADDS definitions, examples, analogies
         tap3_clg = get_tap3_clg_engine()
         scalars = tap3_compute_scalars(user_age, exp_level, EL_MAX_POC)
+        
+        # Create TAPControlInputs from stored controls (or use neutral if not available)
+        if tap_controls_dict:
+            tap_controls = TAPControlInputs.from_dict(tap_controls_dict)
+            controls_source = "ppi"
+        else:
+            tap_controls = TAPControlInputs.neutral()
+            controls_source = "neutral"
         
         personalized_chapters = []
         for chapter in LPI_CHAPTERS:
