@@ -512,13 +512,17 @@ class CLGEngine:
         
         # =====================================================================
         # Gate 1 & 2: Concept definitions (based on LC + support_need)
+        # For young users (low LC), ALWAYS add definitions regardless of support_need
         # =====================================================================
-        if concepts and controls.support_need > 0.4:  # Control-driven
-            for concept in concepts:
-                definition = get_definition(concept, scalars.lc)
-                if definition:
-                    def_text = f"({concept}: {definition})"
-                    additions.append(CLGAddition("definition", def_text, "after"))
+        if concepts:
+            # Low LC users get definitions regardless of support_need
+            should_add_definitions = scalars.lc < 0.3 or controls.support_need > 0.4
+            if should_add_definitions:
+                for concept in concepts:
+                    definition = get_definition(concept, scalars.lc)
+                    if definition:
+                        def_text = f"({concept}: {definition})"
+                        additions.append(CLGAddition("definition", def_text, "after"))
         
         # =====================================================================
         # Gate 2 continued: Example (based on LC + support_need)
