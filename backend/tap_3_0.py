@@ -193,6 +193,37 @@ class GlossaryEntry:
 
 
 GLOSSARY: Dict[str, GlossaryEntry] = {
+    # Basic concepts (appear in early LPI chapters)
+    "money": GlossaryEntry(
+        term="money",
+        complexity=0.05,
+        definition_simple="coins and bills you use to buy things",
+        definition_standard="currency used to pay for goods and services"
+    ),
+    "barter": GlossaryEntry(
+        term="barter",
+        complexity=0.15,
+        definition_simple="trading one thing for another without using money",
+        definition_standard="exchanging goods directly without currency"
+    ),
+    "trade": GlossaryEntry(
+        term="trade",
+        complexity=0.10,
+        definition_simple="giving something to get something else",
+        definition_standard="exchanging goods, services, or money"
+    ),
+    "value": GlossaryEntry(
+        term="value",
+        complexity=0.15,
+        definition_simple="how much something is worth",
+        definition_standard="the worth or usefulness of something"
+    ),
+    "agreement": GlossaryEntry(
+        term="agreement",
+        complexity=0.15,
+        definition_simple="when people decide to do things the same way",
+        definition_standard="a mutual understanding between parties"
+    ),
     # Financial concepts
     "credit card": GlossaryEntry(
         term="credit card",
@@ -247,6 +278,48 @@ GLOSSARY: Dict[str, GlossaryEntry] = {
         complexity=0.55,
         definition_simple="spreading your money across different things",
         definition_standard="spreading investments to reduce risk"
+    ),
+    "spending": GlossaryEntry(
+        term="spending",
+        complexity=0.08,
+        definition_simple="using money to buy things",
+        definition_standard="the act of paying money for goods or services"
+    ),
+    "income": GlossaryEntry(
+        term="income",
+        complexity=0.15,
+        definition_simple="money you get from work or other places",
+        definition_standard="money received from work, investments, or other sources"
+    ),
+    "expenses": GlossaryEntry(
+        term="expenses",
+        complexity=0.18,
+        definition_simple="things you have to pay for",
+        definition_standard="costs incurred for goods or services"
+    ),
+    "bank": GlossaryEntry(
+        term="bank",
+        complexity=0.10,
+        definition_simple="a safe place to keep your money",
+        definition_standard="a financial institution that holds deposits"
+    ),
+    "account": GlossaryEntry(
+        term="account",
+        complexity=0.15,
+        definition_simple="a place at a bank where your money is kept",
+        definition_standard="a record of money held at a financial institution"
+    ),
+    "digital": GlossaryEntry(
+        term="digital",
+        complexity=0.20,
+        definition_simple="on a computer or phone, not paper",
+        definition_standard="electronic or computerized"
+    ),
+    "ledger": GlossaryEntry(
+        term="ledger",
+        complexity=0.35,
+        definition_simple="a list that keeps track of money",
+        definition_standard="a record of financial transactions"
     ),
     "compound interest": GlossaryEntry(
         term="compound interest",
