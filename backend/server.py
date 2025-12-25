@@ -1293,6 +1293,92 @@ async def compute_trait_vector_endpoint(data: dict):
         "summary": get_trait_summary(result)
     }
 
+@api_router.get("/ppi/tap-controls")
+async def get_ppi_tap_controls(user_id: str = Depends(get_current_user)):
+    """
+    Get TAP control scalars (8 controls) from user's PPI trait vector.
+    
+    These controls influence CLG module selection ONLY - no text rewriting.
+    
+    Returns:
+        {
+            "traits": {"T01": 0.52, ..., "T24": 0.41},
+            "dominant_traits": ["T18", "T19"],
+            "controls": {
+                "support_need": 0.45,
+                "guardrail_need": 0.52,
+                "structure_preference": 0.68,
+                "exploration_bias": 0.35,
+                "social_frame_bias": 0.50,
+                "tone_warmth": 0.55,
+                "pacing_density": 0.42,
+                "stretch_appetite": 0.61
+            },
+            "clg_recommendations": {...}
+        }
+    """
+    # Fetch user's PPI answers
+    answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    
+    if not answers:
+        raise HTTPException(status_code=404, detail="No PPI answers found. Complete PPI first.")
+    
+    # Convert to trait vector format
+    trait_vector_answers = [
+        {"question_id": ans['question_id'], "selected_option": ans['selected_option']}
+        for ans in answers
+    ]
+    
+    # Compute the 24-trait vector
+    trait_result = compute_trait_vector(trait_vector_answers, total_questions=20)
+    
+    # Compute TAP control scalars
+    tap_controls = compute_tap_controls(trait_result.traits)
+    tap_controls_dict = tap_control_packet_to_dict(tap_controls)
+    
+    # Get CLG recommendations
+    clg_recs = get_clg_recommendations(tap_controls_dict["controls"])
+    
+    return {
+        **tap_controls_dict,
+        "clg_recommendations": clg_recs,
+        "stability": trait_result.stability
+    }
+
+@api_router.post("/ppi/compute-tap-controls")
+async def compute_tap_controls_endpoint(data: dict):
+    """
+    Compute TAP control scalars from raw trait vector (for testing/validation).
+    
+    Input:
+        {
+            "traits": {"T01": 0.5, "T02": 0.4, ..., "T24": 0.5}
+        }
+    
+    Returns:
+        {
+            "controls": {...},
+            "dominant_traits": [...],
+            "clg_recommendations": {...}
+        }
+    """
+    traits = data.get("traits", {})
+    
+    if not traits:
+        raise HTTPException(status_code=400, detail="No traits provided")
+    
+    # Compute TAP control scalars
+    tap_controls = compute_tap_controls(traits)
+    tap_controls_dict = tap_control_packet_to_dict(tap_controls)
+    
+    # Get CLG recommendations
+    clg_recs = get_clg_recommendations(tap_controls_dict["controls"])
+    
+    return {
+        **tap_controls_dict,
+        "clg_recommendations": clg_recs
+    }
+
 @api_router.delete("/auth/delete-account/{email}")
 async def delete_user_account(email: str):
     """
