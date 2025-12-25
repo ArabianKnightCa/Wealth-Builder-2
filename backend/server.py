@@ -1208,6 +1208,73 @@ async def get_ppi_answers(user_id: str = Depends(get_current_user)):
     answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
     return {"answers": answers}
 
+@api_router.get("/ppi/trait-vector")
+async def get_ppi_trait_vector(user_id: str = Depends(get_current_user)):
+    """
+    Get the 24-trait vector for a user based on their PPI answers.
+    
+    Returns:
+        {
+            "ppi_version": "POC_20Q_OPTION_A",
+            "traits": {"T01": 0.52, ..., "T24": 0.41},
+            "dominant_traits": ["T18", "T19", "T07"],
+            "stability": 0.85
+        }
+    """
+    # Fetch user's PPI answers
+    answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    
+    if not answers:
+        raise HTTPException(status_code=404, detail="No PPI answers found. Complete PPI first.")
+    
+    # Convert to trait vector format
+    trait_vector_answers = [
+        {"question_id": ans['question_id'], "selected_option": ans['selected_option']}
+        for ans in answers
+    ]
+    
+    # Compute the 24-trait vector
+    result = compute_trait_vector(trait_vector_answers, total_questions=20)
+    
+    return {
+        **trait_vector_to_dict(result),
+        "summary": get_trait_summary(result)
+    }
+
+@api_router.post("/ppi/compute-trait-vector")
+async def compute_trait_vector_endpoint(data: dict):
+    """
+    Compute 24-trait vector from raw answers (for testing/validation).
+    
+    Input:
+        {
+            "answers": [
+                {"question_id": "PPI_Q01", "selected_option": "A"},
+                ...
+            ]
+        }
+    
+    Returns:
+        {
+            "ppi_version": "POC_20Q_OPTION_A",
+            "traits": {"T01": 0.52, ..., "T24": 0.41},
+            "dominant_traits": ["T18", "T19", "T07"],
+            "stability": 0.85
+        }
+    """
+    answers = data.get("answers", [])
+    
+    if not answers:
+        raise HTTPException(status_code=400, detail="No answers provided")
+    
+    # Compute the 24-trait vector
+    result = compute_trait_vector(answers, total_questions=20)
+    
+    return {
+        **trait_vector_to_dict(result),
+        "summary": get_trait_summary(result)
+    }
+
 @api_router.delete("/auth/delete-account/{email}")
 async def delete_user_account(email: str):
     """
