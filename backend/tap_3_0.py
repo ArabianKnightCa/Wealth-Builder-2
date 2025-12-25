@@ -77,6 +77,41 @@ class TAP3Scalars:
     stretch_norm: float
 
 
+@dataclass
+class TAPControlInputs:
+    """
+    8 Control Scalars from PPI 24-trait vector.
+    These influence CLG module selection WITHOUT rewriting text.
+    """
+    support_need: float = 0.5        # Higher = needs more scaffolding
+    guardrail_need: float = 0.5      # Higher = needs cautionary framing
+    structure_preference: float = 0.5 # Higher = prefers organized content
+    exploration_bias: float = 0.5    # Higher = enjoys discovery
+    social_frame_bias: float = 0.5   # Higher = responds to social framing
+    tone_warmth: float = 0.5         # Higher = prefers warm tone
+    pacing_density: float = 0.5      # Higher = can handle dense content
+    stretch_appetite: float = 0.5    # Higher = eager for advanced concepts
+    
+    @classmethod
+    def from_dict(cls, d: Dict[str, float]) -> 'TAPControlInputs':
+        """Create from dictionary (e.g., from tap_control_scalars output)"""
+        return cls(
+            support_need=d.get('support_need', 0.5),
+            guardrail_need=d.get('guardrail_need', 0.5),
+            structure_preference=d.get('structure_preference', 0.5),
+            exploration_bias=d.get('exploration_bias', 0.5),
+            social_frame_bias=d.get('social_frame_bias', 0.5),
+            tone_warmth=d.get('tone_warmth', 0.5),
+            pacing_density=d.get('pacing_density', 0.5),
+            stretch_appetite=d.get('stretch_appetite', 0.5)
+        )
+    
+    @classmethod
+    def neutral(cls) -> 'TAPControlInputs':
+        """Return neutral controls (all 0.5) for users without PPI"""
+        return cls()
+
+
 def compute_scalars(age: int, el: int, el_max: int = EL_MAX_POC) -> TAP3Scalars:
     """
     Compute TAP 3.0 scalars.
