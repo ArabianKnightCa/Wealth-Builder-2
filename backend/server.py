@@ -605,10 +605,11 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
                 'lessons': transformed_lessons
             })
     
-    return {
+    # Build response with control info for TAP 3.0
+    response = {
         "chapters": personalized_chapters,
         "personalization_applied": True,
-        "tap_version": "3.0" if use_tap3 else ("2.3" if is_tap_v2_3_enabled() else "2.0"),
+        "tap_version": "3.1" if use_tap3 else ("2.3" if is_tap_v2_3_enabled() else "2.0"),
         "user_profile": {
             "age": user_age,
             "experience_level": exp_level,
@@ -617,6 +618,15 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
             "dna_profile": dna_profile
         }
     }
+    
+    # Include control scalars in response if TAP 3.0 is used
+    if use_tap3 and tap_controls_dict:
+        response["tap_controls"] = tap_controls_dict
+        response["controls_source"] = "ppi"
+    elif use_tap3:
+        response["controls_source"] = "neutral"
+    
+    return response
 
 # ===========================
 # Content API - Database-Driven
