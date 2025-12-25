@@ -1198,7 +1198,9 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
             "tempo": plan['dna']['weights']['tempo'],
             "discipline": plan['dna']['weights']['discipline'],
             "confidence": plan['dna']['weights']['confidence']
-        }
+        },
+        # NEW: 24-Trait Vector Output (TAP 3.0 input)
+        "trait_vector": trait_vector_packet
     }
 
 @api_router.get("/ppi/answers")
