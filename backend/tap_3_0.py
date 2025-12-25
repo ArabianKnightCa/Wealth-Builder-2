@@ -397,6 +397,13 @@ EXAMPLE_TEMPLATES = {
     "budget": "For example, deciding to spend $20 on fun and save $10.",
     "savings": "For example, putting coins in a piggy bank for later.",
     "investment": "For example, buying a share of a company hoping it grows.",
+    "money": "For example, using dollar bills to buy a toy at a store.",
+    "barter": "For example, trading your apple for your friend's cookie.",
+    "trade": "For example, giving your old game to get a new book.",
+    "value": "For example, a rare toy might be worth more than a common one.",
+    "spending": "For example, buying candy at the store uses your money.",
+    "income": "For example, the money you get from your allowance or a lemonade stand.",
+    "bank": "For example, a place where grown-ups keep their money safe, like a vault.",
 }
 
 # Analogy templates (for young users, LC < 0.25)
