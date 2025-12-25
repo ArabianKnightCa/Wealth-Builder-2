@@ -1137,7 +1137,14 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     # Extract chapter order from plan
     chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
     
-    # Create learning_map with both legacy DNA and new 24-trait vector
+    # =========================================================================
+    # STEP 3: Compute TAP Control Scalars (8 controls from trait vector)
+    # =========================================================================
+    # These controls influence CLG module selection ONLY - no text rewriting
+    tap_controls_packet = compute_tap_controls(trait_vector_result.traits)
+    tap_controls_dict = tap_control_packet_to_dict(tap_controls_packet)
+    
+    # Create learning_map with both legacy DNA and new 24-trait vector + controls
     learning_map = {
         "user_profile": plan['dna']['profile'],
         "learning_style": plan['dna']['profile'],
@@ -1151,7 +1158,9 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         "generated_at": plan['generated_at'],
         "ae_version": "v2.0",
         # NEW: 24-Trait Vector (TAP 3.0 input)
-        "trait_vector": trait_vector_packet
+        "trait_vector": trait_vector_packet,
+        # NEW: TAP Control Scalars (8 controls for CLG module selection)
+        "tap_controls": tap_controls_dict["controls"]
     }
     
     # Generate UID at onboarding completion (before Chapter 1 access)
