@@ -357,6 +357,7 @@ class CLGOutput:
     final_output: str
     baseline_mutated: bool  # Must be False for valid output
     cls_exceeded: bool  # True if additions were truncated
+    controls_applied: bool = False  # True if control scalars were used
 
 
 class CLGEngine:
@@ -368,6 +369,7 @@ class CLGEngine:
     2. ONLY ADD sentences before or after baseline
     3. Respect CLS (Cognitive Load Span) - truncate if exceeded
     4. Higher EL = more sophisticated additions, NEVER simplified
+    5. Control scalars influence module selection thresholds
     """
     
     def process(
@@ -375,7 +377,8 @@ class CLGEngine:
         baseline_text: str,
         scalars: TAP3Scalars,
         content_type: str = "lpi",  # "ppi" or "lpi"
-        concepts: Optional[List[str]] = None
+        concepts: Optional[List[str]] = None,
+        controls: Optional[TAPControlInputs] = None
     ) -> CLGOutput:
         """
         Process baseline text through CLG.
@@ -385,26 +388,59 @@ class CLGEngine:
             scalars: TAP 3.0 scalars (age, EL, LC, CD, IA, CLS)
             content_type: "ppi" or "lpi"
             concepts: List of concept keys for glossary lookup
+            controls: Optional 8 control scalars from PPI trait vector
         
         Returns:
             CLGOutput with baseline preserved and additions listed
         """
+        # Use neutral controls if none provided
+        if controls is None:
+            controls = TAPControlInputs.neutral()
+        
+        controls_applied = controls is not None
+        
         # Gate 0: Capture baseline hash
         baseline_hash = hash_baseline(baseline_text)
         
         additions: List[CLGAddition] = []
         
-        # Gate 4: Framing (based on IA) - added BEFORE baseline
-        if scalars.ia < 0.30:
-            framing = FRAMING_TEMPLATES["low_ia"]
+        # =====================================================================
+        # CONTROL-DRIVEN MODULE SELECTION
+        # Controls modify the thresholds for adding scaffolding
+        # =====================================================================
+        
+        # Compute effective thresholds based on controls
+        # Higher support_need → lower threshold → more likely to add scaffolding
+        definition_threshold = 0.5 - (controls.support_need * 0.3)  # 0.2-0.5
+        example_threshold = 0.5 - (controls.support_need * 0.2)     # 0.3-0.5
+        analogy_threshold = 0.25 - (controls.support_need * 0.1)   # 0.15-0.25
+        
+        # Higher stretch_appetite → more likely to add stretch content
+        stretch_threshold = 0.5 - (controls.stretch_appetite * 0.3)  # 0.2-0.5
+        
+        # =====================================================================
+        # Gate 4: Framing (based on IA + tone_warmth + guardrail_need)
+        # =====================================================================
+        framing_ia_threshold = 0.30 + (controls.tone_warmth * 0.1)  # Warm users get more framing
+        
+        if scalars.ia < framing_ia_threshold:
+            # Select framing based on tone_warmth and guardrail_need
+            if controls.guardrail_need > 0.6:
+                framing = "Before we begin, remember to think carefully: "
+            elif controls.tone_warmth > 0.6:
+                framing = "Let's explore something helpful together: "
+            else:
+                framing = FRAMING_TEMPLATES["low_ia"]
             additions.append(CLGAddition("framing", framing, "before"))
         elif scalars.ia < 0.60:
             framing = FRAMING_TEMPLATES["mid_ia"]
             additions.append(CLGAddition("framing", framing, "before"))
         # High IA: no framing (experts don't need it)
         
-        # Gate 1 & 2: Concept definitions (based on LC)
-        if concepts:
+        # =====================================================================
+        # Gate 1 & 2: Concept definitions (based on LC + support_need)
+        # =====================================================================
+        if concepts and controls.support_need > 0.4:  # Control-driven
             for concept in concepts:
                 definition = get_definition(concept, scalars.lc)
                 if definition:
