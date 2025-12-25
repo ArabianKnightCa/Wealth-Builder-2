@@ -1068,7 +1068,9 @@ async def reset_password(request: ResetPasswordRequest):
 async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_user)):
     """
     AE_FN_GENERATE_PLAN - Trigger: PPI_EVT_SUBMITTED
-    Process PPI answers and generate Financial DNA + personalized LPI plan
+    Process PPI answers and generate:
+    1. 24-Trait Vector (Option A: Trait Tags + Shared Weight Templates)
+    2. Financial DNA + personalized LPI plan
     """
     # Save PPI answers
     await db.ppi_answers.delete_many({"user_id": user_id})
@@ -1092,7 +1094,22 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
     goals = user.get('financial_goals', [])
     
-    # Call AE V2 generate_plan
+    # =========================================================================
+    # STEP 1: Compute 24-Trait Vector (Option A - Trait Tags)
+    # =========================================================================
+    # Convert answers to trait vector format
+    trait_vector_answers = [
+        {"question_id": ans['question_id'], "selected_option": ans['selected_option']}
+        for ans in ppi_data.answers
+    ]
+    
+    # Compute the 24-trait vector (deterministic, bucket-free)
+    trait_vector_result = compute_trait_vector(trait_vector_answers, total_questions=20)
+    trait_vector_packet = trait_vector_to_dict(trait_vector_result)
+    
+    # =========================================================================
+    # STEP 2: Generate Financial DNA + LPI Plan (Legacy AE V2)
+    # =========================================================================
     ae_v2 = get_adaptive_engine_v2()
     
     # Convert answers to AE V2 format
@@ -1113,19 +1130,21 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     # Extract chapter order from plan
     chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
     
-    # Create learning_map for backward compatibility with old format
+    # Create learning_map with both legacy DNA and new 24-trait vector
     learning_map = {
         "user_profile": plan['dna']['profile'],
         "learning_style": plan['dna']['profile'],
         "lesson_order": chapter_order,
-        "difficulty_weights": {},  # Can be populated if needed
+        "difficulty_weights": {},
         "pacing": plan['dna']['weights']['tempo'],
         "reinforcement_rate": 0.6,
         "financial_dna": plan['dna'],
         "lpi_plan": plan['lpi_plan'],
-        "combined_score": combined_score,  # AE-CORE v2.0 formula
+        "combined_score": combined_score,
         "generated_at": plan['generated_at'],
-        "ae_version": "v2.0"
+        "ae_version": "v2.0",
+        # NEW: 24-Trait Vector (TAP 3.0 input)
+        "trait_vector": trait_vector_packet
     }
     
     # Generate UID at onboarding completion (before Chapter 1 access)
