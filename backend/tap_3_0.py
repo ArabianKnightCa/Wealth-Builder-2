@@ -553,11 +553,18 @@ class CLGEngine:
                     break  # Only one analogy
         
         # =====================================================================
-        # Gate 6: Stretch (based on EL + stretch_appetite)
+        # Gate 6: Stretch (based on EL + stretch_appetite + age)
+        # DO NOT add stretch for very young users (CLS=1) or low LC users
         # =====================================================================
         if scalars.el < scalars.el_max and content_type == "lpi":
-            # Only add stretch if user has appetite for it
-            if controls.stretch_appetite > 0.4 and scalars.el in STRETCH_TEMPLATES:
+            # Only add stretch if:
+            # 1. User has appetite for it
+            # 2. User is mature enough (CLS > 1, meaning age >= 10)
+            # 3. User has sufficient LC to understand advanced concepts
+            if (controls.stretch_appetite > 0.4 and 
+                scalars.cls > 1 and 
+                scalars.lc > 0.15 and
+                scalars.el in STRETCH_TEMPLATES):
                 additions.append(CLGAddition(
                     "stretch",
                     STRETCH_TEMPLATES[scalars.el],
