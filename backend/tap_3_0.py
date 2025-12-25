@@ -18,11 +18,21 @@ GATES (in order):
 5. Cognitive Load Span (CLS) — limits additions for young users
 6. Stretch (optional, EL+1 only, never demote)
 
-Version: 3.0.0
+CONTROL SCALARS (from PPI 24-trait vector):
+- support_need: drives definitions, examples, analogies
+- guardrail_need: drives cautionary framing
+- structure_preference: drives organized content
+- exploration_bias: drives discovery prompts
+- social_frame_bias: drives relational framing
+- tone_warmth: drives encouraging tone
+- pacing_density: drives content density
+- stretch_appetite: drives advanced content preview
+
+Version: 3.1.0 (with control scalar integration)
 """
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Any
 from enum import Enum
 
