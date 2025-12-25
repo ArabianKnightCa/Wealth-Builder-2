@@ -508,28 +508,33 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
                 concepts = extract_concepts_from_text(lesson_text)
                 takeaway_concepts = extract_concepts_from_text(takeaway_text)
                 
-                # Process through TAP 3.0 CLG (baseline immutable, scaffolding only)
+                # Process through TAP 3.0 CLG with control scalars
+                # (baseline immutable, scaffolding only, control-driven module selection)
                 text_output = tap3_clg.process(
                     baseline_text=lesson_text,
                     scalars=scalars,
                     content_type="lpi",
-                    concepts=concepts
+                    concepts=concepts,
+                    controls=tap_controls  # Pass control scalars from PPI
                 )
                 
                 takeaway_output = tap3_clg.process(
                     baseline_text=takeaway_text,
                     scalars=scalars,
                     content_type="lpi",
-                    concepts=takeaway_concepts
+                    concepts=takeaway_concepts,
+                    controls=tap_controls  # Pass control scalars from PPI
                 ) if takeaway_text else None
                 
                 transformed_lessons.append({
                     **lesson,
                     'text': text_output.final_output,
                     'takeaway': takeaway_output.final_output if takeaway_output else '',
-                    'tap_version': '3.0',
+                    'tap_version': '3.1',
                     'baseline_preserved': not text_output.baseline_mutated,
-                    'scaffolding_count': len(text_output.additions)
+                    'scaffolding_count': len(text_output.additions),
+                    'controls_applied': text_output.controls_applied,
+                    'controls_source': controls_source
                 })
             
             personalized_chapters.append({
