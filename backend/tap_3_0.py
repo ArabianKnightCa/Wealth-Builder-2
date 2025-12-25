@@ -447,8 +447,11 @@ class CLGEngine:
                     def_text = f"({concept}: {definition})"
                     additions.append(CLGAddition("definition", def_text, "after"))
         
-        # Gate 2 continued: Example (if LC < 0.5)
-        if scalars.lc < 0.50 and concepts:
+        # =====================================================================
+        # Gate 2 continued: Example (based on LC + support_need)
+        # =====================================================================
+        example_lc_threshold = example_threshold if controls.support_need > 0.3 else 0.50
+        if scalars.lc < example_lc_threshold and concepts:
             for concept in concepts:
                 if concept in EXAMPLE_TEMPLATES:
                     additions.append(CLGAddition(
@@ -458,8 +461,11 @@ class CLGEngine:
                     ))
                     break  # Only one example to respect CLS
         
-        # Gate 2 continued: Analogy (if LC < 0.25, for young users)
-        if scalars.lc < 0.25 and concepts:
+        # =====================================================================
+        # Gate 2 continued: Analogy (for young users or high support_need)
+        # =====================================================================
+        analogy_lc_threshold = analogy_threshold if controls.support_need > 0.5 else 0.25
+        if scalars.lc < analogy_lc_threshold and concepts:
             for concept in concepts:
                 if concept in ANALOGY_TEMPLATES:
                     additions.append(CLGAddition(
@@ -469,22 +475,32 @@ class CLGEngine:
                     ))
                     break  # Only one analogy
         
-        # Gate 6: Stretch (if EL < EL_MAX, add preview of next level)
+        # =====================================================================
+        # Gate 6: Stretch (based on EL + stretch_appetite)
+        # =====================================================================
         if scalars.el < scalars.el_max and content_type == "lpi":
-            if scalars.el in STRETCH_TEMPLATES:
+            # Only add stretch if user has appetite for it
+            if controls.stretch_appetite > 0.4 and scalars.el in STRETCH_TEMPLATES:
                 additions.append(CLGAddition(
                     "stretch",
                     STRETCH_TEMPLATES[scalars.el],
                     "after"
                 ))
         
+        # =====================================================================
         # Gate 5: Apply CLS (Cognitive Load Span)
-        cls_exceeded = len(additions) > scalars.cls
+        # Higher pacing_density allows more additions
+        # =====================================================================
+        effective_cls = scalars.cls
+        if controls.pacing_density > 0.6:
+            effective_cls = min(5, scalars.cls + 1)  # Allow one more addition
+        
+        cls_exceeded = len(additions) > effective_cls
         if cls_exceeded:
             # Prioritize: framing > definition > example > analogy > stretch
             priority = {"framing": 0, "definition": 1, "example": 2, "analogy": 3, "stretch": 4}
             additions.sort(key=lambda a: priority.get(a.type, 99))
-            additions = additions[:scalars.cls]
+            additions = additions[:effective_cls]
         
         # Assemble final output
         before_parts = [a.text for a in additions if a.position == "before"]
@@ -507,7 +523,8 @@ class CLGEngine:
             additions=additions,
             final_output=final_output.strip(),
             baseline_mutated=baseline_mutated,
-            cls_exceeded=cls_exceeded
+            cls_exceeded=cls_exceeded,
+            controls_applied=controls_applied
         )
 
 
