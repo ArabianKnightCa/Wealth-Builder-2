@@ -735,7 +735,6 @@ class TAP32Engine_v321:
 
             # Add extra scaffolds
             if scaffolds_used < total_budget:
-                remaining_for_sentence = min(per_sentence_budget, total_budget - scaffolds_used)
                 # Pick scaffolds deterministically (definition/example/analogy)
                 lines = pick_sentence_scaffolds(hits, lc, intensity, controls)
 
