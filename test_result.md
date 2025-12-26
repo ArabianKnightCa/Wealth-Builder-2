@@ -186,21 +186,19 @@ backend:
 - **CRITICAL GRAMMAR BUG**: Template assembly creates redundant phrases breaking grammar safety
 - **ROOT CAUSE**: T_ANALOGY template likely has format issue causing "like: like" redundancy
 
-### Metadata
-created_by: "testing_agent"
-version: "1.1"
-test_sequence: 1
-run_ui: false
+metadata:
+  created_by: "testing_agent"
+  version: "1.2"
+  test_sequence: 2
+  run_ui: false
 
-### Test Plan
-current_focus:
-  - "CLG Grammar Safety"
-  - "CLG Template Assembly"
-stuck_tasks:
-  - "CLG Grammar Safety"
-test_all: false
-test_priority: "high_first"
+test_plan:
+  current_focus:
+    - "TAP 3.2 Implementation Complete"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
 
-### Agent Communication
-- agent: "testing"
-- message: "CLG API endpoints are functional but have critical grammar safety issues. The T_ANALOGY template is producing redundant 'like: like' phrases which violates CLG's core grammar-safe principle. This needs immediate fix in the template assembly logic. All other functionality (depth scaling, user adaptation, endpoint structure) is working correctly."
+agent_communication:
+  - agent: "testing"
+  - message: "TAP 3.2 implementation testing COMPLETE. All core functionality verified: (1) Unit tests pass with baseline mutation checks, (2) LPI API returns tap_version=3.2 with correct scaffolding behavior for different user profiles, (3) Baseline preservation maintained (baseline_preserved=True), (4) Sentence-level scaffolding working (decode lines for 6yo, none for 35yo expert), (5) PPI option adaptation functioning (simplified options for young users). TAP 3.2 is ready for production use."
