@@ -465,6 +465,17 @@ def make_decode_line(sentence: str, hits: List[GlossaryEntry], lc: float) -> Opt
         if len(used) >= max_terms:
             break
         key = entry.key
+        
+        # Skip if this key overlaps with an already-used key
+        # (e.g., skip "barter" if we already used "bartered")
+        skip = False
+        for used_key in used:
+            if key.lower() in used_key.lower() or used_key.lower() in key.lower():
+                skip = True
+                break
+        if skip:
+            continue
+            
         if key.lower() in decoded.lower():
             # choose definition style based on lc
             definition = entry.simple if lc < 0.30 else entry.standard
