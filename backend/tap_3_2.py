@@ -422,10 +422,10 @@ def generate_preamble(baseline_text: str, lc: float, age: int, baseline_complexi
     intro_emoji = "🌟" if warmth >= 0.55 else "📌"
     if guard > 0.70 and strength > 0.45:
         opener = f"{intro_emoji} Quick heads-up before we start:\n"
-        line2 = f"This topic can be tricky, so we'll take it step by step.\n\n"
+        line2 = "This topic can be tricky, so we'll take it step by step.\n\n"
     else:
         opener = f"{intro_emoji} Let's learn about {topic.lower()}!\n"
-        line2 = f"We'll keep it clear and use examples.\n\n"
+        line2 = "We'll keep it clear and use examples.\n\n"
 
     # Add a micro-bridge line tuned by LC (continuous via wording length)
     bridge = ""
