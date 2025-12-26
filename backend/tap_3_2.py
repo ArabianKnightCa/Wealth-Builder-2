@@ -740,9 +740,13 @@ class TAP32Engine_v321:
 
         final_output = "\n\n".join([ln.strip() for ln in final_lines if ln.strip()]).strip()
 
-        # Baseline mutation check: baseline must still appear verbatim somewhere in output.
-        # We also check we didn't accidentally replace baseline (we didn't touch it).
-        baseline_mutated = baseline_text not in final_output
+        # Baseline mutation check: verify all baseline sentences appear verbatim in output.
+        # Since we process sentence-by-sentence, we check each sentence is preserved.
+        baseline_mutated = False
+        for sent in sentences:
+            if sent not in final_output:
+                baseline_mutated = True
+                break
 
         return CLGOutput(
             baseline_text=baseline_text,
