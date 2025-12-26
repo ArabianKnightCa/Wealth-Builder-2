@@ -203,7 +203,7 @@ GLOSSARY: List[GlossaryEntry] = [
         simple="when everyone agrees money can be used",
         standard="a common understanding that money has value",
         example="Everyone agrees dollars can buy things in stores.",
-        analogy="Like agreeing that a gold star means "good job.""
+        analogy="Like agreeing that a gold star means 'good job'."
     ),
     GlossaryEntry(
         key="timing problem",
