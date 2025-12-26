@@ -135,9 +135,21 @@ def compute_scalars(age: int, el: int, el_max: int = EL_MAX_POC) -> TAP3Scalars:
     cd = clamp(0.85 * el_norm + 0.15 * age_norm)
     ia = clamp(0.50 * age_norm + 0.50 * el_norm)
     
-    # Cognitive Load Span: younger users get fewer additions
-    # Age 6-9: 1, Age 10-19: 1-2, Age 20-29: 2, Age 30+: 3-5
-    cls = max(1, min(5, age // 10))
+    # Cognitive Load Span: controls how many scaffolding additions are allowed
+    # Young users need MORE scaffolding (definitions, examples) to understand
+    # But we limit advanced content (stretch) for them
+    # Age 6-9: 2 additions (framing + definition)
+    # Age 10-14: 3 additions 
+    # Age 15-24: 3 additions
+    # Age 25+: 4-5 additions (can handle more density)
+    if age < 10:
+        cls = 2  # Young users: framing + 1 definition
+    elif age < 15:
+        cls = 3  # Tweens: framing + definition + example
+    elif age < 25:
+        cls = 3  # Teens/young adults
+    else:
+        cls = min(5, max(3, age // 10))  # Adults: 3-5
     
     stretch_el = min(el + 1, el_max)
     stretch_norm = (stretch_el - 1) / (el_max - 1) if el_max > 1 else 1.0
