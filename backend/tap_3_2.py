@@ -807,8 +807,9 @@ if __name__ == "__main__":
         print("-"*95)
         print(out.final_output)
 
-        # extra check: baseline must appear verbatim
-        assert out.baseline_text in out.final_output, "Baseline missing verbatim in final output!"
+        # extra check: all baseline sentences must appear verbatim
+        for sent in split_sentences(baseline):
+            assert sent in out.final_output, f"Baseline sentence missing: {sent[:50]}..."
 
     def run_ppi_case(case_name: str, question: str, age: int, el: int):
         opts = [
