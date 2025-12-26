@@ -579,15 +579,15 @@ class CLGEngine:
         
         # =====================================================================
         # Gate 6: Stretch (based on EL + stretch_appetite + age)
-        # DO NOT add stretch for very young users (CLS=1) or low LC users
+        # DO NOT add stretch for very young users or low LC users
         # =====================================================================
         if scalars.el < scalars.el_max and content_type == "lpi":
             # Only add stretch if:
             # 1. User has appetite for it
-            # 2. User is mature enough (CLS > 1, meaning age >= 10)
+            # 2. User is mature enough (age >= 10)
             # 3. User has sufficient LC to understand advanced concepts
             if (controls.stretch_appetite > 0.4 and 
-                scalars.cls > 1 and 
+                scalars.age >= 10 and 
                 scalars.lc > 0.15 and
                 scalars.el in STRETCH_TEMPLATES):
                 additions.append(CLGAddition(
@@ -599,6 +599,7 @@ class CLGEngine:
         # =====================================================================
         # Gate 5: Apply CLS (Cognitive Load Span)
         # Higher pacing_density allows more additions
+        # For young users, prioritize definitions over framing
         # =====================================================================
         effective_cls = scalars.cls
         if controls.pacing_density > 0.6:
@@ -606,8 +607,13 @@ class CLGEngine:
         
         cls_exceeded = len(additions) > effective_cls
         if cls_exceeded:
-            # Prioritize: framing > definition > example > analogy > stretch
-            priority = {"framing": 0, "definition": 1, "example": 2, "analogy": 3, "stretch": 4}
+            # Priority depends on age:
+            # Young users (< 12): definitions are more important than framing
+            # Older users: framing helps set context
+            if scalars.age < 12:
+                priority = {"definition": 0, "framing": 1, "example": 2, "analogy": 3, "stretch": 4}
+            else:
+                priority = {"framing": 0, "definition": 1, "example": 2, "analogy": 3, "stretch": 4}
             additions.sort(key=lambda a: priority.get(a.type, 99))
             additions = additions[:effective_cls]
         
