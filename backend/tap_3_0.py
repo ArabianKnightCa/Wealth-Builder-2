@@ -412,6 +412,12 @@ ANALOGY_TEMPLATES = {
     "budget": "It's like dividing your allowance into jars for different things.",
     "savings": "It's like a squirrel storing nuts for winter.",
     "investment": "It's like planting a seed and waiting for it to grow.",
+    "money": "It's like trading cards that everyone agrees are valuable.",
+    "barter": "It's like swapping your sandwich for your friend's chips at lunch.",
+    "trade": "It's like when you give your brother a cookie to get his toy for a while.",
+    "value": "It's like how your favorite toy means more to you than other toys.",
+    "bank": "It's like a really strong piggy bank that keeps your money extra safe.",
+    "spending": "It's like using up your coins to get something you want.",
 }
 
 # Stretch templates (EL+1 concept preview)
