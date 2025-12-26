@@ -3,14 +3,17 @@ Feature Flags Configuration
 ============================
 Control feature rollout and A/B testing.
 
-Version: 1.2 (TAP 3.0)
+Version: 1.3 (TAP 3.2)
 """
 
 import os
 
 
 # TAP Version Control
-# TAP 3.0 is the NEW clean-room implementation (default: enabled)
+# TAP 3.2 is the NEW sentence-level scaffolding implementation (default: enabled)
+USE_TAP_V3_2 = os.environ.get('USE_TAP_V3_2', 'true').lower() == 'true'
+
+# TAP 3.0 is the previous clean-room implementation (used as fallback if TAP 3.2 is disabled)
 USE_TAP_V3_0 = os.environ.get('USE_TAP_V3_0', 'true').lower() == 'true'
 
 # Legacy TAP v2.3 (used as fallback if TAP 3.0 is disabled)
@@ -26,6 +29,23 @@ LLM_REWRITE_ONLY_ON_RISK = os.environ.get('LLM_REWRITE_ONLY_ON_RISK', 'true').lo
 
 # CLG (Controlled Language Generator) - Grammar-safe realization layer
 USE_CLG_ENGINE = os.environ.get('USE_CLG_ENGINE', 'true').lower() == 'true'
+
+
+def is_tap_v3_2_enabled() -> bool:
+    """
+    Check if TAP 3.2 is enabled.
+    
+    TAP 3.2 is the sentence-level scaffolding implementation that:
+    - Sentence-by-sentence scaffolding interleaved AFTER each baseline sentence
+    - "Decode" lines provide inline definitions without mutating baseline
+    - Preamble generation for low-LC users
+    - Adaptive CLS scales scaffolding capacity
+    - PPI option adaptation + option glosses
+    
+    Returns:
+        bool: True if TAP 3.2 should be used
+    """
+    return USE_TAP_V3_2
 
 
 def is_tap_v2_3_enabled() -> bool:
