@@ -68,6 +68,67 @@
 - ✅ Adaptive CLS: Scaffolding capacity scales appropriately (6yo: 9 scaffolds, 35yo: 6 scaffolds)
 - ✅ PPI adaptation: Young users get simplified options ("Look up information first" vs "Research extensively")
 - ✅ TAP version: All API responses return tap_version="3.2"
+
+backend:
+  - task: "TAP 3.2 Unit Tests"
+    implemented: true
+    working: true
+    file: "tap_3_2.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+      - agent: "testing"
+      - comment: "✅ TAP 3.2 unit tests pass completely. All assertions validated, baseline mutation checks working, sentence-level scaffolding functioning correctly. Test harness covers 6yo-45yo age range with EL 1-5, validates preamble generation, decode lines, and PPI adaptation."
+
+  - task: "TAP 3.2 LPI API (6yo user)"
+    implemented: true
+    working: true
+    file: "/api/content/lpi"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+      - agent: "testing"
+      - comment: "✅ 6yo user (kid_test_6yo@example.com) gets correct TAP 3.2 behavior: tap_version=3.2, heavy scaffolding (9 additions), decode lines present (🔎 Decode:), preamble with 'First, here's the simple idea', baseline_preserved=True. LC=0.052 triggers appropriate low-complexity adaptations."
+
+  - task: "TAP 3.2 LPI API (35yo expert)"
+    implemented: true
+    working: true
+    file: "/api/content/lpi"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+      - agent: "testing"
+      - comment: "✅ 35yo expert (adult_expert_35@example.com) gets correct TAP 3.2 behavior: tap_version=3.2, minimal scaffolding (6 additions), no decode lines, no preamble, baseline_preserved=True. LC=0.715 correctly triggers high-complexity mode with reduced scaffolding."
+
+  - task: "TAP 3.2 Baseline Preservation"
+    implemented: true
+    working: true
+    file: "tap_3_2.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: true
+      - agent: "testing"
+      - comment: "✅ Baseline immutability verified. All baseline sentences appear verbatim in final output. baseline_preserved=True for all test cases. Sentence-level scaffolding adds content AFTER each sentence without modifying original text. Core TAP 3.2 principle maintained."
+
+  - task: "TAP 3.2 PPI Option Adaptation"
+    implemented: true
+    working: true
+    file: "tap_3_2.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+      - agent: "testing"
+      - comment: "✅ PPI option adaptation working correctly. 6yo gets simplified options ('Look up information first' vs 'Research extensively') with glosses ('You like to learn first, then choose'). 35yo expert gets original text without glosses. Age-appropriate language scaling verified."
     - agent: "testing"
     - comment: "CRITICAL: CLG test endpoint returns data but all 9 test cases fail grammar validation. Issue: redundant 'like: like' phrases in analogy templates causing grammatical errors. Endpoint structure is correct, CLG engine is enabled, but template assembly has grammar bugs."
 
