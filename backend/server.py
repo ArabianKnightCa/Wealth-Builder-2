@@ -677,11 +677,12 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
                 'lessons': transformed_lessons
             })
     
-    # Build response with control info for TAP 3.0
+    # Build response with control info for TAP 3.x
+    tap_version = "3.2" if use_tap32 else ("3.1" if use_tap3 else ("2.3" if is_tap_v2_3_enabled() else "2.0"))
     response = {
         "chapters": personalized_chapters,
         "personalization_applied": True,
-        "tap_version": "3.1" if use_tap3 else ("2.3" if is_tap_v2_3_enabled() else "2.0"),
+        "tap_version": tap_version,
         "user_profile": {
             "age": user_age,
             "experience_level": exp_level,
@@ -691,11 +692,11 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
         }
     }
     
-    # Include control scalars in response if TAP 3.0 is used
-    if use_tap3 and tap_controls_dict:
+    # Include control scalars in response if TAP 3.x is used
+    if (use_tap32 or use_tap3) and tap_controls_dict:
         response["tap_controls"] = tap_controls_dict
         response["controls_source"] = "ppi"
-    elif use_tap3:
+    elif use_tap32 or use_tap3:
         response["controls_source"] = "neutral"
     
     return response
