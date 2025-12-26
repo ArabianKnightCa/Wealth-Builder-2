@@ -51,6 +51,23 @@
 ### API Integration Test Status
 - GET /api/content/lpi (6yo user): PASS - tap_version=3.2, scaffolding_count=9
 - GET /api/content/lpi (35yo expert): PASS - tap_version=3.2, scaffolding_count=6
+
+### TAP 3.2 Comprehensive Testing (2025-12-26 23:49)
+- TAP 3.2 Unit Tests: PASS - All assertions validated, baseline mutation checks working
+- LPI API (6yo user): PASS - Heavy scaffolding (9), decode lines present, preamble with "First, here's the simple idea"
+- LPI API (35yo expert): PASS - Minimal scaffolding (6), no decode lines, baseline preserved
+- Baseline Preservation: PASS - All baseline text appears verbatim (baseline_preserved=True)
+- Scaffolding Behavior: PASS - Adaptive scaffolding correctly scales with age/EL
+- PPI Option Adaptation: PASS - 6yo gets simplified options with glosses, 35yo expert gets original text
+
+### Key Behaviors Verified
+- ✅ Baseline immutability: All baseline sentences appear verbatim in output
+- ✅ Sentence-level scaffolding: Definitions interleaved AFTER each sentence, not appended
+- ✅ Decode lines: Present for 6yo (LC=0.052), absent for 35yo expert (LC=0.715)
+- ✅ Preamble generation: 6yo gets "First, here's the simple idea...", 35yo expert gets none
+- ✅ Adaptive CLS: Scaffolding capacity scales appropriately (6yo: 9 scaffolds, 35yo: 6 scaffolds)
+- ✅ PPI adaptation: Young users get simplified options ("Look up information first" vs "Research extensively")
+- ✅ TAP version: All API responses return tap_version="3.2"
     - agent: "testing"
     - comment: "CRITICAL: CLG test endpoint returns data but all 9 test cases fail grammar validation. Issue: redundant 'like: like' phrases in analogy templates causing grammatical errors. Endpoint structure is correct, CLG engine is enabled, but template assembly has grammar bugs."
 
