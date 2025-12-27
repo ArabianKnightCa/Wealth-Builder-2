@@ -496,11 +496,95 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     exp_level = exp_level_map.get(financial_exp, 1)
     user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
     
-    # Check TAP version to use (3.2 > 3.0 > 2.3)
-    use_tap32 = is_tap_v3_2_enabled()
-    use_tap3 = is_tap_v3_0_enabled() and not use_tap32
+    # Check TAP version to use (3.2.4 > 3.2 > 3.0 > 2.3)
+    use_tap324 = is_tap_v3_2_4_enabled()
+    use_tap32 = is_tap_v3_2_enabled() and not use_tap324
+    use_tap3 = is_tap_v3_0_enabled() and not use_tap32 and not use_tap324
     
-    if use_tap32:
+    if use_tap324:
+        # TAP 3.2.4: Child-friendly version with continuous blending
+        # - Shows CHILD-FRIENDLY VERSION first for low-LC users (6yo)
+        # - Continuous blend weights (child/bridge/expert) - NO BUCKETS
+        # - PPI options adapted for children
+        # - Baseline always preserved and shown
+        tap324_engine = TAP32Engine_v324(el_max_poc=EL_MAX_POC)
+        
+        # Create TAP324ControlInputs from stored controls (or use neutral if not available)
+        if tap_controls_dict:
+            tap_controls = TAP324ControlInputs(
+                support_need=tap_controls_dict.get('support_need', 0.5),
+                guardrail_need=tap_controls_dict.get('guardrail_need', 0.5),
+                structure_preference=tap_controls_dict.get('structure_preference', 0.5),
+                exploration_bias=tap_controls_dict.get('exploration_bias', 0.5),
+                social_frame_bias=tap_controls_dict.get('social_frame_bias', 0.5),
+                tone_warmth=tap_controls_dict.get('tone_warmth', 0.5),
+                pacing_density=tap_controls_dict.get('pacing_density', 0.5),
+                stretch_appetite=tap_controls_dict.get('stretch_appetite', 0.5)
+            )
+            controls_source = "ppi"
+        else:
+            tap_controls = TAP324ControlInputs.neutral()
+            controls_source = "neutral"
+        
+        personalized_chapters = []
+        for chapter in LPI_CHAPTERS:
+            transformed_lessons = []
+            for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
+                lesson_text = lesson.get('text', '')
+                takeaway_text = lesson.get('takeaway', '')
+                lesson_title = lesson.get('title', chapter.get('title', 'Lesson'))
+                
+                # Create LessonSpec for TAP 3.2.4
+                lesson_spec = TAP324LessonSpec(
+                    topic=lesson_title,
+                    baseline_text=lesson_text,
+                    concepts=tap324_find_concepts(lesson_text),
+                    child_version="",  # Let engine generate
+                    teen_bridge=""     # Let engine generate
+                )
+                
+                # Process through TAP 3.2.4 engine
+                text_output = tap324_engine.process_lpi(
+                    spec=lesson_spec,
+                    age=user_age,
+                    el_declared=exp_level,
+                    controls=tap_controls
+                )
+                
+                # Process takeaway if present
+                takeaway_output = None
+                if takeaway_text:
+                    takeaway_spec = TAP324LessonSpec(
+                        topic="Key Takeaway",
+                        baseline_text=takeaway_text,
+                        concepts=tap324_find_concepts(takeaway_text)
+                    )
+                    takeaway_output = tap324_engine.process_lpi(
+                        spec=takeaway_spec,
+                        age=user_age,
+                        el_declared=exp_level,
+                        controls=tap_controls
+                    )
+                
+                transformed_lessons.append({
+                    **lesson,
+                    'text': text_output.final_output,
+                    'takeaway': takeaway_output.final_output if takeaway_output else '',
+                    'tap_version': '3.2.4',
+                    'baseline_preserved': not text_output.baseline_mutated,
+                    'scaffolding_count': len(text_output.additions),
+                    'baseline_complexity': text_output.scalars.baseline_complexity,
+                    'scaffold_intensity': text_output.scalars.scaffold_intensity,
+                    'cls': text_output.scalars.cls,
+                    'blend_weights': text_output.scalars.weights,
+                    'controls_source': controls_source
+                })
+            
+            personalized_chapters.append({
+                **chapter,
+                'lessons': transformed_lessons
+            })
+    elif use_tap32:
         # TAP 3.2: Sentence-level scaffolding engine
         # - Sentence-by-sentence scaffolding interleaved AFTER each baseline sentence
         # - "Decode" lines provide inline definitions without mutating baseline
