@@ -205,19 +205,49 @@ def find_concepts_in_text(text: str) -> List[str]:
     return found
 
 def generate_child_version_from_concepts(topic: str, concepts: List[str], lc: float) -> str:
-    # Deterministic: short, concrete, not "LLM rewrite"
-    c = concepts[:] if concepts else [topic.lower()]
-    key_terms = [t for t in c if t in GLOSSARY]
-    if not key_terms:
-        key_terms = ["money"] if "money" in topic.lower() else c[:1]
-
-    lines = [f"🌟 {topic} (simple version)"]
-    for t in key_terms[:2]:
-        d = definition_for(t, lc) or (GLOSSARY[t].simple if t in GLOSSARY else "")
-        if d:
-            lines.append(f"{t.title()} is {d}.")
-    lines.append("Example: At a store, you give money to get what you want.")
-    return "\n".join(lines)
+    """
+    Generate a child-friendly version based on topic.
+    Keep it SHORT - 2-3 sentences max for young readers.
+    """
+    topic_lower = topic.lower()
+    
+    # Topic-specific child-friendly explanations
+    if "money" in topic_lower and ("what" in topic_lower or "basic" in topic_lower):
+        return "💰 Money is what we use to buy things - like coins and dollar bills!\n\nWhen you want something at a store, you give money to pay for it."
+    
+    elif "saving" in topic_lower or "save" in topic_lower:
+        return "🐷 Saving means keeping some money for later instead of spending it all.\n\nIt's like putting coins in a piggy bank!"
+    
+    elif "budget" in topic_lower:
+        return "📝 A budget is a plan for your money.\n\nIt helps you decide how much to spend and how much to save."
+    
+    elif "spend" in topic_lower:
+        return "🛒 Spending is when you use your money to buy things.\n\nYou give money and get something in return!"
+    
+    elif "earn" in topic_lower or "income" in topic_lower:
+        return "💪 Earning money means getting paid for doing work.\n\nLike when you help with chores and get an allowance!"
+    
+    elif "bank" in topic_lower:
+        return "🏦 A bank is a safe place to keep your money.\n\nThey keep track of how much you have."
+    
+    elif "goal" in topic_lower:
+        return "🎯 A money goal is something you want to save up for.\n\nLike a toy or a game you really want!"
+    
+    elif "borrow" in topic_lower or "loan" in topic_lower or "debt" in topic_lower:
+        return "🤝 Borrowing means getting money now and paying it back later.\n\nYou have to give it back!"
+    
+    elif "invest" in topic_lower:
+        return "🌱 Investing is a way to try to grow your money over time.\n\nLike planting a seed and watching it grow!"
+    
+    else:
+        # Generic fallback
+        c = concepts[:2] if concepts else []
+        lines = [f"📚 Let's learn about {topic}!"]
+        for t in c:
+            if t in GLOSSARY:
+                d = GLOSSARY[t].simple
+                lines.append(f"{t.title()} means {d}.")
+        return "\n\n".join(lines) if lines else f"📚 This lesson is about {topic}."
 
 def generate_bridge_from_concepts(topic: str, concepts: List[str], lc: float) -> str:
     c = concepts[:] if concepts else [topic.lower()]
