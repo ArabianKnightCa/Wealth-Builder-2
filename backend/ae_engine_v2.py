@@ -171,13 +171,29 @@ class AdaptiveEngineV2:
                         "gloss": opt['gloss']
                     })
                 
+                # Get the child-friendly question text only (not the full prompt with baseline)
+                # Extract just the simple question if childiness is high, otherwise use baseline
+                weights = ppi_result['scalars'].get('weights', {})
+                childiness = weights.get('child', 0.0)
+                
+                if childiness >= 0.35:
+                    # Use the simple/child version of the question
+                    simple_q = self._get_child_question_text(item['prompt'])
+                else:
+                    # Use original baseline question
+                    simple_q = item['prompt']
+                
+                # Format options with letter prefix for frontend compatibility
+                # Frontend expects: ["A Look up lots of information", "B Pick what feels right", ...]
+                formatted_options = [f"{opt['id']} {opt['display']}" for opt in adapted_options]
+                
                 output_items.append({
                     "question_id": f"PPI_Q{idx:02d}",
                     "bank_id": item['id'],
                     "type": item['type'],
-                    "prompt": ppi_result['question'],
-                    "options": [opt['display'] for opt in adapted_options],  # Use display text for frontend
-                    "options_detail": adapted_options,  # Include full detail for reference
+                    "prompt": simple_q,  # Just the question text, not the full formatted prompt
+                    "options": formatted_options,  # Options with letter prefix for frontend
+                    "options_detail": adapted_options,  # Full detail for reference
                     "tap_version": "3.2.4",
                     "scalars": ppi_result['scalars']
                 })
