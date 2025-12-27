@@ -28,7 +28,7 @@ from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 from profile_models import Profile, ProfileCreate, ProfileUpdate, ActiveProfileResponse, AVATAR_OPTIONS
 
 # TAP v2.3 imports (these depend on .env being loaded first)
-from feature_flags import is_tap_v2_3_enabled, get_el_max, use_clg_engine, is_tap_v3_0_enabled, is_tap_v3_2_enabled
+from feature_flags import is_tap_v2_3_enabled, get_el_max, use_clg_engine, is_tap_v3_0_enabled, is_tap_v3_2_enabled, is_tap_v3_2_4_enabled
 from tap_v2_3_engine import get_tap_v23_engine
 from tap_v2_3_ae_integration import AEStatePacket
 from clg_engine import get_clg_engine, run_clg_step_test
