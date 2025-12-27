@@ -327,6 +327,53 @@ class AdaptiveEngineV2:
         
         # Default
         return "UNKNOWN"
+    
+    def _get_child_question_text(self, baseline_prompt: str) -> str:
+        """
+        Convert baseline PPI question to child-friendly version.
+        Returns a simple question appropriate for young users.
+        """
+        t = baseline_prompt.lower()
+        
+        # Map baseline questions to child-friendly versions
+        if "financial decisions" in t:
+            return "When you want to buy something, what do you do?"
+        elif "approach to saving" in t or "saving money" in t:
+            return "How do you save your money?"
+        elif "financial future" in t:
+            return "How do you feel about money?"
+        elif "track my spending" in t or "tracking" in t:
+            return "Do you keep track of your money?"
+        elif "financial priority" in t or "biggest" in t:
+            return "What's most important to you about money?"
+        elif "unexpected money" in t or "receive" in t:
+            return "If you got surprise money, what would you do?"
+        elif "learn best" in t:
+            return "How do you like to learn new things?"
+        elif "setting" in t and "goal" in t:
+            return "How do you like to plan for things you want?"
+        elif "spending habit" in t:
+            return "How do you spend your money?"
+        elif "financial setback" in t or "setback" in t:
+            return "What do you do when something goes wrong with money?"
+        elif "comfort" in t and "risk" in t:
+            return "How do you feel about trying new things with money?"
+        elif "financial challenge" in t or "challenge" in t:
+            return "What's hard about money for you?"
+        elif "credit card" in t:
+            return "Do you know about cards that let you buy now and pay later?"
+        elif "investment" in t or "invest" in t:
+            return "Have you heard of growing your money?"
+        elif "retirement" in t:
+            return "Do you think about saving for when you're really old?"
+        elif "insurance" in t:
+            return "Do you know about protecting your stuff?"
+        elif "debt" in t:
+            return "What do you know about owing money?"
+        else:
+            # If no match, return original with slight simplification
+            return baseline_prompt.replace("financial", "money").replace("decisions", "choices")
+    
     def calculate_combined_score(self, age: int, experience_level: int) -> float:
         """
         AE-CORE v2.0 Formula: Calculate combined personalization score
