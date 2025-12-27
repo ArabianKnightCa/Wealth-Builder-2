@@ -34,6 +34,22 @@ LLM_REWRITE_ONLY_ON_RISK = os.environ.get('LLM_REWRITE_ONLY_ON_RISK', 'true').lo
 USE_CLG_ENGINE = os.environ.get('USE_CLG_ENGINE', 'true').lower() == 'true'
 
 
+def is_tap_v3_2_4_enabled() -> bool:
+    """
+    Check if TAP 3.2.4 is enabled.
+    
+    TAP 3.2.4 is the child-friendly implementation that:
+    - Shows CHILD-FRIENDLY VERSION first for low-LC users
+    - Continuous blend weights (child/bridge/expert) - NO BUCKETS
+    - PPI options adapted for children
+    - Baseline always preserved and shown
+    
+    Returns:
+        bool: True if TAP 3.2.4 should be used
+    """
+    return USE_TAP_V3_2_4
+
+
 def is_tap_v3_2_enabled() -> bool:
     """
     Check if TAP 3.2 is enabled.
