@@ -321,7 +321,26 @@ class TAP32Engine_v324:
         additions: List[CLGAddition] = []
         parts: List[str] = []
 
-        # Primary (child/bridge) is optional but allowed; baseline always included verbatim.
+        # For VERY young users (child weight > 0.8), show ONLY simple version
+        # No baseline, no sentence help - keep it short and simple
+        if w["child"] > 0.80:
+            child = spec.child_version.strip() or generate_child_version_from_concepts(spec.topic or "Lesson", concepts, scalars.lc)
+            additions.append(CLGAddition("child_primary", child, "before"))
+            parts.append(child)
+            # No baseline, no help - just the simple version
+            final_output = "\n\n".join(parts).strip()
+            return CLGOutput(
+                baseline_text=baseline_text,
+                baseline_hash=baseline_hash,
+                scalars=scalars,
+                additions=additions,
+                final_output=final_output,
+                baseline_mutated=True,  # We're intentionally not showing baseline
+                cls_exceeded=False,
+                debug={"weights": scalars.weights, "mode": "child_only", "concepts": concepts[:4]}
+            )
+        
+        # For moderate child weight (0.35-0.80), show child version + optional baseline
         if include_section(w["child"]):
             child = spec.child_version.strip() or generate_child_version_from_concepts(spec.topic or "Lesson", concepts, scalars.lc)
             additions.append(CLGAddition("child_primary", child, "before"))
@@ -332,38 +351,21 @@ class TAP32Engine_v324:
             additions.append(CLGAddition("bridge_primary", bridge, "before"))
             parts.append(bridge)
 
-        label = "📖 Expert version (verbatim):" if (w["child"] > 0.5 and include_section(w["child"])) else "📖 Baseline (verbatim):"
-        parts.append(label)
-        parts.append(baseline_text)
-        additions.append(CLGAddition("baseline_block", baseline_text, "after"))
-
-        # Sentence-level help (interleaved conceptually; displayed as a help section, deterministic)
-        help_drive = clamp(
-            (1 - scalars.lc) * 0.55 +
-            scalars.baseline_complexity * 0.35 +
-            w["child"] * 0.25 +
-            w["bridge"] * 0.15 +
-            controls.support_need * 0.10
-        )
-        target_help = int(clamp(round(help_drive * scalars.cls), 0, scalars.cls))
-
-        if target_help > 0:
-            parts.append("🧩 Sentence help:")
+        # Only show baseline if NOT in high-child mode
+        if w["child"] <= 0.50:
+            label = "📖 Here's the full explanation:"
+            parts.append(label)
+            parts.append(baseline_text)
+            additions.append(CLGAddition("baseline_block", baseline_text, "after"))
+        elif w["child"] > 0.50 and w["child"] <= 0.80:
+            # For medium-child mode, show condensed baseline
+            label = "📖 Want to know more? Here's the grown-up version:"
+            parts.append(label)
+            # Only first 2 sentences for kids
             sentences = split_sentences(baseline_text)
-            for idx, s in enumerate(sentences[:target_help]):
-                decoded = inline_define_sentence(s, scalars.lc, max_inlines=2 if w["child"] > 0.5 else 1)
-                if decoded != s:
-                    line = f"• Decode {idx+1}: {decoded}"
-                else:
-                    hits = [c for c in concepts if c in s.lower()][:2]
-                    glosses = []
-                    for h in hits:
-                        d = definition_for(h, scalars.lc)
-                        if d:
-                            glosses.append(f"{h} = {d}")
-                    line = f"• Help {idx+1}: " + ("; ".join(glosses) if glosses else "This sentence is explaining a key idea.")
-                parts.append(line)
-                additions.append(CLGAddition("sentence_help", line, "after"))
+            short_baseline = " ".join(sentences[:2])
+            parts.append(short_baseline)
+            additions.append(CLGAddition("baseline_short", short_baseline, "after"))
 
         final_output = "\n\n".join(parts).strip()
         baseline_mutated = baseline_text not in final_output
@@ -376,7 +378,7 @@ class TAP32Engine_v324:
             final_output=final_output,
             baseline_mutated=baseline_mutated,
             cls_exceeded=False,
-            debug={"weights": scalars.weights, "help_drive": round(help_drive, 4), "target_help": target_help, "concepts": concepts[:8]}
+            debug={"weights": scalars.weights, "mode": "standard", "concepts": concepts[:8]}
         )
 
     def process_ppi(self, question_text: str, options: List[PPIOptionSpec], age: int, el_declared: int) -> Dict[str, Any]:
