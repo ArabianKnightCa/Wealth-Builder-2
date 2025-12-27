@@ -391,89 +391,128 @@ class TAP32Engine_v324:
         key = opt.option_key.upper() if opt.option_key else ""
         
         if childiness >= 0.35:
-            # Child-friendly adaptations based on text patterns or keys
+            # Child-friendly adaptations - more specific patterns first
+            
+            # Tracking spending frequency
+            if "daily" in t or "weekly" in t:
+                display = "Very often"
+                gloss = "You check your money a lot."
+            elif "monthly" in t and ("track" in t or key == "UNKNOWN"):
+                display = "Once a month"
+                gloss = "You check your money sometimes."
+            elif "rarely" in t or "never" in t:
+                display = "Not very often"
+                gloss = "You don't check your money much."
+            elif "worried about money" in t:
+                display = "Only when I'm worried"
+                gloss = "You check when something feels wrong."
+            
+            # Learning preferences
+            elif "reading and research" in t:
+                display = "Reading books or articles"
+                gloss = "You like to read to learn."
+            elif "hands-on" in t or "practice" in t:
+                display = "Trying things myself"
+                gloss = "You learn by doing."
+            elif "video" in t or "tutorial" in t:
+                display = "Watching videos"
+                gloss = "You like to watch and learn."
+            elif "discussion" in t or "conversation" in t:
+                display = "Talking with others"
+                gloss = "You like to learn by chatting."
+            
             # Research/information first
-            if "research" in t or "extensively" in t or key == "RESEARCH_FIRST":
+            elif "research" in t or "extensively" in t or key == "RESEARCH_FIRST":
                 display = "Look up lots of information first"
                 gloss = "You like to learn first, then choose."
+            
             # Gut feeling / intuition
             elif "gut" in t or ("feeling" in t and "anxious" not in t and "worried" not in t) or "instinct" in t or key == "GUT_FEELING":
                 display = "Pick what feels right"
                 gloss = "You choose fast based on feelings."
+            
             # Ask family/friends
             elif "friends" in t or "family" in t or "grown" in t or ("advice" in t and "expert" not in t) or key == "ASK_FAMILY":
                 display = "Ask a grown-up I trust"
                 gloss = "You like help from someone you know."
+            
             # Follow experts
             elif "expert" in t or "professional" in t or ("recommend" in t and "friend" not in t) or key == "FOLLOW_EXPERTS":
                 display = "Do what smart helpers say"
                 gloss = "You trust people who study this."
+            
             # Save - different variations
-            elif "fixed amount" in t or "regular" in t:
+            elif "fixed amount" in t or "same amount" in t:
                 display = "Save the same amount every time"
                 gloss = "You save a little bit often."
-            elif "left over" in t or "leftover" in t:
+            elif "left over" in t or "leftover" in t or "whatever is left" in t:
                 display = "Save what's extra"
                 gloss = "You save after getting what you need."
-            elif "emergency" in t or "just in case" in t:
+            elif "emergency" in t:
                 display = "Save for surprises"
-                gloss = "You keep money ready for surprises."
-            elif "goal" in t and "save" in t:
+                gloss = "You keep money ready for emergencies."
+            elif "specific goal" in t:
                 display = "Save for something special"
                 gloss = "You save up for things you want."
-            elif ("save" in t or "saving" in t or "put away" in t) and key == "SAVE_FIRST":
-                display = "Keep my money for later"
-                gloss = "You like to save for important things."
+            elif "struggle to save" in t:
+                display = "Saving is hard for me"
+                gloss = "It's tricky to save sometimes."
+            elif "save most" in t or "save all" in t:
+                display = "Save it all"
+                gloss = "You like to keep your money."
+            
             # Spend variations
-            elif "spend" in t or "buy" in t or key == "SPEND_NOW":
-                display = "Use my money now"
-                gloss = "You like to get things right away."
-            # Wait / patience
-            elif "wait" in t or "patient" in t or key == "WAIT_AND_SEE":
-                display = "Wait and think about it"
-                gloss = "You like to take your time."
-            # Plan / budget
-            elif "plan" in t or "budget" in t or key == "PLAN_AHEAD":
-                display = "Make a plan first"
-                gloss = "You like to know what you're doing."
+            elif "spend it on something" in t or "something i've wanted" in t:
+                display = "Buy something fun"
+                gloss = "You like to get things you want."
+            elif "split" in t and "saving" in t and "spending" in t:
+                display = "Save some, spend some"
+                gloss = "You do a little of both."
+            
             # Bills / debt
-            elif "bill" in t or "debt" in t:
-                display = "Pay what I owe first"
+            elif "pay bills" in t or "pay off debt" in t or "paying off debt" in t:
+                display = "Pay what I owe"
                 gloss = "You make sure to pay people back."
-            # Invest / stocks
-            elif "invest" in t or "stock" in t:
-                display = "Try to grow my money"
-                gloss = "You want your money to become more."
-            # Goals / targets
-            elif "goal" in t or "target" in t:
-                display = "Think about what I want"
-                gloss = "You have things you're saving for."
-            # Risk / safety
-            elif "risk" in t or "safe" in t or "careful" in t:
-                display = "Keep my money safe"
-                gloss = "You don't want to lose your money."
-            # Discuss / talk
-            elif "discuss" in t or "talk" in t:
-                display = "Talk about it with someone"
-                gloss = "You like to share ideas."
-            # Emotional states - simplify slightly
-            elif "excited" in t or "optimistic" in t:
+            
+            # Budget
+            elif "budget" in t or "learn to budget" in t:
+                display = "Learn to plan my money"
+                gloss = "You want to get better at planning."
+            
+            # Emotional states
+            elif "excited" in t and "optimistic" in t:
                 display = "Happy and hopeful"
                 gloss = "You feel good about money."
             elif "anxious" in t or "worried" in t:
                 display = "A little worried"
                 gloss = "Money can feel tricky sometimes."
-            elif "uncertain" in t or "unsure" in t:
+            elif "uncertain" in t and "hopeful" in t:
                 display = "Not sure, but hopeful"
                 gloss = "You're still figuring it out."
-            elif "confident" in t or "prepared" in t:
+            elif "confident" in t and "prepared" in t:
                 display = "Ready and sure"
                 gloss = "You feel you know what to do."
+            
+            # Credit card related
+            elif "pay in full" in t or "responsibly" in t:
+                display = "I'm careful with it"
+                gloss = "You use cards wisely."
+            elif "avoid" in t and "completely" in t:
+                display = "I don't use them"
+                gloss = "You prefer not to use cards."
+            elif "carry a balance" in t:
+                display = "Sometimes I owe money on it"
+                gloss = "You sometimes have money left to pay."
+            elif "struggle" in t and "credit" in t:
+                display = "It's hard to manage"
+                gloss = "Cards can be tricky."
+            
             else:
                 # For unknown patterns, simplify language if possible
                 display = self._simplify_option_text(baseline)
                 if display != baseline:
                     gloss = "Same idea, simpler words."
+                    
         elif bridginess >= 0.25:
             if not gloss:
                 gloss = "Same meaning, clearer wording."
