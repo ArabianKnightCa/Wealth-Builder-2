@@ -3,14 +3,17 @@ Feature Flags Configuration
 ============================
 Control feature rollout and A/B testing.
 
-Version: 1.3 (TAP 3.2)
+Version: 1.4 (TAP 3.2.4)
 """
 
 import os
 
 
 # TAP Version Control
-# TAP 3.2 is the NEW sentence-level scaffolding implementation (default: enabled)
+# TAP 3.2.4 is the NEW child-friendly version with continuous blending (default: enabled)
+USE_TAP_V3_2_4 = os.environ.get('USE_TAP_V3_2_4', 'true').lower() == 'true'
+
+# TAP 3.2 is the previous sentence-level scaffolding implementation
 USE_TAP_V3_2 = os.environ.get('USE_TAP_V3_2', 'true').lower() == 'true'
 
 # TAP 3.0 is the previous clean-room implementation (used as fallback if TAP 3.2 is disabled)
