@@ -479,6 +479,59 @@ class TAP32Engine_v324:
                 display = "Learn to plan my money"
                 gloss = "You want to get better at planning."
             
+            # Goal setting preferences
+            elif "detailed plan" in t or "specific timeline" in t:
+                display = "Make a careful plan"
+                gloss = "You like to know exactly what to do."
+            elif "general direction" in t or "without strict" in t:
+                display = "Have a basic idea"
+                gloss = "You like some freedom in your plan."
+            elif "short-term goal" in t or "achieve quickly" in t:
+                display = "Small goals I can do soon"
+                gloss = "You like quick wins."
+            elif "long-term" in t and ("vision" in t or "flexibility" in t):
+                display = "Big dreams with room to change"
+                gloss = "You think big but stay flexible."
+            
+            # Spending habits
+            elif "disciplined" in t:
+                display = "Very careful with money"
+                gloss = "You're good at controlling spending."
+            elif "controlled" in t and "splurge" in t:
+                display = "Mostly careful, sometimes not"
+                gloss = "You're usually careful but sometimes spend extra."
+            elif "impulsive" in t:
+                display = "Sometimes buy things suddenly"
+                gloss = "You sometimes buy without planning."
+            elif "reactive to emotions" in t or "emotional" in t:
+                display = "Feelings affect my spending"
+                gloss = "How you feel changes what you buy."
+            
+            # Handling setbacks
+            elif "quickly adjust" in t or "move forward" in t:
+                display = "Fix it and keep going"
+                gloss = "You bounce back fast."
+            elif "discouraged" in t and "recover" in t:
+                display = "Feel sad but get better"
+                gloss = "It's hard at first but you recover."
+            elif "need support" in t or "support from others" in t:
+                display = "Need help from others"
+                gloss = "You like help when things are hard."
+            elif "difficult to bounce back" in t or "very difficult" in t:
+                display = "It's really hard to recover"
+                gloss = "Setbacks are tough for you."
+            
+            # Risk comfort
+            elif "high" in t and "calculated risk" in t:
+                display = "I like trying new things"
+                gloss = "You're brave with money choices."
+            elif "moderate" in t and "some risk" in t:
+                display = "A little risk is okay"
+                gloss = "You're careful but not too scared."
+            elif ("low" in t or "prefer safety" in t) and ("stability" in t or "safe" in t):
+                display = "I like to keep my money safe"
+                gloss = "You don't like taking chances."
+            
             # Emotional states
             elif "excited" in t and "optimistic" in t:
                 display = "Happy and hopeful"
