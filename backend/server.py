@@ -50,6 +50,15 @@ from tap_3_2 import (
     PPIOptionSpec as TAP32PPIOptionSpec
 )
 
+# TAP 3.2.4 imports - child-friendly version with continuous blending
+from tap_3_2_4 import (
+    TAP32Engine_v324,
+    TAPControlInputs as TAP324ControlInputs,
+    PPIOptionSpec as TAP324PPIOptionSpec,
+    LessonSpec as TAP324LessonSpec,
+    find_concepts_in_text as tap324_find_concepts
+)
+
 # PPI Trait Vector System (Option A: Trait Tags + Shared Weight Templates)
 from ppi_trait_vector import (
     compute_trait_vector,
