@@ -119,8 +119,9 @@ class AdaptiveEngineV2:
         final_items = eligible_items[:20]  # Take up to 20
         
         # Check if TAP 3.0 is enabled
-        from feature_flags import is_tap_v3_0_enabled
-        use_tap3 = is_tap_v3_0_enabled()
+        from feature_flags import is_tap_v3_0_enabled, is_tap_v3_2_4_enabled
+        use_tap324 = is_tap_v3_2_4_enabled()
+        use_tap3 = is_tap_v3_0_enabled() and not use_tap324
         
         # Convert experience string to level (1-5 for POC)
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
@@ -128,7 +129,54 @@ class AdaptiveEngineV2:
         
         output_items = []
         
-        if use_tap3:
+        if use_tap324:
+            # TAP 3.2.4: Child-friendly PPI with option adaptation
+            from tap_3_2_4 import TAP32Engine_v324, PPIOptionSpec as TAP324PPIOptionSpec, TAPControlInputs as TAP324ControlInputs
+            
+            tap324_engine = TAP32Engine_v324(el_max_poc=5)
+            
+            for idx, item in enumerate(final_items, 1):
+                # Create PPIOptionSpec list from item options
+                option_specs = []
+                for opt_idx, opt_text in enumerate(item['options']):
+                    opt_id = chr(65 + opt_idx)  # A, B, C, D
+                    # Try to determine option key from text
+                    opt_key = self._infer_option_key(opt_text)
+                    option_specs.append(TAP324PPIOptionSpec(
+                        option_id=opt_id,
+                        option_text=opt_text,
+                        option_key=opt_key
+                    ))
+                
+                # Process through TAP 3.2.4 engine
+                ppi_result = tap324_engine.process_ppi(
+                    question_text=item['prompt'],
+                    options=option_specs,
+                    age=age,
+                    el_declared=exp_level
+                )
+                
+                # Extract adapted options
+                adapted_options = []
+                for opt in ppi_result['options']:
+                    adapted_options.append({
+                        "id": opt['id'],
+                        "display": opt['display'],
+                        "baseline": opt['baseline'],
+                        "gloss": opt['gloss']
+                    })
+                
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": item['type'],
+                    "prompt": ppi_result['question'],
+                    "options": [opt['display'] for opt in adapted_options],  # Use display text for frontend
+                    "options_detail": adapted_options,  # Include full detail for reference
+                    "tap_version": "3.2.4",
+                    "scalars": ppi_result['scalars']
+                })
+        elif use_tap3:
             # TAP 3.0: Immutable baseline + scaffolding injection
             from tap_3_0 import compute_scalars as tap3_compute_scalars, get_clg_engine as get_tap3_clg_engine, EL_MAX_POC, extract_concepts_from_text
             
