@@ -132,6 +132,7 @@ class AdaptiveEngineV2:
         if use_tap324:
             # TAP 3.2.4: Child-friendly PPI with option adaptation
             from tap_3_2_4 import TAP32Engine_v324, PPIOptionSpec as TAP324PPIOptionSpec, TAPControlInputs as TAP324ControlInputs
+            import re
             
             tap324_engine = TAP32Engine_v324(el_max_poc=5)
             
@@ -140,11 +141,15 @@ class AdaptiveEngineV2:
                 option_specs = []
                 for opt_idx, opt_text in enumerate(item['options']):
                     opt_id = chr(65 + opt_idx)  # A, B, C, D
+                    
+                    # Strip letter prefix if present (e.g., "A Research..." -> "Research...")
+                    clean_text = re.sub(r'^[A-D]\s+', '', opt_text.strip())
+                    
                     # Try to determine option key from text
-                    opt_key = self._infer_option_key(opt_text)
+                    opt_key = self._infer_option_key(clean_text)
                     option_specs.append(TAP324PPIOptionSpec(
                         option_id=opt_id,
-                        option_text=opt_text,
+                        option_text=clean_text,
                         option_key=opt_key
                     ))
                 
