@@ -931,10 +931,47 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
         exp_level = exp_level_map.get(financial_exp, 1)
         user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
         
-        # Check which TAP version to use
-        use_v23 = is_tap_v2_3_enabled()
+        # Check which TAP version to use (prioritize 3.2.4 for child-friendly content)
+        use_tap324 = is_tap_v3_2_4_enabled()
+        use_v23 = is_tap_v2_3_enabled() and not use_tap324
         
-        if use_v23:
+        if use_tap324:
+            # TAP 3.2.4: Child-friendly quiz adaptation
+            tap324_engine = TAP32Engine_v324(el_max_poc=EL_MAX_POC)
+            scalars = tap324_engine.compute_scalars(user_age, exp_level, "quiz", TAP324ControlInputs.neutral())
+            childiness = scalars.weights.get("child", 0.0)
+            
+            quiz_questions = []
+            for q in questions:
+                # Adapt question text
+                if childiness >= 0.35:
+                    # Simplify quiz question for children
+                    question_text = simplify_quiz_question(q['question_text'])
+                else:
+                    question_text = q['question_text']
+                
+                # Adapt options
+                adapted_options = []
+                for opt_idx, opt in enumerate(q['options']):
+                    opt_id = chr(65 + opt_idx)
+                    if childiness >= 0.35:
+                        # Simplify option for children
+                        clean_opt = opt.lstrip('ABCD').lstrip('. ').strip()
+                        adapted_opt = simplify_quiz_option(clean_opt)
+                        adapted_options.append(f"{opt_id} {adapted_opt}")
+                    else:
+                        # Keep original but ensure letter prefix
+                        clean_opt = opt.lstrip('ABCD').lstrip('. ').strip()
+                        adapted_options.append(f"{opt_id} {clean_opt}")
+                
+                quiz_questions.append({
+                    "id": q['id'],
+                    "question_text": question_text,
+                    "options": adapted_options,
+                    "order": q['order'],
+                    "tap_version": "3.2.4"
+                })
+        elif use_v23:
             # TAP v2.3: Formula-driven transformation
             tap_v23 = get_tap_v23_engine()
             el_max = get_el_max()
