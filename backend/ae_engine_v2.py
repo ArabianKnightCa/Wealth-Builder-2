@@ -264,6 +264,48 @@ class AdaptiveEngineV2:
         else:
             return f"{self.TEEN_AGE_MAX + 1}-99"
     
+    
+    def _infer_option_key(self, option_text: str) -> str:
+        """
+        Infer option key from option text for TAP 3.2.4 PPI processing.
+        Maps common PPI option patterns to semantic keys.
+        """
+        t = option_text.lower()
+        
+        # Research/information gathering
+        if "research" in t or "extensively" in t or "information" in t or "look up" in t:
+            return "RESEARCH_FIRST"
+        
+        # Gut feeling / intuition
+        if "gut" in t or "feeling" in t or "instinct" in t or "feels right" in t:
+            return "GUT_FEELING"
+        
+        # Ask others (family/friends)
+        if "friends" in t or "family" in t or "advice" in t or "grown-up" in t or "parent" in t:
+            return "ASK_FAMILY"
+        
+        # Follow experts
+        if "expert" in t or "professional" in t or "recommend" in t or "smart helper" in t:
+            return "FOLLOW_EXPERTS"
+        
+        # Save / conservative
+        if "save" in t or "saving" in t or "put away" in t:
+            return "SAVE_FIRST"
+        
+        # Spend / buy now
+        if "spend" in t or "buy" in t or "purchase" in t:
+            return "SPEND_NOW"
+        
+        # Wait / patience
+        if "wait" in t or "patient" in t or "later" in t:
+            return "WAIT_AND_SEE"
+        
+        # Plan / organize
+        if "plan" in t or "budget" in t or "organize" in t:
+            return "PLAN_AHEAD"
+        
+        # Default
+        return "UNKNOWN"
     def calculate_combined_score(self, age: int, experience_level: int) -> float:
         """
         AE-CORE v2.0 Formula: Calculate combined personalization score
