@@ -388,24 +388,88 @@ class TAP32Engine_v324:
         bridginess = w.get("bridge", 0.0)
 
         t = baseline.lower()
+        key = opt.option_key.upper() if opt.option_key else ""
+        
         if childiness >= 0.35:
-            if "research" in t or "extensively" in t:
+            # Child-friendly adaptations based on text patterns or keys
+            if "research" in t or "extensively" in t or key == "RESEARCH_FIRST":
                 display = "Look up lots of information first"
                 gloss = "You like to learn first, then choose."
-            elif "gut" in t or "feeling" in t:
+            elif "gut" in t or "feeling" in t or "instinct" in t or key == "GUT_FEELING":
                 display = "Pick what feels right"
                 gloss = "You choose fast based on feelings."
-            elif "friends" in t or "family" in t or "grown" in t:
+            elif "friends" in t or "family" in t or "grown" in t or "advice" in t or key == "ASK_FAMILY":
                 display = "Ask a grown-up I trust"
                 gloss = "You like help from someone you know."
-            elif "expert" in t:
+            elif "expert" in t or "professional" in t or "recommend" in t or key == "FOLLOW_EXPERTS":
                 display = "Do what smart helpers say"
                 gloss = "You trust people who study this."
+            elif "save" in t or "saving" in t or "put away" in t or key == "SAVE_FIRST":
+                display = "Keep my money for later"
+                gloss = "You like to save for important things."
+            elif "spend" in t or "buy" in t or key == "SPEND_NOW":
+                display = "Use my money now"
+                gloss = "You like to get things right away."
+            elif "wait" in t or "patient" in t or key == "WAIT_AND_SEE":
+                display = "Wait and think about it"
+                gloss = "You like to take your time."
+            elif "plan" in t or "budget" in t or key == "PLAN_AHEAD":
+                display = "Make a plan first"
+                gloss = "You like to know what you're doing."
+            elif "bill" in t or "debt" in t:
+                display = "Pay what I owe first"
+                gloss = "You make sure to pay people back."
+            elif "invest" in t or "stock" in t:
+                display = "Try to grow my money"
+                gloss = "You want your money to become more."
+            elif "goal" in t or "target" in t:
+                display = "Think about what I want"
+                gloss = "You have things you're saving for."
+            elif "risk" in t or "safe" in t or "careful" in t:
+                display = "Keep my money safe"
+                gloss = "You don't want to lose your money."
+            elif "discuss" in t or "talk" in t:
+                display = "Talk about it with someone"
+                gloss = "You like to share ideas."
+            else:
+                # For unknown patterns, simplify language if possible
+                display = self._simplify_option_text(baseline)
+                if display != baseline:
+                    gloss = "Same idea, simpler words."
         elif bridginess >= 0.25:
             if not gloss:
                 gloss = "Same meaning, clearer wording."
 
         return {"id": opt.option_id, "key": opt.option_key, "baseline": baseline, "display": display, "gloss": gloss}
+    
+    def _simplify_option_text(self, text: str) -> str:
+        """Attempt basic text simplification for child display."""
+        # Simple word replacements
+        replacements = {
+            "extensively": "a lot",
+            "research": "look up info",
+            "financial": "money",
+            "decisions": "choices",
+            "recommend": "say to do",
+            "consider": "think about",
+            "prioritize": "focus on",
+            "accumulate": "save up",
+            "expenditure": "spending",
+            "immediately": "right away",
+            "purchase": "buy",
+            "evaluate": "check",
+            "analyze": "look at",
+            "consult": "ask",
+            "professional": "expert",
+            "determine": "figure out",
+            "sufficient": "enough",
+            "allocate": "split up",
+        }
+        result = text
+        for old, new in replacements.items():
+            result = result.replace(old, new)
+            result = result.replace(old.capitalize(), new.capitalize())
+        return result
 
 
 # -----------------------------
