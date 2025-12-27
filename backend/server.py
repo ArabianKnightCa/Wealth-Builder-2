@@ -59,6 +59,60 @@ from tap_3_2_4 import (
     find_concepts_in_text as tap324_find_concepts
 )
 
+# Helper functions for quiz simplification
+def simplify_quiz_question(question_text: str) -> str:
+    """Simplify quiz question for children."""
+    t = question_text.lower()
+    
+    if "purpose of money" in t:
+        return "What is money used for?"
+    elif "benefit of saving" in t or "why save" in t:
+        return "Why is saving money good?"
+    elif "budget" in t and "help" in t:
+        return "How does a budget help you?"
+    elif "difference between" in t:
+        return "What's different about these things?"
+    elif "best way to" in t:
+        return "What's a good way to do this?"
+    elif "important" in t:
+        return "Why is this important?"
+    else:
+        # Basic simplification
+        return question_text.replace("financial", "money").replace("typically", "usually")
+
+def simplify_quiz_option(option_text: str) -> str:
+    """Simplify quiz option for children."""
+    t = option_text.lower()
+    
+    # Common patterns
+    if "exchange goods" in t or "medium of exchange" in t:
+        return "To trade things easily"
+    elif "store of value" in t or "stores value" in t:
+        return "To save for later"
+    elif "unit of account" in t:
+        return "To know how much things cost"
+    elif "barter" in t:
+        return "Trading without money"
+    elif "government" in t and "print" in t:
+        return "The government makes it"
+    elif "emergency fund" in t:
+        return "Money for surprises"
+    elif "helps you plan" in t or "track spending" in t:
+        return "Helps you plan your money"
+    elif "reduce debt" in t:
+        return "Pay back what you owe"
+    elif "save money" in t or "saving" in t:
+        return "Keep money for later"
+    elif "compound interest" in t:
+        return "Your money can grow"
+    elif "all of the above" in t:
+        return "All of these"
+    elif "none of the above" in t:
+        return "None of these"
+    else:
+        # Basic simplification
+        return option_text.replace("financial", "money").replace("typically", "usually")
+
 # PPI Trait Vector System (Option A: Trait Tags + Shared Weight Templates)
 from ppi_trait_vector import (
     compute_trait_vector,
