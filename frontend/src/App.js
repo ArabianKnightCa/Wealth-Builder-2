@@ -38,6 +38,11 @@ import CommandPaletteDashboard from "./layouts/CommandPalette/Dashboard";
 import MemoryPostcardsDashboard from "./layouts/MemoryPostcards/Dashboard";
 import WhiteboardCanvasDashboard from "./layouts/WhiteboardCanvas/Dashboard";
 import FocusTunnelDashboard from "./layouts/FocusTunnel/Dashboard";
+import StoryCommandDashboard from "./layouts/StoryCommand/Dashboard";
+import ControlHeartDashboard from "./layouts/ControlHeart/Dashboard";
+import TimelinePostcardsDashboard from "./layouts/TimelinePostcards/Dashboard";
+import BubbleTreeDashboard from "./layouts/BubbleTree/Dashboard";
+import KanbanFocusDashboard from "./layouts/KanbanFocus/Dashboard";
 
 const LayoutRouter = () => {
     const { currentLayout } = useUILayout();
@@ -91,6 +96,16 @@ const LayoutRouter = () => {
             return <WhiteboardCanvasDashboard />;
         case 'focus_tunnel':
             return <FocusTunnelDashboard />;
+        case 'story_command':
+            return <StoryCommandDashboard />;
+        case 'control_heart':
+            return <ControlHeartDashboard />;
+        case 'timeline_postcards':
+            return <TimelinePostcardsDashboard />;
+        case 'bubble_tree':
+            return <BubbleTreeDashboard />;
+        case 'kanban_focus':
+            return <KanbanFocusDashboard />;
         case 'warm_scrapbook':
         default:
             return <WarmScrapbookDashboard />;
