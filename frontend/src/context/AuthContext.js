@@ -7,16 +7,30 @@ const API = `${BACKEND_URL}/api`;
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // Persist auth state in sessionStorage
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        return sessionStorage.getItem('ourcircle_authenticated') === 'true';
+    });
     const [pinExists, setPinExists] = useState(null);
     const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
-    const [isNewUser, setIsNewUser] = useState(false);
+    const [isNewUser, setIsNewUser] = useState(() => {
+        return sessionStorage.getItem('ourcircle_new_user') === 'true';
+    });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         checkPinStatus();
         checkOnboardingStatus();
     }, []);
+
+    // Sync auth state to sessionStorage
+    useEffect(() => {
+        sessionStorage.setItem('ourcircle_authenticated', isAuthenticated.toString());
+    }, [isAuthenticated]);
+
+    useEffect(() => {
+        sessionStorage.setItem('ourcircle_new_user', isNewUser.toString());
+    }, [isNewUser]);
 
     const checkPinStatus = async () => {
         try {
@@ -83,6 +97,8 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setIsAuthenticated(false);
         setIsNewUser(false);
+        sessionStorage.removeItem('ourcircle_authenticated');
+        sessionStorage.removeItem('ourcircle_new_user');
     };
 
     return (
