@@ -8,7 +8,7 @@ Build OurCircle - a family/child dossier management app with structure: Families
 - **Secondary**: Caregivers and family members tracking child development and memories
 
 ## Core Requirements (Static)
-1. PIN-based authentication (4-6 digits)
+1. PIN-based authentication (4-6 digits) with session persistence
 2. 10 selectable UI layouts (different visual styles/navigation patterns)
 3. 6 color themes
 4. Family CRUD (create, read, update, delete, archive)
@@ -17,63 +17,64 @@ Build OurCircle - a family/child dossier management app with structure: Families
 7. Relationship Timeline for tracking milestones and memories
 8. Photo storage via Base64 in MongoDB
 9. Comprehensive Settings (appearance, notifications, account, data)
+10. Love Language selector with full explanations
 
 ## What's Been Implemented
 
 ### Phase 1 - December 28, 2025
+- 3 initial UI layouts
+- Settings expansion (4 tabs)
+- Welcome flow
 
-#### 3 UI Layouts (of 10 planned)
-1. **Warm Scrapbook** - Photo-first, cozy, nostalgic with rounded corners and warm cream tones
-2. **Clean Clinical** - Ultra organized with left-side navigation and table view
+### Phase 2 - December 28, 2025
+
+#### All 10 UI Layouts Complete
+1. **Warm Scrapbook** - Photo-first, cozy, nostalgic with rounded corners
+2. **Clean Clinical** - Left-side navigation with table view
 3. **Timeline First** - Story-focused with timeline feed and birthday widgets
+4. **Playful Pop** - Fun, kid-energy with carousel and bright accents
+5. **Dark Detective** - Dark dossier vibe with sidebar activity feed
+6. **Family Tree** - Expandable tree view with child branches
+7. **Album Grid** - Photo grid layout like a photo album
+8. **Modern Cards** - Mobile-first stacked cards with swipe actions
+9. **Minimal Text** - Notion-style collapsible text-first design
+10. **Dashboard Pro** - Dark command center with widgets and stats
 
-#### 6 Color Themes
-- Warm Cream, Ocean Calm, Lavender Mist, Forest Earth, Sunset Glow, Midnight Ink
+#### Love Language Feature
+- Dedicated LoveLanguageSelector component
+- Expandable explanations for each love language:
+  - Words of Affirmation
+  - Quality Time
+  - Receiving Gifts
+  - Acts of Service
+  - Physical Touch
+- Primary and Secondary selection
+- Helper text showing what each language means
 
-#### Expanded Settings (4 Tabs)
-1. **Appearance**: UI Layout selector, Color themes, Reduce motion, Language, Date format
-2. **Notifications**: Birthday reminders (1-28 days before), Push/Email notification toggles
-3. **Account**: Change PIN, QR Profile sharing (coming soon), Logout, Delete Account
-4. **Data**: Export all data (JSON/CSV), Auto-save toggle
-
-#### Backend Additions
-- /api/settings/ui - UI layout and color theme preferences
-- /api/account (DELETE) - Delete all user data
-- /api/export/{format} - Export data as JSON or CSV
-- /api/settings/onboarding - Track onboarding completion
-
-#### Welcome Flow
-- Two-step onboarding: Step 1 = Layout selection, Step 2 = Color theme
-- Only shown for new users after PIN setup
+#### Session Persistence
+- Authentication state persists in sessionStorage
+- No re-login required when navigating between pages
 
 ## Prioritized Backlog
 
-### P0 (In Progress)
-- [x] 3 UI Layouts built (Warm Scrapbook, Clean Clinical, Timeline First)
-- [x] Settings expansion with 4 tabs
-- [x] Birthday reminders UI
-- [x] Data export functionality
+### P0 (Complete)
+- [x] All 10 UI Layouts built
+- [x] Love Language with explanations
+- [x] Session persistence
 
-### P1 (Next Phase - 7 More Layouts)
-- [ ] Playful Pop - Kid-energy with icon categories
-- [ ] Dark Mode Detective - Dossier vibe with dark theme
-- [ ] Family Tree Hybrid - Genealogy meets notes
-- [ ] Album Grid - Photo-first grid layout
-- [ ] Modern Cards - Swipe-friendly card layout
-- [ ] Minimal Text - Notion-style text-first
-- [ ] Dashboard Pro - Command center for power users
+### P1 (Next Phase)
+- [ ] QR Profile sharing
+- [ ] Push notification support for birthday reminders
+- [ ] Photo gallery view for children
+- [ ] PDF export for dossiers
 
-### P2 (Future Features)
-- Love Language dropdown with explanations in child dossier
-- QR Profile sharing
-- Push notification integration
-- Photo gallery view for children
-- PDF export for dossiers
-- Search/filter on dashboard
+### P2 (Future)
 - Multiple users with separate PINs
+- Voice-to-text for quick notes
+- Year-in-review auto-generated summaries
+- Search across all families and children
 
 ## Next Tasks
-1. Build remaining 7 UI layouts
-2. Add Love Language dropdown with explanations to child personality section
-3. Implement QR code profile sharing
-4. Add push notification support for birthday reminders
+1. Implement QR code profile sharing
+2. Add push notification support for birthday reminders
+3. Create printable/PDF export for child dossiers
