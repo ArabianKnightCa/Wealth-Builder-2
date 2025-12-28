@@ -243,8 +243,7 @@ test_plan:
     - "Session Persistence"
     - "Settings Page Navigation"
     - "Dashboard Layout Switching"
-  stuck_tasks:
-    - "Session Persistence"
+  stuck_tasks: []
   test_all: false
   test_priority: "stuck_first"
 
