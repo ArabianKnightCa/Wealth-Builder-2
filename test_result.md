@@ -276,12 +276,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Session Persistence"
-    - "Settings Page Navigation"
-    - "Dashboard Layout Switching"
+    - "QR Profile Sharing APIs"
+    - "Birthday Reminders APIs"
   stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
