@@ -64,6 +64,36 @@ export const uiLayouts = [
         name: 'Dashboard Pro', 
         description: 'Command center for big families and power users',
         vibe: 'Powerful, data-rich, efficient'
+    },
+    { 
+        id: 'map_view', 
+        name: 'Map View', 
+        description: 'Spatial memory - families as draggable islands on a canvas',
+        vibe: 'Visual, spatial, relationship-focused'
+    },
+    { 
+        id: 'chatbook', 
+        name: 'Chatbook', 
+        description: 'Conversational interface - profiles feel like messaging',
+        vibe: 'Conversational, casual, form-free'
+    },
+    { 
+        id: 'flashcard_mode', 
+        name: 'Flashcard Mode', 
+        description: 'Rapid recall with swipeable flashcards for quick reference',
+        vibe: 'Quick, gesture-based, memorable'
+    },
+    { 
+        id: 'book_chapters', 
+        name: 'Book Chapters', 
+        description: 'Life as a story - families as books, children as chapters',
+        vibe: 'Storytelling, literary, warm'
+    },
+    { 
+        id: 'ring_system', 
+        name: 'Ring System', 
+        description: 'Priority-based concentric rings - core info first, details expand',
+        vibe: 'Focused, layered, essential-first'
     }
 ];
 
