@@ -394,10 +394,11 @@ class TAP324Tester:
     def _validate_ppi_content(self, profile_name, data):
         """Validate PPI content for specific profile"""
         issues = []
-        questions = data.get("questions", [])
+        # PPI endpoint returns 'items' not 'questions'
+        questions = data.get("questions", []) or data.get("items", [])
         
         for i, question in enumerate(questions):
-            question_text = question.get('question_text', '')
+            question_text = question.get('question_text', '') or question.get('prompt', '')
             options = question.get('options', [])
             
             # Check for child vs expert content
