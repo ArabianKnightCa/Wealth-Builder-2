@@ -14,23 +14,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 import Timeline from '../components/Timeline';
+import LoveLanguageSelector from '../components/LoveLanguageSelector';
+import { MUSIC_CATEGORIES, DANCE_STYLES } from '../constants/appData';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-
-const MUSIC_CATEGORIES = [
-    'Pop', 'Hip-Hop', 'Rap', 'R&B', 'Rock', 'Alternative', 'Indie', 'Jazz',
-    'Classical', 'Country', 'EDM', 'K-Pop', 'Latin', 'Afrobeats', 'Soundtracks', 'Kids/Family'
-];
-
-const DANCE_STYLES = [
-    'Hip-Hop', 'Ballet', 'Jazz', 'Contemporary', 'Breakdance',
-    'Tap', 'Folk', 'Cultural/Traditional', 'Freestyle', 'Other'
-];
-
-const LOVE_LANGUAGES = [
-    'Words of Affirmation', 'Acts of Service', 'Receiving Gifts', 'Quality Time', 'Physical Touch'
-];
 
 export default function ChildDossier() {
     const { childId } = useParams();
