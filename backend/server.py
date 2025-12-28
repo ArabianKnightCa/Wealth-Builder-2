@@ -60,6 +60,37 @@ from tap_3_2_4 import (
 )
 
 # Helper functions for quiz simplification
+def normalize_quiz_options(options_data) -> list:
+    """
+    Normalize quiz options to list format with letter prefixes.
+    Handles both dict format {'A': 'text', ...} and list format ['A text', ...].
+    """
+    if isinstance(options_data, dict):
+        # Options stored as dict: {'A': 'text', 'B': 'text', ...}
+        result = []
+        for opt_letter in ['A', 'B', 'C', 'D']:
+            opt_text = options_data.get(opt_letter, '')
+            if opt_text:
+                result.append(f"{opt_letter} {opt_text}")
+        return result
+    elif isinstance(options_data, list):
+        # Options stored as list - normalize to ensure letter prefix
+        result = []
+        for opt_idx, opt in enumerate(options_data):
+            opt_id = chr(65 + opt_idx)
+            opt_str = str(opt).strip()
+            # Check if already has letter prefix
+            if opt_str and opt_str[0] in 'ABCD' and len(opt_str) > 1 and opt_str[1] in (' ', '.'):
+                # Already has prefix, keep as is but normalize format
+                clean_opt = opt_str[1:].lstrip('. ').strip()
+                result.append(f"{opt_id} {clean_opt}")
+            else:
+                # No prefix, add one
+                result.append(f"{opt_id} {opt_str}")
+        return result
+    else:
+        return []
+
 def simplify_quiz_question(question_text: str) -> str:
     """Simplify quiz question for children."""
     t = question_text.lower()
