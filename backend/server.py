@@ -1088,20 +1088,26 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
                     el_max=el_max,
                     ae_state=ae_state
                 )
-                transformed_options = [
-                    tap_v23.transform_content(
-                        baseline_text=opt,
+                # Normalize options to list format first
+                normalized_options = normalize_quiz_options(q.get('options', {}))
+                transformed_options = []
+                for opt in normalized_options:
+                    # Extract just the option text (skip the letter prefix)
+                    opt_text = opt[2:].strip() if len(opt) > 2 else opt
+                    opt_letter = opt[0] if opt else 'A'
+                    transformed_opt = tap_v23.transform_content(
+                        baseline_text=opt_text,
                         user_age=user_age,
                         user_experience_level=exp_level,
                         el_max=el_max,
                         ae_state=ae_state
-                    ) for opt in q['options']
-                ]
+                    )
+                    transformed_options.append(f"{opt_letter} {transformed_opt}")
                 quiz_questions.append({
                     "id": q['id'],
                     "question_text": transformed_question,
                     "options": transformed_options,
-                    "order": q['order']
+                    "order": q.get('order', 0)
                 })
         else:
             # TAP v2.0: Legacy transformation
@@ -1125,12 +1131,19 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
             quiz_questions = []
             for q in questions:
                 transformed_question = tap.transform_ppi_question(q['question_text'], tap_user)
-                transformed_options = [tap.transform_ppi_question(opt, tap_user) for opt in q['options']]
+                # Normalize options to list format first
+                normalized_options = normalize_quiz_options(q.get('options', {}))
+                transformed_options = []
+                for opt in normalized_options:
+                    opt_text = opt[2:].strip() if len(opt) > 2 else opt
+                    opt_letter = opt[0] if opt else 'A'
+                    transformed_opt = tap.transform_ppi_question(opt_text, tap_user)
+                    transformed_options.append(f"{opt_letter} {transformed_opt}")
                 quiz_questions.append({
                     "id": q['id'],
                     "question_text": transformed_question,
                     "options": transformed_options,
-                    "order": q['order']
+                    "order": q.get('order', 0)
                 })
     else:
         # Fallback: no transformation if user not found
