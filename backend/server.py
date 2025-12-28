@@ -228,6 +228,106 @@ async def set_onboarding_status(data: dict):
     )
     return {"success": True, "completed": data.get("completed", True)}
 
+# ============== UI LAYOUT ROUTES ==============
+
+@api_router.get("/settings/ui")
+async def get_ui_settings():
+    """Get UI layout and color theme settings"""
+    settings = await db.settings.find_one({"type": "ui"}, {"_id": 0})
+    return {
+        "layout": settings.get("layout", "warm_scrapbook") if settings else "warm_scrapbook",
+        "colorTheme": settings.get("colorTheme", "warm_cream") if settings else "warm_cream"
+    }
+
+@api_router.post("/settings/ui")
+async def set_ui_settings(data: dict):
+    """Set UI layout and color theme"""
+    await db.settings.update_one(
+        {"type": "ui"},
+        {"$set": {
+            "layout": data.get("layout", "warm_scrapbook"),
+            "colorTheme": data.get("colorTheme", "warm_cream"),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    return {"success": True}
+
+# ============== ACCOUNT ROUTES ==============
+
+@api_router.delete("/account")
+async def delete_account():
+    """Delete all user data"""
+    # Delete all collections
+    await db.families.delete_many({})
+    await db.children.delete_many({})
+    await db.timeline_events.delete_many({})
+    await db.settings.delete_many({})
+    return {"success": True, "message": "All data deleted"}
+
+# ============== EXPORT ROUTES ==============
+
+@api_router.get("/export/{format}")
+async def export_data(format: str):
+    """Export all data in specified format"""
+    import json
+    
+    # Gather all data
+    families = await db.families.find({}, {"_id": 0}).to_list(1000)
+    children = await db.children.find({}, {"_id": 0}).to_list(1000)
+    timeline_events = await db.timeline_events.find({}, {"_id": 0}).to_list(5000)
+    
+    data = {
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "families": families,
+        "children": children,
+        "timeline_events": timeline_events
+    }
+    
+    if format == "json":
+        from fastapi.responses import Response
+        return Response(
+            content=json.dumps(data, indent=2, default=str),
+            media_type="application/json",
+            headers={"Content-Disposition": "attachment; filename=ourcircle-export.json"}
+        )
+    elif format == "csv":
+        # Simple CSV export of families and children
+        import csv
+        import io
+        
+        output = io.StringIO()
+        
+        # Families
+        output.write("=== FAMILIES ===\n")
+        if families:
+            writer = csv.DictWriter(output, fieldnames=["id", "family_name", "family_notes", "archived", "created_at"])
+            writer.writeheader()
+            for f in families:
+                writer.writerow({k: f.get(k, "") for k in ["id", "family_name", "family_notes", "archived", "created_at"]})
+        
+        output.write("\n=== CHILDREN ===\n")
+        if children:
+            writer = csv.DictWriter(output, fieldnames=["id", "family_id", "full_name", "birthday", "created_at"])
+            writer.writeheader()
+            for c in children:
+                writer.writerow({
+                    "id": c.get("id", ""),
+                    "family_id": c.get("family_id", ""),
+                    "full_name": c.get("identity", {}).get("full_name", ""),
+                    "birthday": c.get("identity", {}).get("birthday", ""),
+                    "created_at": c.get("created_at", "")
+                })
+        
+        from fastapi.responses import Response
+        return Response(
+            content=output.getvalue(),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=ourcircle-export.csv"}
+        )
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported format")
+
 # ============== FAMILY ROUTES ==============
 
 @api_router.get("/families")

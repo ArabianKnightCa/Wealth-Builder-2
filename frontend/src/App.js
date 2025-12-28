@@ -4,11 +4,31 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { UILayoutProvider, useUILayout } from "./context/UILayoutContext";
 import PinEntry from "./pages/PinEntry";
 import WelcomePage from "./pages/WelcomePage";
-import Dashboard from "./pages/Dashboard";
+import SettingsPage from "./pages/SettingsPage";
 import FamilyDetail from "./pages/FamilyDetail";
 import ChildDossier from "./pages/ChildDossier";
+
+// Layout-specific Dashboards
+import WarmScrapbookDashboard from "./layouts/WarmScrapbook/Dashboard";
+import CleanClinicalDashboard from "./layouts/CleanClinical/Dashboard";
+import TimelineFirstDashboard from "./layouts/TimelineFirst/Dashboard";
+
+const LayoutRouter = () => {
+    const { currentLayout } = useUILayout();
+    
+    switch (currentLayout) {
+        case 'clean_clinical':
+            return <CleanClinicalDashboard />;
+        case 'timeline_first':
+            return <TimelineFirstDashboard />;
+        case 'warm_scrapbook':
+        default:
+            return <WarmScrapbookDashboard />;
+    }
+};
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, loading, hasCompletedOnboarding, isNewUser, completeOnboarding } = useAuth();
@@ -25,7 +45,6 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/pin" replace />;
     }
 
-    // Show welcome page for new users who haven't completed onboarding
     if (isNewUser && !hasCompletedOnboarding) {
         return <WelcomePage onComplete={completeOnboarding} />;
     }
@@ -60,7 +79,15 @@ function AppContent() {
                     path="/" 
                     element={
                         <ProtectedRoute>
-                            <Dashboard />
+                            <LayoutRouter />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/settings" 
+                    element={
+                        <ProtectedRoute>
+                            <SettingsPage />
                         </ProtectedRoute>
                     } 
                 />
@@ -90,9 +117,11 @@ function AppContent() {
 function App() {
     return (
         <ThemeProvider>
-            <AuthProvider>
-                <AppContent />
-            </AuthProvider>
+            <UILayoutProvider>
+                <AuthProvider>
+                    <AppContent />
+                </AuthProvider>
+            </UILayoutProvider>
         </ThemeProvider>
     );
 }
