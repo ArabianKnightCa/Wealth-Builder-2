@@ -599,6 +599,15 @@ class OurCircleAPITester:
         print("CLEANUP TEST DATA")
         print("="*50)
         
+        # Delete share link
+        if self.test_share_id:
+            success, response = self.run_test(
+                "Delete Share Link",
+                "DELETE",
+                f"share/{self.test_share_id}",
+                200
+            )
+        
         # Delete timeline event
         if self.test_event_id:
             success, response = self.run_test(
