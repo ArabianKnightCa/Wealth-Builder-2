@@ -14,6 +14,8 @@ class OurCircleAPITester:
         self.test_family_id = None
         self.test_child_id = None
         self.test_event_id = None
+        self.test_share_id = None
+        self.test_share_token = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
         """Run a single API test"""
