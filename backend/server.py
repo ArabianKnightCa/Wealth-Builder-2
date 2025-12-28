@@ -528,6 +528,294 @@ async def delete_timeline_event(event_id: str):
         raise HTTPException(status_code=404, detail="Event not found")
     return {"success": True, "message": "Event deleted"}
 
+# ============== QR CODE / SHARING ROUTES ==============
+
+class ShareProfileCreate(BaseModel):
+    entity_type: str  # "family" or "child"
+    entity_id: str
+    expires_days: Optional[int] = 7  # Default 7 days expiration
+
+@api_router.post("/share/create")
+async def create_share_link(data: ShareProfileCreate):
+    """Create a shareable link/code for a profile"""
+    # Verify entity exists
+    if data.entity_type == "family":
+        entity = await db.families.find_one({"id": data.entity_id}, {"_id": 0})
+        if not entity:
+            raise HTTPException(status_code=404, detail="Family not found")
+    elif data.entity_type == "child":
+        entity = await db.children.find_one({"id": data.entity_id}, {"_id": 0})
+        if not entity:
+            raise HTTPException(status_code=404, detail="Child not found")
+    else:
+        raise HTTPException(status_code=400, detail="Invalid entity type")
+    
+    # Create share token
+    share_id = str(uuid.uuid4())
+    share_token = hashlib.sha256(f"{share_id}{datetime.now().isoformat()}".encode()).hexdigest()[:16]
+    
+    expires_at = datetime.now(timezone.utc) + timedelta(days=data.expires_days) if data.expires_days else None
+    
+    share_doc = {
+        "id": share_id,
+        "share_token": share_token,
+        "entity_type": data.entity_type,
+        "entity_id": data.entity_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": expires_at.isoformat() if expires_at else None,
+        "views": 0
+    }
+    
+    await db.shares.insert_one(share_doc)
+    
+    return {
+        "share_id": share_id,
+        "share_token": share_token,
+        "entity_type": data.entity_type,
+        "entity_id": data.entity_id,
+        "expires_at": share_doc["expires_at"]
+    }
+
+@api_router.get("/share/{share_token}")
+async def get_shared_profile(share_token: str):
+    """Get shared profile by token"""
+    share = await db.shares.find_one({"share_token": share_token}, {"_id": 0})
+    if not share:
+        raise HTTPException(status_code=404, detail="Share link not found or expired")
+    
+    # Check expiration
+    if share.get("expires_at"):
+        expires_at = datetime.fromisoformat(share["expires_at"].replace('Z', '+00:00'))
+        if datetime.now(timezone.utc) > expires_at:
+            raise HTTPException(status_code=410, detail="Share link has expired")
+    
+    # Increment view count
+    await db.shares.update_one({"share_token": share_token}, {"$inc": {"views": 1}})
+    
+    # Get entity data
+    if share["entity_type"] == "family":
+        entity = await db.families.find_one({"id": share["entity_id"]}, {"_id": 0})
+        if entity:
+            # Also get children for the family
+            children = await db.children.find({"family_id": share["entity_id"]}, {"_id": 0}).to_list(100)
+            entity["children"] = children
+    elif share["entity_type"] == "child":
+        entity = await db.children.find_one({"id": share["entity_id"]}, {"_id": 0})
+    else:
+        entity = None
+    
+    if not entity:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    return {
+        "entity_type": share["entity_type"],
+        "entity": entity,
+        "shared_at": share["created_at"],
+        "expires_at": share.get("expires_at")
+    }
+
+@api_router.get("/share/{share_token}/qr")
+async def get_share_qr_code(share_token: str):
+    """Generate QR code image for a share link"""
+    share = await db.shares.find_one({"share_token": share_token}, {"_id": 0})
+    if not share:
+        raise HTTPException(status_code=404, detail="Share link not found")
+    
+    # Generate the full share URL (frontend will handle this)
+    share_url = f"ourcircle://share/{share_token}"
+    
+    # Create QR code
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(share_url)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Convert to bytes
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format='PNG')
+    img_byte_arr.seek(0)
+    
+    return Response(
+        content=img_byte_arr.getvalue(),
+        media_type="image/png",
+        headers={"Content-Disposition": f"inline; filename=ourcircle-share-{share_token}.png"}
+    )
+
+@api_router.get("/share/{share_token}/qr-base64")
+async def get_share_qr_code_base64(share_token: str, frontend_url: str = None):
+    """Generate QR code as base64 string for embedding in frontend"""
+    share = await db.shares.find_one({"share_token": share_token}, {"_id": 0})
+    if not share:
+        raise HTTPException(status_code=404, detail="Share link not found")
+    
+    # Use frontend_url if provided, otherwise use default scheme
+    if frontend_url:
+        share_url = f"{frontend_url}/shared/{share_token}"
+    else:
+        share_url = f"ourcircle://share/{share_token}"
+    
+    # Create QR code
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(share_url)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Convert to base64
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format='PNG')
+    img_byte_arr.seek(0)
+    img_base64 = base64.b64encode(img_byte_arr.getvalue()).decode('utf-8')
+    
+    return {
+        "qr_base64": f"data:image/png;base64,{img_base64}",
+        "share_url": share_url,
+        "share_token": share_token
+    }
+
+@api_router.get("/my-shares")
+async def get_my_shares():
+    """Get all active share links created by user"""
+    shares = await db.shares.find({}, {"_id": 0}).to_list(100)
+    
+    # Filter out expired shares and enrich with entity names
+    active_shares = []
+    for share in shares:
+        if share.get("expires_at"):
+            expires_at = datetime.fromisoformat(share["expires_at"].replace('Z', '+00:00'))
+            if datetime.now(timezone.utc) > expires_at:
+                continue
+        
+        # Get entity name
+        if share["entity_type"] == "family":
+            entity = await db.families.find_one({"id": share["entity_id"]}, {"family_name": 1, "_id": 0})
+            share["entity_name"] = entity.get("family_name", "Unknown") if entity else "Deleted"
+        elif share["entity_type"] == "child":
+            entity = await db.children.find_one({"id": share["entity_id"]}, {"identity.full_name": 1, "_id": 0})
+            share["entity_name"] = entity.get("identity", {}).get("full_name", "Unknown") if entity else "Deleted"
+        
+        active_shares.append(share)
+    
+    return {"shares": active_shares}
+
+@api_router.delete("/share/{share_id}")
+async def delete_share(share_id: str):
+    """Revoke a share link"""
+    result = await db.shares.delete_one({"id": share_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Share not found")
+    return {"success": True, "message": "Share link revoked"}
+
+# ============== BIRTHDAY REMINDER ROUTES ==============
+
+@api_router.get("/birthdays/upcoming")
+async def get_upcoming_birthdays(days: int = 30):
+    """Get children with upcoming birthdays within specified days"""
+    children = await db.children.find({}, {"_id": 0}).to_list(1000)
+    
+    today = datetime.now(timezone.utc).date()
+    upcoming = []
+    
+    for child in children:
+        birthday_str = child.get("identity", {}).get("birthday")
+        if not birthday_str:
+            continue
+        
+        try:
+            # Parse birthday (expected format: YYYY-MM-DD or MM-DD)
+            if len(birthday_str) == 10:  # YYYY-MM-DD
+                birthday = datetime.strptime(birthday_str, "%Y-%m-%d").date()
+            elif len(birthday_str) == 5:  # MM-DD
+                birthday = datetime.strptime(f"2000-{birthday_str}", "%Y-%m-%d").date()
+            else:
+                continue
+            
+            # Calculate this year's birthday
+            this_year_birthday = birthday.replace(year=today.year)
+            
+            # If birthday already passed this year, use next year
+            if this_year_birthday < today:
+                this_year_birthday = birthday.replace(year=today.year + 1)
+            
+            # Calculate days until birthday
+            days_until = (this_year_birthday - today).days
+            
+            if 0 <= days_until <= days:
+                # Calculate age they will turn
+                turning_age = this_year_birthday.year - birthday.year
+                
+                # Get favorite gift hint
+                favorites = child.get("favorites", {})
+                gift_hints = []
+                if favorites.get("favorite_color"):
+                    gift_hints.append(f"loves {favorites['favorite_color']}")
+                if favorites.get("favorite_animal"):
+                    gift_hints.append(f"loves {favorites['favorite_animal']}")
+                if favorites.get("favorite_game"):
+                    gift_hints.append(f"enjoys {favorites['favorite_game']}")
+                if favorites.get("favorite_book"):
+                    gift_hints.append(f"reading {favorites['favorite_book']}")
+                
+                upcoming.append({
+                    "child_id": child["id"],
+                    "family_id": child.get("family_id"),
+                    "name": child.get("identity", {}).get("full_name", "Unknown"),
+                    "nickname": child.get("identity", {}).get("nicknames", [None])[0] if child.get("identity", {}).get("nicknames") else None,
+                    "birthday": birthday_str,
+                    "this_year_date": this_year_birthday.isoformat(),
+                    "days_until": days_until,
+                    "turning_age": turning_age,
+                    "gift_hints": gift_hints[:2] if gift_hints else [],
+                    "profile_photo": child.get("identity", {}).get("profile_photo")
+                })
+        except (ValueError, TypeError):
+            continue
+    
+    # Sort by days until birthday
+    upcoming.sort(key=lambda x: x["days_until"])
+    
+    return {
+        "upcoming_birthdays": upcoming,
+        "total": len(upcoming),
+        "checked_within_days": days
+    }
+
+@api_router.get("/settings/birthday-reminders")
+async def get_birthday_reminder_settings():
+    """Get birthday reminder settings"""
+    settings = await db.settings.find_one({"type": "birthday_reminders"}, {"_id": 0})
+    return {
+        "enabled": settings.get("enabled", True) if settings else True,
+        "reminder_days": settings.get("reminder_days", [7, 1]) if settings else [7, 1],
+        "show_gift_hints": settings.get("show_gift_hints", True) if settings else True
+    }
+
+@api_router.post("/settings/birthday-reminders")
+async def set_birthday_reminder_settings(data: dict):
+    """Set birthday reminder settings"""
+    await db.settings.update_one(
+        {"type": "birthday_reminders"},
+        {"$set": {
+            "enabled": data.get("enabled", True),
+            "reminder_days": data.get("reminder_days", [7, 1]),
+            "show_gift_hints": data.get("show_gift_hints", True),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    return {"success": True}
+
 # ============== UTILITY ROUTES ==============
 
 @api_router.get("/")
