@@ -341,7 +341,12 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "QR Profile Sharing UI"
+    - "QR Share Manager in Settings"
+    - "Birthday Reminders on Dashboard"
+    - "Child Dossier QR Button"
+    - "Shared Profile Page (Public Route)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
