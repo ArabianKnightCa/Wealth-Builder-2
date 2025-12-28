@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner';
 import Timeline from '../components/Timeline';
 import LoveLanguageSelector from '../components/LoveLanguageSelector';
+import { QRShareButton } from '../components/QRShareButton';
 import { MUSIC_CATEGORIES, DANCE_STYLES } from '../constants/appData';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
