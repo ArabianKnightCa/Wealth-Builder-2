@@ -159,19 +159,27 @@ export default function ChildDossier() {
                                 </div>
                             </div>
                         </div>
-                        <Button 
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="gap-2 rounded-full"
-                            data-testid="save-btn"
-                        >
-                            {saving ? (
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                <Save className="w-4 h-4" />
-                            )}
-                            Save
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <QRShareButton 
+                                entityType="child" 
+                                entityId={childId} 
+                                entityName={formData.identity?.full_name}
+                                variant="outline"
+                            />
+                            <Button 
+                                onClick={handleSave}
+                                disabled={saving}
+                                className="gap-2 rounded-full"
+                                data-testid="save-btn"
+                            >
+                                {saving ? (
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <Save className="w-4 h-4" />
+                                )}
+                                Save
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </header>
