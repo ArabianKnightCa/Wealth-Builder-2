@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
     Settings, LogOut, Trash2, Key, Bell, Download, Globe, 
@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 import { useUILayout, uiLayouts, colorThemes } from '../context/UILayoutContext';
 import { BIRTHDAY_REMINDER_OPTIONS, APP_LANGUAGES, DATE_FORMATS, EXPORT_FORMATS } from '../constants/appData';
+import { QRShareManager } from '../components/QRShareButton';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
