@@ -992,38 +992,55 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
         if use_tap324:
             # TAP 3.2.4: Child-friendly quiz adaptation
             tap324_engine = TAP32Engine_v324(el_max_poc=EL_MAX_POC)
-            scalars = tap324_engine.compute_scalars(user_age, exp_level, "quiz", TAP324ControlInputs.neutral())
-            childiness = scalars.weights.get("child", 0.0)
             
             quiz_questions = []
             for q in questions:
+                question_text_baseline = q.get('question_text', '')
+                
+                # Compute scalars using actual question text as baseline
+                scalars = tap324_engine.compute_scalars(user_age, exp_level, question_text_baseline, TAP324ControlInputs.neutral())
+                childiness = scalars.weights.get("child", 0.0)
+                
                 # Adapt question text
                 if childiness >= 0.35:
                     # Simplify quiz question for children
-                    question_text = simplify_quiz_question(q['question_text'])
+                    question_text = simplify_quiz_question(question_text_baseline)
                 else:
-                    question_text = q['question_text']
+                    question_text = question_text_baseline
                 
-                # Adapt options
+                # Adapt options - handle both dict and list formats
                 adapted_options = []
-                for opt_idx, opt in enumerate(q['options']):
-                    opt_id = chr(65 + opt_idx)
-                    if childiness >= 0.35:
-                        # Simplify option for children
-                        clean_opt = opt.lstrip('ABCD').lstrip('. ').strip()
-                        adapted_opt = simplify_quiz_option(clean_opt)
-                        adapted_options.append(f"{opt_id} {adapted_opt}")
-                    else:
-                        # Keep original but ensure letter prefix
-                        clean_opt = opt.lstrip('ABCD').lstrip('. ').strip()
-                        adapted_options.append(f"{opt_id} {clean_opt}")
+                options_data = q.get('options', {})
+                
+                if isinstance(options_data, dict):
+                    # Options stored as dict: {'A': 'text', 'B': 'text', ...}
+                    for opt_letter in ['A', 'B', 'C', 'D']:
+                        opt_text = options_data.get(opt_letter, '')
+                        if opt_text:
+                            if childiness >= 0.35:
+                                adapted_opt = simplify_quiz_option(opt_text)
+                                adapted_options.append(f"{opt_letter} {adapted_opt}")
+                            else:
+                                adapted_options.append(f"{opt_letter} {opt_text}")
+                else:
+                    # Options stored as list: ['A text', 'B text', ...] or ['text1', 'text2', ...]
+                    for opt_idx, opt in enumerate(options_data):
+                        opt_id = chr(65 + opt_idx)
+                        # Strip any existing letter prefix
+                        clean_opt = str(opt).lstrip('ABCD').lstrip('. ').strip()
+                        if childiness >= 0.35:
+                            adapted_opt = simplify_quiz_option(clean_opt)
+                            adapted_options.append(f"{opt_id} {adapted_opt}")
+                        else:
+                            adapted_options.append(f"{opt_id} {clean_opt}")
                 
                 quiz_questions.append({
                     "id": q['id'],
                     "question_text": question_text,
                     "options": adapted_options,
-                    "order": q['order'],
-                    "tap_version": "3.2.4"
+                    "order": q.get('order', 0),
+                    "tap_version": "3.2.4",
+                    "childiness": round(childiness, 3)
                 })
         elif use_v23:
             # TAP v2.3: Formula-driven transformation
