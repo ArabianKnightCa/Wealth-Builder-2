@@ -190,7 +190,8 @@ class TAP324Tester:
             
             if response.status_code == 200:
                 data = response.json()
-                questions = data.get("questions", [])
+                # PPI endpoint returns 'items' not 'questions'
+                questions = data.get("questions", []) or data.get("items", [])
                 
                 if not questions:
                     error_msg = f"{profile_name}: No PPI questions returned"
