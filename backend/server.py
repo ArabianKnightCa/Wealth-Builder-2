@@ -95,6 +95,7 @@ def simplify_quiz_question(question_text: str) -> str:
     """Simplify quiz question for children."""
     t = question_text.lower()
     
+    # Common patterns from actual quiz content
     if "purpose of money" in t:
         return "What is money used for?"
     elif "benefit of saving" in t or "why save" in t:
@@ -105,11 +106,24 @@ def simplify_quiz_question(question_text: str) -> str:
         return "What's different about these things?"
     elif "best way to" in t:
         return "What's a good way to do this?"
+    elif "barter" in t or "bartering" in t:
+        return "Why is money better than trading stuff?"
+    elif "rich people" in t or "lucky" in t:
+        return "How do people become rich?"
+    elif "saving" in t and "$1" in t:
+        return "Why is saving even a little bit helpful?"
+    elif "compound" in t:
+        return "How does your money grow over time?"
+    elif "important" in t and "concept" in t:
+        return "What's the main idea?"
     elif "important" in t:
         return "Why is this important?"
+    elif "what's" in t or "what is" in t:
+        # Keep what's questions but simplify language
+        return question_text.replace("financial", "money").replace("transactions", "trades")
     else:
         # Basic simplification
-        return question_text.replace("financial", "money").replace("typically", "usually")
+        return question_text.replace("financial", "money").replace("typically", "usually").replace("transactions", "trades")
 
 def simplify_quiz_option(option_text: str) -> str:
     """Simplify quiz option for children."""
