@@ -403,6 +403,196 @@ class OurCircleAPITester:
             200
         )
 
+    def test_qr_profile_sharing(self):
+        """Test QR Profile Sharing APIs"""
+        print("\n" + "="*50)
+        print("TESTING QR PROFILE SHARING")
+        print("="*50)
+        
+        if not self.test_family_id:
+            print("❌ No family ID available for QR sharing tests")
+            return
+        
+        # Create share link for family
+        share_data = {
+            "entity_type": "family",
+            "entity_id": self.test_family_id,
+            "expires_days": 7
+        }
+        success, response = self.run_test(
+            "Create Share Link (Family)",
+            "POST",
+            "share/create",
+            200,
+            data=share_data
+        )
+        
+        if success and response.get("share_token"):
+            self.test_share_token = response["share_token"]
+            self.test_share_id = response["share_id"]
+            print(f"✅ Share link created with token: {self.test_share_token}")
+        
+        # Get shared profile
+        if self.test_share_token:
+            success, response = self.run_test(
+                "Get Shared Profile",
+                "GET",
+                f"share/{self.test_share_token}",
+                200
+            )
+            if success and response.get("entity_type") == "family":
+                print("✅ Shared profile retrieved successfully")
+        
+        # Get QR code base64
+        if self.test_share_token:
+            success, response = self.run_test(
+                "Get QR Code Base64",
+                "GET",
+                f"share/{self.test_share_token}/qr-base64",
+                200
+            )
+            if success and response.get("qr_base64"):
+                print("✅ QR code generated successfully")
+        
+        # List my shares
+        success, response = self.run_test(
+            "List My Shares",
+            "GET",
+            "my-shares",
+            200
+        )
+        if success and isinstance(response.get("shares"), list):
+            print(f"✅ Found {len(response['shares'])} active shares")
+        
+        # Create share link for child (if available)
+        if self.test_child_id:
+            child_share_data = {
+                "entity_type": "child",
+                "entity_id": self.test_child_id,
+                "expires_days": 3
+            }
+            success, response = self.run_test(
+                "Create Share Link (Child)",
+                "POST",
+                "share/create",
+                200,
+                data=child_share_data
+            )
+            if success and response.get("share_token"):
+                print(f"✅ Child share link created")
+        
+        # Test invalid entity type
+        invalid_share_data = {
+            "entity_type": "invalid",
+            "entity_id": "test-id",
+            "expires_days": 7
+        }
+        success, response = self.run_test(
+            "Create Share Link (Invalid Type)",
+            "POST",
+            "share/create",
+            400,
+            data=invalid_share_data
+        )
+        
+        # Test non-existent entity
+        nonexistent_share_data = {
+            "entity_type": "family",
+            "entity_id": "non-existent-id",
+            "expires_days": 7
+        }
+        success, response = self.run_test(
+            "Create Share Link (Non-existent Entity)",
+            "POST",
+            "share/create",
+            404,
+            data=nonexistent_share_data
+        )
+
+    def test_birthday_reminders(self):
+        """Test Birthday Reminders APIs"""
+        print("\n" + "="*50)
+        print("TESTING BIRTHDAY REMINDERS")
+        print("="*50)
+        
+        # Get upcoming birthdays (default 30 days)
+        success, response = self.run_test(
+            "Get Upcoming Birthdays (30 days)",
+            "GET",
+            "birthdays/upcoming",
+            200
+        )
+        if success:
+            birthdays = response.get("upcoming_birthdays", [])
+            print(f"✅ Found {len(birthdays)} upcoming birthdays in next 30 days")
+        
+        # Get upcoming birthdays (7 days)
+        success, response = self.run_test(
+            "Get Upcoming Birthdays (7 days)",
+            "GET",
+            "birthdays/upcoming?days=7",
+            200
+        )
+        if success:
+            birthdays = response.get("upcoming_birthdays", [])
+            print(f"✅ Found {len(birthdays)} upcoming birthdays in next 7 days")
+        
+        # Get birthday reminder settings
+        success, response = self.run_test(
+            "Get Birthday Reminder Settings",
+            "GET",
+            "settings/birthday-reminders",
+            200
+        )
+        if success:
+            enabled = response.get("enabled", False)
+            reminder_days = response.get("reminder_days", [])
+            show_gift_hints = response.get("show_gift_hints", False)
+            print(f"✅ Birthday settings: enabled={enabled}, days={reminder_days}, hints={show_gift_hints}")
+        
+        # Set birthday reminder settings
+        settings_data = {
+            "enabled": True,
+            "reminder_days": [7, 1],
+            "show_gift_hints": True
+        }
+        success, response = self.run_test(
+            "Set Birthday Reminder Settings",
+            "POST",
+            "settings/birthday-reminders",
+            200,
+            data=settings_data
+        )
+        
+        # Verify settings were updated
+        success, response = self.run_test(
+            "Verify Birthday Settings Updated",
+            "GET",
+            "settings/birthday-reminders",
+            200
+        )
+        if success:
+            if (response.get("enabled") == True and 
+                response.get("reminder_days") == [7, 1] and 
+                response.get("show_gift_hints") == True):
+                print("✅ Birthday reminder settings updated correctly")
+            else:
+                print("❌ Birthday reminder settings not updated correctly")
+        
+        # Test different reminder settings
+        alt_settings_data = {
+            "enabled": False,
+            "reminder_days": [14, 7, 3, 1],
+            "show_gift_hints": False
+        }
+        success, response = self.run_test(
+            "Set Alternative Birthday Settings",
+            "POST",
+            "settings/birthday-reminders",
+            200,
+            data=alt_settings_data
+        )
+
     def test_cleanup(self):
         """Clean up test data"""
         print("\n" + "="*50)
