@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }) => {
         init();
     }, [checkPinStatus, checkOnboardingStatus]);
 
-    const completeOnboarding = async () => {
+    const completeOnboarding = useCallback(async () => {
         try {
             await axios.post(`${API}/settings/onboarding`, { completed: true });
             setHasCompletedOnboarding(true);
@@ -133,59 +133,73 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             console.error('Failed to save onboarding status:', err);
         }
-    };
+    }, []);
 
-    const setupPin = async (pin) => {
+    const setupPin = useCallback(async (pin) => {
         try {
             await axios.post(`${API}/auth/setup`, { pin });
             setPinExists(true);
             setIsAuthenticated(true);
-            setIsNewUser(true); // Mark as new user to show welcome page
+            setIsNewUser(true);
+            // Set fresh timestamp for new auth
+            localStorage.setItem(STORAGE_KEYS.AUTH_TIMESTAMP, Date.now().toString());
             return { success: true };
         } catch (err) {
             return { success: false, error: err.response?.data?.detail || 'Failed to set up PIN' };
         }
-    };
+    }, []);
 
-    const verifyPin = async (pin) => {
+    const verifyPin = useCallback(async (pin) => {
         try {
             await axios.post(`${API}/auth/verify`, { pin });
             setIsAuthenticated(true);
+            // Set fresh timestamp for new auth
+            localStorage.setItem(STORAGE_KEYS.AUTH_TIMESTAMP, Date.now().toString());
             return { success: true };
         } catch (err) {
             return { success: false, error: err.response?.data?.detail || 'Invalid PIN' };
         }
-    };
+    }, []);
 
-    const changePin = async (oldPin, newPin) => {
+    const changePin = useCallback(async (oldPin, newPin) => {
         try {
             await axios.post(`${API}/auth/change-pin`, { old_pin: oldPin, new_pin: newPin });
             return { success: true };
         } catch (err) {
             return { success: false, error: err.response?.data?.detail || 'Failed to change PIN' };
         }
-    };
+    }, []);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         setIsAuthenticated(false);
         setIsNewUser(false);
-        sessionStorage.removeItem('ourcircle_authenticated');
-        sessionStorage.removeItem('ourcircle_new_user');
+        setHasCompletedOnboarding(false);
+        // Clear all auth-related storage
+        try {
+            localStorage.removeItem(STORAGE_KEYS.AUTHENTICATED);
+            localStorage.removeItem(STORAGE_KEYS.NEW_USER);
+            localStorage.removeItem(STORAGE_KEYS.AUTH_TIMESTAMP);
+        } catch (e) {
+            console.error('Error clearing auth storage:', e);
+        }
+    }, []);
+
+    // Provide stable context value
+    const contextValue = {
+        isAuthenticated,
+        pinExists,
+        loading: loading || !initComplete,
+        hasCompletedOnboarding,
+        isNewUser,
+        setupPin,
+        verifyPin,
+        changePin,
+        logout,
+        completeOnboarding
     };
 
     return (
-        <AuthContext.Provider value={{
-            isAuthenticated,
-            pinExists,
-            loading,
-            hasCompletedOnboarding,
-            isNewUser,
-            setupPin,
-            verifyPin,
-            changePin,
-            logout,
-            completeOnboarding
-        }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );
