@@ -94,6 +94,66 @@ export const uiLayouts = [
         name: 'Ring System', 
         description: 'Priority-based concentric rings - core info first, details expand',
         vibe: 'Focused, layered, essential-first'
+    },
+    { 
+        id: 'glass_memory', 
+        name: 'Glass Memory', 
+        description: 'Frosted-glass cards floating over photos, premium and airy',
+        vibe: 'Premium, airy, futuristic'
+    },
+    { 
+        id: 'soft_neumorph', 
+        name: 'Soft Neumorph', 
+        description: 'Tactile inset panels that feel like a keepsake box',
+        vibe: 'Gentle, tactile, calm'
+    },
+    { 
+        id: 'family_kanban', 
+        name: 'Family Kanban', 
+        description: 'Horizontal lanes for School, Health, Moments, Goals - drag and drop',
+        vibe: 'Productive, visual, flexible'
+    },
+    { 
+        id: 'storyboard_reel', 
+        name: 'Storyboard Reel', 
+        description: 'Cinematic vertical reels - life plays like movie scenes',
+        vibe: 'Cinematic, emotional, story-driven'
+    },
+    { 
+        id: 'vault_mode', 
+        name: 'Vault Mode', 
+        description: 'Digital safe for important records and memories',
+        vibe: 'Secure, serious, archival'
+    },
+    { 
+        id: 'bubble_universe', 
+        name: 'Bubble Universe', 
+        description: 'Floating bubble nodes - tap to zoom, explore relationships',
+        vibe: 'Playful, exploratory, connected'
+    },
+    { 
+        id: 'command_palette', 
+        name: 'Command Palette', 
+        description: 'Search-first interface - type anything, instant results',
+        vibe: 'Fast, nerdy, power-user'
+    },
+    { 
+        id: 'memory_postcards', 
+        name: 'Memory Postcards', 
+        description: 'Swipeable postcard deck with dates, places, and notes',
+        vibe: 'Sentimental, tactile, nostalgic'
+    },
+    { 
+        id: 'whiteboard_canvas', 
+        name: 'Whiteboard Canvas', 
+        description: 'Infinite canvas for photos, notes, and connections',
+        vibe: 'Creative, messy-genius, freeform'
+    },
+    { 
+        id: 'focus_tunnel', 
+        name: 'Focus Tunnel', 
+        description: 'One profile at a time - everything else fades away',
+        vibe: 'Immersive, intentional, zen'
     }
 ];
 
