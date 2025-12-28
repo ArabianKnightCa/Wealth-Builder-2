@@ -153,6 +153,30 @@ backend:
         agent: "testing"
         comment: "Children CRUD operations working"
 
+  - task: "QR Profile Sharing APIs"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Phase 2 implementation complete - QR Profile Sharing endpoints added: create share link, get shared profile, QR code generation, list shares, delete shares"
+
+  - task: "Birthday Reminders APIs"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Phase 2 implementation complete - Birthday Reminders endpoints added: upcoming birthdays with gift hints, birthday reminder settings"
+
 frontend:
   - task: "Session Persistence"
     implemented: true
