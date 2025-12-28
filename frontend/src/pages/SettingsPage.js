@@ -157,8 +157,8 @@ export default function SettingsPage() {
                                 <CardDescription>Choose how your app looks and feels</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    {uiLayouts.filter(l => !l.comingSoon).map(layout => (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {uiLayouts.map(layout => (
                                         <button
                                             key={layout.id}
                                             onClick={() => updateLayout(layout.id)}
@@ -173,7 +173,7 @@ export default function SettingsPage() {
                                         >
                                             <h4 className="font-semibold text-foreground mb-1">{layout.name}</h4>
                                             <p className="text-xs text-muted-foreground mb-2">{layout.vibe}</p>
-                                            <p className="text-xs text-muted-foreground">{layout.description}</p>
+                                            <p className="text-xs text-muted-foreground line-clamp-2">{layout.description}</p>
                                             {currentLayout === layout.id && (
                                                 <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
                                                     <Check className="w-3.5 h-3.5 text-primary-foreground" />
@@ -181,21 +181,6 @@ export default function SettingsPage() {
                                             )}
                                         </button>
                                     ))}
-                                </div>
-                                
-                                {/* Coming Soon Layouts */}
-                                <div className="mt-6">
-                                    <p className="text-sm text-muted-foreground mb-3">Coming Soon</p>
-                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                        {uiLayouts.filter(l => l.comingSoon).map(layout => (
-                                            <div
-                                                key={layout.id}
-                                                className="p-3 rounded-lg border border-dashed border-border opacity-50"
-                                            >
-                                                <p className="text-xs font-medium text-muted-foreground">{layout.name}</p>
-                                            </div>
-                                        ))}
-                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
