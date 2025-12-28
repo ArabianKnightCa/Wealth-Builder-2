@@ -127,6 +127,9 @@ export default function WarmScrapbookDashboard() {
             </header>
 
             <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+                {/* Birthday Reminders */}
+                <BirthdayReminders />
+
                 {/* Title Section */}
                 <div className="text-center mb-10">
                     <h2 className="text-3xl font-bold mb-2" style={{ color: '#5C4A3A', fontFamily: 'Georgia, serif' }}>
