@@ -582,7 +582,7 @@ def main():
         # Test user profiles as specified in review request
         test_profiles = {
             "Child": {
-                "email": "child.test@example.com",
+                "email": f"child.test.{int(time.time())}@example.com",
                 "password": "TestPass123!",
                 "first_name": "Emma",
                 "date_of_birth": "2019-01-15",  # 6 years old
@@ -595,7 +595,7 @@ def main():
                 "custom_goals": []
             },
             "Expert": {
-                "email": "expert.test@example.com", 
+                "email": f"expert.test.{int(time.time())}@example.com", 
                 "password": "TestPass123!",
                 "first_name": "Michael",
                 "date_of_birth": "1990-01-15",  # 35 years old
