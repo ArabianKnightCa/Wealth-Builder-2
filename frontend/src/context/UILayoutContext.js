@@ -27,50 +27,43 @@ export const uiLayouts = [
         id: 'playful_pop', 
         name: 'Playful Pop', 
         description: 'Fun, kid-energy with icon categories and bright accents',
-        vibe: 'Energetic, fun, family-friendly',
-        comingSoon: true
+        vibe: 'Energetic, fun, family-friendly'
     },
     { 
         id: 'dark_detective', 
-        name: 'Dark Mode Detective', 
+        name: 'Dark Detective', 
         description: 'Top secret dossier vibe with dark theme and timeline feed',
-        vibe: 'Mysterious, high-contrast, secure',
-        comingSoon: true
+        vibe: 'Mysterious, high-contrast, secure'
     },
     { 
         id: 'family_tree', 
-        name: 'Family Tree Hybrid', 
+        name: 'Family Tree', 
         description: 'Modern genealogy meets real-life notes with tree view',
-        vibe: 'Connected, visual hierarchy, elegant',
-        comingSoon: true
+        vibe: 'Connected, visual hierarchy, elegant'
     },
     { 
         id: 'album_grid', 
         name: 'Album Grid', 
         description: 'Photo-first, memory-heavy, scrapbook-but-modern',
-        vibe: 'Visual, nostalgic, warm',
-        comingSoon: true
+        vibe: 'Visual, nostalgic, warm'
     },
     { 
         id: 'modern_cards', 
         name: 'Modern Cards', 
         description: 'App-store slick, fast, clean, highly touch-friendly',
-        vibe: 'Speedy, modern, intuitive',
-        comingSoon: true
+        vibe: 'Speedy, modern, intuitive'
     },
     { 
         id: 'minimal_text', 
         name: 'Minimal Text', 
         description: 'Notes-first, ultra-readable, low visual noise',
-        vibe: 'Calm, readable, focused',
-        comingSoon: true
+        vibe: 'Calm, readable, focused'
     },
     { 
         id: 'dashboard_pro', 
         name: 'Dashboard Pro', 
         description: 'Command center for big families and power users',
-        vibe: 'Powerful, data-rich, efficient',
-        comingSoon: true
+        vibe: 'Powerful, data-rich, efficient'
     }
 ];
 

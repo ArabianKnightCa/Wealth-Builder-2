@@ -15,6 +15,13 @@ import ChildDossier from "./pages/ChildDossier";
 import WarmScrapbookDashboard from "./layouts/WarmScrapbook/Dashboard";
 import CleanClinicalDashboard from "./layouts/CleanClinical/Dashboard";
 import TimelineFirstDashboard from "./layouts/TimelineFirst/Dashboard";
+import PlayfulPopDashboard from "./layouts/PlayfulPop/Dashboard";
+import DarkDetectiveDashboard from "./layouts/DarkDetective/Dashboard";
+import FamilyTreeDashboard from "./layouts/FamilyTree/Dashboard";
+import AlbumGridDashboard from "./layouts/AlbumGrid/Dashboard";
+import ModernCardsDashboard from "./layouts/ModernCards/Dashboard";
+import MinimalTextDashboard from "./layouts/MinimalText/Dashboard";
+import DashboardProDashboard from "./layouts/DashboardPro/Dashboard";
 
 const LayoutRouter = () => {
     const { currentLayout } = useUILayout();
@@ -24,6 +31,20 @@ const LayoutRouter = () => {
             return <CleanClinicalDashboard />;
         case 'timeline_first':
             return <TimelineFirstDashboard />;
+        case 'playful_pop':
+            return <PlayfulPopDashboard />;
+        case 'dark_detective':
+            return <DarkDetectiveDashboard />;
+        case 'family_tree':
+            return <FamilyTreeDashboard />;
+        case 'album_grid':
+            return <AlbumGridDashboard />;
+        case 'modern_cards':
+            return <ModernCardsDashboard />;
+        case 'minimal_text':
+            return <MinimalTextDashboard />;
+        case 'dashboard_pro':
+            return <DashboardProDashboard />;
         case 'warm_scrapbook':
         default:
             return <WarmScrapbookDashboard />;
