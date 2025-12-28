@@ -212,6 +212,22 @@ async def set_theme(data: ThemeUpdate):
     )
     return {"success": True, "theme": data.theme}
 
+@api_router.get("/settings/onboarding")
+async def get_onboarding_status():
+    """Check if user has completed onboarding"""
+    settings = await db.settings.find_one({"type": "onboarding"}, {"_id": 0})
+    return {"completed": settings.get("completed", False) if settings else False}
+
+@api_router.post("/settings/onboarding")
+async def set_onboarding_status(data: dict):
+    """Set onboarding completion status"""
+    await db.settings.update_one(
+        {"type": "onboarding"},
+        {"$set": {"completed": data.get("completed", True), "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    return {"success": True, "completed": data.get("completed", True)}
+
 # ============== FAMILY ROUTES ==============
 
 @api_router.get("/families")

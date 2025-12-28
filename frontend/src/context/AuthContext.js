@@ -9,10 +9,13 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [pinExists, setPinExists] = useState(null);
+    const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+    const [isNewUser, setIsNewUser] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         checkPinStatus();
+        checkOnboardingStatus();
     }, []);
 
     const checkPinStatus = async () => {
@@ -27,11 +30,31 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const checkOnboardingStatus = async () => {
+        try {
+            const res = await axios.get(`${API}/settings/onboarding`);
+            setHasCompletedOnboarding(res.data.completed);
+        } catch (err) {
+            setHasCompletedOnboarding(false);
+        }
+    };
+
+    const completeOnboarding = async () => {
+        try {
+            await axios.post(`${API}/settings/onboarding`, { completed: true });
+            setHasCompletedOnboarding(true);
+            setIsNewUser(false);
+        } catch (err) {
+            console.error('Failed to save onboarding status:', err);
+        }
+    };
+
     const setupPin = async (pin) => {
         try {
             await axios.post(`${API}/auth/setup`, { pin });
             setPinExists(true);
             setIsAuthenticated(true);
+            setIsNewUser(true); // Mark as new user to show welcome page
             return { success: true };
         } catch (err) {
             return { success: false, error: err.response?.data?.detail || 'Failed to set up PIN' };
@@ -59,6 +82,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setIsAuthenticated(false);
+        setIsNewUser(false);
     };
 
     return (
@@ -66,10 +90,13 @@ export const AuthProvider = ({ children }) => {
             isAuthenticated,
             pinExists,
             loading,
+            hasCompletedOnboarding,
+            isNewUser,
             setupPin,
             verifyPin,
             changePin,
-            logout
+            logout,
+            completeOnboarding
         }}>
             {children}
         </AuthContext.Provider>

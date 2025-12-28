@@ -5,12 +5,13 @@ import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import PinEntry from "./pages/PinEntry";
+import WelcomePage from "./pages/WelcomePage";
 import Dashboard from "./pages/Dashboard";
 import FamilyDetail from "./pages/FamilyDetail";
 import ChildDossier from "./pages/ChildDossier";
 
 const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
+    const { isAuthenticated, loading, hasCompletedOnboarding, isNewUser, completeOnboarding } = useAuth();
     
     if (loading) {
         return (
@@ -22,6 +23,11 @@ const ProtectedRoute = ({ children }) => {
     
     if (!isAuthenticated) {
         return <Navigate to="/pin" replace />;
+    }
+
+    // Show welcome page for new users who haven't completed onboarding
+    if (isNewUser && !hasCompletedOnboarding) {
+        return <WelcomePage onComplete={completeOnboarding} />;
     }
     
     return children;
