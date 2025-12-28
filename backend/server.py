@@ -1149,11 +1149,13 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
         # Fallback: no transformation if user not found
         quiz_questions = []
         for q in questions:
+            # Still need to normalize options format
+            normalized_options = normalize_quiz_options(q.get('options', {}))
             quiz_questions.append({
                 "id": q['id'],
-                "question_text": q['question_text'],
-                "options": q['options'],
-                "order": q['order']
+                "question_text": q.get('question_text', ''),
+                "options": normalized_options,
+                "order": q.get('order', 0)
             })
     
     return {
