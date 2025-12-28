@@ -115,18 +115,40 @@ def simplify_quiz_option(option_text: str) -> str:
     """Simplify quiz option for children."""
     t = option_text.lower()
     
-    # Common patterns
+    # Common patterns from actual quiz content
     if "exchange goods" in t or "medium of exchange" in t:
         return "To trade things easily"
     elif "store of value" in t or "stores value" in t:
         return "To save for later"
     elif "unit of account" in t:
         return "To know how much things cost"
-    elif "barter" in t:
+    elif "barter" in t or "timing problem" in t:
         return "Trading without money"
+    elif "government" in t and ("standardize" in t or "regulate" in t or "trust" in t):
+        return "The government helps everyone trust money"
     elif "government" in t and "print" in t:
         return "The government makes it"
-    elif "emergency fund" in t:
+    elif "durable" in t or "doesn't spoil" in t:
+        return "Money doesn't go bad like food"
+    elif "universally accepted" in t or "simpler than finding" in t:
+        return "Everyone accepts money"
+    elif "solve" in t and ("problem" in t or "bigger" in t) and "skill" in t:
+        return "Learning skills that help others"
+    elif "luck" in t and ("family wealth" in t or "inherited" in t):
+        return "Being lucky or born rich"
+    elif "work" in t and "longer hours" in t:
+        return "Working more hours"
+    elif "government policies" in t or "tax" in t or "regulations" in t:
+        return "Rules made by leaders"
+    elif "compound" in t:
+        return "Your money can grow by itself"
+    elif "discipline" in t or "consistent" in t:
+        return "Being careful with money"
+    elif "exponential" in t:
+        return "Growing faster and faster"
+    elif "satisfaction" in t or "watching" in t and "balance" in t:
+        return "Feeling good when you save"
+    elif "emergency" in t:
         return "Money for surprises"
     elif "helps you plan" in t or "track spending" in t:
         return "Helps you plan your money"
@@ -134,15 +156,22 @@ def simplify_quiz_option(option_text: str) -> str:
         return "Pay back what you owe"
     elif "save money" in t or "saving" in t:
         return "Keep money for later"
-    elif "compound interest" in t:
-        return "Your money can grow"
     elif "all of the above" in t:
         return "All of these"
     elif "none of the above" in t:
         return "None of these"
-    else:
-        # Basic simplification
-        return option_text.replace("financial", "money").replace("typically", "usually")
+    
+    # Length-based simplification for very long options
+    if len(option_text) > 80:
+        # Extract key phrase - take first clause or simplify
+        words = option_text.split()
+        if len(words) > 12:
+            # Try to find a natural break point
+            simplified = ' '.join(words[:10]) + '...'
+            return simplified.replace("financial", "money").replace("typically", "usually")
+    
+    # Basic word replacement
+    return option_text.replace("financial", "money").replace("typically", "usually").replace("transactions", "trades")
 
 # PPI Trait Vector System (Option A: Trait Tags + Shared Weight Templates)
 from ppi_trait_vector import (
