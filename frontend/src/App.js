@@ -28,6 +28,16 @@ import ChatbookDashboard from "./layouts/Chatbook/Dashboard";
 import FlashcardModeDashboard from "./layouts/FlashcardMode/Dashboard";
 import BookChaptersDashboard from "./layouts/BookChapters/Dashboard";
 import RingSystemDashboard from "./layouts/RingSystem/Dashboard";
+import GlassMemoryDashboard from "./layouts/GlassMemory/Dashboard";
+import SoftNeumorphDashboard from "./layouts/SoftNeumorph/Dashboard";
+import FamilyKanbanDashboard from "./layouts/FamilyKanban/Dashboard";
+import StoryboardReelDashboard from "./layouts/StoryboardReel/Dashboard";
+import VaultModeDashboard from "./layouts/VaultMode/Dashboard";
+import BubbleUniverseDashboard from "./layouts/BubbleUniverse/Dashboard";
+import CommandPaletteDashboard from "./layouts/CommandPalette/Dashboard";
+import MemoryPostcardsDashboard from "./layouts/MemoryPostcards/Dashboard";
+import WhiteboardCanvasDashboard from "./layouts/WhiteboardCanvas/Dashboard";
+import FocusTunnelDashboard from "./layouts/FocusTunnel/Dashboard";
 
 const LayoutRouter = () => {
     const { currentLayout } = useUILayout();
@@ -61,6 +71,26 @@ const LayoutRouter = () => {
             return <BookChaptersDashboard />;
         case 'ring_system':
             return <RingSystemDashboard />;
+        case 'glass_memory':
+            return <GlassMemoryDashboard />;
+        case 'soft_neumorph':
+            return <SoftNeumorphDashboard />;
+        case 'family_kanban':
+            return <FamilyKanbanDashboard />;
+        case 'storyboard_reel':
+            return <StoryboardReelDashboard />;
+        case 'vault_mode':
+            return <VaultModeDashboard />;
+        case 'bubble_universe':
+            return <BubbleUniverseDashboard />;
+        case 'command_palette':
+            return <CommandPaletteDashboard />;
+        case 'memory_postcards':
+            return <MemoryPostcardsDashboard />;
+        case 'whiteboard_canvas':
+            return <WhiteboardCanvasDashboard />;
+        case 'focus_tunnel':
+            return <FocusTunnelDashboard />;
         case 'warm_scrapbook':
         default:
             return <WarmScrapbookDashboard />;
