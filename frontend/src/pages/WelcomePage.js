@@ -27,13 +27,13 @@ export default function WelcomePage({ onComplete }) {
         }
     };
 
-    const availableLayouts = uiLayouts.filter(l => !l.comingSoon);
+    const availableLayouts = uiLayouts;
 
     return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 noise-overlay relative">
-            <div className="w-full max-w-4xl animate-slide-up">
+            <div className="w-full max-w-5xl animate-slide-up">
                 {/* Header */}
-                <div className="text-center mb-10">
+                <div className="text-center mb-8">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
                         {step === 1 ? <Layout className="w-8 h-8 text-primary" /> : <Palette className="w-8 h-8 text-primary" />}
                     </div>
@@ -54,8 +54,8 @@ export default function WelcomePage({ onComplete }) {
                 </div>
 
                 {step === 1 ? (
-                    /* Layout Selection */
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+                    /* Layout Selection - Grid of 10 */
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8 max-h-[50vh] overflow-y-auto p-1">
                         {availableLayouts.map((layout, index) => {
                             const isActive = selectedLayout === layout.id;
                             return (
@@ -63,28 +63,23 @@ export default function WelcomePage({ onComplete }) {
                                     key={layout.id}
                                     onClick={() => handleLayoutSelect(layout.id)}
                                     className={`
-                                        relative p-6 rounded-2xl border-2 text-left transition-all duration-300
+                                        relative p-4 rounded-xl border-2 text-left transition-all duration-300
                                         animate-slide-up opacity-0
                                         ${isActive 
                                             ? 'border-primary shadow-lg scale-105 ring-2 ring-primary/20 bg-primary/5' 
                                             : 'border-border hover:border-primary/50 bg-card'
                                         }
                                     `}
-                                    style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'forwards' }}
+                                    style={{ animationDelay: `${index * 0.03}s`, animationFillMode: 'forwards' }}
                                     data-testid={`welcome-layout-${layout.id}`}
                                 >
-                                    {/* Layout Preview Icon */}
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                                        <Layout className="w-6 h-6 text-primary" />
-                                    </div>
-                                    
-                                    <h3 className="text-lg font-bold text-foreground mb-1">{layout.name}</h3>
-                                    <p className="text-sm text-primary font-medium mb-2">{layout.vibe}</p>
-                                    <p className="text-sm text-muted-foreground">{layout.description}</p>
+                                    <h3 className="text-sm font-bold text-foreground mb-1 truncate">{layout.name}</h3>
+                                    <p className="text-xs text-primary font-medium mb-1 truncate">{layout.vibe}</p>
+                                    <p className="text-xs text-muted-foreground line-clamp-2">{layout.description}</p>
 
                                     {isActive && (
-                                        <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-md animate-scale-in">
-                                            <Check className="w-4 h-4 text-primary-foreground" />
+                                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-md animate-scale-in">
+                                            <Check className="w-3.5 h-3.5 text-primary-foreground" />
                                         </div>
                                     )}
                                 </button>
