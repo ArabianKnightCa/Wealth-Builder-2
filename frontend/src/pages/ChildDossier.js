@@ -755,39 +755,15 @@ export default function ChildDossier() {
                                             className="mt-1.5"
                                         />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <Label>Primary Love Language</Label>
-                                            <Select
-                                                value={formData.personality?.primary_love_language || ''}
-                                                onValueChange={v => updateField('personality', 'primary_love_language', v)}
-                                            >
-                                                <SelectTrigger className="mt-1.5">
-                                                    <SelectValue placeholder="Select" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {LOVE_LANGUAGES.map(lang => (
-                                                        <SelectItem key={lang} value={lang}>{lang}</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div>
-                                            <Label>Secondary Love Language</Label>
-                                            <Select
-                                                value={formData.personality?.secondary_love_language || ''}
-                                                onValueChange={v => updateField('personality', 'secondary_love_language', v)}
-                                            >
-                                                <SelectTrigger className="mt-1.5">
-                                                    <SelectValue placeholder="Select" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {LOVE_LANGUAGES.map(lang => (
-                                                        <SelectItem key={lang} value={lang}>{lang}</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                    
+                                    {/* Love Languages with Explanations */}
+                                    <div className="pt-4 border-t border-border">
+                                        <LoveLanguageSelector
+                                            primaryValue={formData.personality?.primary_love_language}
+                                            secondaryValue={formData.personality?.secondary_love_language}
+                                            onPrimaryChange={v => updateField('personality', 'primary_love_language', v)}
+                                            onSecondaryChange={v => updateField('personality', 'secondary_love_language', v)}
+                                        />
                                     </div>
                                 </CardContent>
                             </Card>
