@@ -154,6 +154,36 @@ export const uiLayouts = [
         name: 'Focus Tunnel', 
         description: 'One profile at a time - everything else fades away',
         vibe: 'Immersive, intentional, zen'
+    },
+    { 
+        id: 'story_command', 
+        name: 'Feel → Jump', 
+        description: 'Storyboard + Command Palette hybrid - emotion first, power on demand',
+        vibe: 'Cinematic stories + instant search overlay'
+    },
+    { 
+        id: 'control_heart', 
+        name: 'Control Room with Heart', 
+        description: 'Dashboard widgets that open into warm scrapbook pages',
+        vibe: 'Logic leads, emotion retains'
+    },
+    { 
+        id: 'timeline_postcards', 
+        name: 'History You Can Hold', 
+        description: 'Life timeline with flippable postcard memories',
+        vibe: 'Structure without coldness'
+    },
+    { 
+        id: 'bubble_tree', 
+        name: 'Living Relationships', 
+        description: 'Floating bubbles that snap into family tree on zoom',
+        vibe: 'Playful exploration + clear hierarchy'
+    },
+    { 
+        id: 'kanban_focus', 
+        name: 'One Thing at a Time', 
+        description: 'Kanban lanes with focus mode - tap to isolate',
+        vibe: 'Zero overwhelm, pure momentum'
     }
 ];
 
