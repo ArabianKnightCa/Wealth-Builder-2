@@ -646,6 +646,8 @@ class OurCircleAPITester:
             self.test_family_crud()
             self.test_children_crud()
             self.test_timeline_crud()
+            self.test_qr_profile_sharing()
+            self.test_birthday_reminders()
             self.test_cleanup()
         except Exception as e:
             print(f"\n❌ Test suite failed with error: {str(e)}")
