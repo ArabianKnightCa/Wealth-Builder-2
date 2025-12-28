@@ -10,6 +10,7 @@ import WelcomePage from "./pages/WelcomePage";
 import SettingsPage from "./pages/SettingsPage";
 import FamilyDetail from "./pages/FamilyDetail";
 import ChildDossier from "./pages/ChildDossier";
+import SharedProfile from "./pages/SharedProfile";
 
 // Layout-specific Dashboards
 import WarmScrapbookDashboard from "./layouts/WarmScrapbook/Dashboard";
