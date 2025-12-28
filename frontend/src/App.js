@@ -23,6 +23,11 @@ import AlbumGridDashboard from "./layouts/AlbumGrid/Dashboard";
 import ModernCardsDashboard from "./layouts/ModernCards/Dashboard";
 import MinimalTextDashboard from "./layouts/MinimalText/Dashboard";
 import DashboardProDashboard from "./layouts/DashboardPro/Dashboard";
+import MapViewDashboard from "./layouts/MapView/Dashboard";
+import ChatbookDashboard from "./layouts/Chatbook/Dashboard";
+import FlashcardModeDashboard from "./layouts/FlashcardMode/Dashboard";
+import BookChaptersDashboard from "./layouts/BookChapters/Dashboard";
+import RingSystemDashboard from "./layouts/RingSystem/Dashboard";
 
 const LayoutRouter = () => {
     const { currentLayout } = useUILayout();
@@ -46,6 +51,16 @@ const LayoutRouter = () => {
             return <MinimalTextDashboard />;
         case 'dashboard_pro':
             return <DashboardProDashboard />;
+        case 'map_view':
+            return <MapViewDashboard />;
+        case 'chatbook':
+            return <ChatbookDashboard />;
+        case 'flashcard_mode':
+            return <FlashcardModeDashboard />;
+        case 'book_chapters':
+            return <BookChaptersDashboard />;
+        case 'ring_system':
+            return <RingSystemDashboard />;
         case 'warm_scrapbook':
         default:
             return <WarmScrapbookDashboard />;
