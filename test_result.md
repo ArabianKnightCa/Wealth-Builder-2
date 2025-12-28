@@ -412,16 +412,16 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 7
+  test_sequence: 8
   run_ui: true
 
 test_plan:
   current_focus:
-    - "QR Profile Sharing UI"
-    - "QR Share Manager in Settings"
-    - "Birthday Reminders on Dashboard"
-    - "Child Dossier QR Button"
-    - "Shared Profile Page (Public Route)"
+    - "Map View Layout"
+    - "Chatbook Layout"
+    - "Flashcard Mode Layout"
+    - "Book Chapters Layout"
+    - "Ring System Layout"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
