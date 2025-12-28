@@ -192,14 +192,22 @@ export default function FamilyDetail() {
                 {/* Actions Bar */}
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-semibold text-foreground">Children</h2>
-                    <Button 
-                        onClick={() => setShowAddModal(true)}
-                        className="gap-2 rounded-full"
-                        data-testid="add-child-btn"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add Child
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <QRShareButton 
+                            entityType="family" 
+                            entityId={familyId} 
+                            entityName={family?.family_name}
+                            variant="outline"
+                        />
+                        <Button 
+                            onClick={() => setShowAddModal(true)}
+                            className="gap-2 rounded-full"
+                            data-testid="add-child-btn"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Add Child
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Children List */}
