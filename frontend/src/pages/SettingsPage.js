@@ -374,15 +374,10 @@ export default function SettingsPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-lg">Share & Connect</CardTitle>
+                                <CardDescription>Share profiles with other OurCircle users via QR codes</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button variant="outline" className="w-full justify-between" disabled>
-                                    <span className="flex items-center gap-2">
-                                        <QrCode className="w-4 h-4" />
-                                        Generate Profile QR Code
-                                    </span>
-                                    <span className="text-xs text-muted-foreground">Coming Soon</span>
-                                </Button>
+                                <QRShareManager />
                             </CardContent>
                         </Card>
 
