@@ -129,6 +129,8 @@ function AppContent() {
                         </ProtectedRoute>
                     } 
                 />
+                {/* Public route for shared profiles - no auth required */}
+                <Route path="/shared/:shareToken" element={<SharedProfile />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <Toaster position="top-center" richColors />
