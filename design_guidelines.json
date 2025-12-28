@@ -1,0 +1,202 @@
+{
+  "identity": {
+    "name": "OurCircle",
+    "persona": "The Anti-AI Designer (E1)",
+    "tone": "Warm, Intimate, Secure, Playful yet Organized",
+    "audience": "Parents, Grandparents, Caregivers",
+    "core_values": ["Privacy (PIN)", "Memory Preservation", "Child-Centric", "Visual Storytelling"]
+  },
+  "typography": {
+    "headings": {
+      "family": "Nunito, sans-serif",
+      "weights": ["700", "800"],
+      "usage": "All section titles, modal headers, and feature names. Use tight tracking."
+    },
+    "body": {
+      "family": "Outfit, sans-serif",
+      "weights": ["400", "500"],
+      "usage": "General text, form labels, dossier details."
+    },
+    "mono": {
+      "family": "JetBrains Mono, monospace",
+      "usage": "PIN entry, dates, technical data."
+    },
+    "installation": "Import from Google Fonts: @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');"
+  },
+  "colors": {
+    "strategy": "10 Selectable Themes via CSS Variables. Default is 'Classic Warmth'.",
+    "themes": {
+      "theme_1_classic_warmth": {
+        "name": "Classic Warmth",
+        "primary": "#D97757",
+        "background": "#FDFBF7",
+        "foreground": "#2D2A26",
+        "card": "#FFFFFF",
+        "border": "#E6E1DB",
+        "accent": "#F2EBE6"
+      },
+      "theme_2_ocean_breeze": {
+        "name": "Ocean Breeze",
+        "primary": "#4A90E2",
+        "background": "#F0F8FF",
+        "foreground": "#1A365D",
+        "card": "#FFFFFF",
+        "border": "#D1E3F8",
+        "accent": "#E1EFFE"
+      },
+      "theme_3_forest_walk": {
+        "name": "Forest Walk",
+        "primary": "#2F855A",
+        "background": "#F2F7F4",
+        "foreground": "#1C4532",
+        "card": "#FFFFFF",
+        "border": "#C6F6D5",
+        "accent": "#E6FFFA"
+      },
+      "theme_4_lavender_dream": {
+        "name": "Lavender Dream",
+        "primary": "#805AD5",
+        "background": "#FAF5FF",
+        "foreground": "#44337A",
+        "card": "#FFFFFF",
+        "border": "#E9D8FD",
+        "accent": "#F3E8FF"
+      },
+      "theme_5_sunny_day": {
+        "name": "Sunny Day",
+        "primary": "#D69E2E",
+        "background": "#FFFFF0",
+        "foreground": "#744210",
+        "card": "#FFFFFF",
+        "border": "#FEEBC8",
+        "accent": "#FEFCBF"
+      },
+      "theme_6_midnight_story": {
+        "name": "Midnight Story",
+        "primary": "#F6AD55",
+        "background": "#1A202C",
+        "foreground": "#F7FAFC",
+        "card": "#2D3748",
+        "border": "#4A5568",
+        "accent": "#2C5282"
+      },
+      "theme_7_cherry_blossom": {
+        "name": "Cherry Blossom",
+        "primary": "#ED64A6",
+        "background": "#FFF5F7",
+        "foreground": "#702459",
+        "card": "#FFFFFF",
+        "border": "#FED7E2",
+        "accent": "#FFF0F6"
+      },
+      "theme_8_slate_stone": {
+        "name": "Slate & Stone",
+        "primary": "#4A5568",
+        "background": "#F7FAFC",
+        "foreground": "#1A202C",
+        "card": "#FFFFFF",
+        "border": "#CBD5E0",
+        "accent": "#EDF2F7"
+      },
+      "theme_9_earth_clay": {
+        "name": "Earth & Clay",
+        "primary": "#9C4221",
+        "background": "#FFFAF0",
+        "foreground": "#431407",
+        "card": "#FFFFFF",
+        "border": "#FBD38D",
+        "accent": "#FEEBC8"
+      },
+      "theme_10_playful_pop": {
+        "name": "Playful Pop",
+        "primary": "#E53E3E",
+        "background": "#FFF5F5",
+        "foreground": "#1A202C",
+        "card": "#FFFFFF",
+        "border": "#FC8181",
+        "accent": "#FED7D7"
+      }
+    },
+    "usage_rules": "Apply these colors to CSS variables (--primary, --background, etc.) dynamically based on user selection. Use 'data-theme' attribute on the body tag."
+  },
+  "layout": {
+    "grid_system": "Bento Grid (Mode A) for Dashboards. Asymmetric layouts.",
+    "spacing": "Generous. Use p-6 or p-8 for cards. Gap-6 for grids.",
+    "container": "Max-width 1200px, centered, but with asymmetric internal alignment.",
+    "mobile": "Single column, vertical stacking. Timeline becomes left-aligned with nodes on the left."
+  },
+  "components": {
+    "buttons": {
+      "style": "Pill-shaped (rounded-full).",
+      "interaction": "Scale down slightly on click (active:scale-95). Hover: brightness-110.",
+      "shadow": "shadow-md hover:shadow-lg transition-all"
+    },
+    "cards": {
+      "style": "Rounded-xl or Rounded-2xl. Border-1px. Soft shadow.",
+      "hover": "Hover: -translate-y-1 transition-transform duration-300."
+    },
+    "inputs": {
+      "style": "Rounded-lg. Bg-muted/30. Border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20."
+    },
+    "timeline": {
+      "style": "Vertical line (2px solid border-primary/20). Nodes are circular images or icons. Cards alternate left/right on desktop.",
+      "mobile_style": "Line on left (ml-4). Cards on right."
+    },
+    "tabs": {
+      "style": "Pill-shaped indicators. Active tab: bg-primary text-primary-foreground. Inactive: text-muted-foreground hover:text-foreground."
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Subtle noise overlay (opacity 0.03) on backgrounds to reduce digital flatness.",
+    "glassmorphism": "Use backdrop-blur-md for sticky headers and modals. bg-background/80.",
+    "illustrations": "Use abstract shapes or soft blobs in the background for 'Playful' themes.",
+    "icons": "Lucide-React (Rounded). Stroke width 2px for warmth."
+  },
+  "motion": {
+    "page_transition": "Fade in + Slide up (10px). Duration 0.4s ease-out.",
+    "hover_effects": "Spring physics for buttons. Smooth color transitions.",
+    "list_entrance": "Staggered fade-in for dossier items and timeline events."
+  },
+  "image_urls": {
+    "family_placeholders": [
+      "https://images.unsplash.com/photo-1597698194747-41e7a1bd4b19?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1597698125420-e6201dd444ff?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1597524624057-0a3cba4d77b1?crop=entropy&cs=srgb&fm=jpg&q=85"
+    ],
+    "child_placeholders": [
+      "https://images.unsplash.com/photo-1750926013473-81a338a6b397?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1744570453902-c6fbb2aca4b8?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1649790739936-956e71a39915?crop=entropy&cs=srgb&fm=jpg&q=85"
+    ],
+    "background_textures": [
+      "https://images.unsplash.com/photo-1655087751252-8d29e1bb6b32?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1664448213918-42cb76919f76?crop=entropy&cs=srgb&fm=jpg&q=85"
+    ]
+  },
+  "instructions_to_main_agent": {
+    "general": "You are building a React + FastAPI app. Focus on the Frontend visual polish.",
+    "theme_implementation": "Create a ThemeContext that manages the current theme. Apply the theme class or data-attribute to the document root. Define the CSS variables for each theme in index.css or a separate themes.css file.",
+    "pin_auth": "Create a dedicated PIN entry component. It should look like a mobile unlock screen. 4-6 large circular inputs.",
+    "dossier_structure": "The Child Dossier is the heart of the app. Use a Tabbed layout: [Identity, School, Favorites, Personality]. Each tab should have a distinct layout, not just a list of inputs.",
+    "timeline_feature": "The Relationship Timeline must be visually engaging. Use the 'vertical line' pattern. Allow adding photos to timeline events.",
+    "photo_storage": "Remember photos are Base64 strings. Ensure <img> tags handle 'data:image/...' sources correctly. Optimize for performance (lazy load).",
+    "universal_guidelines": "Follow the UNIVERSAL GUIDELINES FOR MAIN AGENT provided in the prompt. No gradients for dark colors. Use Sonner for toasts. Use Shadcn components but customize them."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts"
+  ]
+}
