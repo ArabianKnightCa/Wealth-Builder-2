@@ -14,6 +14,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../../components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useAuth } from '../../context/AuthContext';
+import BirthdayReminders from '../../components/BirthdayReminders';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
