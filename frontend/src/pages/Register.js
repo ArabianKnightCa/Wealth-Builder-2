@@ -703,7 +703,7 @@ function Register({ onLogin }) {
                 </button>
                 <button 
                   type="button"
-                  onClick={() => setCurrentPage(3)}
+                  onClick={handlePage2ToGoals}
                   className="btn-primary flex-1" 
                   data-testid="continue-to-goals-btn"
                 >
