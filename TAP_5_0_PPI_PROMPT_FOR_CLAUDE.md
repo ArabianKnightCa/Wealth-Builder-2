@@ -656,7 +656,7 @@ For each question across all layers, provide:
 ```json
 {
   "question_id": "PPI_L#_Q##",
-  "layer": 1-6,
+  "layer": 1-7,
   "question_text_baseline": "Question in neutral tone, average adult, EL 3",
   "options": [
     {"letter": "A", "text": "Option text", "delta_weights": {...}},
@@ -667,8 +667,30 @@ For each question across all layers, provide:
   "traits_measured": ["Trait1", "Trait2", ...],
   "el_validation_domain": "domain_name or null",
   "parent_questions": ["PPI_L#_Q##", ...],
-  "depth_level": "shallow|medium|deep_psychology|core_psychology|precision_refinement|nuanced_mastery",
+  "depth_level": "shallow|medium|deep_psychology|core_psychology|precision_refinement|nuanced_mastery|maximum_resolution",
   "tap_adaptation_notes": "Guidance for how TAP should adapt this question",
+  "age_range_suitability": [6, 99],
+  "el_range_suitability": [1, 5]
+}
+```
+
+### Layer 7 Extended Schema
+
+For Layer 7 questions specifically, include additional fields:
+
+```json
+{
+  "question_id": "PPI_L7_Q##",
+  "layer": 7,
+  "parent_questions": ["full lineage from L1 through L6"],
+  "depth_level": "maximum_resolution",
+  "validation_type": "final_cross_validation",
+  "confidence_impact": "critical",
+  "edge_case_handling": "extreme_conditions",
+  "edge_case_category": "time_pressure|high_stakes|conflicting_values|social_pressure|uncertainty|recovery|windfall|sacrifice",
+  "traits_measured": ["applicable VIA traits"],
+  "el_validation_domain": "domain or null",
+  "tap_adaptation_notes": "guidance for TAP",
   "age_range_suitability": [6, 99],
   "el_range_suitability": [1, 5]
 }
