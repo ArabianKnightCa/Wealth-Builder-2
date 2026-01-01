@@ -165,6 +165,101 @@ function Register({ onLogin }) {
     setCurrentPage(2);
   };
 
+  // Validate page 2 fields
+  const validatePage2 = () => {
+    setError('');
+    setFieldErrors({});
+    const errors = {};
+    
+    if (!formData.date_of_birth) {
+      errors.date_of_birth = true;
+    }
+    
+    if (!formData.life_stage) {
+      errors.life_stage = true;
+    }
+    
+    if (!formData.occupation) {
+      errors.occupation = true;
+    }
+    
+    if (!formData.experience_level) {
+      errors.experience_level = true;
+    }
+    
+    if (!formData.location || !formData.location.city || !formData.location.country) {
+      errors.location = true;
+    }
+    
+    if (showParentConsent && !formData.parent_email) {
+      errors.parent_email = true;
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstErrorField = Object.keys(errors)[0];
+      const element = document.querySelector(`[data-field="${firstErrorField}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return false;
+    }
+    return true;
+  };
+
+  // Handle moving from page 2 to page 3 (Goals)
+  const handlePage2ToGoals = () => {
+    if (validatePage2()) {
+      setCurrentPage(3);
+    }
+  };
+
+  // Handle final submission from Goals page
+  const handleGoalsSubmit = async () => {
+    // Goals validation is handled in GoalSelector component
+    setLoading(true);
+    try {
+      const { confirmPassword, ...submitData } = formData;
+      
+      // Extract custom goals from localStorage
+      const customGoals = submitData.financial_goals
+        .filter(id => id.startsWith('custom_'))
+        .map(id => localStorage.getItem(id))
+        .filter(Boolean);
+      
+      // Clean custom goal IDs from localStorage after extracting
+      submitData.financial_goals.forEach(id => {
+        if (id.startsWith('custom_')) {
+          localStorage.removeItem(id);
+        }
+      });
+      
+      const cleanData = {
+        ...submitData,
+        experience_level: parseInt(submitData.experience_level),
+        school_name: submitData.school_name || null,
+        school_city: submitData.school_city || null,
+        school_state: submitData.school_state || null,
+        parent_email: submitData.parent_email || null,
+        financial_goals: submitData.financial_goals || [],
+        custom_goals: customGoals
+      };
+      
+      const response = await axios.post(`${API}/auth/register`, cleanData);
+      console.log('Registration success:', response.data);
+      
+      // First set auth state, then navigate
+      await onLogin(response.data.user, response.data.access_token);
+      
+      // Use React Router navigate instead of window.location
+      navigate('/ppi');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
+      console.error('Registration error:', err.response?.data);
+      setLoading(false);
+    }
+  };
+
   const handlePage2Next = async () => {
     setError('');
     setFieldErrors({});
