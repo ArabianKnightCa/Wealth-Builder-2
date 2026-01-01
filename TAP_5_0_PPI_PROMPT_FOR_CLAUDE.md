@@ -590,6 +590,63 @@ L4_Q04a1a: Core motivation (very deep: is self-regulation a fundamental driver o
 
 ---
 
+### Layer 7 (40 Questions - Maximum Resolution)
+
+**Purpose:** Achieve absolute trait clarity under edge conditions, final cross-validation
+
+**Structure:**
+- Generate 40 questions interlaced throughout L1-L6
+- Test trait expression under extreme/unusual financial scenarios
+- Final disambiguation of all remaining trait ambiguities
+- Handle edge cases that earlier layers couldn't resolve
+- Achieve 99%+ confidence in DNA output
+
+**Example Interlacing:**
+```
+L6_Q01a1a1a: Impulse vs. regulation disambiguation (nuance)
+  ↓
+L7_Q01a1a1a1: Absolute trait clarity under edge conditions (maximum)
+  - "You unexpectedly inherit a large sum, but there's a catch - you must decide how to use it within 24 hours or it goes to charity. You:"
+```
+
+**Generation Rules:**
+1. Questions present unusual, high-stakes, or time-pressured financial scenarios
+2. Force trait expression under stress/constraint to reveal authentic patterns
+3. Final cross-validation of all trait measurements from L1-L6
+4. Identify any remaining inconsistencies or edge cases
+5. Distinguish authentic personality from situational adaptation
+6. Still maintain stealth - scenarios feel realistic, not contrived
+
+**Tagging Requirements:**
+```json
+{
+  "question_id": "PPI_L7_Q01 through PPI_L7_Q40",
+  "layer": 7,
+  "parent_questions": ["full lineage from L1 through L6"],
+  "depth_level": "maximum_resolution",
+  "validation_type": "final_cross_validation",
+  "confidence_impact": "critical",
+  "edge_case_handling": "extreme_conditions",
+  "traits_measured": ["applicable VIA traits"],
+  "el_validation_domain": "domain or null",
+  "tap_adaptation_notes": "guidance for TAP",
+  "age_range_suitability": [6, 99],
+  "el_range_suitability": [1, 5]
+}
+```
+
+**Edge Condition Categories:**
+- Time pressure scenarios (must decide quickly)
+- High stakes scenarios (significant money at risk)
+- Conflicting values scenarios (two good options compete)
+- Social pressure scenarios (others expect different choice)
+- Uncertainty scenarios (incomplete information)
+- Recovery scenarios (after failure or loss)
+- Windfall scenarios (unexpected gain)
+- Sacrifice scenarios (give up something valued)
+
+---
+
 ## OUTPUT REQUIREMENTS
 
 ### Database Structure
