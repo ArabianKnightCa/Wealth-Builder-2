@@ -739,11 +739,14 @@ Generate a complete JSON file containing:
 4. **Layer 4:** 40 questions (interlaced, core psychology)
 5. **Layer 5:** 40 questions (precision refinement)
 6. **Layer 6:** 40 questions (nuanced mastery)
+7. **Layer 7:** 40 questions (maximum resolution, edge cases)
 
-**TOTAL QUESTION COUNT:** 230 questions
+**TOTAL QUESTION COUNT:** 270 questions across 7 layers
+- Layer 1: 30 questions
+- Layers 2-7: 240 questions (40 per layer × 6 layers)
 
 **File Format:** JSON
-**File Name:** `ppi_complete_6layer_v5.json`
+**File Name:** `ppi_complete_7layer_v5.json`
 
 ---
 
