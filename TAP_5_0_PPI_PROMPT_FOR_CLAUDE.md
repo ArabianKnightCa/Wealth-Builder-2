@@ -754,17 +754,19 @@ Generate a complete JSON file containing:
 
 Before finalizing, ensure:
 
-- [ ] All 230 questions are in baseline neutral tone (average adult, EL 3)
+- [ ] All 270 questions are in baseline neutral tone (average adult, EL 3)
 - [ ] Every question is TAP-adaptable across age 6-99, EL 1-5
 - [ ] All questions maintain financial context (stealth personality assessment)
-- [ ] L2-L6 questions clearly interlace with parent questions
-- [ ] Depth progression is evident (shallow → medium → deep → core → precision → nuance)
+- [ ] L2-L7 questions clearly interlace with parent questions
+- [ ] Depth progression is evident (shallow → medium → deep → core → precision → nuance → maximum)
 - [ ] Range contraction is evident (5 facets → 1 core aspect → absolute clarity)
 - [ ] All 24 VIA traits are measurable across the question bank
 - [ ] EL validation domains covered (savings, budgeting, investing, debt, planning, spending, consumer behavior)
 - [ ] Delta weights are assigned to all options
 - [ ] No social desirability bias (behavioral scenarios, not self-report)
 - [ ] Questions feel natural, not clinical or academic
+- [ ] Layer 7 achieves maximum resolution and handles edge cases
+- [ ] Layer 7 includes all 8 edge case categories (time_pressure, high_stakes, conflicting_values, social_pressure, uncertainty, recovery, windfall, sacrifice)
 
 ---
 
