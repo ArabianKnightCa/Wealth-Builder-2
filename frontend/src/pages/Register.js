@@ -460,7 +460,9 @@ function Register({ onLogin }) {
               )}
 
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Preferred Language</label>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Preferred Language <span className="text-gray-500 font-normal text-sm">(other languages not supported currently)</span>
+                </label>
                 <select
                   className="input-field"
                   value={formData.language}
