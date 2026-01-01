@@ -35,8 +35,26 @@ User Inputs: Age (6-99) + EL (1-5)
 - **Layer 4:** 40 questions - Narrow range, core psychology (interlaced throughout L1-L3)
 - **Layer 5:** 40 questions - Precision refinement (interlaced throughout L1-L4)
 - **Layer 6:** 40 questions - Nuanced mastery (interlaced throughout L1-L5)
+- **Layer 7:** 40 questions - Maximum resolution (interlaced throughout L1-L6)
 
-**TOTAL QUESTIONS:** 30 + (40 × 5) = 230 questions across 6 layers
+**TOTAL QUESTIONS:** 30 + (40 × 6) = 270 questions across 7 layers
+
+### Complete Depth Progression Example
+```
+L1_Q01: Money windfall (shallow)
+  ↓
+L2_Q01a: Windfall pattern (medium)
+  ↓
+L3_Q01a1: Windfall psychology (deep)
+  ↓
+L4_Q01a1a: Core impulse system (very deep)
+  ↓
+L5_Q01a1a1: Impulse consistency check (precision)
+  ↓
+L6_Q01a1a1a: Impulse vs. regulation disambiguation (nuance)
+  ↓
+L7_Q01a1a1a1: Absolute trait clarity under edge conditions (maximum)
+```
 
 **Key Principle:** Questions are STEALTH - users don't realize they're psychological assessments. All questions must feel like casual financial preference/scenario questions.
 
