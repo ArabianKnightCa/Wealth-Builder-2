@@ -1,7 +1,7 @@
 # EMERGENT AI: PPI DATABASE REPLACEMENT & EXPANSION
 
 ## MISSION
-Replace the existing PPI (Personality Profile Index) in the Mizo Wealth Builder POC database with the enhanced 30-question Layer 1 scaffold, then generate Layers 2-6 following the established architectural model for psychological depth + range refinement.
+Replace the existing PPI (Personality Profile Index) in the Mizo Wealth Builder POC database with the enhanced 30-question Layer 1 scaffold, then generate Layers 2-7 following the established architectural model for psychological depth + range refinement.
 
 ---
 
