@@ -643,12 +643,111 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     exp_level = exp_level_map.get(financial_exp, 1)
     user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
     
-    # Check TAP version to use (3.2.4 > 3.2 > 3.0 > 2.3)
-    use_tap324 = is_tap_v3_2_4_enabled()
-    use_tap32 = is_tap_v3_2_enabled() and not use_tap324
-    use_tap3 = is_tap_v3_0_enabled() and not use_tap32 and not use_tap324
+    # Check TAP version to use (5.0 > 3.2.4 > 3.2 > 3.0 > 2.3)
+    use_tap50 = is_tap_v5_0_enabled()
+    use_tap324 = is_tap_v3_2_4_enabled() and not use_tap50
+    use_tap32 = is_tap_v3_2_enabled() and not use_tap324 and not use_tap50
+    use_tap3 = is_tap_v3_0_enabled() and not use_tap32 and not use_tap324 and not use_tap50
     
-    if use_tap324:
+    if use_tap50:
+        # TAP 5.0: Comprehensive DNA-based personalization
+        # - DNA-based personalization using 24 VIA Character Strengths
+        # - 7-layer PPI (270 questions) for psychological depth
+        # - Continuous LC calculation (40/60 age/EL weighting)
+        # - Child/Bridge/Expert text selection with micro-glosses
+        tap50_engine = TAP50Engine(el_max_poc=EL_MAX_POC)
+        
+        # Get DNA if PPI is complete
+        dna_result = None
+        ppi_completed = False
+        if progress and progress.get('ppi_completed'):
+            ppi_completed = True
+            # In future, load DNA from user's PPI answers
+            # For now, use empty DNA until PPI answers are processed
+        
+        personalized_chapters = []
+        for chapter in LPI_CHAPTERS:
+            transformed_lessons = []
+            for lesson_idx, lesson in enumerate(chapter.get('lessons', []), 1):
+                lesson_text = lesson.get('text', '')
+                takeaway_text = lesson.get('takeaway', '')
+                lesson_title = lesson.get('title', chapter.get('title', 'Lesson'))
+                
+                # Create LessonSpec for TAP 5.0
+                lesson_spec = TAP50LessonSpec(
+                    topic=lesson_title,
+                    baseline_text=lesson_text,
+                    takeaway=takeaway_text
+                )
+                
+                # Process through TAP 5.0 engine
+                text_output = tap50_engine.process_lpi(
+                    spec=lesson_spec,
+                    age=user_age,
+                    el_declared=exp_level,
+                    controls=TAP50ControlInputs.neutral(),
+                    dna_result=dna_result,
+                    ppi_completed=ppi_completed
+                )
+                
+                # Process takeaway if present
+                takeaway_adapted = ''
+                if takeaway_text:
+                    takeaway_spec = TAP50LessonSpec(
+                        topic="Key Takeaway",
+                        baseline_text=takeaway_text,
+                        takeaway=""
+                    )
+                    takeaway_output = tap50_engine.process_lpi(
+                        spec=takeaway_spec,
+                        age=user_age,
+                        el_declared=exp_level,
+                        controls=TAP50ControlInputs.neutral(),
+                        dna_result=dna_result,
+                        ppi_completed=ppi_completed
+                    )
+                    takeaway_adapted = takeaway_output.selected_text
+                
+                transformed_lessons.append({
+                    **lesson,
+                    'text': text_output.selected_text,
+                    'child_text': text_output.child_text,
+                    'bridge_text': text_output.bridge_text,
+                    'expert_text': text_output.expert_text,
+                    'takeaway': takeaway_adapted,
+                    'tap_version': '5.0',
+                    'blend_weights': text_output.blend_weights,
+                    'lc': text_output.scalars.lc if text_output.scalars else 0,
+                    'childiness': text_output.scalars.childiness if text_output.scalars else 0,
+                })
+            
+            personalized_chapters.append({
+                **chapter,
+                'lessons': transformed_lessons,
+                'summary': chapter.get('summary', '')
+            })
+        
+        # Calculate overall scalars for response
+        scalars = tap50_engine.compute_scalars(user_age, exp_level)
+        
+        return {
+            "chapters": personalized_chapters,
+            "user_profile": {
+                "age": user_age,
+                "experience_level": exp_level,
+                "dna_profile": dna_profile,
+            },
+            "tap_version": "5.0",
+            "tap_scalars": {
+                "lc": scalars.lc,
+                "childiness": scalars.childiness,
+                "age_norm": scalars.age_norm,
+                "el_norm": scalars.el_norm,
+                "weights": scalars.weights
+            }
+        }
+    
+    elif use_tap324:
         # TAP 3.2.4: Child-friendly version with continuous blending
         # - Shows CHILD-FRIENDLY VERSION first for low-LC users (6yo)
         # - Continuous blend weights (child/bridge/expert) - NO BUCKETS
