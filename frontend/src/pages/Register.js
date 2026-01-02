@@ -723,7 +723,7 @@ function Register({ onLogin }) {
       <GoalSelector
         selectedGoals={formData.financial_goals}
         onGoalsChange={(goals) => setFormData({ ...formData, financial_goals: goals })}
-        onNext={handlePage2Next}
+        onNext={handleGoalsSubmit}
         onBack={() => setCurrentPage(2)}
         loading={loading}
         error={error}
