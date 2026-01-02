@@ -59,6 +59,25 @@ from tap_3_2_4 import (
     find_concepts_in_text as tap324_find_concepts
 )
 
+# TAP 5.0 imports - comprehensive DNA-based personalization
+from tap_5_0 import (
+    TAP50Engine,
+    TAPControlInputs as TAP50ControlInputs,
+    TAPScalars as TAP50Scalars,
+    LessonSpec as TAP50LessonSpec,
+    PPIOptionSpec as TAP50PPIOptionSpec,
+    PPIAnswer as TAP50PPIAnswer,
+    DNAResult,
+    AdaptedContent,
+    compute_scalars as tap50_compute_scalars,
+    generate_dna as tap50_generate_dna,
+    accumulate_scores as tap50_accumulate_scores,
+    analyze_quiz_balance as tap50_analyze_quiz,
+    VIA_TRAITS,
+    POC_CONFIG as TAP50_POC_CONFIG
+)
+from feature_flags import is_tap_v5_0_enabled
+
 # Helper functions for quiz simplification
 def normalize_quiz_options(options_data) -> list:
     """
