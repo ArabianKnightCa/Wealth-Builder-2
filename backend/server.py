@@ -1177,11 +1177,63 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
         exp_level = exp_level_map.get(financial_exp, 1)
         user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
         
-        # Check which TAP version to use (prioritize 3.2.4 for child-friendly content)
-        use_tap324 = is_tap_v3_2_4_enabled()
-        use_v23 = is_tap_v2_3_enabled() and not use_tap324
+        # Check which TAP version to use (prioritize 5.0 > 3.2.4)
+        use_tap50 = is_tap_v5_0_enabled()
+        use_tap324 = is_tap_v3_2_4_enabled() and not use_tap50
+        use_v23 = is_tap_v2_3_enabled() and not use_tap324 and not use_tap50
         
-        if use_tap324:
+        if use_tap50:
+            # TAP 5.0: Child-friendly quiz adaptation with DNA support
+            tap50_engine = TAP50Engine(el_max_poc=EL_MAX_POC)
+            
+            quiz_questions = []
+            for q in questions:
+                question_text_baseline = q.get('question_text', '')
+                
+                # Compute scalars using actual question text as baseline
+                scalars = tap50_engine.compute_scalars(user_age, exp_level, question_text_baseline)
+                childiness = scalars.childiness
+                
+                # Adapt question text
+                if childiness >= 0.35:
+                    question_text = simplify_quiz_question(question_text_baseline)
+                else:
+                    question_text = question_text_baseline
+                
+                # Adapt options - handle both dict and list formats
+                adapted_options = []
+                options_data = q.get('options', {})
+                
+                if isinstance(options_data, dict):
+                    for opt_letter in ['A', 'B', 'C', 'D']:
+                        opt_text = options_data.get(opt_letter, '')
+                        if opt_text:
+                            if childiness >= 0.35:
+                                adapted_opt = simplify_quiz_option(opt_text)
+                                adapted_options.append(f"{opt_letter} {adapted_opt}")
+                            else:
+                                adapted_options.append(f"{opt_letter} {opt_text}")
+                else:
+                    for opt_idx, opt in enumerate(options_data):
+                        opt_id = chr(65 + opt_idx)
+                        clean_opt = str(opt).lstrip('ABCD').lstrip('. ').strip()
+                        if childiness >= 0.35:
+                            adapted_opt = simplify_quiz_option(clean_opt)
+                            adapted_options.append(f"{opt_id} {adapted_opt}")
+                        else:
+                            adapted_options.append(f"{opt_id} {clean_opt}")
+                
+                quiz_questions.append({
+                    "id": q['id'],
+                    "question_text": question_text,
+                    "options": adapted_options,
+                    "order": q.get('order', 0),
+                    "tap_version": "5.0",
+                    "childiness": round(childiness, 3),
+                    "lc": round(scalars.lc, 3)
+                })
+        
+        elif use_tap324:
             # TAP 3.2.4: Child-friendly quiz adaptation
             tap324_engine = TAP32Engine_v324(el_max_poc=EL_MAX_POC)
             
