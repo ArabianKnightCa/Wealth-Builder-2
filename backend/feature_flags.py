@@ -3,14 +3,17 @@ Feature Flags Configuration
 ============================
 Control feature rollout and A/B testing.
 
-Version: 1.4 (TAP 3.2.4)
+Version: 2.0 (TAP 5.0)
 """
 
 import os
 
 
 # TAP Version Control
-# TAP 3.2.4 is the NEW child-friendly version with continuous blending (default: enabled)
+# TAP 5.0 is the NEW comprehensive version with DNA-based personalization (default: enabled)
+USE_TAP_V5_0 = os.environ.get('USE_TAP_V5_0', 'true').lower() == 'true'
+
+# TAP 3.2.4 is the previous child-friendly version with continuous blending (fallback)
 USE_TAP_V3_2_4 = os.environ.get('USE_TAP_V3_2_4', 'true').lower() == 'true'
 
 # TAP 3.2 is the previous sentence-level scaffolding implementation
@@ -32,6 +35,24 @@ LLM_REWRITE_ONLY_ON_RISK = os.environ.get('LLM_REWRITE_ONLY_ON_RISK', 'true').lo
 
 # CLG (Controlled Language Generator) - Grammar-safe realization layer
 USE_CLG_ENGINE = os.environ.get('USE_CLG_ENGINE', 'true').lower() == 'true'
+
+
+def is_tap_v5_0_enabled() -> bool:
+    """
+    Check if TAP 5.0 is enabled.
+    
+    TAP 5.0 is the comprehensive implementation that:
+    - DNA-based personalization using 24 VIA Character Strengths
+    - 7-layer PPI (270 questions) for psychological depth
+    - Continuous LC calculation (40/60 age/EL weighting)
+    - Child/Bridge/Expert text selection
+    - Quiz camouflage analysis
+    - User feedback loop for optimization
+    
+    Returns:
+        bool: True if TAP 5.0 should be used
+    """
+    return USE_TAP_V5_0
 
 
 def is_tap_v3_2_4_enabled() -> bool:
