@@ -127,10 +127,11 @@ class AdaptiveEngineV2:
         # we'll use all eligible items (should be 20 or close to it)
         final_items = eligible_items[:20]  # Take up to 20
         
-        # Check if TAP 3.0 is enabled
-        from feature_flags import is_tap_v3_0_enabled, is_tap_v3_2_4_enabled
-        use_tap324 = is_tap_v3_2_4_enabled()
-        use_tap3 = is_tap_v3_0_enabled() and not use_tap324
+        # Check which TAP version to use (prioritize 5.0 > 3.2.4 > 3.0)
+        from feature_flags import is_tap_v5_0_enabled, is_tap_v3_0_enabled, is_tap_v3_2_4_enabled
+        use_tap50 = is_tap_v5_0_enabled()
+        use_tap324 = is_tap_v3_2_4_enabled() and not use_tap50
+        use_tap3 = is_tap_v3_0_enabled() and not use_tap324 and not use_tap50
         
         # Convert experience string to level (1-5 for POC)
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
@@ -138,8 +139,76 @@ class AdaptiveEngineV2:
         
         output_items = []
         
-        if use_tap324:
-            # TAP 3.2.4: Child-friendly PPI with option adaptation
+        if use_tap50:
+            # TAP 5.0: DNA-based personalization with 24 VIA Character Strengths
+            import re
+            
+            tap50_engine = TAP50Engine(el_max_poc=TAP50_EL_MAX_POC)
+            
+            for idx, item in enumerate(final_items, 1):
+                # Create PPIOptionSpec list from item options for TAP 5.0
+                option_specs = []
+                for opt_idx, opt_text in enumerate(item['options']):
+                    opt_id = chr(65 + opt_idx)  # A, B, C, D
+                    
+                    # Strip letter prefix if present (e.g., "A Research..." -> "Research...")
+                    clean_text = re.sub(r'^[A-D]\s+', '', opt_text.strip())
+                    
+                    option_specs.append(TAP50PPIOptionSpec(
+                        id=opt_id,
+                        baseline=clean_text,
+                        display="",  # Will be filled by engine
+                        gloss=""
+                    ))
+                
+                # Process options through TAP 5.0 engine
+                adapted_options = tap50_engine.process_ppi(
+                    options=option_specs,
+                    age=age,
+                    el_declared=exp_level,
+                    controls=TAP50ControlInputs.neutral()
+                )
+                
+                # Compute scalars for this question
+                scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
+                childiness = scalars.childiness
+                
+                # Get child-friendly question text if needed
+                if childiness >= 0.35:
+                    simple_q = self._get_child_question_text(item['prompt'])
+                else:
+                    simple_q = item['prompt']
+                
+                # Format options with letter prefix for frontend compatibility
+                formatted_options = []
+                options_detail = []
+                for opt in adapted_options:
+                    formatted_options.append(f"{opt.id} {opt.display if opt.display else opt.baseline}")
+                    options_detail.append({
+                        "id": opt.id,
+                        "display": opt.display if opt.display else opt.baseline,
+                        "baseline": opt.baseline,
+                        "gloss": opt.gloss
+                    })
+                
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": item['type'],
+                    "prompt": simple_q,
+                    "options": formatted_options,
+                    "options_detail": options_detail,
+                    "tap_version": "5.0",
+                    "scalars": {
+                        "lc": scalars.lc,
+                        "childiness": scalars.childiness,
+                        "age_norm": scalars.age_norm,
+                        "el_norm": scalars.el_norm,
+                        "weights": scalars.weights
+                    }
+                })
+        elif use_tap324:
+            # TAP 3.2.4: Child-friendly PPI with option adaptation (fallback)
             from tap_3_2_4 import TAP32Engine_v324, PPIOptionSpec as TAP324PPIOptionSpec, TAPControlInputs as TAP324ControlInputs
             import re
             
