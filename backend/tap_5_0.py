@@ -1,0 +1,1347 @@
+# TAP v5.0 - Text Adaptation Processor
+# Version: 5.0
+# Release Date: January 1, 2026
+# Status: Production
+
+"""
+TAP v5.0 - Complete System Implementation
+
+TAP adapts financial education content based on:
+- Age: 6-99 (continuous)
+- EL (Experience Level): 1-5 (POC), scalable to 15
+- DNA: 3-6 personality traits from 24 VIA Character Strengths
+
+Core Principle: TAP changes HOW content is delivered, NOT WHAT is taught.
+"""
+
+import re
+import hashlib
+import statistics
+import logging
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional, Tuple, Any
+from collections import defaultdict
+from datetime import datetime, timezone
+
+logger = logging.getLogger(__name__)
+
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
+
+POC_CONFIG = {
+    'version': '5.0',
+    'ppi_questions_l1': 30,
+    'ppi_questions_total': 270,
+    'ppi_layers': 7,
+    'el_range': (1, 5),
+    'el_max': 5,
+    'age_range': (6, 99),
+    'lpi_lessons': 10,
+    'dna_target_size': (3, 4),
+    'dna_max_size': 6,
+    'via_traits_total': 24,
+    'confidence_threshold': 0.40,
+    'confidence_primary_threshold': 0.55,
+    'differentiation_threshold': 0.20,
+    'ceiling_detection_threshold': 0.90,
+    'coverage_weight': 0.75,
+    'signal_weight': 0.25,
+}
+
+COMMERCIAL_CONFIG = {
+    'version': '5.0',
+    'ppi_questions_l1': 30,
+    'ppi_questions_total': 270,
+    'ppi_layers': 7,
+    'el_range': (1, 15),
+    'el_max': 15,
+    'age_range': (6, 99),
+    'lpi_lessons': 'unlimited',
+    'dna_target_size': (3, 6),
+    'dna_max_size': 6,
+    'via_traits_total': 24,
+    'confidence_threshold': 0.40,
+    'confidence_primary_threshold': 0.55,
+    'differentiation_threshold': 0.20,
+    'ceiling_detection_threshold': 0.90,
+    'coverage_weight': 0.75,
+    'signal_weight': 0.25,
+}
+
+# Layer Configuration
+LAYER_CONFIGS = {
+    1: {'weight': 1.0, 'questions': 30, 'depth': 'broad_baseline'},
+    2: {'weight': 1.1, 'questions': 40, 'depth': 'contextual'},
+    3: {'weight': 1.2, 'questions': 40, 'depth': 'situational'},
+    4: {'weight': 1.3, 'questions': 40, 'depth': 'emotional'},
+    5: {'weight': 1.4, 'questions': 40, 'depth': 'psychological'},
+    6: {'weight': 1.5, 'questions': 40, 'depth': 'nuanced'},
+    7: {'weight': 1.5, 'questions': 40, 'depth': 'maximum_resolution'},
+}
+
+# VIA Character Strengths (24 traits)
+VIA_TRAITS = [
+    'Creativity', 'Curiosity', 'Judgment', 'Love of Learning', 'Perspective',
+    'Bravery', 'Perseverance', 'Honesty', 'Zest',
+    'Love', 'Kindness', 'Social Intelligence',
+    'Teamwork', 'Fairness', 'Leadership',
+    'Forgiveness', 'Humility', 'Prudence', 'Self-Regulation',
+    'Appreciation of Beauty', 'Gratitude', 'Hope', 'Humor', 'Spirituality'
+]
+
+# Trait Conflicts
+CONFLICTS = {
+    'Prudence': ['Zest', 'Bravery'],
+    'Judgment': ['Creativity'],
+    'Perspective': ['Curiosity'],
+    'Self-Regulation': ['Zest'],
+    'Humility': ['Leadership'],
+}
+
+# Term Complexity for Micro-Gloss System
+TERM_COMPLEXITY = {
+    'compound interest': 3,
+    'diversification': 4,
+    'liquidity': 3,
+    'appreciation': 2,
+    'amortization': 5,
+    'portfolio': 3,
+    'asset': 2,
+    'liability': 3,
+    'equity': 4,
+    'dividend': 3,
+    'interest rate': 2,
+    'principal': 3,
+    'budget': 1,
+    'savings': 1,
+    'investment': 2,
+    'stock': 2,
+    'bond': 3,
+    'mutual fund': 3,
+    'index fund': 3,
+    'etf': 4,
+    'inflation': 3,
+    'depreciation': 3,
+    'credit score': 2,
+    'apr': 3,
+    'apy': 3,
+}
+
+MICRO_GLOSSES = {
+    'compound interest': 'growth that builds on itself',
+    'diversification': 'spreading money across different investments',
+    'liquidity': 'how quickly you can turn something into cash',
+    'appreciation': 'when something grows in value',
+    'amortization': 'paying off a loan bit by bit over time',
+    'portfolio': 'collection of investments',
+    'asset': 'something you own that has value',
+    'liability': 'money you owe',
+    'equity': 'ownership in something',
+    'dividend': 'money a company pays to shareholders',
+    'interest rate': 'the cost of borrowing money',
+    'principal': 'the original amount of money',
+    'budget': 'a plan for your money',
+    'savings': 'money you keep for later',
+    'investment': 'using money to make more money',
+    'stock': 'a piece of ownership in a company',
+    'bond': 'lending money to a company or government',
+    'mutual fund': 'a basket of many investments',
+    'index fund': 'a fund that tracks the whole market',
+    'etf': 'exchange-traded fund - like a mutual fund you can trade',
+    'inflation': 'when prices go up over time',
+    'depreciation': 'when something loses value',
+    'credit score': 'a number showing how trustworthy you are with money',
+    'apr': 'annual percentage rate - yearly cost of borrowing',
+    'apy': 'annual percentage yield - yearly return on savings',
+}
+
+# Framing Strategies
+FRAMING_STRATEGIES = {
+    'Curiosity': {
+        'prefix': "Let's explore why...",
+        'tone': 'explanatory',
+        'examples': 'mechanism-focused',
+        'questions': 'encourages deeper inquiry'
+    },
+    'Prudence': {
+        'prefix': "Let's carefully consider...",
+        'tone': 'cautious',
+        'examples': 'risk-aware',
+        'questions': 'focuses on consequences'
+    },
+    'Hope': {
+        'prefix': "This will help you progress toward...",
+        'tone': 'optimistic',
+        'examples': 'goal-oriented',
+        'questions': 'emphasizes future benefits'
+    },
+    'Perseverance': {
+        'prefix': "Building on what you've learned...",
+        'tone': 'steady',
+        'examples': 'incremental-progress',
+        'questions': 'acknowledges effort'
+    },
+    'Judgment': {
+        'prefix': "Let's analyze the key factors...",
+        'tone': 'analytical',
+        'examples': 'comparison-focused',
+        'questions': 'encourages critical thinking'
+    },
+    'Self-Regulation': {
+        'prefix': "Let's approach this systematically...",
+        'tone': 'structured',
+        'examples': 'step-by-step',
+        'questions': 'emphasizes control and planning'
+    },
+    'Zest': {
+        'prefix': "Here's an exciting opportunity...",
+        'tone': 'energetic',
+        'examples': 'dynamic and engaging',
+        'questions': 'emphasizes enthusiasm'
+    },
+    'Love': {
+        'prefix': "This matters for you and those you care about...",
+        'tone': 'relational',
+        'examples': 'people-focused',
+        'questions': 'emphasizes relationships'
+    },
+    'Bravery': {
+        'prefix': "This might feel challenging, but...",
+        'tone': 'encouraging',
+        'examples': 'courage-focused',
+        'questions': 'acknowledges difficulty'
+    },
+    'Kindness': {
+        'prefix': "Understanding this helps you help others...",
+        'tone': 'compassionate',
+        'examples': 'impact-on-others',
+        'questions': 'emphasizes giving'
+    },
+    'Gratitude': {
+        'prefix': "Appreciating what you have...",
+        'tone': 'thankful',
+        'examples': 'abundance-focused',
+        'questions': 'emphasizes contentment'
+    },
+    'Honesty': {
+        'prefix': "Here's the truth about...",
+        'tone': 'direct',
+        'examples': 'reality-based',
+        'questions': 'emphasizes authenticity'
+    },
+}
+
+# Safe split patterns for sentence splitting
+SAFE_SPLIT_PATTERNS = [
+    r'\s+and\s+',
+    r'\s+but\s+',
+    r';\s*',
+    r'—',
+    r'\.\s+',
+]
+
+UNSAFE_STARTS = ['and', 'but', 'or', 'because', 'so', 'yet']
+
+
+# =============================================================================
+# DATA CLASSES
+# =============================================================================
+
+@dataclass
+class ValidationError(Exception):
+    """Custom exception for input validation failures"""
+    message: str
+
+
+@dataclass
+class PPIAnswer:
+    """Represents a single PPI answer"""
+    question_id: str
+    option: str  # A, B, C, or D
+    deltas: List[Dict[str, float]] = field(default_factory=list)
+
+
+@dataclass
+class TraitScore:
+    """Represents a trait with its scores"""
+    name: str
+    score: float
+    norm: float
+    confidence: float
+
+
+@dataclass 
+class DNAResult:
+    """Result of DNA generation"""
+    primary: List[TraitScore]
+    secondary: List[TraitScore]
+    all_traits: List[TraitScore]
+    differentiation: float
+    coverage: float
+
+
+@dataclass
+class TAPScalars:
+    """TAP calculation scalars"""
+    age: int
+    el: int
+    age_norm: float
+    el_norm: float
+    lc: float  # Learning Complexity
+    childiness: float
+    weights: Dict[str, float]
+
+
+@dataclass
+class TAPControlInputs:
+    """Control inputs for TAP processing"""
+    friction: float = 0.0
+    momentum: float = 0.5
+    verbosity: float = 0.0
+    
+    @classmethod
+    def neutral(cls) -> "TAPControlInputs":
+        return cls(friction=0.0, momentum=0.5, verbosity=0.0)
+
+
+@dataclass
+class LessonSpec:
+    """Specification for a lesson"""
+    baseline_text: str
+    topic: str
+    takeaway: str
+
+
+@dataclass
+class PPIOptionSpec:
+    """Specification for a PPI option"""
+    id: str
+    baseline: str
+    display: str = ""
+    gloss: str = ""
+
+
+@dataclass
+class AdaptedContent:
+    """Result of content adaptation"""
+    child_text: str
+    bridge_text: str
+    expert_text: str
+    selected_text: str
+    blend_weights: Dict[str, float]
+    tap_version: str = "5.0"
+    scalars: Optional[TAPScalars] = None
+
+
+@dataclass
+class QuizAnalysis:
+    """Result of quiz camouflage analysis"""
+    passed: bool
+    issues: List[Dict[str, Any]]
+    statistics: Dict[str, float]
+
+
+# =============================================================================
+# UTILITY FUNCTIONS
+# =============================================================================
+
+def clamp(x: float, lo: float = 0.0, hi: float = 1.0) -> float:
+    """Bound value to [lo, hi] range"""
+    return max(lo, min(hi, x))
+
+
+def get_question_layer(question_id: str) -> int:
+    """
+    Extract layer number from question_id
+    Format: PPI_L#_Q##
+    """
+    match = re.search(r'PPI_L(\d+)_Q\d+', question_id)
+    return int(match.group(1)) if match else 1
+
+
+def get_valid_question_ids() -> List[str]:
+    """Get list of valid question IDs"""
+    valid_ids = []
+    
+    # Layer 1: 30 questions
+    for i in range(1, 31):
+        valid_ids.append(f"PPI_L1_Q{i:02d}")
+    
+    # Layers 2-7: 40 questions each
+    for layer in range(2, 8):
+        for i in range(1, 41):
+            valid_ids.append(f"PPI_L{layer}_Q{i:02d}")
+    
+    return valid_ids
+
+
+def assign_variant(user_id: str, test_name: str) -> int:
+    """
+    Deterministic hash-based A/B assignment
+    Same user + test always gets same variant
+    """
+    hash_input = f"{user_id}:{test_name}"
+    hash_val = hashlib.md5(hash_input.encode()).hexdigest()
+    return int(hash_val, 16) % 2
+
+
+# =============================================================================
+# COMPONENT 1: INPUT VALIDATION
+# =============================================================================
+
+def validate_inputs(age: int, el: int, ppi_answers: List[PPIAnswer] = None) -> bool:
+    """
+    Validate all user inputs before processing
+    
+    Args:
+        age: User age (should be 6-99)
+        el: Experience level (should be 1-5 for POC)
+        ppi_answers: List of PPI answer objects (optional)
+    
+    Raises:
+        ValidationError: If any validation fails
+    
+    Returns:
+        True if all validation passes
+    """
+    errors = []
+    
+    # Age validation
+    if not isinstance(age, (int, float)):
+        errors.append(f"Age must be numeric, got {type(age)}")
+    elif not (6 <= age <= 99):
+        errors.append(f"Age {age} out of range [6, 99]")
+    
+    # EL validation
+    if not isinstance(el, int):
+        errors.append(f"EL must be integer, got {type(el)}")
+    elif not (1 <= el <= 5):
+        errors.append(f"EL {el} out of range [1, 5] (POC limit)")
+    
+    # PPI answers validation (if provided)
+    if ppi_answers is not None:
+        if not isinstance(ppi_answers, list):
+            errors.append(f"PPI answers must be list, got {type(ppi_answers)}")
+        else:
+            VALID_QUESTION_IDS = get_valid_question_ids()
+            
+            for i, answer in enumerate(ppi_answers):
+                if not hasattr(answer, 'question_id'):
+                    errors.append(f"Answer {i} missing question_id")
+                elif answer.question_id not in VALID_QUESTION_IDS:
+                    errors.append(f"Invalid question ID: {answer.question_id}")
+                
+                if not hasattr(answer, 'option'):
+                    errors.append(f"Answer {i} missing option")
+                elif answer.option not in ['A', 'B', 'C', 'D']:
+                    errors.append(f"Invalid option: {answer.option}")
+    
+    if errors:
+        raise ValidationError("; ".join(errors))
+    
+    return True
+
+
+# =============================================================================
+# COMPONENT 2: AGE + EL NORMALIZATION
+# =============================================================================
+
+def normalize_age(age: int) -> float:
+    """
+    Normalize age to [0, 1] range
+    Full 6-99 range (not truncated at 66)
+    """
+    return clamp((age - 6) / 93)
+
+
+def normalize_el(el: int, el_max: int = 5) -> float:
+    """
+    Normalize experience level to [0, 1] range
+    POC: el_max=5, Commercial: el_max=15
+    """
+    if el_max <= 1:
+        return 0.0
+    return clamp((el - 1) / (el_max - 1))
+
+
+def calculate_lc(age: int, el: int, el_max: int = 5) -> float:
+    """
+    Calculate Learning Complexity
+    40/60 weighting: experience matters more than age
+    """
+    age_norm = normalize_age(age)
+    el_norm = normalize_el(el, el_max)
+    LC = 0.4 * age_norm + 0.6 * el_norm
+    return LC
+
+
+def calculate_childiness(LC: float) -> float:
+    """
+    Calculate simplification pressure
+    Higher childiness = more simplification needed
+    """
+    return 1.0 - LC
+
+
+def compute_scalars(age: int, el: int, el_max: int = 5) -> TAPScalars:
+    """
+    Compute all TAP scalars for a user
+    """
+    age_norm = normalize_age(age)
+    el_norm = normalize_el(el, el_max)
+    lc = calculate_lc(age, el, el_max)
+    childiness = calculate_childiness(lc)
+    
+    # Calculate blend weights
+    if childiness >= 0.67:
+        weights = {'child': 0.8, 'bridge': 0.15, 'expert': 0.05}
+    elif childiness >= 0.33:
+        weights = {'child': 0.3, 'bridge': 0.5, 'expert': 0.2}
+    else:
+        weights = {'child': 0.05, 'bridge': 0.25, 'expert': 0.7}
+    
+    return TAPScalars(
+        age=age,
+        el=el,
+        age_norm=round(age_norm, 4),
+        el_norm=round(el_norm, 4),
+        lc=round(lc, 4),
+        childiness=round(childiness, 4),
+        weights=weights
+    )
+
+
+# =============================================================================
+# COMPONENT 3: DELTA ACCUMULATION
+# =============================================================================
+
+def accumulate_scores(ppi_answers: List[PPIAnswer]) -> Dict[str, float]:
+    """
+    Accumulate trait scores from PPI answers with depth-based weighting
+    
+    Args:
+        ppi_answers: List of PPIAnswer objects
+    
+    Returns:
+        Dict of {trait_name: weighted_score}
+    """
+    trait_scores = {trait: 0.0 for trait in VIA_TRAITS}
+    
+    for answer in ppi_answers:
+        layer = get_question_layer(answer.question_id)
+        layer_weight = LAYER_CONFIGS.get(layer, {'weight': 1.0})['weight']
+        
+        for delta in answer.deltas:
+            if isinstance(delta, dict):
+                trait = delta.get('trait', '')
+                value = delta.get('value', 0.0)
+            else:
+                trait = getattr(delta, 'trait', '')
+                value = getattr(delta, 'value', 0.0)
+            
+            if trait in trait_scores:
+                weighted_delta = value * layer_weight
+                trait_scores[trait] += weighted_delta
+    
+    return trait_scores
+
+
+# =============================================================================
+# COMPONENT 4: DNA GENERATION ENGINE
+# =============================================================================
+
+def calculate_differentiation(traits: List[TraitScore]) -> float:
+    """Measure spread between top trait and median trait"""
+    if not traits:
+        return 0.0
+    
+    sorted_norms = sorted([t.norm for t in traits], reverse=True)
+    top = sorted_norms[0]
+    median_idx = len(sorted_norms) // 2
+    median = sorted_norms[median_idx]
+    
+    return (top - median) / max(top, 0.01)
+
+
+def resolve_conflicts(traits: List[TraitScore]) -> List[TraitScore]:
+    """Remove psychologically conflicting trait pairs"""
+    resolved = []
+    excluded = set()
+    
+    for trait in traits:
+        if trait.name in excluded:
+            continue
+        
+        resolved.append(trait)
+        
+        # Mark conflicts as excluded (higher confidence trait wins)
+        for conflict_name in CONFLICTS.get(trait.name, []):
+            excluded.add(conflict_name)
+    
+    return resolved
+
+
+def generate_dna(
+    trait_scores: Dict[str, float],
+    answered_questions: int,
+    total_available: int
+) -> DNAResult:
+    """
+    Generate personality DNA from PPI responses
+    
+    Args:
+        trait_scores: Dict of {trait_name: accumulated_score}
+        answered_questions: Number of questions answered
+        total_available: Total questions available to user
+    
+    Returns:
+        DNAResult with primary and secondary traits
+    """
+    config = POC_CONFIG
+    
+    # 1. NORMALIZE SCORES (Division by zero protected)
+    max_abs_score = max((abs(score) for score in trait_scores.values()), default=1.0)
+    M = max(max_abs_score, 1.0)
+    
+    normalized = {
+        trait: clamp((score / M + 1) / 2)
+        for trait, score in trait_scores.items()
+    }
+    
+    # 2. CALCULATE CONFIDENCE (75/25 weighting - emphasizes coverage)
+    coverage = answered_questions / max(total_available, 1)
+    traits = []
+    
+    for trait_name, norm_score in normalized.items():
+        signal = 2 * abs(norm_score - 0.5)
+        confidence = clamp(
+            config['coverage_weight'] * coverage + 
+            config['signal_weight'] * signal
+        )
+        
+        traits.append(TraitScore(
+            name=trait_name,
+            score=trait_scores[trait_name],
+            norm=round(norm_score, 4),
+            confidence=round(confidence, 4)
+        ))
+    
+    # 3. SORT DETERMINISTICALLY (3-level key)
+    traits.sort(key=lambda t: (-t.norm, -t.confidence, t.name))
+    
+    # 4. FLAT PROFILE DETECTION
+    differentiation = calculate_differentiation(traits)
+    
+    if differentiation < config['differentiation_threshold']:
+        # Weak signal: return top 2 traits with penalty
+        primary = traits[:2]
+        for t in primary:
+            t.confidence = round(t.confidence * 0.85, 4)
+        
+        return DNAResult(
+            primary=primary,
+            secondary=[],
+            all_traits=traits,
+            differentiation=round(differentiation, 4),
+            coverage=round(coverage, 4)
+        )
+    
+    # 5. DYNAMIC THRESHOLD CALCULATION
+    top_norm = traits[0].norm if traits else 0.5
+    
+    # Ceiling detection: prevent early dominant trait from raising threshold too high
+    if top_norm > config['ceiling_detection_threshold'] and coverage < 0.80:
+        threshold = 0.75 * top_norm
+    else:
+        threshold = 0.80 * top_norm  # Standard proportional threshold
+    
+    # 6. SELECT QUALIFIED TRAITS
+    qualified = [
+        t for t in traits 
+        if t.norm >= threshold and t.confidence >= config['confidence_threshold']
+    ]
+    
+    # 7. EMPTY DNA FALLBACK
+    if len(qualified) == 0:
+        qualified = [traits[0]] if traits else []
+    
+    # 8. CONFLICT RESOLUTION
+    resolved = resolve_conflicts(qualified)
+    
+    # 9. TIERED CATEGORIZATION
+    primary = [
+        t for t in resolved 
+        if t.confidence >= config['confidence_primary_threshold']
+    ][:config['dna_max_size']]
+    
+    secondary = [
+        t for t in resolved 
+        if config['confidence_threshold'] <= t.confidence < config['confidence_primary_threshold']
+    ][:config['dna_max_size']]
+    
+    return DNAResult(
+        primary=primary,
+        secondary=secondary,
+        all_traits=traits,
+        differentiation=round(differentiation, 4),
+        coverage=round(coverage, 4)
+    )
+
+
+# =============================================================================
+# COMPONENT 5: TEXT ADAPTATION ENGINE
+# =============================================================================
+
+def select_text(expert: str, bridge: str, child: str, LC: float) -> str:
+    """
+    Continuous text selection based on LC value
+    No hard buckets - smooth transitions
+    """
+    if LC >= 0.67:
+        return expert
+    elif LC <= 0.33:
+        return child
+    else:
+        # Bridge zone: prefer bridge if available
+        return bridge if bridge else (expert if LC > 0.50 else child)
+
+
+def get_child_params(childiness: float) -> Tuple[int, int]:
+    """Calculate parameters for child text adaptation"""
+    max_words_per_sentence = 8 + int(10 * (1 - childiness))  # 8-18 words
+    max_sentences = 2 + int(2 * (1 - childiness))            # 2-4 sentences
+    return max_words_per_sentence, max_sentences
+
+
+def get_bridge_params(childiness: float) -> Tuple[int, int]:
+    """Calculate parameters for bridge text adaptation"""
+    max_words_per_sentence = 12 + int(10 * (1 - childiness))  # 12-22 words
+    max_sentences = 3 + int(2 * (1 - childiness))             # 3-5 sentences
+    return max_words_per_sentence, max_sentences
+
+
+def split_sentence_safe(sentence: str, max_words: int) -> List[str]:
+    """
+    Split sentences at grammatically safe boundaries
+    Avoids creating sentence fragments with dangling conjunctions
+    """
+    words = sentence.split()
+    if len(words) <= max_words:
+        return [sentence]
+    
+    # Try splitting at safe boundaries
+    for pattern in SAFE_SPLIT_PATTERNS:
+        parts = re.split(pattern, sentence)
+        if len(parts) > 1 and all(len(p.split()) <= max_words for p in parts if p.strip()):
+            # Remove dangling conjunctions
+            cleaned = []
+            for part in parts:
+                if not part.strip():
+                    continue
+                part_words = part.strip().split()
+                if not part_words:
+                    continue
+                first_word = part_words[0].lower()
+                if first_word not in UNSAFE_STARTS:
+                    cleaned.append(part.strip())
+                elif cleaned:
+                    # Reattach to previous part
+                    cleaned[-1] += ' ' + part.strip()
+                else:
+                    # Remove conjunction and keep rest
+                    remaining = ' '.join(part_words[1:])
+                    if remaining:
+                        cleaned.append(remaining)
+            if cleaned:
+                return cleaned
+    
+    # Fallback: truncate with ellipsis
+    return [' '.join(words[:max_words]) + '...']
+
+
+def should_add_microgloss(term: str, childiness: float, age: int) -> bool:
+    """
+    Determine if financial term needs inline definition
+    """
+    complexity = TERM_COMPLEXITY.get(term.lower(), 0)
+    
+    # Age-based threshold
+    if age < 12:
+        threshold = 2
+    elif age < 18:
+        threshold = 3
+    else:
+        threshold = 4
+    
+    # Childiness adjustment (higher childiness = lower threshold)
+    adjusted_threshold = threshold - (childiness * 2)
+    
+    return complexity >= adjusted_threshold
+
+
+def apply_microgloss(text: str, term: str) -> str:
+    """Add inline definition to term"""
+    gloss = MICRO_GLOSSES.get(term.lower(), '')
+    if gloss:
+        return f"{term} ({gloss})"
+    return term
+
+
+def apply_microglosses(text: str, childiness: float, age: int) -> str:
+    """Apply micro-glosses to all applicable terms in text"""
+    result = text
+    for term in TERM_COMPLEXITY.keys():
+        if term.lower() in result.lower() and should_add_microgloss(term, childiness, age):
+            # Case-insensitive replacement
+            pattern = re.compile(re.escape(term), re.IGNORECASE)
+            gloss = MICRO_GLOSSES.get(term.lower(), '')
+            if gloss:
+                # Only replace first occurrence
+                result = pattern.sub(f"{term} ({gloss})", result, count=1)
+    return result
+
+
+def simplify_for_child(text: str, childiness: float) -> str:
+    """Simplify text for child audience"""
+    max_words, max_sentences = get_child_params(childiness)
+    
+    # Split into sentences
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    
+    simplified_sentences = []
+    for sentence in sentences[:max_sentences]:
+        parts = split_sentence_safe(sentence, max_words)
+        simplified_sentences.extend(parts)
+    
+    # Add emoji for very young users
+    if childiness > 0.8:
+        result = ' '.join(simplified_sentences[:max_sentences])
+        # Add contextual emoji
+        if any(word in result.lower() for word in ['money', 'dollar', 'cash', 'coin']):
+            result = '💰 ' + result
+        elif any(word in result.lower() for word in ['save', 'saving', 'savings']):
+            result = '🏦 ' + result
+        elif any(word in result.lower() for word in ['grow', 'growth', 'increase']):
+            result = '📈 ' + result
+        return result
+    
+    return ' '.join(simplified_sentences[:max_sentences])
+
+
+def create_bridge_text(expert_text: str, child_text: str, childiness: float) -> str:
+    """Create bridge text between expert and child versions"""
+    max_words, max_sentences = get_bridge_params(childiness)
+    
+    # Start with expert text and simplify slightly
+    sentences = re.split(r'(?<=[.!?])\s+', expert_text)
+    
+    bridge_sentences = []
+    for sentence in sentences[:max_sentences]:
+        # Light simplification
+        simplified = sentence.replace('consequently', 'so')
+        simplified = simplified.replace('therefore', 'so')
+        simplified = simplified.replace('furthermore', 'also')
+        simplified = simplified.replace('however', 'but')
+        simplified = simplified.replace('additionally', 'also')
+        simplified = simplified.replace('utilize', 'use')
+        simplified = simplified.replace('approximately', 'about')
+        simplified = simplified.replace('demonstrate', 'show')
+        simplified = simplified.replace('subsequently', 'then')
+        
+        parts = split_sentence_safe(simplified, max_words)
+        bridge_sentences.extend(parts)
+    
+    return ' '.join(bridge_sentences[:max_sentences])
+
+
+# =============================================================================
+# COMPONENT 6: DNA FRAMING ENGINE
+# =============================================================================
+
+def apply_strong_framing(content: str, trait: TraitScore) -> str:
+    """
+    Apply primary DNA trait framing
+    Explicit prefixes and tone adjustments
+    """
+    strategy = FRAMING_STRATEGIES.get(trait.name, {})
+    prefix = strategy.get('prefix', '')
+    
+    if prefix and not content.startswith(prefix):
+        # Add prefix to first sentence
+        sentences = re.split(r'(?<=[.!?])\s+', content, maxsplit=1)
+        if sentences:
+            sentences[0] = prefix + ' ' + sentences[0]
+            return ' '.join(sentences)
+    
+    return content
+
+
+def apply_subtle_framing(content: str, trait: TraitScore) -> str:
+    """
+    Apply secondary DNA trait framing
+    Subtle word choice only, no explicit prefixes
+    """
+    # Subtle adjustments based on trait
+    if trait.name == 'Curiosity':
+        content = content.replace('You should', 'You might wonder why')
+        content = content.replace('It is important', 'It is interesting')
+    elif trait.name == 'Prudence':
+        content = content.replace('You can', 'You might want to carefully consider')
+        content = content.replace('Try', 'Consider')
+    elif trait.name == 'Hope':
+        content = content.replace('will help', 'will lead you closer to')
+        content = content.replace('can improve', 'will improve')
+    
+    return content
+
+
+def apply_personalization(
+    content: str, 
+    ppi_completed: bool,
+    primary_dna: List[TraitScore], 
+    secondary_dna: List[TraitScore]
+) -> str:
+    """
+    Apply DNA-based framing to content
+    Only applies AFTER PPI is marked complete
+    """
+    if not ppi_completed:
+        return content  # No framing until PPI complete
+    
+    result = content
+    
+    # Apply primary DNA framing (explicit tone/prefixes)
+    for trait in primary_dna[:2]:  # Limit to top 2 primary traits
+        result = apply_strong_framing(result, trait)
+    
+    # Apply secondary DNA framing (subtle word choice)
+    for trait in secondary_dna[:2]:  # Limit to top 2 secondary traits
+        result = apply_subtle_framing(result, trait)
+    
+    return result
+
+
+# =============================================================================
+# COMPONENT 7: QUIZ CAMOUFLAGE ANALYSIS
+# =============================================================================
+
+def analyze_quiz_balance(correct: str, distractors: List[str]) -> QuizAnalysis:
+    """
+    Analyze quiz for statistical giveaways
+    """
+    all_answers = [correct] + distractors
+    word_counts = [len(a.split()) for a in all_answers]
+    
+    mean_wc = statistics.mean(word_counts)
+    stdev_wc = statistics.stdev(word_counts) if len(word_counts) > 1 else 1
+    
+    correct_wc = len(correct.split())
+    z_score = (correct_wc - mean_wc) / max(stdev_wc, 1)
+    
+    issues = []
+    
+    # 1. WORD COUNT OUTLIER DETECTION
+    if abs(z_score) > 1.5:
+        issues.append({
+            'type': 'word_count_outlier',
+            'severity': 'high',
+            'z_score': round(z_score, 2),
+            'current_wc': correct_wc,
+            'target_wc': int(mean_wc),
+            'action': 'condense' if correct_wc > mean_wc else 'expand',
+            'recommendation': f"Adjust correct answer to {int(mean_wc)} ± 2 words"
+        })
+    
+    # 2. UNIQUE CAUSAL LANGUAGE DETECTION
+    causal_words = ['because', 'therefore', 'thus', 'since', 'as a result',
+                    'consequently', 'hence', 'so']
+    correct_has_causal = any(word in correct.lower() for word in causal_words)
+    distractor_causal = [any(word in d.lower() for word in causal_words)
+                         for d in distractors]
+    
+    if correct_has_causal and not any(distractor_causal):
+        issues.append({
+            'type': 'unique_causal_language',
+            'severity': 'medium',
+            'recommendation': 'Add causal language to at least one distractor',
+            'causal_words_found': [w for w in causal_words if w in correct.lower()]
+        })
+    
+    # 3. UNIQUE PUNCTUATION PATTERNS
+    correct_punct = set(c for c in correct if c in '.,;:!?—')
+    distractor_puncts = [set(c for c in d if c in '.,;:!?—')
+                         for d in distractors]
+    
+    if distractor_puncts:
+        all_distractor_punct = set.union(*distractor_puncts) if distractor_puncts else set()
+        unique_punct = correct_punct - all_distractor_punct
+        if unique_punct:
+            issues.append({
+                'type': 'unique_punctuation',
+                'severity': 'low',
+                'characters': list(unique_punct),
+                'recommendation': f"Add {', '.join(unique_punct)} to at least one distractor"
+            })
+    
+    # 4. STRUCTURAL UNIQUENESS
+    if correct.istitle() and not any(d.istitle() for d in distractors):
+        issues.append({
+            'type': 'unique_capitalization',
+            'severity': 'low',
+            'recommendation': 'Match capitalization style across all options'
+        })
+    
+    return QuizAnalysis(
+        passed=len(issues) == 0,
+        issues=issues,
+        statistics={
+            'mean_word_count': round(mean_wc, 1),
+            'stdev_word_count': round(stdev_wc, 1),
+            'correct_z_score': round(z_score, 2)
+        }
+    )
+
+
+# =============================================================================
+# COMPONENT 8: USER FEEDBACK LOOP
+# =============================================================================
+
+class AdaptationMetrics:
+    """Track user learning outcomes to optimize TAP"""
+    
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        self.quiz_success_by_lc = defaultdict(list)
+        self.time_per_lesson_by_lc = defaultdict(list)
+        self.reread_frequency = defaultdict(int)
+        self.progression_velocity = []
+    
+    def record_quiz_result(self, lesson_id: str, lc: float, score: float):
+        """Track quiz performance by LC level"""
+        self.quiz_success_by_lc[round(lc, 1)].append(score)
+    
+    def record_lesson_time(self, lesson_id: str, lc: float, seconds: float):
+        """Track time spent per lesson by LC level"""
+        self.time_per_lesson_by_lc[round(lc, 1)].append(seconds)
+    
+    def record_reread(self, lesson_id: str):
+        """Track how often user re-reads content (confusion indicator)"""
+        self.reread_frequency[lesson_id] += 1
+    
+    def find_optimal_lc(self) -> Optional[float]:
+        """Identify LC level with best learning outcomes"""
+        avg_scores = {}
+        for lc, scores in self.quiz_success_by_lc.items():
+            if len(scores) >= 3:  # Minimum sample size
+                avg_scores[lc] = statistics.mean(scores)
+        
+        return max(avg_scores, key=avg_scores.get) if avg_scores else None
+
+
+# Global tracking for DNA effectiveness
+TRAIT_EFFECTIVENESS = defaultdict(lambda: {
+    'quiz_scores': [],
+    'completion_rates': [],
+    'engagement_time': []
+})
+
+
+def track_dna_outcomes(user_id: str, dna_traits: List[TraitScore], lesson_outcomes: Any):
+    """Track which DNA framings lead to better learning outcomes"""
+    for trait in dna_traits:
+        TRAIT_EFFECTIVENESS[trait.name]['quiz_scores'].append(
+            getattr(lesson_outcomes, 'quiz_score', 0)
+        )
+        TRAIT_EFFECTIVENESS[trait.name]['completion_rates'].append(
+            getattr(lesson_outcomes, 'completed', False)
+        )
+        TRAIT_EFFECTIVENESS[trait.name]['engagement_time'].append(
+            getattr(lesson_outcomes, 'time_spent', 0)
+        )
+
+
+# =============================================================================
+# MAIN TAP v5.0 ENGINE
+# =============================================================================
+
+class TAP50Engine:
+    """
+    TAP v5.0 - Text Adaptation Processor Engine
+    
+    Main engine for content adaptation with DNA-based personalization.
+    """
+    
+    def __init__(self, el_max_poc: int = 5, config: Dict = None):
+        self.el_max = el_max_poc
+        self.config = config or POC_CONFIG
+        self.version = "5.0"
+        logger.info(f"TAP v{self.version} Engine initialized with el_max={el_max_poc}")
+    
+    def compute_scalars(
+        self, 
+        age: int, 
+        el_declared: int, 
+        baseline_text: str = "",
+        controls: TAPControlInputs = None
+    ) -> TAPScalars:
+        """
+        Calculate TAP scalars for a user
+        
+        Args:
+            age: User age (6-99)
+            el_declared: User's declared experience level (1-5)
+            baseline_text: Optional baseline text (for future text analysis)
+            controls: Optional control inputs
+        
+        Returns:
+            TAPScalars with all computed values
+        """
+        try:
+            validate_inputs(age, el_declared)
+        except ValidationError as e:
+            logger.warning(f"Validation warning: {e.message}")
+            # Clamp to valid ranges
+            age = max(6, min(99, age))
+            el_declared = max(1, min(5, el_declared))
+        
+        return compute_scalars(age, el_declared, self.el_max)
+    
+    def generate_dna(
+        self,
+        ppi_answers: List[PPIAnswer],
+        total_available: int = 30
+    ) -> DNAResult:
+        """
+        Generate personality DNA from PPI answers
+        
+        Args:
+            ppi_answers: List of PPIAnswer objects
+            total_available: Total questions available to user
+        
+        Returns:
+            DNAResult with primary and secondary traits
+        """
+        trait_scores = accumulate_scores(ppi_answers)
+        return generate_dna(trait_scores, len(ppi_answers), total_available)
+    
+    def process_lpi(
+        self,
+        spec: LessonSpec,
+        age: int,
+        el_declared: int,
+        controls: TAPControlInputs = None,
+        dna_result: DNAResult = None,
+        ppi_completed: bool = False
+    ) -> AdaptedContent:
+        """
+        Process LPI lesson content
+        
+        Args:
+            spec: LessonSpec with baseline text, topic, and takeaway
+            age: User age
+            el_declared: User's experience level
+            controls: Optional control inputs
+            dna_result: Optional DNA result for personalization
+            ppi_completed: Whether PPI is complete
+        
+        Returns:
+            AdaptedContent with child/bridge/expert versions
+        """
+        scalars = self.compute_scalars(age, el_declared, spec.baseline_text, controls)
+        childiness = scalars.childiness
+        
+        # Generate child version
+        child_text = simplify_for_child(spec.baseline_text, childiness)
+        child_text = apply_microglosses(child_text, childiness, age)
+        
+        # Generate bridge version
+        bridge_text = create_bridge_text(spec.baseline_text, child_text, childiness)
+        bridge_text = apply_microglosses(bridge_text, childiness * 0.5, age)
+        
+        # Expert version is baseline
+        expert_text = spec.baseline_text
+        
+        # Select appropriate version
+        selected_text = select_text(expert_text, bridge_text, child_text, scalars.lc)
+        
+        # Apply DNA personalization if available
+        if dna_result and ppi_completed:
+            selected_text = apply_personalization(
+                selected_text,
+                ppi_completed,
+                dna_result.primary,
+                dna_result.secondary
+            )
+        
+        return AdaptedContent(
+            child_text=child_text,
+            bridge_text=bridge_text,
+            expert_text=expert_text,
+            selected_text=selected_text,
+            blend_weights=scalars.weights,
+            tap_version=self.version,
+            scalars=scalars
+        )
+    
+    def process_ppi(
+        self,
+        options: List[PPIOptionSpec],
+        age: int,
+        el_declared: int,
+        controls: TAPControlInputs = None
+    ) -> List[PPIOptionSpec]:
+        """
+        Adapt PPI question options for user level
+        
+        Args:
+            options: List of PPIOptionSpec with baseline text
+            age: User age
+            el_declared: User's experience level
+            controls: Optional control inputs
+        
+        Returns:
+            List of PPIOptionSpec with adapted display text
+        """
+        scalars = self.compute_scalars(age, el_declared, "", controls)
+        childiness = scalars.childiness
+        
+        adapted_options = []
+        for opt in options:
+            if childiness >= 0.35:
+                # Simplify for younger/less experienced users
+                display = simplify_for_child(opt.baseline, childiness)
+                gloss = ""  # Could add gloss if needed
+            else:
+                # Use baseline for experienced users
+                display = opt.baseline
+                gloss = ""
+            
+            adapted_options.append(PPIOptionSpec(
+                id=opt.id,
+                baseline=opt.baseline,
+                display=display,
+                gloss=gloss
+            ))
+        
+        return adapted_options
+    
+    def analyze_quiz(
+        self,
+        correct_answer: str,
+        distractors: List[str]
+    ) -> QuizAnalysis:
+        """
+        Analyze quiz question for statistical giveaways
+        
+        Args:
+            correct_answer: The correct answer text
+            distractors: List of incorrect answer texts
+        
+        Returns:
+            QuizAnalysis with pass/fail and issues
+        """
+        return analyze_quiz_balance(correct_answer, distractors)
+
+
+# =============================================================================
+# BACKWARD COMPATIBILITY EXPORTS
+# =============================================================================
+
+# Export for use with existing code
+EL_MAX_POC = 5
+
+def get_tap_v5_engine(el_max: int = 5) -> TAP50Engine:
+    """Get a TAP v5.0 engine instance"""
+    return TAP50Engine(el_max_poc=el_max)
+
+
+# =============================================================================
+# TEST HARNESS
+# =============================================================================
+
+if __name__ == "__main__":
+    print("=" * 60)
+    print("TAP v5.0 - Test Harness")
+    print("=" * 60)
+    
+    # Initialize engine
+    engine = TAP50Engine(el_max_poc=5)
+    
+    # Test 1: Scalars for 6-year-old EL1
+    print("\n--- Test 1: 6yo EL1 Scalars ---")
+    scalars = engine.compute_scalars(6, 1, "test")
+    print(f"Age: {scalars.age}, EL: {scalars.el}")
+    print(f"LC: {scalars.lc}, Childiness: {scalars.childiness}")
+    print(f"Weights: {scalars.weights}")
+    
+    # Test 2: Scalars for 35-year-old EL5
+    print("\n--- Test 2: 35yo EL5 Scalars ---")
+    scalars = engine.compute_scalars(35, 5, "test")
+    print(f"Age: {scalars.age}, EL: {scalars.el}")
+    print(f"LC: {scalars.lc}, Childiness: {scalars.childiness}")
+    print(f"Weights: {scalars.weights}")
+    
+    # Test 3: LPI Processing
+    print("\n--- Test 3: LPI Processing ---")
+    spec = LessonSpec(
+        baseline_text="Compound interest is growth on growth - you earn returns on your principal AND on previous earnings. This exponential growth is why starting early matters so much.",
+        topic="Saving Early",
+        takeaway="Start small, stay steady."
+    )
+    
+    # For 6yo
+    output = engine.process_lpi(spec, 6, 1)
+    print(f"Child (6yo EL1): {output.child_text[:100]}...")
+    print(f"Selected: {output.selected_text[:100]}...")
+    
+    # For 35yo
+    output = engine.process_lpi(spec, 35, 5)
+    print(f"Expert (35yo EL5): {output.expert_text[:100]}...")
+    print(f"Selected: {output.selected_text[:100]}...")
+    
+    # Test 4: DNA Generation (mock data)
+    print("\n--- Test 4: DNA Generation ---")
+    mock_answers = [
+        PPIAnswer(
+            question_id="PPI_L1_Q01",
+            option="B",
+            deltas=[
+                {"trait": "Prudence", "value": 0.3},
+                {"trait": "Self-Regulation", "value": 0.2}
+            ]
+        ),
+        PPIAnswer(
+            question_id="PPI_L1_Q02",
+            option="C",
+            deltas=[
+                {"trait": "Judgment", "value": 0.4},
+                {"trait": "Curiosity", "value": 0.2}
+            ]
+        ),
+    ]
+    
+    dna = engine.generate_dna(mock_answers, total_available=30)
+    print(f"Primary DNA: {[t.name for t in dna.primary]}")
+    print(f"Secondary DNA: {[t.name for t in dna.secondary]}")
+    print(f"Differentiation: {dna.differentiation}")
+    print(f"Coverage: {dna.coverage}")
+    
+    # Test 5: Quiz Analysis
+    print("\n--- Test 5: Quiz Camouflage Analysis ---")
+    analysis = engine.analyze_quiz(
+        correct_answer="Because compound interest allows your money to grow exponentially over time",
+        distractors=[
+            "Saving money is good",
+            "Banks pay interest",
+            "Money can grow"
+        ]
+    )
+    print(f"Passed: {analysis.passed}")
+    print(f"Issues: {len(analysis.issues)}")
+    for issue in analysis.issues:
+        print(f"  - {issue['type']}: {issue.get('recommendation', '')}")
+    
+    print("\n" + "=" * 60)
+    print("TAP v5.0 Test Harness Complete")
+    print("=" * 60)
