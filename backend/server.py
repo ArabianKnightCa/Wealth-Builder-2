@@ -612,8 +612,10 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
     Get personalized LPI chapters with dynamically generated content
     Content is transformed at runtime based on user's Age, Experience, PPI, and Goals
     
-    TAP 3.0: Uses immutable baseline + scaffolding injection (no paraphrasing)
-    Now integrated with 8 control scalars from PPI 24-trait vector.
+    TAP 5.0: DNA-based personalization with 24 VIA Character Strengths
+    - Continuous LC (Learning Complexity) calculation with 40/60 age/EL weighting
+    - Child/Bridge/Expert text selection with micro-glosses
+    - Immutable baseline principle maintained
     """
     # Fetch user profile using id field (from JWT token)
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
