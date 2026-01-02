@@ -6,7 +6,7 @@ Functions:
 - AE_FN_COMPOSE_PPI: Dynamically select 20 PPI questions from bank
 - AE_FN_GENERATE_PLAN: Generate Financial DNA + personalized LPI plan
 
-Updated: TAP 3.0 integration (immutable baseline + scaffolding injection)
+Updated: TAP 5.0 integration (DNA-based personalization + 24 VIA traits)
 """
 
 import json
@@ -16,6 +16,15 @@ from datetime import datetime
 from pathlib import Path
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
 from ae_v3_tap import get_tap_engine, UserProfile, compute_experience_band
+
+# TAP 5.0 imports
+from tap_5_0 import (
+    TAP50Engine,
+    PPIOptionSpec as TAP50PPIOptionSpec,
+    TAPControlInputs as TAP50ControlInputs,
+    compute_scalars as tap50_compute_scalars,
+    EL_MAX_POC as TAP50_EL_MAX_POC
+)
 
 
 class AdaptiveEngineV2:
