@@ -690,35 +690,350 @@ def generate_dna(
 
 
 # =============================================================================
-# COMPONENT 5: TEXT ADAPTATION ENGINE
+# COMPONENT 5: TEXT ADAPTATION ENGINE (CONTINUOUS - NO BUCKETS)
 # =============================================================================
 
-def select_text(expert: str, bridge: str, child: str, LC: float) -> str:
+# Word simplification dictionary with complexity levels (0.0 = simple, 1.0 = complex)
+# Words are replaced when user's LC is BELOW the complexity threshold
+WORD_SIMPLIFICATIONS = {
+    # Financial terms - complexity threshold : (complex_word, simple_replacement)
+    0.9: [
+        ('facilitate', 'help'),
+        ('facilitate', 'make easier'),
+        ('subsequently', 'then'),
+        ('consequently', 'so'),
+        ('accumulate', 'build up'),
+        ('accumulate', 'collect'),
+        ('allocate', 'give out'),
+        ('allocate', 'set aside'),
+        ('amortization', 'paying off slowly'),
+        ('amortize', 'pay off slowly'),
+        ('annuity', 'regular payments'),
+        ('appreciation', 'going up in value'),
+        ('arbitrage', 'buying low selling high'),
+    ],
+    0.8: [
+        ('medium of exchange', 'something we trade with'),
+        ('economic transactions', 'buying and selling'),
+        ('financial instrument', 'money tool'),
+        ('monetary policy', 'money rules'),
+        ('fiscal responsibility', 'being careful with money'),
+        ('liquidity', 'cash you can use now'),
+        ('volatility', 'ups and downs'),
+        ('diversification', 'spreading out'),
+        ('portfolio', 'collection of investments'),
+        ('compound interest', 'interest on interest'),
+        ('principal', 'the main amount'),
+        ('dividend', 'share of profits'),
+        ('equity', 'ownership'),
+        ('liability', 'what you owe'),
+        ('asset', 'something valuable you own'),
+        ('collateral', 'something you promise to give'),
+        ('depreciation', 'losing value over time'),
+    ],
+    0.7: [
+        ('utilize', 'use'),
+        ('purchase', 'buy'),
+        ('acquire', 'get'),
+        ('expenditure', 'spending'),
+        ('revenue', 'money coming in'),
+        ('deficit', 'shortage'),
+        ('surplus', 'extra'),
+        ('inflation', 'prices going up'),
+        ('deflation', 'prices going down'),
+        ('interest rate', 'cost of borrowing'),
+        ('credit score', 'trust number'),
+        ('mortgage', 'home loan'),
+        ('premium', 'payment'),
+        ('deductible', 'amount you pay first'),
+    ],
+    0.6: [
+        ('furthermore', 'also'),
+        ('however', 'but'),
+        ('therefore', 'so'),
+        ('approximately', 'about'),
+        ('demonstrate', 'show'),
+        ('establish', 'set up'),
+        ('implement', 'do'),
+        ('maintain', 'keep'),
+        ('obtain', 'get'),
+        ('require', 'need'),
+        ('sufficient', 'enough'),
+        ('various', 'different'),
+        ('primary', 'main'),
+        ('significant', 'big'),
+        ('fundamental', 'basic'),
+    ],
+    0.5: [
+        ('numerous', 'many'),
+        ('assist', 'help'),
+        ('commence', 'start'),
+        ('conclude', 'end'),
+        ('occur', 'happen'),
+        ('provide', 'give'),
+        ('receive', 'get'),
+        ('additional', 'more'),
+        ('initial', 'first'),
+        ('prior to', 'before'),
+        ('subsequent', 'next'),
+    ],
+    0.4: [
+        ('exchange', 'trade'),
+        ('transaction', 'deal'),
+        ('accumulation', 'pile'),
+        ('allocation', 'share'),
+        ('contribution', 'adding to'),
+        ('distribution', 'giving out'),
+    ],
+    0.3: [
+        ('funds', 'money'),
+        ('finances', 'money'),
+        ('currency', 'money'),
+        ('capital', 'money'),
+        ('income', 'money you earn'),
+        ('expenses', 'money you spend'),
+        ('budget', 'money plan'),
+        ('savings', 'money you keep'),
+        ('debt', 'money you owe'),
+        ('investment', 'money you grow'),
+    ],
+}
+
+# Child-friendly phrase additions based on childiness
+CHILD_FRIENDLY_STARTERS = {
+    0.9: "Let's learn something cool! ",
+    0.85: "Here's something fun to know: ",
+    0.8: "Did you know? ",
+    0.7: "Here's the thing: ",
+    0.6: "",
+    0.0: "",
+}
+
+# Emoji mappings for very young users (high childiness)
+CONCEPT_EMOJIS = {
+    'money': '💰',
+    'dollar': '💵',
+    'cash': '💵',
+    'coin': '🪙',
+    'save': '🏦',
+    'saving': '🏦',
+    'bank': '🏦',
+    'grow': '📈',
+    'growth': '📈',
+    'increase': '📈',
+    'profit': '📈',
+    'spend': '🛒',
+    'buy': '🛒',
+    'purchase': '🛒',
+    'goal': '🎯',
+    'target': '🎯',
+    'plan': '📋',
+    'budget': '📋',
+    'learn': '📚',
+    'understand': '💡',
+    'idea': '💡',
+    'smart': '🧠',
+    'wise': '🧠',
+    'safe': '🔒',
+    'protect': '🛡️',
+    'risk': '⚠️',
+    'danger': '⚠️',
+    'win': '🏆',
+    'success': '🏆',
+    'help': '🤝',
+    'share': '🤝',
+    'family': '👨‍👩‍👧‍👦',
+    'future': '🔮',
+    'time': '⏰',
+}
+
+
+def get_adaptation_params(childiness: float) -> dict:
     """
-    Continuous text selection based on LC value
-    No hard buckets - smooth transitions
+    Calculate CONTINUOUS adaptation parameters based on childiness (0.0 to 1.0)
+    NO BUCKETS - all values scale smoothly
     """
-    if LC >= 0.67:
-        return expert
-    elif LC <= 0.33:
-        return child
-    else:
-        # Bridge zone: prefer bridge if available
-        return bridge if bridge else (expert if LC > 0.50 else child)
+    return {
+        # Sentence length scales from 25 words (adult) to 8 words (child)
+        'max_words_per_sentence': int(25 - (17 * childiness)),
+        # Number of sentences scales from 10 (adult) to 2 (child)
+        'max_sentences': int(10 - (8 * childiness)),
+        # Word complexity threshold - higher childiness = more simplification
+        'simplification_threshold': childiness,
+        # Add emoji for childiness > 0.75
+        'add_emoji': childiness > 0.75,
+        # Add friendly starter for childiness > 0.6
+        'add_starter': childiness > 0.6,
+        # Add inline explanations for childiness > 0.5
+        'add_explanations': childiness > 0.5,
+    }
 
 
-def get_child_params(childiness: float) -> Tuple[int, int]:
-    """Calculate parameters for child text adaptation"""
-    max_words_per_sentence = 8 + int(10 * (1 - childiness))  # 8-18 words
-    max_sentences = 2 + int(2 * (1 - childiness))            # 2-4 sentences
-    return max_words_per_sentence, max_sentences
+def apply_word_simplifications(text: str, lc: float) -> str:
+    """
+    Apply word-level simplifications based on LC (Learning Complexity)
+    Lower LC = more simplification applied
+    CONTINUOUS - no buckets
+    """
+    result = text
+    
+    # Apply simplifications for all thresholds ABOVE the user's LC
+    for threshold, replacements in sorted(WORD_SIMPLIFICATIONS.items(), reverse=True):
+        if lc < threshold:
+            for item in replacements:
+                if len(item) == 2:
+                    complex_word, simple_word = item
+                    # Case-insensitive replacement, preserve first letter case
+                    pattern = re.compile(re.escape(complex_word), re.IGNORECASE)
+                    
+                    def replace_preserve_case(match):
+                        matched = match.group(0)
+                        if matched[0].isupper():
+                            return simple_word.capitalize()
+                        return simple_word
+                    
+                    result = pattern.sub(replace_preserve_case, result)
+    
+    return result
 
 
-def get_bridge_params(childiness: float) -> Tuple[int, int]:
-    """Calculate parameters for bridge text adaptation"""
-    max_words_per_sentence = 12 + int(10 * (1 - childiness))  # 12-22 words
-    max_sentences = 3 + int(2 * (1 - childiness))             # 3-5 sentences
-    return max_words_per_sentence, max_sentences
+def add_inline_explanations(text: str, childiness: float, age: int) -> str:
+    """
+    Add inline explanations for complex terms based on childiness
+    Higher childiness = more explanations
+    """
+    result = text
+    
+    # Only add explanations if childiness is high enough
+    if childiness < 0.5:
+        return result
+    
+    # Terms that need explanation with their simple definitions
+    explanations = {
+        'interest': '(extra money the bank gives you)',
+        'loan': '(money you borrow and pay back later)',
+        'credit': '(buying now, paying later)',
+        'invest': '(putting money somewhere to grow)',
+        'stock': '(a tiny piece of a company)',
+        'bond': '(lending money to get it back with extra)',
+        'tax': '(money we give to help our community)',
+        'insurance': '(protection if something bad happens)',
+        'retirement': '(when you stop working and relax)',
+        'salary': '(money from your job)',
+        'wage': '(money from your job)',
+    }
+    
+    # Scale which explanations to add based on childiness
+    explanation_threshold = 1.0 - childiness  # Higher childiness = lower threshold
+    
+    for term, explanation in explanations.items():
+        # Add explanation if term exists and childiness warrants it
+        if term in result.lower() and childiness > 0.4:
+            # Only add once per term
+            pattern = re.compile(f'\\b({re.escape(term)})\\b(?![^(]*\\))', re.IGNORECASE)
+            result = pattern.sub(f'\\1 {explanation}', result, count=1)
+    
+    return result
+
+
+def add_emoji_markers(text: str, childiness: float) -> str:
+    """
+    Add contextual emojis for young users (high childiness)
+    CONTINUOUS scaling - more emojis for higher childiness
+    """
+    if childiness < 0.75:
+        return text
+    
+    result = text
+    emojis_added = 0
+    max_emojis = int(3 * childiness)  # Scale max emojis with childiness
+    
+    for word, emoji in CONCEPT_EMOJIS.items():
+        if emojis_added >= max_emojis:
+            break
+        if word in result.lower():
+            # Add emoji at start if this is a key concept
+            if emojis_added == 0:
+                result = f"{emoji} {result}"
+                emojis_added += 1
+    
+    return result
+
+
+def get_friendly_starter(childiness: float) -> str:
+    """Get age-appropriate conversation starter based on childiness"""
+    for threshold, starter in sorted(CHILD_FRIENDLY_STARTERS.items(), reverse=True):
+        if childiness >= threshold:
+            return starter
+    return ""
+
+
+def adapt_text_continuous(text: str, age: int, el: int, el_max: int = 5) -> str:
+    """
+    MAIN CONTINUOUS TEXT ADAPTATION FUNCTION
+    
+    Adapts text based on continuous LC value derived from age (6-99) and EL (1-5/15)
+    NO BUCKETS - smooth scaling across entire range
+    
+    Args:
+        text: Baseline expert text
+        age: User age (6-99)
+        el: Experience level (1-5 for POC)
+        el_max: Maximum EL (5 for POC, 15 for commercial)
+    
+    Returns:
+        Adapted text appropriate for user's level
+    """
+    if not text:
+        return text
+    
+    # Calculate LC and childiness (CONTINUOUS values)
+    lc = calculate_lc(age, el, el_max)
+    childiness = calculate_childiness(lc)
+    
+    # Get adaptation parameters (all continuous)
+    params = get_adaptation_params(childiness)
+    
+    # Step 1: Apply word-level simplifications
+    result = apply_word_simplifications(text, lc)
+    
+    # Step 2: Add inline explanations for complex terms
+    if params['add_explanations']:
+        result = add_inline_explanations(result, childiness, age)
+    
+    # Step 3: Apply sentence-level constraints
+    max_words = params['max_words_per_sentence']
+    max_sentences = params['max_sentences']
+    
+    # Split into sentences and limit
+    sentences = re.split(r'(?<=[.!?])\s+', result)
+    processed_sentences = []
+    
+    for sentence in sentences[:max_sentences]:
+        words = sentence.split()
+        if len(words) > max_words:
+            # Truncate long sentences gracefully
+            truncated = ' '.join(words[:max_words])
+            # Try to end at a natural break
+            if not truncated.rstrip().endswith(('.', '!', '?')):
+                truncated = truncated.rstrip() + '.'
+            processed_sentences.append(truncated)
+        else:
+            processed_sentences.append(sentence)
+    
+    result = ' '.join(processed_sentences)
+    
+    # Step 4: Add friendly starter for young users
+    if params['add_starter']:
+        starter = get_friendly_starter(childiness)
+        if starter and not result.startswith(starter):
+            result = starter + result
+    
+    # Step 5: Add emoji markers for very young users
+    if params['add_emoji']:
+        result = add_emoji_markers(result, childiness)
+    
+    return result
 
 
 def split_sentence_safe(sentence: str, max_words: int) -> List[str]:
