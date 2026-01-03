@@ -696,15 +696,15 @@ def generate_dna(
 # Word simplification dictionary with complexity levels (0.0 = simple, 1.0 = complex)
 # Words are replaced when user's LC is BELOW the complexity threshold
 WORD_SIMPLIFICATIONS = {
-    # Financial terms - complexity threshold : (complex_word, simple_replacement)
+    # Financial terms - complexity threshold : (complex_word/phrase, simple_replacement)
+    # Order matters - longer phrases first to avoid partial matches
     0.9: [
-        ('facilitate', 'help'),
-        ('facilitate', 'make easier'),
+        ('that facilitates', 'that helps with'),
+        ('which facilitates', 'which helps with'),
+        ('facilitates', 'helps with'),
         ('subsequently', 'then'),
         ('consequently', 'so'),
         ('accumulate', 'build up'),
-        ('accumulate', 'collect'),
-        ('allocate', 'give out'),
         ('allocate', 'set aside'),
         ('amortization', 'paying off slowly'),
         ('amortize', 'pay off slowly'),
@@ -713,16 +713,18 @@ WORD_SIMPLIFICATIONS = {
         ('arbitrage', 'buying low selling high'),
     ],
     0.8: [
-        ('medium of exchange', 'something we trade with'),
+        ('medium of exchange', 'way to trade'),
         ('economic transactions', 'buying and selling'),
         ('financial instrument', 'money tool'),
         ('monetary policy', 'money rules'),
         ('fiscal responsibility', 'being careful with money'),
+        ('double coincidence of wants', 'problem of finding someone who wants to trade'),
+        ('universal medium', 'common way'),
         ('liquidity', 'cash you can use now'),
         ('volatility', 'ups and downs'),
         ('diversification', 'spreading out'),
         ('portfolio', 'collection of investments'),
-        ('compound interest', 'interest on interest'),
+        ('compound interest', 'interest that grows on itself'),
         ('principal', 'the main amount'),
         ('dividend', 'share of profits'),
         ('equity', 'ownership'),
@@ -746,6 +748,7 @@ WORD_SIMPLIFICATIONS = {
         ('mortgage', 'home loan'),
         ('premium', 'payment'),
         ('deductible', 'amount you pay first'),
+        ('bartered', 'traded'),
     ],
     0.6: [
         ('furthermore', 'also'),
