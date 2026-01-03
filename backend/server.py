@@ -751,67 +751,46 @@ async def get_chapter_with_lessons(chapter_id: str, user_id: str = Depends(get_c
         exp_level = exp_level_map.get(financial_exp, 1)
         user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
         
-        # Check which TAP version to use
-        use_v23 = is_tap_v2_3_enabled()
+        # TAP 5.0: DNA-based personalization
+        tap50_engine = TAP50Engine(el_max_poc=EL_MAX_POC)
         
-        if use_v23:
-            # TAP v2.3: Formula-driven transformation
-            tap_v23 = get_tap_v23_engine()
-            el_max = get_el_max()
-            ae_state = AEStatePacket(friction=0.0, momentum=0.5, exposure=1)
-            
-            personalized_lessons = []
-            for lesson in lessons:
-                transformed_text = tap_v23.transform_content(
-                    baseline_text=lesson['text'],
-                    user_age=user_age,
-                    user_experience_level=exp_level,
-                    el_max=el_max,
-                    ae_state=ae_state
-                )
-                transformed_takeaway = tap_v23.transform_content(
-                    baseline_text=lesson['takeaway'],
-                    user_age=user_age,
-                    user_experience_level=exp_level,
-                    el_max=el_max,
-                    ae_state=ae_state
-                )
-                personalized_lessons.append({
-                    **lesson,
-                    'text': transformed_text,
-                    'takeaway': transformed_takeaway
-                })
-            lessons = personalized_lessons
-        else:
-            # TAP v2.0: Legacy transformation
-            tap_user = UserProfile(
-                user_id=user_id,
-                age=user_age,
-                experience_level=exp_level,
-                dna_profile=dna_profile,
-                dna_weights=dna_weights,
-                goals=user.get('financial_goals', [])
+        personalized_lessons = []
+        for lesson in lessons:
+            lesson_spec = TAP50LessonSpec(
+                topic=lesson.get('title', ''),
+                baseline_text=lesson['text'],
+                takeaway=lesson.get('takeaway', '')
             )
             
-            tap = get_tap_engine()
-            personalized_lessons = []
-            for lesson in lessons:
-                ctx = LessonContext(
-                    chapter_id=chapter_id,
-                    lesson_id=lesson['id'],
-                    attempt_number=1,
-                    last_score=None,
-                    rolling_mastery=None,
-                    fatigue_score=None
+            text_output = tap50_engine.process_lpi(
+                spec=lesson_spec,
+                age=user_age,
+                el_declared=exp_level,
+                controls=TAP50ControlInputs.neutral()
+            )
+            
+            takeaway_adapted = ''
+            if lesson.get('takeaway'):
+                takeaway_spec = TAP50LessonSpec(
+                    topic="Key Takeaway",
+                    baseline_text=lesson['takeaway'],
+                    takeaway=""
                 )
-                transformed_text = tap.transform_lpi_lesson(lesson['text'], tap_user, ctx)
-                transformed_takeaway = tap.transform_lpi_takeaway(lesson['takeaway'], tap_user, ctx)
-                personalized_lessons.append({
-                    **lesson,
-                    'text': transformed_text,
-                    'takeaway': transformed_takeaway
-                })
-            lessons = personalized_lessons
+                takeaway_output = tap50_engine.process_lpi(
+                    spec=takeaway_spec,
+                    age=user_age,
+                    el_declared=exp_level,
+                    controls=TAP50ControlInputs.neutral()
+                )
+                takeaway_adapted = takeaway_output.selected_text
+            
+            personalized_lessons.append({
+                **lesson,
+                'text': text_output.selected_text,
+                'takeaway': takeaway_adapted,
+                'tap_version': '5.0'
+            })
+        lessons = personalized_lessons
     
     return {
         "chapter": chapter,
