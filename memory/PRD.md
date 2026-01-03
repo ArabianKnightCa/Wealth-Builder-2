@@ -116,4 +116,12 @@ childiness = 1.0 - LC
 ---
 
 ## Last Updated
-January 3, 2026 - Complete removal of old TAP versions, TAP 5.0 is now the only active version
+January 3, 2026 - TAP 5.0 continuous text adaptation (NO BUCKETS) implemented
+
+### TAP 5.0 Continuous Adaptation
+- Removed ALL bucket-based child/bridge/expert selection
+- Word-level simplifications scale with LC thresholds (0.25, 0.40, 0.55, 0.70)
+- Lower LC = more simplifications applied
+- Sentence length scales continuously with childiness
+- Emoji and friendly starters for high childiness (>0.75)
+- Adults (LC > 0.70) get baseline text unchanged
