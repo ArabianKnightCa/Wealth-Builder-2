@@ -15,9 +15,8 @@ from typing import Dict, List, Any, Tuple
 from datetime import datetime
 from pathlib import Path
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
-from ae_v3_tap import get_tap_engine, UserProfile, compute_experience_band
 
-# TAP 5.0 imports
+# TAP 5.0 imports - The ONLY active TAP version
 from tap_5_0 import (
     TAP50Engine,
     PPIOptionSpec as TAP50PPIOptionSpec,
