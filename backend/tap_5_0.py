@@ -1450,50 +1450,44 @@ class TAP50Engine:
         ppi_completed: bool = False
     ) -> AdaptedContent:
         """
-        Process LPI lesson content
+        Process LPI lesson content using CONTINUOUS adaptation (NO BUCKETS)
         
         Args:
             spec: LessonSpec with baseline text, topic, and takeaway
-            age: User age
-            el_declared: User's experience level
+            age: User age (6-99)
+            el_declared: User's experience level (1-5)
             controls: Optional control inputs
             dna_result: Optional DNA result for personalization
             ppi_completed: Whether PPI is complete
         
         Returns:
-            AdaptedContent with child/bridge/expert versions
+            AdaptedContent with continuously adapted text based on age/EL
         """
         scalars = self.compute_scalars(age, el_declared, spec.baseline_text, controls)
-        childiness = scalars.childiness
         
-        # Generate child version
-        child_text = simplify_for_child(spec.baseline_text, childiness)
-        child_text = apply_microglosses(child_text, childiness, age)
-        
-        # Generate bridge version
-        bridge_text = create_bridge_text(spec.baseline_text, child_text, childiness)
-        bridge_text = apply_microglosses(bridge_text, childiness * 0.5, age)
-        
-        # Expert version is baseline
-        expert_text = spec.baseline_text
-        
-        # Select appropriate version
-        selected_text = select_text(expert_text, bridge_text, child_text, scalars.lc)
+        # CONTINUOUS TEXT ADAPTATION - NO BUCKETS
+        # Directly adapt baseline text based on continuous LC/childiness values
+        adapted_text = adapt_text_continuous(
+            text=spec.baseline_text,
+            age=age,
+            el=el_declared,
+            el_max=self.el_max
+        )
         
         # Apply DNA personalization if available
         if dna_result and ppi_completed:
-            selected_text = apply_personalization(
-                selected_text,
+            adapted_text = apply_personalization(
+                adapted_text,
                 ppi_completed,
                 dna_result.primary,
                 dna_result.secondary
             )
         
         return AdaptedContent(
-            child_text=child_text,
-            bridge_text=bridge_text,
-            expert_text=expert_text,
-            selected_text=selected_text,
+            child_text=adapted_text,  # For backward compat, same as selected
+            bridge_text=adapted_text,  # For backward compat, same as selected
+            expert_text=spec.baseline_text,  # Original baseline preserved
+            selected_text=adapted_text,  # THE ADAPTED TEXT
             blend_weights=scalars.weights,
             tap_version=self.version,
             scalars=scalars
@@ -1507,36 +1501,32 @@ class TAP50Engine:
         controls: TAPControlInputs = None
     ) -> List[PPIOptionSpec]:
         """
-        Adapt PPI question options for user level
+        Adapt PPI question options using CONTINUOUS adaptation (NO BUCKETS)
         
         Args:
             options: List of PPIOptionSpec with baseline text
-            age: User age
-            el_declared: User's experience level
+            age: User age (6-99)
+            el_declared: User's experience level (1-5)
             controls: Optional control inputs
         
         Returns:
-            List of PPIOptionSpec with adapted display text
+            List of PPIOptionSpec with continuously adapted display text
         """
-        scalars = self.compute_scalars(age, el_declared, "", controls)
-        childiness = scalars.childiness
-        
         adapted_options = []
         for opt in options:
-            if childiness >= 0.35:
-                # Simplify for younger/less experienced users
-                display = simplify_for_child(opt.baseline, childiness)
-                gloss = ""  # Could add gloss if needed
-            else:
-                # Use baseline for experienced users
-                display = opt.baseline
-                gloss = ""
+            # CONTINUOUS ADAPTATION for each option
+            display = adapt_text_continuous(
+                text=opt.baseline,
+                age=age,
+                el=el_declared,
+                el_max=self.el_max
+            )
             
             adapted_options.append(PPIOptionSpec(
                 id=opt.id,
                 baseline=opt.baseline,
                 display=display,
-                gloss=gloss
+                gloss=""
             ))
         
         return adapted_options
