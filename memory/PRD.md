@@ -16,20 +16,17 @@ The TAP system adapts financial education content based on:
 
 **Core Principle**: TAP changes HOW content is delivered, NOT WHAT is taught.
 
-### TAP Version History
-| Version | Status | Description |
-|---------|--------|-------------|
-| TAP 5.0 | **PRIMARY** | DNA-based personalization with 24 VIA traits, 7-layer PPI |
-| TAP 3.2.4 | Fallback | Child-friendly with continuous blending |
-| TAP 3.2 | Fallback | Sentence-level scaffolding |
-| TAP 3.0 | Fallback | Immutable baseline + scaffolding injection |
-| TAP 2.3 | Legacy | Formula-driven transformation |
+### TAP Version
+**TAP 5.0 - ONLY ACTIVE VERSION** (January 2026)
+- All old TAP versions (2.3, 3.0, 3.2, 3.2.4) have been REMOVED
+- 17 legacy files archived to `_archived/TAP_OLD/`
+- Single source of truth: `/app/backend/tap_5_0.py`
 
 ---
 
 ## What's Been Implemented
 
-### Completed (December 2025)
+### Completed (January 2026)
 - [x] **TAP 5.0 Engine** (`/app/backend/tap_5_0.py`)
   - DNA generation from 24 VIA Character Strengths
   - 7-layer PPI support (270 questions)
@@ -38,37 +35,37 @@ The TAP system adapts financial education content based on:
   - Micro-gloss system for inline definitions
   - Quiz camouflage analysis
 
-- [x] **TAP 5.0 Integration**
-  - `/api/content/ppi/personalized` - PPI questions
-  - `/api/content/lpi` - LPI lessons
-  - `/api/content/chapters/{id}/quiz` - Quiz questions
-  - Feature flag controlled via `USE_TAP_V5_0`
+- [x] **Complete TAP 5.0 Integration** (All old TAP removed)
+  - `/api/content/ppi/personalized` - TAP 5.0
+  - `/api/content/lpi` - TAP 5.0
+  - `/api/content/chapters/{id}/quiz` - TAP 5.0
+  - `/api/tap/test` - TAP 5.0 test endpoint
+  - `/api/tap50/ppi-test` - TAP 5.0 PPI test endpoint
 
 - [x] **User Registration Flow**
-  - Multi-step registration form fixed
+  - Multi-step registration form working
   - Goals selection page working
   - Age-appropriate content delivery
 
 - [x] **Content Adaptation**
-  - Child users (6yo): childiness ~99%, emoji-enhanced content
-  - Adult users (40yo EL5): childiness ~25%, expert content
+  - Child users (7yo EL1): childiness ~99.6%, emoji-enhanced content
+  - Adult users (40yo EL5): childiness ~25.4%, expert content
 
 ---
 
 ## Prioritized Backlog
 
-### P0 - Critical (In Progress)
+### P0 - Critical (Pending User Input)
 - [ ] **Complete PPI v5.0 Integration**
-  - Waiting for user to provide 270-question PPI JSON
-  - Will enable full DNA generation from PPI responses
+  - Waiting for 270-question PPI JSON from user
   - Prompt available at `/app/TAP_5_0_PPI_PROMPT_FOR_CLAUDE.md`
 
 ### P1 - High Priority
-- [ ] **TAP 4.0 Validators**
+- [ ] **TAP Validators** (Separate module - not part of TAP 5.0)
   - Grammar validator (language-tool-python)
   - Readability validator (textstat)
   - Meaning drift validator (sentence-transformers)
-  - Dependencies not yet installed
+  - To be implemented in `/app/backend/tap_validators.py`
 
 - [ ] **Country/City Selector**
   - UI exists but needs backend integration
@@ -89,18 +86,15 @@ The TAP system adapts financial education content based on:
 ## Key Files
 
 ### Backend
-- `/app/backend/tap_5_0.py` - TAP 5.0 Engine (PRIMARY)
+- `/app/backend/tap_5_0.py` - TAP 5.0 Engine (ONLY VERSION)
 - `/app/backend/ae_engine_v2.py` - Adaptive Engine v2 (uses TAP 5.0)
 - `/app/backend/server.py` - FastAPI server
-- `/app/backend/feature_flags.py` - Feature flag configuration
+- `/app/backend/feature_flags.py` - Simplified (TAP 5.0 only)
+- `/app/backend/_archived/TAP_OLD/` - Archived old TAP files (17 files)
 
 ### Frontend
 - `/app/frontend/src/pages/Register.js` - Registration flow
 - `/app/frontend/src/pages/GoalSelector.js` - Goal selection
-
-### Prompts for Content Generation
-- `/app/TAP_5_0_PPI_PROMPT_FOR_CLAUDE.md` - New 270 PPI questions
-- `/app/GOALS_67_PROMPT_FOR_AI.md` - Financial goals
 
 ---
 
@@ -122,4 +116,4 @@ childiness = 1.0 - LC
 ---
 
 ## Last Updated
-December 2025 - TAP 5.0 full integration across all content endpoints
+January 3, 2026 - Complete removal of old TAP versions, TAP 5.0 is now the only active version
