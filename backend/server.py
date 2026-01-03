@@ -704,12 +704,6 @@ async def get_lpi_chapters(user_id: str = Depends(get_current_user)):
             "weights": scalars.weights
         }
     }
-        response["tap_controls"] = tap_controls_dict
-        response["controls_source"] = "ppi"
-    elif use_tap50 or use_tap324 or use_tap32 or use_tap3:
-        response["controls_source"] = "neutral"
-    
-    return response
 
 # ===========================
 # Content API - Database-Driven
