@@ -698,6 +698,34 @@ def generate_dna(
 WORD_SIMPLIFICATIONS = {
     # Financial terms - complexity threshold : (complex_word/phrase, simple_replacement)
     # Order matters - longer phrases first to avoid partial matches
+    0.95: [
+        # PPI option simplifications for young children
+        ('research extensively before deciding', 'look up lots of information first'),
+        ('go with my gut feeling', 'pick what feels right'),
+        ('ask friends or family for advice', 'ask people I trust'),
+        ('follow what experts recommend', 'do what smart people say'),
+        ('save a fixed amount each month', 'save the same amount every month'),
+        ('save whatever is left over', 'save what I have left'),
+        ('save only for specific goals', 'save for things I want'),
+        ('struggle to save consistently', 'find it hard to save'),
+        ('excited and optimistic', 'happy and hopeful'),
+        ('anxious or worried', 'nervous or scared'),
+        ('uncertain but hopeful', 'not sure but hopeful'),
+        ('confident and prepared', 'ready and sure'),
+        ('daily or weekly', 'every day or week'),
+        ('rarely or never', 'almost never'),
+        ('building an emergency fund', 'saving for emergencies'),
+        ('paying off debt', 'paying back money I owe'),
+        ('learning to budget better', 'learning to plan my money'),
+        ('split it between saving and spending', 'save some and spend some'),
+        ('use it to pay bills or debt', 'use it for things I owe'),
+        ('reading and research', 'reading and looking things up'),
+        ('hands-on practice', 'trying things myself'),
+        ('watching videos or tutorials', 'watching videos'),
+        ('discussion and conversation', 'talking with others'),
+        ('use them responsibly and pay in full', 'use them carefully and pay it all back'),
+        ('extensively', 'a lot'),
+    ],
     0.9: [
         ('that facilitates', 'that helps with'),
         ('which facilitates', 'which helps with'),
