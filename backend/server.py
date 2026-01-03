@@ -4345,49 +4345,59 @@ async def ae_test_run_suite(user_id: str = Depends(get_current_user)):
     }
 
 # ===========================
-# TAP v2.3 Test Endpoint
+# TAP 5.0 Test Endpoint
 # ===========================
 
 @api_router.get("/tap/test")
-async def test_tap_v23():
-    """Test TAP v2.3 with sample transformations"""
-    from tap_v2_3_templates import create_sample_template
+async def test_tap_v50():
+    """Test TAP 5.0 with sample transformations"""
+    from tap_5_0 import TAP50Engine, TAPControlInputs, LessonSpec, EL_MAX_POC
     
-    tap_v23 = get_tap_v23_engine()
+    tap50_engine = TAP50Engine(el_max_poc=EL_MAX_POC)
     
     # Test users
     test_users = [
         {"age": 7, "el": 1, "name": "Child Beginner"},
-        {"age": 29, "el": 9, "name": "Adult Intermediate"},
-        {"age": 67, "el": 15, "name": "Senior Expert"}
+        {"age": 29, "el": 3, "name": "Adult Intermediate"},
+        {"age": 67, "el": 5, "name": "Senior Expert"}
     ]
     
     results = []
-    template = create_sample_template()
+    test_text = "Money is a medium of exchange that facilitates economic transactions. Understanding compound interest helps build long-term wealth."
     
     for user in test_users:
         # Get scalars
-        scalars = tap_v23.get_user_scalars(user["age"], user["el"])
+        scalars = tap50_engine.compute_scalars(user["age"], user["el"], test_text)
         
-        # Transform with template
-        transformed = tap_v23.transform_with_template(
-            template=template,
-            user_age=user["age"],
-            user_experience_level=user["el"],
-            el_max=15
+        # Process lesson
+        spec = LessonSpec(
+            topic="Understanding Money",
+            baseline_text=test_text,
+            takeaway=""
+        )
+        
+        output = tap50_engine.process_lpi(
+            spec=spec,
+            age=user["age"],
+            el_declared=user["el"],
+            controls=TAPControlInputs.neutral()
         )
         
         results.append({
             "user": user["name"],
             "age": user["age"],
             "el": user["el"],
-            "scalars": scalars,
-            "transformed_content": transformed
+            "scalars": {
+                "lc": scalars.lc,
+                "childiness": scalars.childiness,
+                "weights": scalars.weights
+            },
+            "selected_text": output.selected_text[:200] + "..." if len(output.selected_text) > 200 else output.selected_text,
+            "blend_weights": output.blend_weights
         })
     
     return {
-        "tap_version": "2.3",
-        "enabled": is_tap_v2_3_enabled(),
+        "tap_version": "5.0",
         "el_max": get_el_max(),
         "test_results": results
     }
