@@ -695,10 +695,15 @@ def generate_dna(
 
 # Word simplification dictionary with complexity levels (0.0 = simple, 1.0 = complex)
 # Words are replaced when user's LC is BELOW the complexity threshold
+# Threshold = LC value below which simplification applies
+# Higher threshold = more people get simplification
+# Lower threshold = only very young/inexperienced get simplification
 WORD_SIMPLIFICATIONS = {
     # Financial terms - complexity threshold : (complex_word/phrase, simple_replacement)
     # Order matters - longer phrases first to avoid partial matches
-    0.95: [
+    
+    # Threshold 0.40: Only for young children (LC < 0.40 means childiness > 0.60)
+    0.40: [
         # PPI option simplifications for young children
         ('research extensively before deciding', 'look up lots of information first'),
         ('go with my gut feeling', 'pick what feels right'),
@@ -726,7 +731,9 @@ WORD_SIMPLIFICATIONS = {
         ('use them responsibly and pay in full', 'use them carefully and pay it all back'),
         ('extensively', 'a lot'),
     ],
-    0.9: [
+    
+    # Threshold 0.30: Very young children only
+    0.30: [
         ('that facilitates', 'that helps with'),
         ('which facilitates', 'which helps with'),
         ('facilitates', 'helps with'),
@@ -740,7 +747,9 @@ WORD_SIMPLIFICATIONS = {
         ('appreciation', 'going up in value'),
         ('arbitrage', 'buying low selling high'),
     ],
-    0.8: [
+    
+    # Threshold 0.25: Children and young teens
+    0.25: [
         ('medium of exchange', 'way to trade'),
         ('economic transactions', 'buying and selling'),
         ('financial instrument', 'money tool'),
@@ -761,7 +770,9 @@ WORD_SIMPLIFICATIONS = {
         ('collateral', 'something you promise to give'),
         ('depreciation', 'losing value over time'),
     ],
-    0.7: [
+    
+    # Threshold 0.50: Children through teens
+    0.50: [
         ('utilize', 'use'),
         ('purchase', 'buy'),
         ('acquire', 'get'),
@@ -778,7 +789,9 @@ WORD_SIMPLIFICATIONS = {
         ('deductible', 'amount you pay first'),
         ('bartered', 'traded'),
     ],
-    0.6: [
+    
+    # Threshold 0.60: Most non-experts
+    0.60: [
         ('furthermore', 'also'),
         ('however', 'but'),
         ('therefore', 'so'),
