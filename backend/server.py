@@ -4352,6 +4352,7 @@ async def ae_test_run_suite(user_id: str = Depends(get_current_user)):
 async def test_tap_v50():
     """Test TAP 5.0 with sample transformations"""
     from tap_5_0 import TAP50Engine, TAPControlInputs, LessonSpec, EL_MAX_POC
+    from feature_flags import get_el_max
     
     tap50_engine = TAP50Engine(el_max_poc=EL_MAX_POC)
     
