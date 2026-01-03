@@ -185,13 +185,6 @@ from ppi_trait_vector import (
     TRAIT_NAMES
 )
 
-# TAP Control Scalars (8 continuous controls from 24-trait vector)
-from tap_control_scalars import (
-    compute_tap_controls,
-    tap_control_packet_to_dict,
-    get_clg_recommendations
-)
-
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
