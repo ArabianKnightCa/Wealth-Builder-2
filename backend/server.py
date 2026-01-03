@@ -4403,82 +4403,10 @@ async def test_tap_v50():
     }
 
 
-@api_router.get("/clg/test")
-async def test_clg():
+@api_router.get("/tap50/ppi-test")
+async def test_tap50_ppi(age: int = 8, experience: str = "beginner"):
     """
-    Test CLG (Controlled Language Generator) - TAP v2.3.1 grammar-safe realization layer.
-    
-    Runs the 9-case step test:
-    - P1: age=8, EL=1 (child)
-    - P2: age=28, EL=4 (adult)
-    - P3: age=60, EL=14 (senior expert)
-    
-    For each of 3 concepts: CREDIT_CARD, PAYING_BILLS, INVESTING
-    """
-    results = run_clg_step_test()
-    return {
-        "clg_version": "1.0.0",
-        "clg_enabled": use_clg_engine(),
-        "test_results": results
-    }
-
-
-class CLGRenderRequest(BaseModel):
-    """Request model for CLG render endpoint."""
-    concept_ids: List[str]
-    age: int
-    el_declared: int
-    el_max: int = 15
-    tone: str = "direct"
-    template_type: str = "lpi"
-
-
-@api_router.post("/clg/render")
-async def render_clg_content(request: CLGRenderRequest):
-    """
-    Render content using CLG for specific concepts and user profile.
-    
-    Args:
-        request.concept_ids: List of concept IDs (e.g., ["CREDIT_CARD", "INVESTING"])
-        request.age: User age
-        request.el_declared: User's declared experience level
-        request.el_max: Maximum experience level (default 15)
-        request.tone: Tone variant (supportive, direct, playful)
-        request.template_type: "lpi" or "ppi"
-    
-    Returns:
-        Rendered content with debug information
-    """
-    if not use_clg_engine():
-        raise HTTPException(
-            status_code=503,
-            detail="CLG engine is disabled. Enable via USE_CLG_ENGINE=true"
-        )
-    
-    tap_v23 = get_tap_v23_engine()
-    result = tap_v23.render_concepts(
-        concept_ids=request.concept_ids,
-        user_age=request.age,
-        user_experience_level=request.el_declared,
-        el_max=request.el_max,
-        tone=request.tone,
-        template_type=request.template_type
-    )
-    
-    return {
-        "clg_version": "1.0.0",
-        "rendered_text": result["text"],
-        "scalars": result["scalars"],
-        "debug": result["debug"]
-    }
-
-
-@api_router.get("/clg/ppi-test")
-async def test_clg_ppi(age: int = 8, experience: str = "beginner"):
-    """
-    Test CLG-adapted PPI questions for a specific age and experience level.
-    
-    This shows how PPI questions are adapted using the CLG Phrase Bank approach.
+    Test TAP 5.0 adapted PPI questions for a specific age and experience level.
     
     Args:
         age: User age (default: 8 for child)
@@ -4493,7 +4421,7 @@ async def test_clg_ppi(age: int = 8, experience: str = "beginner"):
     )
     
     return {
-        "clg_version": "1.0.0",
+        "tap_version": "5.0",
         "test_params": {"age": age, "experience": experience},
         "ppi_version": ppi_result["ppi_version"],
         "total_questions": len(ppi_result["items"]),
