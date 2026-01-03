@@ -23,43 +23,11 @@ from content_data import LPI_CHAPTERS, LPI_ANSWER_KEY
 from ae_engine_v2 import get_adaptive_engine_v2
 from quiz_validator import validate_quiz_integrity
 from config import MINIMUM_USER_AGE, CHILD_AGE_MAX, TEEN_AGE_MAX
-from ae_v3_tap import get_tap_engine, UserProfile, LessonContext, compute_age_band
 from content_models import Chapter, Lesson, QuizQuestion, ChapterComplete
 from profile_models import Profile, ProfileCreate, ProfileUpdate, ActiveProfileResponse, AVATAR_OPTIONS
 
-# TAP v2.3 imports (these depend on .env being loaded first)
-from feature_flags import is_tap_v2_3_enabled, get_el_max, use_clg_engine, is_tap_v3_0_enabled, is_tap_v3_2_enabled, is_tap_v3_2_4_enabled
-from tap_v2_3_engine import get_tap_v23_engine
-from tap_v2_3_ae_integration import AEStatePacket
-from clg_engine import get_clg_engine, run_clg_step_test
-from lpi_transform import transform_lpi_lesson, compute_lpi_scalars, FinancialDNA
-
-# TAP 3.0 imports - the previous clean-room implementation
-from tap_3_0 import (
-    compute_scalars as tap3_compute_scalars, 
-    get_clg_engine as get_tap3_clg_engine, 
-    EL_MAX_POC,
-    extract_concepts_from_text,
-    TAPControlInputs
-)
-
-# TAP 3.2 imports - sentence-level scaffolding engine
-from tap_3_2 import (
-    TAP32Engine_v321,
-    TAPControlInputs as TAP32ControlInputs,
-    PPIOptionSpec as TAP32PPIOptionSpec
-)
-
-# TAP 3.2.4 imports - child-friendly version with continuous blending
-from tap_3_2_4 import (
-    TAP32Engine_v324,
-    TAPControlInputs as TAP324ControlInputs,
-    PPIOptionSpec as TAP324PPIOptionSpec,
-    LessonSpec as TAP324LessonSpec,
-    find_concepts_in_text as tap324_find_concepts
-)
-
-# TAP 5.0 imports - comprehensive DNA-based personalization
+# TAP 5.0 - The ONLY active TAP version
+# DNA-based personalization with 24 VIA Character Strengths
 from tap_5_0 import (
     TAP50Engine,
     TAPControlInputs as TAP50ControlInputs,
@@ -74,9 +42,11 @@ from tap_5_0 import (
     accumulate_scores as tap50_accumulate_scores,
     analyze_quiz_balance as tap50_analyze_quiz,
     VIA_TRAITS,
-    POC_CONFIG as TAP50_POC_CONFIG
+    POC_CONFIG as TAP50_POC_CONFIG,
+    EL_MAX_POC,
+    simplify_for_child,
+    apply_microglosses
 )
-from feature_flags import is_tap_v5_0_enabled
 
 # Helper functions for quiz simplification
 def normalize_quiz_options(options_data) -> list:
