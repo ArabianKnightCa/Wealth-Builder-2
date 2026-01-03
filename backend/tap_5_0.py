@@ -696,15 +696,63 @@ def generate_dna(
 # Word simplification dictionary with complexity levels (0.0 = simple, 1.0 = complex)
 # Words are replaced when user's LC is BELOW the complexity threshold
 # Threshold = LC value below which simplification applies
-# Higher threshold = more people get simplification
+# Higher threshold = more people get simplification  
 # Lower threshold = only very young/inexperienced get simplification
 WORD_SIMPLIFICATIONS = {
-    # Financial terms - complexity threshold : (complex_word/phrase, simple_replacement)
-    # Order matters - longer phrases first to avoid partial matches
+    # Threshold 0.70: Apply to anyone with LC < 0.70 (most users except experts)
+    0.70: [
+        ('furthermore', 'also'),
+        ('however', 'but'),
+        ('therefore', 'so'),
+        ('approximately', 'about'),
+        ('demonstrate', 'show'),
+        ('establish', 'set up'),
+        ('implement', 'do'),
+        ('maintain', 'keep'),
+        ('obtain', 'get'),
+        ('require', 'need'),
+        ('sufficient', 'enough'),
+        ('various', 'different'),
+        ('primary', 'main'),
+        ('significant', 'big'),
+        ('fundamental', 'basic'),
+        ('numerous', 'many'),
+        ('assist', 'help'),
+        ('commence', 'start'),
+        ('conclude', 'end'),
+        ('occur', 'happen'),
+        ('provide', 'give'),
+        ('receive', 'get'),
+        ('additional', 'more'),
+        ('initial', 'first'),
+        ('prior to', 'before'),
+        ('subsequent', 'next'),
+        ('utilize', 'use'),
+        ('purchase', 'buy'),
+        ('acquire', 'get'),
+    ],
     
-    # Threshold 0.40: Only for young children (LC < 0.40 means childiness > 0.60)
+    # Threshold 0.55: Apply to LC < 0.55 (children through young adults)
+    0.55: [
+        ('expenditure', 'spending'),
+        ('revenue', 'money coming in'),
+        ('deficit', 'shortage'),
+        ('surplus', 'extra'),
+        ('inflation', 'prices going up'),
+        ('deflation', 'prices going down'),
+        ('interest rate', 'cost of borrowing'),
+        ('credit score', 'trust number'),
+        ('mortgage', 'home loan'),
+        ('premium', 'payment'),
+        ('deductible', 'amount you pay first'),
+        ('bartered', 'traded'),
+        ('exchange', 'trade'),
+        ('transaction', 'deal'),
+    ],
+    
+    # Threshold 0.40: Apply to LC < 0.40 (children and teens only)
     0.40: [
-        # PPI option simplifications for young children
+        # PPI option simplifications
         ('research extensively before deciding', 'look up lots of information first'),
         ('go with my gut feeling', 'pick what feels right'),
         ('ask friends or family for advice', 'ask people I trust'),
@@ -730,26 +778,7 @@ WORD_SIMPLIFICATIONS = {
         ('discussion and conversation', 'talking with others'),
         ('use them responsibly and pay in full', 'use them carefully and pay it all back'),
         ('extensively', 'a lot'),
-    ],
-    
-    # Threshold 0.30: Very young children only
-    0.30: [
-        ('that facilitates', 'that helps with'),
-        ('which facilitates', 'which helps with'),
-        ('facilitates', 'helps with'),
-        ('subsequently', 'then'),
-        ('consequently', 'so'),
-        ('accumulate', 'build up'),
-        ('allocate', 'set aside'),
-        ('amortization', 'paying off slowly'),
-        ('amortize', 'pay off slowly'),
-        ('annuity', 'regular payments'),
-        ('appreciation', 'going up in value'),
-        ('arbitrage', 'buying low selling high'),
-    ],
-    
-    # Threshold 0.25: Children and young teens
-    0.25: [
+        # Financial concepts simplified
         ('medium of exchange', 'way to trade'),
         ('economic transactions', 'buying and selling'),
         ('financial instrument', 'money tool'),
@@ -771,65 +800,20 @@ WORD_SIMPLIFICATIONS = {
         ('depreciation', 'losing value over time'),
     ],
     
-    # Threshold 0.50: Children through teens
-    0.50: [
-        ('utilize', 'use'),
-        ('purchase', 'buy'),
-        ('acquire', 'get'),
-        ('expenditure', 'spending'),
-        ('revenue', 'money coming in'),
-        ('deficit', 'shortage'),
-        ('surplus', 'extra'),
-        ('inflation', 'prices going up'),
-        ('deflation', 'prices going down'),
-        ('interest rate', 'cost of borrowing'),
-        ('credit score', 'trust number'),
-        ('mortgage', 'home loan'),
-        ('premium', 'payment'),
-        ('deductible', 'amount you pay first'),
-        ('bartered', 'traded'),
-    ],
-    
-    # Threshold 0.60: Most non-experts
-    0.60: [
-        ('furthermore', 'also'),
-        ('however', 'but'),
-        ('therefore', 'so'),
-        ('approximately', 'about'),
-        ('demonstrate', 'show'),
-        ('establish', 'set up'),
-        ('implement', 'do'),
-        ('maintain', 'keep'),
-        ('obtain', 'get'),
-        ('require', 'need'),
-        ('sufficient', 'enough'),
-        ('various', 'different'),
-        ('primary', 'main'),
-        ('significant', 'big'),
-        ('fundamental', 'basic'),
-    ],
-    0.5: [
-        ('numerous', 'many'),
-        ('assist', 'help'),
-        ('commence', 'start'),
-        ('conclude', 'end'),
-        ('occur', 'happen'),
-        ('provide', 'give'),
-        ('receive', 'get'),
-        ('additional', 'more'),
-        ('initial', 'first'),
-        ('prior to', 'before'),
-        ('subsequent', 'next'),
-    ],
-    0.4: [
-        ('exchange', 'trade'),
-        ('transaction', 'deal'),
-        ('accumulation', 'pile'),
-        ('allocation', 'share'),
-        ('contribution', 'adding to'),
-        ('distribution', 'giving out'),
-    ],
-    0.3: [
+    # Threshold 0.25: Apply to LC < 0.25 (young children only - age 6-10)
+    0.25: [
+        ('that facilitates', 'that helps with'),
+        ('which facilitates', 'which helps with'),
+        ('facilitates', 'helps with'),
+        ('subsequently', 'then'),
+        ('consequently', 'so'),
+        ('accumulate', 'build up'),
+        ('allocate', 'set aside'),
+        ('amortization', 'paying off slowly'),
+        ('amortize', 'pay off slowly'),
+        ('annuity', 'regular payments'),
+        ('appreciation', 'going up in value'),
+        ('arbitrage', 'buying low selling high'),
         ('funds', 'money'),
         ('finances', 'money'),
         ('currency', 'money'),
