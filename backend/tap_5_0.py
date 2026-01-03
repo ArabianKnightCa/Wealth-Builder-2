@@ -1015,11 +1015,21 @@ def adapt_text_continuous(text: str, age: int, el: int, el_max: int = 5) -> str:
     for sentence in sentences[:max_sentences]:
         words = sentence.split()
         if len(words) > max_words:
-            # Truncate long sentences gracefully
-            truncated = ' '.join(words[:max_words])
-            # Try to end at a natural break
-            if not truncated.rstrip().endswith(('.', '!', '?')):
-                truncated = truncated.rstrip() + '.'
+            # Truncate at a natural break point (not mid-phrase)
+            truncated_words = words[:max_words]
+            truncated = ' '.join(truncated_words)
+            
+            # Try to find a better break point (before prepositions, conjunctions)
+            break_words = ['for', 'by', 'with', 'to', 'of', 'and', 'or', 'but', 'that', 'which', 'a', 'an', 'the']
+            for i in range(len(truncated_words) - 1, max(0, len(truncated_words) - 5), -1):
+                if truncated_words[i].lower() in break_words:
+                    truncated = ' '.join(truncated_words[:i])
+                    break
+            
+            # Ensure proper ending
+            truncated = truncated.rstrip('.,;:—- ')
+            if not truncated.endswith(('.', '!', '?')):
+                truncated += '.'
             processed_sentences.append(truncated)
         else:
             processed_sentences.append(sentence)
