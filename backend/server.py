@@ -171,17 +171,8 @@ def simplify_quiz_option(option_text: str) -> str:
     elif "none of the above" in t:
         return "None of these"
     
-    # Length-based simplification for very long options
-    if len(option_text) > 80:
-        # Extract key phrase - take first clause or simplify
-        words = option_text.split()
-        if len(words) > 12:
-            # Try to find a natural break point
-            simplified = ' '.join(words[:10]) + '...'
-            return simplified.replace("financial", "money").replace("typically", "usually")
-    
-    # Basic word replacement
-    return option_text.replace("financial", "money").replace("typically", "usually").replace("transactions", "trades")
+    # Use TAP 5.0 word simplification for 7yo
+    return adapt_ppi_text(option_text, 7, 1, 5)
 
 # PPI Trait Vector System (Option A: Trait Tags + Shared Weight Templates)
 from ppi_trait_vector import (
