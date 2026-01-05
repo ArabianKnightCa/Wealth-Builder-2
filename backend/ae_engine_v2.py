@@ -22,7 +22,8 @@ from tap_5_0 import (
     PPIOptionSpec as TAP50PPIOptionSpec,
     TAPControlInputs as TAP50ControlInputs,
     compute_scalars as tap50_compute_scalars,
-    EL_MAX_POC as TAP50_EL_MAX_POC
+    EL_MAX_POC as TAP50_EL_MAX_POC,
+    adapt_ppi_text  # For PPI question/option simplification (no emoji/starters)
 )
 
 
