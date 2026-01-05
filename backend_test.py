@@ -31,7 +31,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://finance-adapt.preview.emergentagent.com/api"
+BACKEND_URL = "https://wealth-builder-540.preview.emergentagent.com/api"
 
 class CLGTester:
     def __init__(self):
