@@ -761,22 +761,20 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
         exp_level = exp_level_map.get(financial_exp, 1)
         user_age = calculate_age(f"{user['dob_year']}-{user['dob_month']:02d}-01")
         
-        # TAP 5.0: Child-friendly quiz adaptation with DNA support
+        # TAP 5.0: Continuous quiz adaptation based on actual age/EL
+        # Works for ANY age (7, 8, 9, 10, 11, 12, 13... 99)
         tap50_engine = TAP50Engine(el_max_poc=EL_MAX_POC)
         
         quiz_questions = []
         for q in questions:
             question_text_baseline = q.get('question_text', '')
             
-            # Compute scalars using actual question text as baseline
+            # Compute scalars using actual user age and question text
             scalars = tap50_engine.compute_scalars(user_age, exp_level, question_text_baseline)
-            childiness = scalars.childiness
             
-            # Adapt question text
-            if childiness >= 0.35:
-                question_text = simplify_quiz_question(question_text_baseline)
-            else:
-                question_text = question_text_baseline
+            # TAP 5.0 continuous adaptation - always adapt based on LC
+            # Lower LC = more simplification, Higher LC = closer to baseline
+            question_text = simplify_quiz_question(question_text_baseline, user_age, exp_level)
             
             # Adapt options - handle both dict and list formats
             adapted_options = []
@@ -786,20 +784,14 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
                 for opt_letter in ['A', 'B', 'C', 'D']:
                     opt_text = options_data.get(opt_letter, '')
                     if opt_text:
-                        if childiness >= 0.35:
-                            adapted_opt = simplify_quiz_option(opt_text)
-                            adapted_options.append(f"{opt_letter} {adapted_opt}")
-                        else:
-                            adapted_options.append(f"{opt_letter} {opt_text}")
+                        adapted_opt = simplify_quiz_option(opt_text, user_age, exp_level)
+                        adapted_options.append(f"{opt_letter} {adapted_opt}")
             else:
                 for opt_idx, opt in enumerate(options_data):
                     opt_id = chr(65 + opt_idx)
                     clean_opt = str(opt).lstrip('ABCD').lstrip('. ').strip()
-                    if childiness >= 0.35:
-                        adapted_opt = simplify_quiz_option(clean_opt)
-                        adapted_options.append(f"{opt_id} {adapted_opt}")
-                    else:
-                        adapted_options.append(f"{opt_id} {clean_opt}")
+                    adapted_opt = simplify_quiz_option(clean_opt, user_age, exp_level)
+                    adapted_options.append(f"{opt_id} {adapted_opt}")
             
             quiz_questions.append({
                 "id": q['id'],
@@ -807,8 +799,9 @@ async def get_chapter_quiz(chapter_id: str, user_id: str = Depends(get_current_u
                 "options": adapted_options,
                 "order": q.get('order', 0),
                 "tap_version": "5.0",
-                "childiness": round(childiness, 3),
-                "lc": round(scalars.lc, 3)
+                "user_age": user_age,
+                "lc": round(scalars.lc, 3),
+                "childiness": round(scalars.childiness, 3)
             })
     else:
         # Fallback: no transformation if user not found
