@@ -238,80 +238,25 @@ class AdaptiveEngineV2:
         # Default
         return "UNKNOWN"
     
-    def _get_child_question_text(self, baseline_prompt: str) -> str:
+    def _get_child_question_text(self, baseline_prompt: str, age: int, el: int) -> str:
         """
-        Convert baseline PPI question to child-friendly version.
+        Adapt PPI question text using TAP 5.0 continuous adaptation.
         
         TAP 5.0 Philosophy: ALL topics can be explained at ANY age level.
-        Credit cards, investing, retirement - everything can be understood
-        with the right language adaptation.
-        """
-        t = baseline_prompt.lower()
+        This function uses word simplification based on the user's actual age/EL,
+        not hardcoded mappings. Scalable to 270+ questions.
         
-        # Map ALL baseline questions to child-friendly versions
-        # Q1: Financial decisions
-        if "financial decisions" in t:
-            return "When you want to buy something, what do you do?"
-        # Q2: Saving approach
-        elif "approach to saving" in t or "saving money" in t:
-            return "How do you save your money?"
-        # Q3: Financial future feelings
-        elif "financial future" in t:
-            return "How do you feel about money and the future?"
-        # Q4: Track spending
-        elif "track my spending" in t or "tracking" in t:
-            return "Do you keep track of your money?"
-        # Q5: Unexpected money
-        elif "unexpected money" in t or "receive" in t and "money" in t:
-            return "If you got surprise money, what would you do?"
-        # Q6: Learning style
-        elif "learn best" in t:
-            return "How do you like to learn new things?"
-        # Q7: Credit cards (ADAPTED, not filtered)
-        elif "credit card" in t:
-            return "Some cards let you buy now and pay later. How would you use one?"
-        # Q8: Investment approach (ADAPTED)
-        elif "investment" in t or "invest" in t:
-            return "Growing your money means making it bigger over time. What sounds good to you?"
-        # Q9: Budgeting (ADAPTED)
-        elif "budget" in t:
-            return "A money plan helps you know what to spend. How do you plan your money?"
-        # Q10: Financial priority
-        elif "financial priority" in t or "biggest" in t:
-            return "What's most important to you about money right now?"
-        # Q11: Setting goals
-        elif "setting" in t and "goal" in t:
-            return "How do you like to plan for things you want?"
-        # Q12: Spending habits
-        elif "spending habit" in t:
-            return "How do you spend your money?"
-        # Q13: Financial setbacks
-        elif "financial setback" in t or "setback" in t:
-            return "What do you do when something goes wrong with money?"
-        # Q14: Debt management (ADAPTED)
-        elif "debt" in t:
-            return "When you owe money, how do you feel about paying it back?"
-        # Q15: Risk comfort
-        elif "comfort" in t and "risk" in t:
-            return "How do you feel about trying new things with money?"
-        # Q16: Retirement (ADAPTED)
-        elif "retirement" in t:
-            return "Saving for when you're much older is important. What do you think about it?"
-        # Q17: Financial challenges
-        elif "financial challenge" in t or "challenge" in t:
-            return "What's hard about money for you?"
-        # Q18: Insurance (ADAPTED)
-        elif "insurance" in t:
-            return "Protection plans help if something bad happens. What do you think?"
-        # Q19: Financial motivation
-        elif "motivation" in t and "financial" in t:
-            return "What makes you want to be good with money?"
-        # Q20: Financial education
-        elif "financial education" in t or "financial literacy" in t:
-            return "Learning about money is important. How do you learn best?"
-        else:
-            # Fallback: Apply word simplifications
-            return adapt_ppi_text(baseline_prompt, 7, 1, 5)  # Use TAP 5.0 simplification
+        Args:
+            baseline_prompt: The original question text
+            age: User's age (6-99)
+            el: User's experience level (1-5)
+        
+        Returns:
+            Age-appropriate question text
+        """
+        # Use TAP 5.0 continuous word simplification
+        # This works for ANY question, not just predefined ones
+        return adapt_ppi_text(baseline_prompt, age, el, TAP50_EL_MAX_POC)
     
     def calculate_combined_score(self, age: int, experience_level: int) -> float:
         """
