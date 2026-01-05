@@ -1289,10 +1289,11 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
             "discipline": plan['dna']['weights']['discipline'],
             "confidence": plan['dna']['weights']['confidence']
         },
-        # NEW: 24-Trait Vector Output (TAP 3.0 input)
+        # 24-Trait Vector Output for TAP 5.0 DNA generation
         "trait_vector": trait_vector_packet,
-        # NEW: TAP Control Scalars (8 controls for CLG module selection)
-        "tap_controls": tap_controls_dict["controls"]
+        # TAP 5.0 uses DNA-based personalization
+        "tap_controls": {},
+        "tap_version": "5.0"
     }
 
 @api_router.get("/ppi/answers")
