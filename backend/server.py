@@ -80,81 +80,41 @@ def normalize_quiz_options(options_data) -> list:
     else:
         return []
 
-def simplify_quiz_question(question_text: str) -> str:
-    """Simplify quiz question for children using TAP 5.0 word simplification."""
+def simplify_quiz_question(question_text: str, age: int = 7, el: int = 1) -> str:
+    """
+    Simplify quiz question using TAP 5.0 continuous adaptation.
+    
+    Works for ANY age (7, 8, 9, 10, 11, 12, 13... 99).
+    Adaptation intensity scales with LC (Learning Complexity).
+    
+    Args:
+        question_text: Original question text
+        age: User's age (6-99)
+        el: User's experience level (1-5)
+    
+    Returns:
+        Age-appropriate question text
+    """
     from tap_5_0 import adapt_ppi_text
-    
-    t = question_text.lower()
-    
-    # Common patterns from actual quiz content - child-friendly rewrites
-    if "purpose of money" in t:
-        return "What is money used for?"
-    elif "benefit of saving" in t or "why save" in t:
-        return "Why is saving money good?"
-    elif "budget" in t and "help" in t:
-        return "How does a money plan help you?"
-    elif "barter" in t or "bartering" in t:
-        return "Why is money better than trading stuff?"
-    elif "rich people" in t or "lucky" in t:
-        return "How do people get lots of money?"
-    elif "saving" in t and "$1" in t:
-        return "Why is saving even a little bit helpful?"
-    elif "compound" in t:
-        return "How does your money grow over time?"
-    elif "important" in t and "concept" in t:
-        return "What's the main idea?"
-    elif "primary" in t and "function" in t:
-        return "What is money mainly used for?"
-    elif "financial" in t and "goal" in t:
-        return "What do you want to do with your money?"
-    elif "investment" in t:
-        return "How can you make your money grow?"
-    elif "credit" in t:
-        return "What is borrowing money?"
-    elif "debt" in t:
-        return "What is owing money?"
-    elif "interest" in t:
-        return "What is extra money the bank gives or takes?"
-    else:
-        # Use TAP 5.0 word simplification for 7yo
-        return adapt_ppi_text(question_text, 7, 1, 5)
+    return adapt_ppi_text(question_text, age, el, 5)
 
-def simplify_quiz_option(option_text: str) -> str:
-    """Simplify quiz option for children using TAP 5.0 word simplification."""
+def simplify_quiz_option(option_text: str, age: int = 7, el: int = 1) -> str:
+    """
+    Simplify quiz option using TAP 5.0 continuous adaptation.
+    
+    Works for ANY age (7, 8, 9, 10, 11, 12, 13... 99).
+    Adaptation intensity scales with LC (Learning Complexity).
+    
+    Args:
+        option_text: Original option text
+        age: User's age (6-99)
+        el: User's experience level (1-5)
+    
+    Returns:
+        Age-appropriate option text
+    """
     from tap_5_0 import adapt_ppi_text
-    
-    t = option_text.lower()
-    
-    # Common patterns from actual quiz content - child-friendly rewrites
-    if "exchange goods" in t or "medium of exchange" in t:
-        return "To trade things easily"
-    elif "store of value" in t or "stores value" in t:
-        return "To save for later"
-    elif "unit of account" in t:
-        return "To know how much things cost"
-    elif "barter" in t or "timing problem" in t:
-        return "Trading without money"
-    elif "government" in t and ("standardize" in t or "regulate" in t or "trust" in t):
-        return "The government helps everyone trust money"
-    elif "government" in t and "print" in t:
-        return "The government makes it"
-    elif "durable" in t or "doesn't spoil" in t:
-        return "Money doesn't go bad like food"
-    elif "universally accepted" in t or "simpler than finding" in t:
-        return "Everyone accepts money"
-    elif "solve" in t and ("problem" in t or "bigger" in t) and "skill" in t:
-        return "Learning skills that help others"
-    elif "luck" in t and ("family wealth" in t or "inherited" in t):
-        return "Being lucky or born rich"
-    elif "work" in t and "longer hours" in t:
-        return "Working more hours"
-    elif "government policies" in t or "tax" in t or "regulations" in t:
-        return "Rules made by leaders"
-    elif "compound" in t:
-        return "Your money can grow by itself"
-    elif "discipline" in t or "consistent" in t:
-        return "Being careful with money"
-    elif "exponential" in t:
+    return adapt_ppi_text(option_text, age, el, 5)
         return "Growing faster and faster"
     elif "satisfaction" in t or "watching" in t and "balance" in t:
         return "Feeling good when you save"
