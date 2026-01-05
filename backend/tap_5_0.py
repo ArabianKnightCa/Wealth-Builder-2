@@ -996,6 +996,34 @@ def get_friendly_starter(childiness: float) -> str:
     return ""
 
 
+def adapt_ppi_text(text: str, age: int, el: int, el_max: int = 5) -> str:
+    """
+    Adapt PPI question/option text - WORD SIMPLIFICATION ONLY
+    
+    NO emojis, NO friendly starters - just vocabulary simplification
+    for age-appropriate comprehension.
+    
+    Args:
+        text: Baseline text
+        age: User age (6-99)
+        el: Experience level (1-5 for POC)
+        el_max: Maximum EL
+    
+    Returns:
+        Text with vocabulary simplified for user's level
+    """
+    if not text:
+        return text
+    
+    # Calculate LC (Learning Complexity)
+    lc = calculate_lc(age, el, el_max)
+    
+    # Apply ONLY word-level simplifications (no emoji, no starters, no truncation)
+    result = apply_word_simplifications(text, lc)
+    
+    return result
+
+
 def adapt_text_continuous(text: str, age: int, el: int, el_max: int = 5) -> str:
     """
     MAIN CONTINUOUS TEXT ADAPTATION FUNCTION
