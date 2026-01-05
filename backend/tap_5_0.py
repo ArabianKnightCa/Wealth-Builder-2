@@ -696,15 +696,36 @@ def generate_dna(
 # Word simplification dictionary with complexity levels (0.0 = simple, 1.0 = complex)
 # Words are replaced when user's LC is BELOW the complexity threshold
 # Threshold = LC value below which simplification applies
-# Higher threshold = more people get simplification  
-# Lower threshold = only very young/inexperienced get simplification
+# 
+# CONTINUOUS ADAPTATION for ALL ages (6-99):
+# - LC 0.0 (6yo beginner) → Maximum simplification
+# - LC 0.5 (middle range) → Moderate simplification  
+# - LC 1.0 (99yo expert) → Minimal simplification
+#
+# Thresholds spread across FULL range so EVERYONE gets appropriate adaptation
 WORD_SIMPLIFICATIONS = {
-    # Threshold 0.70: Apply to anyone with LC < 0.70 (most users except experts)
-    0.70: [
+    # Threshold 0.95: Apply to almost everyone (LC < 0.95)
+    # Only the most expert users skip these
+    0.95: [
         ('furthermore', 'also'),
         ('however', 'but'),
         ('therefore', 'so'),
         ('approximately', 'about'),
+        ('subsequently', 'then'),
+        ('consequently', 'so'),
+        ('nevertheless', 'still'),
+        ('notwithstanding', 'despite'),
+        ('henceforth', 'from now on'),
+        ('aforementioned', 'mentioned before'),
+        ('heretofore', 'until now'),
+        ('whereby', 'by which'),
+        ('wherein', 'in which'),
+        ('thereof', 'of that'),
+        ('therein', 'in that'),
+    ],
+    
+    # Threshold 0.85: Most users except advanced experts (LC < 0.85)
+    0.85: [
         ('demonstrate', 'show'),
         ('establish', 'set up'),
         ('implement', 'do'),
@@ -714,7 +735,7 @@ WORD_SIMPLIFICATIONS = {
         ('sufficient', 'enough'),
         ('various', 'different'),
         ('primary', 'main'),
-        ('significant', 'big'),
+        ('significant', 'important'),
         ('fundamental', 'basic'),
         ('numerous', 'many'),
         ('assist', 'help'),
@@ -730,10 +751,14 @@ WORD_SIMPLIFICATIONS = {
         ('utilize', 'use'),
         ('purchase', 'buy'),
         ('acquire', 'get'),
+        ('facilitate', 'help'),
+        ('constitutes', 'makes up'),
+        ('comprises', 'includes'),
+        ('encompasses', 'covers'),
     ],
     
-    # Threshold 0.55: Apply to LC < 0.55 (children through young adults)
-    0.55: [
+    # Threshold 0.70: Intermediate users and below (LC < 0.70)
+    0.70: [
         ('expenditure', 'spending'),
         ('revenue', 'money coming in'),
         ('deficit', 'shortage'),
@@ -741,16 +766,50 @@ WORD_SIMPLIFICATIONS = {
         ('inflation', 'prices going up'),
         ('deflation', 'prices going down'),
         ('interest rate', 'cost of borrowing'),
-        ('credit score', 'trust number'),
+        ('credit score', 'trust score'),
         ('mortgage', 'home loan'),
         ('premium', 'payment'),
         ('deductible', 'amount you pay first'),
         ('bartered', 'traded'),
         ('exchange', 'trade'),
         ('transaction', 'deal'),
+        ('portfolio', 'collection of investments'),
+        ('equity', 'ownership share'),
+        ('liability', 'what you owe'),
+        ('asset', 'something valuable'),
+        ('collateral', 'something you promise'),
+        ('depreciation', 'losing value'),
+        ('appreciation', 'gaining value'),
+        ('amortization', 'paying off over time'),
+        ('liquidate', 'turn into cash'),
+        ('diversify', 'spread out'),
     ],
     
-    # Threshold 0.40: Apply to LC < 0.40 (children and teens only)
+    # Threshold 0.55: Beginners through intermediate (LC < 0.55)
+    0.55: [
+        ('medium of exchange', 'way to trade'),
+        ('economic transactions', 'buying and selling'),
+        ('financial instrument', 'money tool'),
+        ('monetary policy', 'money rules'),
+        ('fiscal responsibility', 'being careful with money'),
+        ('double coincidence of wants', 'both people wanting to trade'),
+        ('universal medium', 'something everyone uses'),
+        ('compound interest', 'interest that grows on itself'),
+        ('principal', 'the main amount'),
+        ('dividend', 'share of profits'),
+        ('capital gains', 'profit from selling'),
+        ('tax bracket', 'how much tax you pay'),
+        ('tax deduction', 'money you don\'t pay tax on'),
+        ('tax credit', 'money off your taxes'),
+        ('401k', 'retirement savings account'),
+        ('IRA', 'retirement savings account'),
+        ('mutual fund', 'group of investments'),
+        ('index fund', 'investment that follows the market'),
+        ('stock market', 'place to buy company shares'),
+        ('bond', 'loan to a company or government'),
+    ],
+    
+    # Threshold 0.40: Children and teens (LC < 0.40)
     0.40: [
         # Q1: Financial decisions
         ('research extensively before deciding', 'look up lots of information first'),
