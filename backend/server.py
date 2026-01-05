@@ -1213,13 +1213,11 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     chapter_order = [f"CH{ch['ch']:02d}" for ch in plan['lpi_plan']['chapters']]
     
     # =========================================================================
-    # STEP 3: Compute TAP Control Scalars (8 controls from trait vector)
+    # STEP 3: Create learning_map with DNA and trait vector
     # =========================================================================
-    # These controls influence CLG module selection ONLY - no text rewriting
-    tap_controls_packet = compute_tap_controls(trait_vector_result.traits)
-    tap_controls_dict = tap_control_packet_to_dict(tap_controls_packet)
+    # TAP 5.0 uses DNA-based personalization, not the old 8-control system
     
-    # Create learning_map with both legacy DNA and new 24-trait vector + controls
+    # Create learning_map with both legacy DNA and new 24-trait vector
     learning_map = {
         "user_profile": plan['dna']['profile'],
         "learning_style": plan['dna']['profile'],
@@ -1232,10 +1230,11 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         "combined_score": combined_score,
         "generated_at": plan['generated_at'],
         "ae_version": "v2.0",
-        # NEW: 24-Trait Vector (TAP 3.0 input)
+        # 24-Trait Vector for TAP 5.0 DNA generation
         "trait_vector": trait_vector_packet,
-        # NEW: TAP Control Scalars (8 controls for CLG module selection)
-        "tap_controls": tap_controls_dict["controls"]
+        # TAP 5.0 uses DNA-based controls (not the old 8-control system)
+        "tap_controls": {},
+        "tap_version": "5.0"
     }
     
     # Generate UID at onboarding completion (before Chapter 1 access)
