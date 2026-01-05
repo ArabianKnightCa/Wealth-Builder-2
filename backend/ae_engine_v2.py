@@ -131,19 +131,10 @@ class AdaptiveEngineV2:
             
             # Compute scalars for this question
             scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
-            childiness = scalars.childiness
             
-            # Adapt question prompt using TAP 5.0 vocabulary simplification
-            # Uses the same adapt_ppi_text function as options (no emoji/starters)
-            simple_q = adapt_ppi_text(item['prompt'], age, exp_level, TAP50_EL_MAX_POC)
-            
-            # For very young children (childiness >= 0.8), also check for hardcoded
-            # child-friendly versions of common questions
-            if childiness >= 0.8:
-                child_q = self._get_child_question_text(item['prompt'])
-                # Only use hardcoded version if it's actually different (matched a pattern)
-                if child_q != item['prompt'] and "money" in child_q.lower():
-                    simple_q = child_q
+            # Adapt question prompt using TAP 5.0 continuous adaptation
+            # Uses actual user age/EL - works for any question, any age
+            simple_q = self._get_child_question_text(item['prompt'], age, exp_level)
             
             # Format options with letter prefix for frontend compatibility
             formatted_options = []
