@@ -1567,7 +1567,10 @@ class TAP50Engine:
         controls: TAPControlInputs = None
     ) -> List[PPIOptionSpec]:
         """
-        Adapt PPI question options using CONTINUOUS adaptation (NO BUCKETS)
+        Adapt PPI question options - WORD SIMPLIFICATION ONLY
+        
+        NO emojis, NO friendly starters - just vocabulary simplification
+        for age-appropriate comprehension.
         
         Args:
             options: List of PPIOptionSpec with baseline text
@@ -1576,12 +1579,12 @@ class TAP50Engine:
             controls: Optional control inputs
         
         Returns:
-            List of PPIOptionSpec with continuously adapted display text
+            List of PPIOptionSpec with vocabulary-simplified display text
         """
         adapted_options = []
         for opt in options:
-            # CONTINUOUS ADAPTATION for each option
-            display = adapt_text_continuous(
+            # PPI options get ONLY word simplification (no emoji/starters)
+            display = adapt_ppi_text(
                 text=opt.baseline,
                 age=age,
                 el=el_declared,
