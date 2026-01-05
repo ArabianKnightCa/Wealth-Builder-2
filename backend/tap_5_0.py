@@ -752,32 +752,73 @@ WORD_SIMPLIFICATIONS = {
     
     # Threshold 0.40: Apply to LC < 0.40 (children and teens only)
     0.40: [
-        # PPI option simplifications
+        # Q1: Financial decisions
         ('research extensively before deciding', 'look up lots of information first'),
         ('go with my gut feeling', 'pick what feels right'),
         ('ask friends or family for advice', 'ask people I trust'),
         ('follow what experts recommend', 'do what smart people say'),
+        # Q2: Saving approach
         ('save a fixed amount each month', 'save the same amount every month'),
         ('save whatever is left over', 'save what I have left'),
         ('save only for specific goals', 'save for things I want'),
         ('struggle to save consistently', 'find it hard to save'),
+        # Q3: Financial future feelings
         ('excited and optimistic', 'happy and hopeful'),
         ('anxious or worried', 'nervous or scared'),
         ('uncertain but hopeful', 'not sure but hopeful'),
         ('confident and prepared', 'ready and sure'),
+        # Q4: Track spending
         ('daily or weekly', 'every day or week'),
         ('rarely or never', 'almost never'),
-        ('building an emergency fund', 'saving for emergencies'),
-        ('paying off debt', 'paying back money I owe'),
-        ('learning to budget better', 'learning to plan my money'),
+        ('only when i feel concerned about my balance', 'only when I worry about money'),
+        # Q5: Unexpected money
         ('split it between saving and spending', 'save some and spend some'),
         ('use it to pay bills or debt', 'use it for things I owe'),
+        # Q6: Learning style
         ('reading and research', 'reading and looking things up'),
         ('hands-on practice', 'trying things myself'),
         ('watching videos or tutorials', 'watching videos'),
         ('discussion and conversation', 'talking with others'),
+        # Q7: Setting financial goals
+        ('detailed plans with specific timelines', 'step-by-step plans with dates'),
+        ('general direction without strict deadlines', 'a rough idea without due dates'),
+        ('short-term goals i can achieve quickly', 'small goals I can reach soon'),
+        ('long-term vision with flexibility', 'big dreams that can change'),
+        # Q8 (Q11 in bank): Spending habits  
+        ('very disciplined', 'very careful'),
+        ('mostly controlled with occasional splurges', 'usually careful but sometimes I treat myself'),
+        ('impulsive at times', 'sometimes I buy without thinking'),
+        ('often reactive to emotions', 'I buy based on how I feel'),
+        # Q9 (Q13): Financial setback
+        ('quickly adjust my plan and move forward', 'fix my plan and keep going'),
+        ('feel discouraged but eventually recover', 'feel sad but get better'),
+        ('need support from others to cope', 'need help from others'),
+        ('find it very difficult to bounce back', 'find it really hard to feel better'),
+        # Q10 (Q15): Risk comfort
+        ("high – i'm willing to take calculated risks", 'high - I like trying new things'),
+        ('moderate – some risk is okay', 'medium - a little risk is okay'),
+        ('low – i prefer safety and stability', 'low - I like being safe'),
+        ('very low – i avoid risk completely', 'very low - I stay away from risk'),
+        # Q11 (Q17): Financial challenge
+        ('not earning enough', 'not getting enough money'),
+        ('controlling my spending', 'being careful with what I spend'),
+        ('understanding financial concepts', 'understanding money stuff'),
+        ('staying motivated to save', 'wanting to keep saving'),
+        # General terms
+        ('building an emergency fund', 'saving for emergencies'),
+        ('paying off debt', 'paying back money I owe'),
+        ('learning to budget better', 'learning to plan my money'),
         ('use them responsibly and pay in full', 'use them carefully and pay it all back'),
         ('extensively', 'a lot'),
+        ('financial', 'money'),
+        ('disciplined', 'careful'),
+        ('impulsive', 'without thinking'),
+        ('splurges', 'treats'),
+        ('discouraged', 'sad'),
+        ('recover', 'get better'),
+        ('bounce back', 'feel better'),
+        ('calculated risks', 'smart risks'),
+        ('stability', 'staying safe'),
         # Financial concepts simplified
         ('medium of exchange', 'way to trade'),
         ('economic transactions', 'buying and selling'),
