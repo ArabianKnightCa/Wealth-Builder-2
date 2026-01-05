@@ -241,48 +241,77 @@ class AdaptiveEngineV2:
     def _get_child_question_text(self, baseline_prompt: str) -> str:
         """
         Convert baseline PPI question to child-friendly version.
-        Returns a simple question appropriate for young users.
+        
+        TAP 5.0 Philosophy: ALL topics can be explained at ANY age level.
+        Credit cards, investing, retirement - everything can be understood
+        with the right language adaptation.
         """
         t = baseline_prompt.lower()
         
-        # Map baseline questions to child-friendly versions
+        # Map ALL baseline questions to child-friendly versions
+        # Q1: Financial decisions
         if "financial decisions" in t:
             return "When you want to buy something, what do you do?"
+        # Q2: Saving approach
         elif "approach to saving" in t or "saving money" in t:
             return "How do you save your money?"
+        # Q3: Financial future feelings
         elif "financial future" in t:
-            return "How do you feel about money?"
+            return "How do you feel about money and the future?"
+        # Q4: Track spending
         elif "track my spending" in t or "tracking" in t:
             return "Do you keep track of your money?"
-        elif "financial priority" in t or "biggest" in t:
-            return "What's most important to you about money?"
-        elif "unexpected money" in t or "receive" in t:
+        # Q5: Unexpected money
+        elif "unexpected money" in t or "receive" in t and "money" in t:
             return "If you got surprise money, what would you do?"
+        # Q6: Learning style
         elif "learn best" in t:
             return "How do you like to learn new things?"
+        # Q7: Credit cards (ADAPTED, not filtered)
+        elif "credit card" in t:
+            return "Some cards let you buy now and pay later. How would you use one?"
+        # Q8: Investment approach (ADAPTED)
+        elif "investment" in t or "invest" in t:
+            return "Growing your money means making it bigger over time. What sounds good to you?"
+        # Q9: Budgeting (ADAPTED)
+        elif "budget" in t:
+            return "A money plan helps you know what to spend. How do you plan your money?"
+        # Q10: Financial priority
+        elif "financial priority" in t or "biggest" in t:
+            return "What's most important to you about money right now?"
+        # Q11: Setting goals
         elif "setting" in t and "goal" in t:
             return "How do you like to plan for things you want?"
+        # Q12: Spending habits
         elif "spending habit" in t:
             return "How do you spend your money?"
+        # Q13: Financial setbacks
         elif "financial setback" in t or "setback" in t:
             return "What do you do when something goes wrong with money?"
+        # Q14: Debt management (ADAPTED)
+        elif "debt" in t:
+            return "When you owe money, how do you feel about paying it back?"
+        # Q15: Risk comfort
         elif "comfort" in t and "risk" in t:
             return "How do you feel about trying new things with money?"
+        # Q16: Retirement (ADAPTED)
+        elif "retirement" in t:
+            return "Saving for when you're much older is important. What do you think about it?"
+        # Q17: Financial challenges
         elif "financial challenge" in t or "challenge" in t:
             return "What's hard about money for you?"
-        elif "credit card" in t:
-            return "Do you know about cards that let you buy now and pay later?"
-        elif "investment" in t or "invest" in t:
-            return "Have you heard of growing your money?"
-        elif "retirement" in t:
-            return "Do you think about saving for when you're really old?"
+        # Q18: Insurance (ADAPTED)
         elif "insurance" in t:
-            return "Do you know about protecting your stuff?"
-        elif "debt" in t:
-            return "What do you know about owing money?"
+            return "Protection plans help if something bad happens. What do you think?"
+        # Q19: Financial motivation
+        elif "motivation" in t and "financial" in t:
+            return "What makes you want to be good with money?"
+        # Q20: Financial education
+        elif "financial education" in t or "financial literacy" in t:
+            return "Learning about money is important. How do you learn best?"
         else:
-            # If no match, return original with slight simplification
-            return baseline_prompt.replace("financial", "money").replace("decisions", "choices")
+            # Fallback: Apply word simplifications
+            return adapt_ppi_text(baseline_prompt, 7, 1, 5)  # Use TAP 5.0 simplification
     
     def calculate_combined_score(self, age: int, experience_level: int) -> float:
         """
