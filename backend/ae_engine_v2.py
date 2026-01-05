@@ -86,46 +86,13 @@ class AdaptiveEngineV2:
         
         # Get age band constraints
         age_band = self._get_age_band(age)
-        # Try to get exact match first, then fallback to default child/teen/adult rules
-        age_constraints = self.rules['constraints']['age_bands'].get(age_band, {})
         
-        # If no exact match, apply default rules based on age category
-        if not age_constraints:
-            if age <= self.CHILD_AGE_MAX:
-                # Child: exclude advanced content
-                age_constraints = {'exclude_tags': ['advanced'], 'reading_level': 'simple'}
-            elif age <= self.TEEN_AGE_MAX:
-                # Teen: allow most content
-                age_constraints = {'exclude_tags': [], 'reading_level': 'youth'}
-            else:
-                # Adult: allow all content
-                age_constraints = {'exclude_tags': [], 'reading_level': 'standard'}
+        # TAP 5.0 Philosophy: ADAPT content, don't FILTER it
+        # ALL users get ALL questions - TAP adapts the LANGUAGE for comprehension
+        # No age/experience filtering - adaptation handles comprehension
         
-        # Get experience constraints
-        exp_constraints = self.rules['constraints']['experience'].get(financial_experience, {})
-        
-        # SIMPLIFIED: Use all 20 baseline questions, filtered by age appropriateness
-        # All users get the same 20 questions, just filtered for age/experience
-        eligible_items = []
-        for item in self.ppi_bank['items']:
-            # Check age range
-            if not (item['age_min'] <= age <= item['age_max']):
-                continue
-            
-            # Check experience level
-            if financial_experience not in item['experience_levels']:
-                continue
-            
-            # Check age band exclusions (e.g., kids don't get "advanced" questions)
-            exclude_tags = age_constraints.get('exclude_tags', [])
-            if any(tag in item['tags'] for tag in exclude_tags):
-                continue
-            
-            eligible_items.append(item)
-        
-        # Since we have exactly 20 baseline questions and all are appropriate for most users,
-        # we'll use all eligible items (should be 20 or close to it)
-        final_items = eligible_items[:20]  # Take up to 20
+        # Use ALL 20 baseline questions - TAP will adapt language based on age/EL
+        final_items = self.ppi_bank['items'][:20]  # All 20 questions
         
         # Convert experience string to level (1-5 for POC)
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
