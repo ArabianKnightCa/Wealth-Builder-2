@@ -1391,6 +1391,9 @@ async def get_ppi_tap_controls(user_id: str = Depends(get_current_user)):
             },
             "clg_recommendations": {...}
         }
+    
+    NOTE: TAP 5.0 uses DNA-based personalization instead of the 8-control system.
+    This endpoint is deprecated but maintained for backward compatibility.
     """
     # Fetch user's PPI answers
     answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
@@ -1407,51 +1410,26 @@ async def get_ppi_tap_controls(user_id: str = Depends(get_current_user)):
     # Compute the 24-trait vector
     trait_result = compute_trait_vector(trait_vector_answers, total_questions=20)
     
-    # Compute TAP control scalars
-    tap_controls = compute_tap_controls(trait_result.traits)
-    tap_controls_dict = tap_control_packet_to_dict(tap_controls)
-    
-    # Get CLG recommendations
-    clg_recs = get_clg_recommendations(tap_controls_dict["controls"])
-    
+    # TAP 5.0: Return trait vector summary instead of old 8-control system
     return {
-        **tap_controls_dict,
-        "clg_recommendations": clg_recs,
+        "tap_version": "5.0",
+        "message": "TAP 5.0 uses DNA-based personalization. Old 8-control system deprecated.",
+        "trait_vector_summary": trait_vector_to_dict(trait_result),
         "stability": trait_result.stability
     }
 
 @api_router.post("/ppi/compute-tap-controls")
 async def compute_tap_controls_endpoint(data: dict):
     """
-    Compute TAP control scalars from raw trait vector (for testing/validation).
+    DEPRECATED: TAP 5.0 uses DNA-based personalization.
     
-    Input:
-        {
-            "traits": {"T01": 0.5, "T02": 0.4, ..., "T24": 0.5}
-        }
-    
-    Returns:
-        {
-            "controls": {...},
-            "dominant_traits": [...],
-            "clg_recommendations": {...}
-        }
+    This endpoint is maintained for backward compatibility but returns
+    a deprecation notice instead of the old 8-control output.
     """
-    traits = data.get("traits", {})
-    
-    if not traits:
-        raise HTTPException(status_code=400, detail="No traits provided")
-    
-    # Compute TAP control scalars
-    tap_controls = compute_tap_controls(traits)
-    tap_controls_dict = tap_control_packet_to_dict(tap_controls)
-    
-    # Get CLG recommendations
-    clg_recs = get_clg_recommendations(tap_controls_dict["controls"])
-    
     return {
-        **tap_controls_dict,
-        "clg_recommendations": clg_recs
+        "tap_version": "5.0",
+        "message": "TAP 5.0 uses DNA-based personalization. Old 8-control system deprecated.",
+        "deprecated": True
     }
 
 @api_router.delete("/auth/delete-account/{email}")
