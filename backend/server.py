@@ -81,44 +81,51 @@ def normalize_quiz_options(options_data) -> list:
         return []
 
 def simplify_quiz_question(question_text: str) -> str:
-    """Simplify quiz question for children."""
+    """Simplify quiz question for children using TAP 5.0 word simplification."""
+    from tap_5_0 import adapt_ppi_text
+    
     t = question_text.lower()
     
-    # Common patterns from actual quiz content
+    # Common patterns from actual quiz content - child-friendly rewrites
     if "purpose of money" in t:
         return "What is money used for?"
     elif "benefit of saving" in t or "why save" in t:
         return "Why is saving money good?"
     elif "budget" in t and "help" in t:
-        return "How does a budget help you?"
-    elif "difference between" in t:
-        return "What's different about these things?"
-    elif "best way to" in t:
-        return "What's a good way to do this?"
+        return "How does a money plan help you?"
     elif "barter" in t or "bartering" in t:
         return "Why is money better than trading stuff?"
     elif "rich people" in t or "lucky" in t:
-        return "How do people become rich?"
+        return "How do people get lots of money?"
     elif "saving" in t and "$1" in t:
         return "Why is saving even a little bit helpful?"
     elif "compound" in t:
         return "How does your money grow over time?"
     elif "important" in t and "concept" in t:
         return "What's the main idea?"
-    elif "important" in t:
-        return "Why is this important?"
-    elif "what's" in t or "what is" in t:
-        # Keep what's questions but simplify language
-        return question_text.replace("financial", "money").replace("transactions", "trades")
+    elif "primary" in t and "function" in t:
+        return "What is money mainly used for?"
+    elif "financial" in t and "goal" in t:
+        return "What do you want to do with your money?"
+    elif "investment" in t:
+        return "How can you make your money grow?"
+    elif "credit" in t:
+        return "What is borrowing money?"
+    elif "debt" in t:
+        return "What is owing money?"
+    elif "interest" in t:
+        return "What is extra money the bank gives or takes?"
     else:
-        # Basic simplification
-        return question_text.replace("financial", "money").replace("typically", "usually").replace("transactions", "trades")
+        # Use TAP 5.0 word simplification for 7yo
+        return adapt_ppi_text(question_text, 7, 1, 5)
 
 def simplify_quiz_option(option_text: str) -> str:
-    """Simplify quiz option for children."""
+    """Simplify quiz option for children using TAP 5.0 word simplification."""
+    from tap_5_0 import adapt_ppi_text
+    
     t = option_text.lower()
     
-    # Common patterns from actual quiz content
+    # Common patterns from actual quiz content - child-friendly rewrites
     if "exchange goods" in t or "medium of exchange" in t:
         return "To trade things easily"
     elif "store of value" in t or "stores value" in t:
