@@ -115,24 +115,6 @@ def simplify_quiz_option(option_text: str, age: int = 7, el: int = 1) -> str:
     """
     from tap_5_0 import adapt_ppi_text
     return adapt_ppi_text(option_text, age, el, 5)
-        return "Growing faster and faster"
-    elif "satisfaction" in t or "watching" in t and "balance" in t:
-        return "Feeling good when you save"
-    elif "emergency" in t:
-        return "Money for surprises"
-    elif "helps you plan" in t or "track spending" in t:
-        return "Helps you plan your money"
-    elif "reduce debt" in t:
-        return "Pay back what you owe"
-    elif "save money" in t or "saving" in t:
-        return "Keep money for later"
-    elif "all of the above" in t:
-        return "All of these"
-    elif "none of the above" in t:
-        return "None of these"
-    
-    # Use TAP 5.0 word simplification for 7yo
-    return adapt_ppi_text(option_text, 7, 1, 5)
 
 # PPI Trait Vector System (Option A: Trait Tags + Shared Weight Templates)
 from ppi_trait_vector import (
