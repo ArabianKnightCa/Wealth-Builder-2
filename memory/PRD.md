@@ -116,12 +116,11 @@ childiness = 1.0 - LC
 ---
 
 ## Last Updated
-January 3, 2026 - TAP 5.0 continuous text adaptation (NO BUCKETS) implemented
+January 3, 2026 - TAP 5.0 philosophy correction: ADAPT content, don't FILTER it
 
-### TAP 5.0 Continuous Adaptation
-- Removed ALL bucket-based child/bridge/expert selection
-- Word-level simplifications scale with LC thresholds (0.25, 0.40, 0.55, 0.70)
-- Lower LC = more simplifications applied
-- Sentence length scales continuously with childiness
-- Emoji and friendly starters for high childiness (>0.75)
-- Adults (LC > 0.70) get baseline text unchanged
+### Key Changes
+1. **ALL 20 PPI questions** now shown to all users (no age filtering)
+2. **Advanced topics (credit cards, investing, retirement)** adapted for comprehension, not hidden
+3. **"Complete each chapter to unlock"** removed - all chapters accessible
+4. **Quiz questions and options** use TAP 5.0 word simplification for children
+5. **270-question PPI structure** future-proofed for tiered phases
