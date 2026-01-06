@@ -252,7 +252,7 @@ function LPIChapter({ token, user }) {
           <div>
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-navy-900 mb-2">Quiz</h2>
-              <p className="text-gray-600">Answer all questions correctly to unlock the next chapter (50% required to pass)</p>
+              <p className="text-gray-600">Test your understanding of this chapter</p>
             </div>
 
             <div className="space-y-8">
