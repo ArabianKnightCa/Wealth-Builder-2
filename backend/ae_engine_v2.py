@@ -93,8 +93,8 @@ class AdaptiveEngineV2:
         # ALL users get ALL questions - TAP adapts the LANGUAGE for comprehension
         # No age/experience filtering - adaptation handles comprehension
         
-        # Use ALL 20 baseline questions - TAP will adapt language based on age/EL
-        final_items = self.ppi_bank['items'][:20]  # All 20 questions
+        # Layer 1: All 30 VIA-based questions
+        final_items = self.ppi_bank['items'][:30]  # All 30 questions
         
         # Convert experience string to level (1-5 for POC)
         exp_level_map = {"beginner": 1, "intermediate": 3, "advanced": 5}
@@ -108,44 +108,31 @@ class AdaptiveEngineV2:
         tap50_engine = TAP50Engine(el_max_poc=TAP50_EL_MAX_POC)
         
         for idx, item in enumerate(final_items, 1):
-            # Check if we should use a universal question (works for ALL ages)
-            universal_q = get_universal_ppi_question(idx)
+            question_type = item.get('type', 'mcq')
+            via_trait = item.get('via_trait', 'Unknown')
+            weight = item.get('weight', 5)
             
-            if universal_q:
-                # Use the universally-framed question
-                # These work for all ages - user's mind fills in their own context
-                base_text = universal_q['text']
-                base_options = universal_q['options']
-                
-                # Apply word simplification to the universal question based on age/EL
-                simple_q = adapt_ppi_text(base_text, age, exp_level, TAP50_EL_MAX_POC)
-                
-                # Build options with word simplification
-                formatted_options = []
-                options_detail = []
-                for opt_id, opt_text in base_options.items():
-                    # Apply word simplification to each option
-                    adapted_opt = adapt_ppi_text(opt_text, age, exp_level, TAP50_EL_MAX_POC)
-                    formatted_options.append(f"{opt_id} {adapted_opt}")
-                    options_detail.append({
-                        "id": opt_id,
-                        "display": adapted_opt,
-                        "baseline": opt_text,
-                        "gloss": ""
-                    })
-                
-                # Compute scalars for this question
-                scalars = tap50_engine.compute_scalars(age, exp_level, simple_q)
+            # Adapt question prompt using TAP 5.0 continuous adaptation
+            simple_q = adapt_ppi_text(item['prompt'], age, exp_level, TAP50_EL_MAX_POC)
+            
+            # Compute scalars for this question
+            scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
+            
+            if question_type == 'likert':
+                # Likert scale questions: options are the 5-point scale
+                # Apply word simplification to scale labels for young users
+                likert_options = item['options']  # ["Strongly Disagree", ..., "Strongly Agree"]
+                adapted_options = [adapt_ppi_text(opt, age, exp_level, TAP50_EL_MAX_POC) for opt in likert_options]
                 
                 output_items.append({
                     "question_id": f"PPI_Q{idx:02d}",
                     "bank_id": item['id'],
-                    "type": item['type'],
+                    "type": "likert",
                     "prompt": simple_q,
-                    "options": formatted_options,
-                    "options_detail": options_detail,
+                    "options": adapted_options,
+                    "via_trait": via_trait,
+                    "weight": weight,
                     "tap_version": "5.0",
-                    "variant": "universal",
                     "scalars": {
                         "lc": scalars.lc,
                         "childiness": scalars.childiness,
@@ -155,8 +142,7 @@ class AdaptiveEngineV2:
                     }
                 })
             else:
-                # Use baseline question with TAP 5.0 word simplification
-                # Create PPIOptionSpec list from item options for TAP 5.0
+                # Multiple choice questions: options are A/B/C/D
                 option_specs = []
                 for opt_idx, opt_text in enumerate(item['options']):
                     opt_id = chr(65 + opt_idx)  # A, B, C, D
@@ -178,6 +164,37 @@ class AdaptiveEngineV2:
                     el_declared=exp_level,
                     controls=TAP50ControlInputs.neutral()
                 )
+                
+                # Format options with letter prefix for frontend compatibility
+                formatted_options = []
+                options_detail = []
+                for opt in adapted_options:
+                    formatted_options.append(f"{opt.id} {opt.display if opt.display else opt.baseline}")
+                    options_detail.append({
+                        "id": opt.id,
+                        "display": opt.display if opt.display else opt.baseline,
+                        "baseline": opt.baseline,
+                        "gloss": opt.gloss
+                    })
+                
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": "mcq",
+                    "prompt": simple_q,
+                    "options": formatted_options,
+                    "options_detail": options_detail,
+                    "via_trait": via_trait,
+                    "weight": weight,
+                    "tap_version": "5.0",
+                    "scalars": {
+                        "lc": scalars.lc,
+                        "childiness": scalars.childiness,
+                        "age_norm": scalars.age_norm,
+                        "el_norm": scalars.el_norm,
+                        "weights": scalars.weights
+                    }
+                })
                 
                 # Compute scalars for this question
                 scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
