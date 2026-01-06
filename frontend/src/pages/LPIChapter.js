@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import telemetryService from '../utils/telemetry';
+import useAutoSave from '../hooks/useAutoSave';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -17,10 +18,33 @@ function LPIChapter({ token, user }) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [quizStartTime, setQuizStartTime] = useState(null);
+  
+  // Global auto-save for this chapter
+  const { saveProgress, loadProgress, clearProgress, hasSavedProgress } = useAutoSave(`lpi_${chapterId}`, token);
 
   useEffect(() => {
     fetchChapter();
+    restoreProgress();
   }, [chapterId]);
+
+  const restoreProgress = async () => {
+    const saved = await loadProgress();
+    if (saved) {
+      if (saved.currentView) setCurrentView(saved.currentView);
+      if (saved.currentLessonIndex !== undefined) setCurrentLessonIndex(saved.currentLessonIndex);
+      if (saved.quizAnswers) setQuizAnswers(saved.quizAnswers);
+      console.log(`Restored LPI progress for ${chapterId}`);
+    }
+  };
+
+  const autoSaveProgress = async (view, lessonIndex, answers) => {
+    await saveProgress({
+      currentView: view,
+      currentLessonIndex: lessonIndex,
+      quizAnswers: answers,
+      chapter_id: chapterId
+    });
+  };
 
   const fetchChapter = async () => {
     try {
@@ -42,7 +66,10 @@ function LPIChapter({ token, user }) {
   };
 
   const handleQuizAnswer = (questionId, option) => {
-    setQuizAnswers({ ...quizAnswers, [questionId]: option });
+    const newAnswers = { ...quizAnswers, [questionId]: option };
+    setQuizAnswers(newAnswers);
+    // Auto-save quiz progress
+    autoSaveProgress(currentView, currentLessonIndex, newAnswers);
   };
 
   const handleSubmitQuiz = async () => {
