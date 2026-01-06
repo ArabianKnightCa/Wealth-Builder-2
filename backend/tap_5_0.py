@@ -991,51 +991,22 @@ WORD_SIMPLIFICATIONS = {
 }
 
 # Child-friendly phrase additions based on childiness
+# DISABLED: User feedback indicates starters should NOT be added to content
+# Adaptation should only simplify vocabulary, not add conversational elements
 CHILD_FRIENDLY_STARTERS = {
-    0.9: "Let's learn something cool! ",
-    0.85: "Here's something fun to know: ",
-    0.8: "Did you know? ",
-    0.7: "Here's the thing: ",
+    0.9: "",  # Disabled: "Let's learn something cool! "
+    0.85: "",  # Disabled: "Here's something fun to know: "
+    0.8: "",  # Disabled: "Did you know? "
+    0.7: "",  # Disabled: "Here's the thing: "
     0.6: "",
     0.0: "",
 }
 
 # Emoji mappings for very young users (high childiness)
+# DISABLED: User feedback indicates NO emojis should be added to content
+# Adaptation should only simplify vocabulary
 CONCEPT_EMOJIS = {
-    'money': '💰',
-    'dollar': '💵',
-    'cash': '💵',
-    'coin': '🪙',
-    'save': '🏦',
-    'saving': '🏦',
-    'bank': '🏦',
-    'grow': '📈',
-    'growth': '📈',
-    'increase': '📈',
-    'profit': '📈',
-    'spend': '🛒',
-    'buy': '🛒',
-    'purchase': '🛒',
-    'goal': '🎯',
-    'target': '🎯',
-    'plan': '📋',
-    'budget': '📋',
-    'learn': '📚',
-    'understand': '💡',
-    'idea': '💡',
-    'smart': '🧠',
-    'wise': '🧠',
-    'safe': '🔒',
-    'protect': '🛡️',
-    'risk': '⚠️',
-    'danger': '⚠️',
-    'win': '🏆',
-    'success': '🏆',
-    'help': '🤝',
-    'share': '🤝',
-    'family': '👨‍👩‍👧‍👦',
-    'future': '🔮',
-    'time': '⏰',
+    # All emoji mappings disabled per user requirements
 }
 
 
@@ -1043,6 +1014,9 @@ def get_adaptation_params(childiness: float) -> dict:
     """
     Calculate CONTINUOUS adaptation parameters based on childiness (0.0 to 1.0)
     NO BUCKETS - all values scale smoothly
+    
+    IMPORTANT: Per user requirements, NO emojis and NO friendly starters.
+    Adaptation = vocabulary simplification ONLY.
     """
     return {
         # Sentence length scales from 25 words (adult) to 8 words (child)
@@ -1051,10 +1025,10 @@ def get_adaptation_params(childiness: float) -> dict:
         'max_sentences': int(10 - (8 * childiness)),
         # Word complexity threshold - higher childiness = more simplification
         'simplification_threshold': childiness,
-        # Add emoji for childiness > 0.75
-        'add_emoji': childiness > 0.75,
-        # Add friendly starter for childiness > 0.6
-        'add_starter': childiness > 0.6,
+        # DISABLED: No emojis per user requirements
+        'add_emoji': False,
+        # DISABLED: No friendly starters per user requirements
+        'add_starter': False,
         # Add inline explanations for childiness > 0.5
         'add_explanations': childiness > 0.5,
     }
