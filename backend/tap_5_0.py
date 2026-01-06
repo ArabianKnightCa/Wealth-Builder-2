@@ -995,6 +995,7 @@ WORD_SIMPLIFICATIONS = {
     ],
     
     # Threshold 0.25: Apply to LC < 0.25 (young children only - age 6-10)
+    # This includes LPI lesson content simplifications
     0.25: [
         ('that facilitates', 'that helps with'),
         ('which facilitates', 'which helps with'),
@@ -1018,6 +1019,57 @@ WORD_SIMPLIFICATIONS = {
         ('savings', 'money you keep'),
         ('debt', 'money you owe'),
         ('investment', 'money you grow'),
+        # LPI Lesson 1: What Is Money
+        ('shared agreement', 'promise we all believe in'),
+        ('bartered', 'traded things'),
+        ('barter', 'trade things'),
+        ('timing problem', 'problem of when to trade'),
+        ('convenient', 'easy'),
+        ('stores value', 'keeps its worth'),
+        ('digital entries', 'computer numbers'),
+        ('secure ledger', 'safe record book'),
+        ('stable rules', 'rules that stay the same'),
+        ('trusted systems', 'systems people believe in'),
+        # LPI Lesson 2: Where Does Money Come From
+        ('economy', 'all the buying and selling around us'),
+        ('value is created', 'something useful is made'),
+        ('exchanged', 'traded'),
+        ('perform work', 'do a job'),
+        ('purchasing power', 'ability to buy things'),
+        ('short term', 'for a little while'),
+        ('governments issue', 'governments make'),
+        ('issue currency', 'make money'),
+        # LPI Lesson 3: Why People Earn Differently
+        ('income differences', 'why some people get more money'),
+        ('skill level', 'how good you are'),
+        ('scarcity', 'how rare something is'),
+        ('reliability', 'being someone others can count on'),
+        ('higher-impact problems', 'bigger problems'),
+        ('higher‑impact problems', 'bigger problems'),
+        ('the market', 'people who pay'),
+        ('increase your ability', 'get better at'),
+        # LPI Lesson 4: Saving Early
+        ('habits compound', 'habits add up'),
+        ('compounding', 'adding up over time'),
+        ('compound', 'add up'),
+        ('interest', 'extra money the bank gives you'),
+        ('automate', 'set up to happen by itself'),
+        ('payday', 'when you get paid'),
+        # Quiz terms
+        ('transactions', 'deals'),
+        ('transaction', 'deal'),
+        ('standardize', 'make the same'),
+        ('regulate', 'control'),
+        ('deteriorate', 'get worse'),
+        ('indefinitely', 'forever'),
+        ('universally accepted', 'everyone takes it'),
+        ('circumstances', 'situations'),
+        ('exponential', 'really fast'),
+        ('discipline', 'being careful'),
+        ('automatic', 'happens by itself'),
+        ('comprehensive', 'covering everything'),
+        ('projections', 'guesses about the future'),
+        ('strategies', 'plans'),
     ],
 }
 
