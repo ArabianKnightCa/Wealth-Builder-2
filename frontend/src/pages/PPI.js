@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import telemetryService from '../utils/telemetry';
+import useAutoSave from '../hooks/useAutoSave';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 // Likert scale component
 const LikertScale = ({ options, selectedValue, onSelect, questionId }) => {
-  const likertLabels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
-  
   return (
     <div className="space-y-4">
       <div className="flex justify-between text-sm text-gray-500 mb-2">
