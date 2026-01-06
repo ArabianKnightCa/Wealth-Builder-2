@@ -431,8 +431,11 @@ def compute_trait_vector(
         
         answered_count += 1
         
+        # Get question type (mcq or likert)
+        question_type = trait_tags.get("type", "mcq")
+        
         # Get normalized answer value with polarity adjustment
-        v_star = normalize_answer(selected, trait_tags["polarity"])
+        v_star = normalize_answer(selected, trait_tags["polarity"], question_type)
         
         # Get weight template from intensity
         intensity = trait_tags.get("intensity", "medium")
