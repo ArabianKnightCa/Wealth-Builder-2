@@ -1110,7 +1110,7 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
     goals = user.get('financial_goals', [])
     
     # =========================================================================
-    # STEP 1: Compute 24-Trait Vector (Option A - Trait Tags)
+    # STEP 1: Compute 24-Trait Vector (VIA Character Strengths)
     # =========================================================================
     # Convert answers to trait vector format
     trait_vector_answers = [
@@ -1118,8 +1118,8 @@ async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_use
         for ans in ppi_data.answers
     ]
     
-    # Compute the 24-trait vector (deterministic, bucket-free)
-    trait_vector_result = compute_trait_vector(trait_vector_answers, total_questions=20)
+    # Compute the 24-trait vector (deterministic, bucket-free) - 30 questions in Layer 1
+    trait_vector_result = compute_trait_vector(trait_vector_answers, total_questions=30)
     trait_vector_packet = trait_vector_to_dict(trait_vector_result)
     
     # =========================================================================
