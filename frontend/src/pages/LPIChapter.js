@@ -99,6 +99,9 @@ function LPIChapter({ token, user }) {
       
       setQuizResult(detailedResult);
       
+      // Clear saved progress after quiz submission
+      await clearProgress();
+      
       // Log telemetry for quiz attempt
       if (user?.id) {
         await telemetryService.logQuizAttempt(
