@@ -1313,8 +1313,8 @@ async def get_ppi_trait_vector(user_id: str = Depends(get_current_user)):
         for ans in answers
     ]
     
-    # Compute the 24-trait vector
-    result = compute_trait_vector(trait_vector_answers, total_questions=20)
+    # Compute the 24-trait vector (30 questions in Layer 1)
+    result = compute_trait_vector(trait_vector_answers, total_questions=30)
     
     return {
         **trait_vector_to_dict(result),
