@@ -885,6 +885,7 @@ WORD_SIMPLIFICATIONS = {
         ('impacting my sleep or mood significantly', 'making it hard to sleep or feel good'),
         ("i don't experience much financial stress", "I don't worry much about money"),
         ('financial stress', 'money worries'),
+        ('significantly', 'a lot'),
         # Q11: Spending habits  
         ('very disciplined', 'very careful'),
         ('mostly controlled with occasional splurges', 'usually careful but sometimes I treat myself'),
@@ -911,6 +912,8 @@ WORD_SIMPLIFICATIONS = {
         ('when i need or want something', 'when I need or want it'),
         ('impulsively if it feels right', 'right away if it feels good'),
         ('comparison shopping', 'looking at choices'),
+        ('purchases', 'buys'),
+        ('purchase', 'buy'),
         # Q15: Risk comfort
         ("high – i'm willing to take calculated risks", 'high - I like trying new things safely'),
         ('moderate – some risk is okay', 'medium - a little risk is okay'),
