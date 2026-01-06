@@ -191,14 +191,8 @@ function PPI({ token, user, onPPIComplete }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      // Delete the draft after successful submission
-      try {
-        await axios.delete(`${API}/ppi/draft`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      } catch (e) {
-        console.log('Draft cleanup skipped');
-      }
+      // Clear saved progress after successful submission
+      await clearProgress();
       
       // Update user state with PPI completion data
       if (response.data && onPPIComplete) {
