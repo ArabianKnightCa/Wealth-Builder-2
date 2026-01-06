@@ -308,6 +308,16 @@ function PPI({ token, user, onPPIComplete }) {
                   <li>Your progress is automatically saved</li>
                 </ul>
               </div>
+
+              {hasDraft && (
+                <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                  <h3 className="font-bold text-navy-900 mb-2">📝 You have saved progress!</h3>
+                  <p className="text-gray-700">
+                    You've already answered {Object.keys(answers).length} of {questions.length || 30} questions. 
+                    Click "Continue" to pick up where you left off.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
@@ -323,7 +333,7 @@ function PPI({ token, user, onPPIComplete }) {
                 className="btn-primary"
                 data-testid="start-ppi-btn"
               >
-                Let's Begin
+                {hasDraft ? 'Continue Where I Left Off' : "Let's Begin"}
               </button>
             </div>
           </div>
