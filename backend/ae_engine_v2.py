@@ -23,7 +23,9 @@ from tap_5_0 import (
     TAPControlInputs as TAP50ControlInputs,
     compute_scalars as tap50_compute_scalars,
     EL_MAX_POC as TAP50_EL_MAX_POC,
-    adapt_ppi_text  # For PPI question/option simplification (no emoji/starters)
+    adapt_ppi_text,  # For PPI question/option simplification (no emoji/starters)
+    get_child_ppi_variant,  # For age-contextualized question variants
+    calculate_lc  # For LC calculation
 )
 
 
