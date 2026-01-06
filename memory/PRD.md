@@ -145,20 +145,23 @@ childiness = 1.0 - LC
 - ~~Q20 Appreciation of Beauty (4/10)~~
 - ~~Q23 Humor (5/10)~~
 
-### Frontend Changes
-- **PPI.js**: Added `LikertScale` component for 1-5 scale questions
-- UI shows "Rate 1-5" badge for Likert, "Choose one" badge for MCQ
-- VIA trait displayed in top-right corner of each question
-- Progress shows "X / 30" format
-- Intro page updated: "Answer 30 quick questions", "Some questions use a 1-5 scale"
+### Auto-Save Feature (January 6, 2026)
+- **POST /api/ppi/autosave** - Saves answers to `ppi_drafts` collection after each answer
+- **GET /api/ppi/draft** - Returns saved progress (answers + current_index)
+- **DELETE /api/ppi/draft** - Clears draft after successful submission
 
-### Backend Changes
-- **ppi_trait_vector.py**: Updated `PPI_TRAIT_TAGS` for all 30 questions
-- Added `LIKERT_ANSWER_VALUES` mapping (1-5 → 0.0-1.0)
-- Updated `normalize_answer()` to handle `question_type` parameter
-- Server now passes `total_questions=30` for stability calculation
+**Frontend Changes:**
+- Added `checkForDraft()` - Restores answers and currentIndex from draft
+- Added `autoSave()` - Saves after each answer selection
+- Added purple "saved progress" banner on intro when draft exists
+- Button changes from "Let's Begin" to "Continue Where I Left Off"
+
+### Test Results (Iteration 2)
+- **Backend:** 12/12 tests passed (100%)
+- **Frontend:** All flows verified
+- Test file: `/app/tests/test_ppi_30q_autosave.py`
 
 ---
 
 ## Last Updated
-January 6, 2026 - Replaced 20-question PPI with 30-question VIA Character Strengths Layer 1
+January 6, 2026 - Added PPI auto-save functionality, all 30 questions verified working
