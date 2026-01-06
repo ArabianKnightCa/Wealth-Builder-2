@@ -108,64 +108,108 @@ class AdaptiveEngineV2:
         tap50_engine = TAP50Engine(el_max_poc=TAP50_EL_MAX_POC)
         
         for idx, item in enumerate(final_items, 1):
-            # Create PPIOptionSpec list from item options for TAP 5.0
-            option_specs = []
-            for opt_idx, opt_text in enumerate(item['options']):
-                opt_id = chr(65 + opt_idx)  # A, B, C, D
+            # Calculate LC to determine if we should use child variants
+            lc = calculate_lc(age, exp_level, TAP50_EL_MAX_POC)
+            
+            # Check if we should use a child-contextualized variant
+            child_variant = get_child_ppi_variant(idx, lc)
+            
+            if child_variant:
+                # Use the age-contextualized question variant
+                simple_q = child_variant['text']
                 
-                # Strip letter prefix if present (e.g., "A Research..." -> "Research...")
-                clean_text = re.sub(r'^[A-D]\s+', '', opt_text.strip())
+                # Build options from child variant
+                formatted_options = []
+                options_detail = []
+                for opt_id, opt_text in child_variant['options'].items():
+                    formatted_options.append(f"{opt_id} {opt_text}")
+                    options_detail.append({
+                        "id": opt_id,
+                        "display": opt_text,
+                        "baseline": item['options'][ord(opt_id) - 65] if ord(opt_id) - 65 < len(item['options']) else opt_text,
+                        "gloss": ""
+                    })
                 
-                option_specs.append(TAP50PPIOptionSpec(
-                    id=opt_id,
-                    baseline=clean_text,
-                    display="",  # Will be filled by engine
-                    gloss=""
-                ))
-            
-            # Process options through TAP 5.0 engine
-            adapted_options = tap50_engine.process_ppi(
-                options=option_specs,
-                age=age,
-                el_declared=exp_level,
-                controls=TAP50ControlInputs.neutral()
-            )
-            
-            # Compute scalars for this question
-            scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
-            
-            # Adapt question prompt using TAP 5.0 continuous adaptation
-            # Uses actual user age/EL - works for any question, any age
-            simple_q = self._get_child_question_text(item['prompt'], age, exp_level)
-            
-            # Format options with letter prefix for frontend compatibility
-            formatted_options = []
-            options_detail = []
-            for opt in adapted_options:
-                formatted_options.append(f"{opt.id} {opt.display if opt.display else opt.baseline}")
-                options_detail.append({
-                    "id": opt.id,
-                    "display": opt.display if opt.display else opt.baseline,
-                    "baseline": opt.baseline,
-                    "gloss": opt.gloss
+                # Compute scalars for this question
+                scalars = tap50_engine.compute_scalars(age, exp_level, simple_q)
+                
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": item['type'],
+                    "prompt": simple_q,
+                    "options": formatted_options,
+                    "options_detail": options_detail,
+                    "tap_version": "5.0",
+                    "variant": "child_contextualized",
+                    "scalars": {
+                        "lc": scalars.lc,
+                        "childiness": scalars.childiness,
+                        "age_norm": scalars.age_norm,
+                        "el_norm": scalars.el_norm,
+                        "weights": scalars.weights
+                    }
                 })
-            
-            output_items.append({
-                "question_id": f"PPI_Q{idx:02d}",
-                "bank_id": item['id'],
-                "type": item['type'],
-                "prompt": simple_q,
-                "options": formatted_options,
-                "options_detail": options_detail,
-                "tap_version": "5.0",
-                "scalars": {
-                    "lc": scalars.lc,
-                    "childiness": scalars.childiness,
-                    "age_norm": scalars.age_norm,
-                    "el_norm": scalars.el_norm,
-                    "weights": scalars.weights
-                }
-            })
+            else:
+                # Use standard TAP 5.0 word simplification for older users
+                # Create PPIOptionSpec list from item options for TAP 5.0
+                option_specs = []
+                for opt_idx, opt_text in enumerate(item['options']):
+                    opt_id = chr(65 + opt_idx)  # A, B, C, D
+                    
+                    # Strip letter prefix if present (e.g., "A Research..." -> "Research...")
+                    clean_text = re.sub(r'^[A-D]\s+', '', opt_text.strip())
+                    
+                    option_specs.append(TAP50PPIOptionSpec(
+                        id=opt_id,
+                        baseline=clean_text,
+                        display="",  # Will be filled by engine
+                        gloss=""
+                    ))
+                
+                # Process options through TAP 5.0 engine
+                adapted_options = tap50_engine.process_ppi(
+                    options=option_specs,
+                    age=age,
+                    el_declared=exp_level,
+                    controls=TAP50ControlInputs.neutral()
+                )
+                
+                # Compute scalars for this question
+                scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
+                
+                # Adapt question prompt using TAP 5.0 continuous adaptation
+                simple_q = self._get_child_question_text(item['prompt'], age, exp_level)
+                
+                # Format options with letter prefix for frontend compatibility
+                formatted_options = []
+                options_detail = []
+                for opt in adapted_options:
+                    formatted_options.append(f"{opt.id} {opt.display if opt.display else opt.baseline}")
+                    options_detail.append({
+                        "id": opt.id,
+                        "display": opt.display if opt.display else opt.baseline,
+                        "baseline": opt.baseline,
+                        "gloss": opt.gloss
+                    })
+                
+                output_items.append({
+                    "question_id": f"PPI_Q{idx:02d}",
+                    "bank_id": item['id'],
+                    "type": item['type'],
+                    "prompt": simple_q,
+                    "options": formatted_options,
+                    "options_detail": options_detail,
+                    "tap_version": "5.0",
+                    "variant": "word_simplified",
+                    "scalars": {
+                        "lc": scalars.lc,
+                        "childiness": scalars.childiness,
+                        "age_norm": scalars.age_norm,
+                        "el_norm": scalars.el_norm,
+                        "weights": scalars.weights
+                    }
+                })
         
         return {
             "ppi_version": "POC-v1.1.1",
