@@ -52,6 +52,7 @@ function PPI({ token, user, onPPIComplete }) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [hasDraft, setHasDraft] = useState(false);
 
   useEffect(() => {
     fetchQuestions();
@@ -64,6 +65,7 @@ function PPI({ token, user, onPPIComplete }) {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.has_draft && response.data.draft) {
+        setHasDraft(true);
         const draft = response.data.draft;
         // Restore answers from draft
         const restoredAnswers = {};
