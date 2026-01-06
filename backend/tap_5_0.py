@@ -1044,24 +1044,26 @@ CONCEPT_EMOJIS = {
 def get_adaptation_params(childiness: float) -> dict:
     """
     Calculate CONTINUOUS adaptation parameters based on childiness (0.0 to 1.0)
-    NO BUCKETS - all values scale smoothly
     
-    IMPORTANT: Per user requirements, NO emojis and NO friendly starters.
-    Adaptation = vocabulary simplification ONLY.
+    IMPORTANT: Per user requirements:
+    - NO emojis
+    - NO friendly starters  
+    - NO content truncation (sentences/word limits)
+    - Adaptation = vocabulary simplification ONLY
     """
     return {
-        # Sentence length scales from 25 words (adult) to 8 words (child)
-        'max_words_per_sentence': int(25 - (17 * childiness)),
-        # Number of sentences scales from 10 (adult) to 2 (child)
-        'max_sentences': int(10 - (8 * childiness)),
+        # DISABLED: No sentence length limits - keep full content
+        'max_words_per_sentence': 999,  # Effectively no limit
+        # DISABLED: No sentence count limits - keep full content
+        'max_sentences': 999,  # Effectively no limit
         # Word complexity threshold - higher childiness = more simplification
         'simplification_threshold': childiness,
         # DISABLED: No emojis per user requirements
         'add_emoji': False,
         # DISABLED: No friendly starters per user requirements
         'add_starter': False,
-        # Add inline explanations for childiness > 0.5
-        'add_explanations': childiness > 0.5,
+        # DISABLED: No inline explanations - just simplify vocabulary
+        'add_explanations': False,
     }
 
 
