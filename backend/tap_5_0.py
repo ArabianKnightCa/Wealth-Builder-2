@@ -1097,6 +1097,233 @@ CONCEPT_EMOJIS = {
     # All emoji mappings disabled per user requirements
 }
 
+# =============================================================================
+# CHILD-CONTEXTUALIZED PPI QUESTIONS
+# =============================================================================
+# These replace adult financial concepts with age-appropriate scenarios
+# that measure the SAME personality traits but in a child's world.
+# Applied when LC < 0.15 (approximately ages 6-10 with low EL)
+
+CHILD_PPI_VARIANTS = {
+    # Q1: Decision-making style (research vs gut vs social vs authority)
+    1: {
+        "text": "When I need to make a choice (like picking a game or activity), I:",
+        "options": {
+            "A": "Think about it carefully and ask questions first",
+            "B": "Just pick what feels right",
+            "C": "Ask my friends or family what they think",
+            "D": "Do what my teacher or parents suggest"
+        }
+    },
+    # Q2: Saving behavior
+    2: {
+        "text": "When I get money (like allowance or birthday money), I:",
+        "options": {
+            "A": "Put the same amount in my piggy bank every time",
+            "B": "Save whatever I don't spend",
+            "C": "Only save when I want something special",
+            "D": "Find it hard to save - I want to spend it!"
+        }
+    },
+    # Q3: Future outlook / optimism
+    3: {
+        "text": "When I think about growing up, I feel:",
+        "options": {
+            "A": "Excited and happy about it",
+            "B": "A little nervous or worried",
+            "C": "Not sure, but I hope it will be good",
+            "D": "Ready and not worried at all"
+        }
+    },
+    # Q4: Tracking/awareness
+    4: {
+        "text": "I know how much money I have saved:",
+        "options": {
+            "A": "I count it all the time",
+            "B": "I check it sometimes",
+            "C": "I don't really count it",
+            "D": "Only when I want to buy something"
+        }
+    },
+    # Q5: Priorities
+    5: {
+        "text": "The most important thing about money to me right now is:",
+        "options": {
+            "A": "Saving up for emergencies or surprises",
+            "B": "Paying back if I borrowed from someone",
+            "C": "Saving for something special I want",
+            "D": "Learning how to be better with money"
+        }
+    },
+    # Q6: Windfall behavior
+    6: {
+        "text": "If someone gave me surprise money, I would:",
+        "options": {
+            "A": "Save most or all of it",
+            "B": "Buy something I've been wanting",
+            "C": "Save some and spend some",
+            "D": "Use it if I owed anyone anything"
+        }
+    },
+    # Q7: Learning style
+    7: {
+        "text": "I learn new things best by:",
+        "options": {
+            "A": "Reading about it or looking it up",
+            "B": "Trying it myself and practicing",
+            "C": "Watching videos or someone show me",
+            "D": "Talking about it with others"
+        }
+    },
+    # Q8: Borrowing behavior (replaces credit cards)
+    8: {
+        "text": "When I borrow something from a friend (like a toy or book), I:",
+        "options": {
+            "A": "Always return it quickly and take good care of it",
+            "B": "Try not to borrow things at all",
+            "C": "Sometimes forget to return it for a while",
+            "D": "Often lose or break things I borrow"
+        }
+    },
+    # Q9: Goal-setting style
+    9: {
+        "text": "When I want to save for something, I like to:",
+        "options": {
+            "A": "Make a plan with exact dates and amounts",
+            "B": "Just try to save without a strict plan",
+            "C": "Pick small things I can get quickly",
+            "D": "Dream big but be okay if plans change"
+        }
+    },
+    # Q10: Stress response (replaces financial stress)
+    10: {
+        "text": "When I'm worried about something, it makes me:",
+        "options": {
+            "A": "Want to work harder to fix it",
+            "B": "Want to think about something else",
+            "C": "Hard to sleep or feel happy",
+            "D": "I don't worry very much"
+        }
+    },
+    # Q11: Self-control (replaces spending habits)
+    11: {
+        "text": "When I really want something (like candy or a toy), I:",
+        "options": {
+            "A": "Can wait patiently until the right time",
+            "B": "Usually wait, but sometimes give in",
+            "C": "Find it hard to wait",
+            "D": "It depends on my mood that day"
+        }
+    },
+    # Q12: Knowledge/learning level (replaces investing knowledge)
+    12: {
+        "text": "What I know about saving and growing money is:",
+        "options": {
+            "A": "A lot - I already save and know why it grows",
+            "B": "Some - I understand the basics",
+            "C": "A little - I'm just starting to learn",
+            "D": "Not much - it seems confusing"
+        }
+    },
+    # Q13: Resilience (replaces financial setback)
+    13: {
+        "text": "When something doesn't go my way (like losing a game or not getting what I wanted), I:",
+        "options": {
+            "A": "Try again or find another way",
+            "B": "Feel sad but get over it soon",
+            "C": "Need a hug or help from someone I trust",
+            "D": "Stay upset for a long time"
+        }
+    },
+    # Q14: Decision style for wants (replaces purchases)
+    14: {
+        "text": "When I get to pick something (like a treat or activity), I:",
+        "options": {
+            "A": "Look at all the choices carefully first",
+            "B": "Pick the best deal or value",
+            "C": "Choose what I want or need right then",
+            "D": "Grab whatever looks fun without thinking"
+        }
+    },
+    # Q15: Risk tolerance
+    15: {
+        "text": "When trying something new (like a game or food), I:",
+        "options": {
+            "A": "Love trying new things, even if I might not like them",
+            "B": "Try new things sometimes if they seem okay",
+            "C": "Prefer things I already know I like",
+            "D": "Really don't like trying new things"
+        }
+    },
+    # Q16: Communication openness
+    16: {
+        "text": "I talk about money with my family:",
+        "options": {
+            "A": "A lot - we talk about it openly",
+            "B": "Sometimes when it comes up",
+            "C": "Not much - it feels weird",
+            "D": "Never - I keep it private"
+        }
+    },
+    # Q17: Challenges
+    17: {
+        "text": "The hardest thing about money for me is:",
+        "options": {
+            "A": "I don't get very much",
+            "B": "Not spending it all right away",
+            "C": "Understanding how it all works",
+            "D": "Remembering to save"
+        }
+    },
+    # Q18: Planning style (replaces budgeting)
+    18: {
+        "text": "When I think about my money, I:",
+        "options": {
+            "A": "Write it down or keep track carefully",
+            "B": "Keep a rough idea in my head",
+            "C": "Have a simple way to remember",
+            "D": "Don't really keep track"
+        }
+    },
+    # Q19: Self-identity
+    19: {
+        "text": "When it comes to money, I am:",
+        "options": {
+            "A": "A saver who plans ahead",
+            "B": "Careful but also like to have fun",
+            "C": "Someone who likes to spend on fun things",
+            "D": "Still figuring it out"
+        }
+    },
+    # Q20: Motivation
+    20: {
+        "text": "I want to learn about money because:",
+        "options": {
+            "A": "I want to save for something special",
+            "B": "I don't want to worry about it",
+            "C": "I want to have more when I grow up",
+            "D": "I want to feel smart about money"
+        }
+    },
+}
+
+
+def get_child_ppi_variant(question_id: int, lc: float) -> dict:
+    """
+    Get child-contextualized PPI question variant if user is young enough.
+    
+    Args:
+        question_id: The PPI question ID (1-20)
+        lc: User's Learning Complexity score
+    
+    Returns:
+        Child variant dict with 'text' and 'options', or None if not applicable
+    """
+    # Apply child variants for LC < 0.15 (young children ages 6-10 with low EL)
+    if lc < 0.15 and question_id in CHILD_PPI_VARIANTS:
+        return CHILD_PPI_VARIANTS[question_id]
+    return None
+
 
 def get_adaptation_params(childiness: float) -> dict:
     """
