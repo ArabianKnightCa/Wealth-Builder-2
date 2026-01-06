@@ -1022,6 +1022,7 @@ WORD_SIMPLIFICATIONS = {
         # LPI Lesson 1: What Is Money
         ('shared agreement', 'promise we all believe in'),
         ('bartered', 'traded things'),
+        ('bartering', 'trading things'),
         ('barter', 'trade things'),
         ('timing problem', 'problem of when to trade'),
         ('convenient', 'easy'),
