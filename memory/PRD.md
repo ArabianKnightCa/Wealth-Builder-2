@@ -115,50 +115,36 @@ childiness = 1.0 - LC
 
 ---
 
-## Test Results (January 6, 2026)
+## Test Results (January 6, 2026 - Round 2)
 
-### All P0 & P1 Features VERIFIED ✅
+### All Adaptation Issues FIXED ✅
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| PPI Q12-20 Adaptation | ✅ FIXED | Added 50+ word simplifications for Q12-20 (investing, risk, budget, etc.) |
-| Chapter Locking | ✅ FIXED | Chapters 2-10 locked until previous quiz completed |
-| LPI No Starters | ✅ FIXED | Removed "Let's learn something cool!" and all friendly starters |
-| No Emojis | ✅ FIXED | Disabled all emoji additions in TAP 5.0 |
-| Quiz No 50% Text | ✅ FIXED | Removed "50% required to pass" messaging |
-| Quiz Adaptation | ✅ PASS | Quizzes use TAP 5.0 word simplification |
+| Area | Status | Details |
+|------|--------|---------|
+| PPI Q8-20 | ✅ FIXED | Child-friendly terms: "borrow-now-pay-later cards", "growing money", "money worries" |
+| LPI Lessons | ✅ FIXED | Full content preserved with vocabulary simplification |
+| Quizzes | ✅ FIXED | Adapted questions/options for 7yo comprehension |
+| Chapter Locking | ✅ FIXED | Chapters 2-10 locked until quiz completed |
+| No Starters/Emojis | ✅ FIXED | Disabled all CHILD_FRIENDLY_STARTERS and CONCEPT_EMOJIS |
+
+### Key Code Changes
+
+**`get_adaptation_params()` - CRITICAL FIX:**
+- `max_words_per_sentence`: Changed from `25 - (17 * childiness)` → `999` (no limit)
+- `max_sentences`: Changed from `10 - (8 * childiness)` → `999` (no limit)
+- `add_explanations`: Changed to `False` (vocab only)
+
+This was the root cause of content truncation - the aggressive sentence limits were cutting off most of the lesson content.
+
+### Word Simplifications Added
+- **0.85 threshold**: "significantly" → "a lot"
+- **0.40 threshold**: 140+ PPI-specific simplifications for Q1-Q20
+- **0.25 threshold**: 70+ LPI/Quiz terms (economy, bartering, transactions, etc.)
 
 ### Test Credentials
 - 7yo: `test_7yo_1767657045@test.com / TestPass123!`
-- 45yo: `test_45yo_1767657054@test.com / TestPass123!`
-
-### Test Files
-- `/app/tests/test_ppi_flow.py` - 11 tests
-- `/app/test_reports/iteration_1.json`
-
----
-
-## Key Changes (January 6, 2026)
-
-### TAP 5.0 Configuration Changes
-1. **DISABLED `CHILD_FRIENDLY_STARTERS`** - All set to empty strings
-2. **DISABLED `CONCEPT_EMOJIS`** - Empty dictionary
-3. **DISABLED `add_emoji` and `add_starter`** in `get_adaptation_params()` - Always False
-
-### Word Simplifications Added (Q12-20)
-- Q12: investing → growing money, "strong – I actively invest" → "good - I already save and grow my money"
-- Q15: risk → chances, "calculated risks" → "smart chances"
-- Q16: talking about money with friends/family
-- Q17: financial challenge → money problem
-- Q18: budget planning with spreadsheets → lists or phone apps
-- Q19: financial personality → money style
-- Q20: financial literacy → money knowledge
-
-### Frontend Changes
-- **Dashboard.js**: Re-enabled chapter locking (🔒 icon + "Complete previous chapter to unlock")
-- **LPIChapter.js**: Changed quiz text from "50% required to pass" to "Test your understanding of this chapter"
 
 ---
 
 ## Last Updated
-January 6, 2026 - Fixed adaptation issues for Q12-20, restored chapter locking, removed starters/emojis
+January 6, 2026 - Fixed LPI/Quiz adaptation by removing content truncation, expanded vocabulary dictionary
