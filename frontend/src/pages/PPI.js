@@ -51,59 +51,45 @@ function PPI({ token, user, onPPIComplete }) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-  const [hasDraft, setHasDraft] = useState(false);
+  
+  // Use global auto-save hook
+  const { saveProgress, loadProgress, clearProgress, hasSavedProgress } = useAutoSave('ppi', token);
 
   useEffect(() => {
     fetchQuestions();
-    checkForDraft();
+    restoreProgress();
   }, []);
 
-  const checkForDraft = async () => {
-    try {
-      const response = await axios.get(`${API}/ppi/draft`, {
-        headers: { Authorization: `Bearer ${token}` }
+  const restoreProgress = async () => {
+    const saved = await loadProgress();
+    if (saved && saved.answers) {
+      // Restore answers from saved progress
+      const restoredAnswers = {};
+      saved.answers.forEach(ans => {
+        const qNum = parseInt(ans.question_id.replace('PPI_Q', ''));
+        restoredAnswers[qNum] = ans.selected_option;
       });
-      if (response.data.has_draft && response.data.draft) {
-        setHasDraft(true);
-        const draft = response.data.draft;
-        // Restore answers from draft
-        const restoredAnswers = {};
-        draft.answers.forEach(ans => {
-          // Extract question number from question_id (e.g., "PPI_Q01" -> 1)
-          const qNum = parseInt(ans.question_id.replace('PPI_Q', ''));
-          restoredAnswers[qNum] = ans.selected_option;
-        });
-        setAnswers(restoredAnswers);
-        setCurrentIndex(draft.current_index || 0);
-        console.log('Restored PPI draft:', draft.answers.length, 'answers');
-      }
-    } catch (error) {
-      console.log('No draft found or error fetching draft');
+      setAnswers(restoredAnswers);
+      setCurrentIndex(saved.current_index || 0);
+      console.log('Restored PPI progress:', saved.answers.length, 'answers');
     }
   };
 
   const autoSave = async (newAnswers, newIndex) => {
-    try {
-      // Format answers for auto-save
-      const formattedAnswers = Object.entries(newAnswers).map(([question_id, selected_option]) => {
-        const question = questions.find(q => q.id === parseInt(question_id));
-        return {
-          question_id: question?.questionId || `PPI_Q${question_id.toString().padStart(2, '0')}`,
-          selected_option: selected_option.toString(),
-          question_type: question?.type || 'mcq',
-          via_trait: question?.viaTrait,
-          weight: question?.weight
-        };
-      });
+    // Format answers for auto-save
+    const formattedAnswers = Object.entries(newAnswers).map(([question_id, selected_option]) => {
+      const question = questions.find(q => q.id === parseInt(question_id));
+      return {
+        question_id: question?.questionId || `PPI_Q${question_id.toString().padStart(2, '0')}`,
+        selected_option: selected_option.toString(),
+        question_type: question?.type || 'mcq',
+        via_trait: question?.viaTrait,
+        weight: question?.weight
+      };
+    });
 
-      await axios.post(
-        `${API}/ppi/autosave`,
-        { answers: formattedAnswers, current_index: newIndex },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-    } catch (error) {
-      console.error('Auto-save failed:', error);
-    }
+    // Use global save
+    await saveProgress({ answers: formattedAnswers, current_index: newIndex, total_questions: 30 });
   };
 
   const fetchQuestions = async () => {
