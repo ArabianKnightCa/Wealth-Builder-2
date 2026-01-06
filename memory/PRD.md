@@ -115,39 +115,44 @@ childiness = 1.0 - LC
 
 ---
 
-## Test Results (January 6, 2026 - Universal Framing)
+## PPI Layer 1 - VIA Character Strengths (January 6, 2026)
 
-### UNIVERSAL PPI Questions Implemented ✅
+### NEW 30-Question PPI Implemented ✅
 
-**Philosophy:** Questions framed around TRAITS, not age-specific scenarios. The user's mind naturally fills in their own context.
+**Framework:** VIA 24 Character Strengths
+**Questions:** 30 total (Layer 1)
+**Format Mix:** 60% Likert Scale (18), 40% Multiple Choice (12)
+**Reading Level:** 6th-8th grade baseline
 
-| Q# | Old (Age-Specific) | New (Universal) |
-|----|-------------------|-----------------|
-| Q8 | "Credit cards" | "When I owe something to someone (money, items, or favors), I:" |
-| Q11 | "Spending habits" | "When I really want something, I:" |
-| Q13 | "Financial setback" | "When things don't go as I planned, I:" |
-| Q14 | "Making purchases" | "When I get to choose something, I:" |
+### VIA Traits Covered (24/24)
 
-**Why This Works:**
-- A 7yo reading "When I owe something to someone" thinks: borrowed toys
-- A 15yo thinks: borrowed money from parents
-- A 30yo thinks: credit card balance
-- A 60yo thinks: mortgage payment
+| Virtue | Traits | Questions |
+|--------|--------|-----------|
+| **Wisdom** | Creativity, Curiosity, Judgment, Love of Learning, Perspective | Q1, Q2, Q3, Q4, Q5, Q25, Q29 |
+| **Courage** | Bravery, Perseverance, Honesty, Zest | Q6, Q7, Q8, Q9, Q26 |
+| **Humanity** | Love, Kindness, Social Intelligence | Q10, Q11, Q12 |
+| **Justice** | Teamwork, Fairness, Leadership | Q13, Q14, Q15 |
+| **Temperance** | Forgiveness, Prudence, Self-Regulation | Q16, Q18, Q19, Q27 |
+| **Transcendence** | Gratitude, Hope, Spirituality | Q21, Q22, Q24, Q28, Q30 |
 
-**Same trait measured, zero code bloat.**
+### Questions Swapped from OLD PPI
+- **Q17:** Financial Priority (OLD Q5) - "My biggest financial priority right now is:"
+- **Q20:** Investing Knowledge (OLD Q12) - "My knowledge of investing is:"
+- **Q23:** Biggest Challenge (OLD Q17) - "My biggest financial challenge is:"
 
-### Technical Implementation
-- `UNIVERSAL_PPI_QUESTIONS` dictionary in `tap_5_0.py` (10 universal questions)
-- Questions that already work universally (Q1-7, Q9, Q16, Q19, Q20) use `None` → baseline + word simplification
-- Word simplification still applies to universal questions based on LC
-- Response includes `"variant": "universal"` or `"variant": "baseline_simplified"`
+### Removed from NEW (Lowest Weights)
+- ~~Q17 Humility (5/10)~~
+- ~~Q20 Appreciation of Beauty (4/10)~~
+- ~~Q23 Humor (5/10)~~
 
-### Verified
-- 7yo: Q8 shows "When I owe something to someone..." ✅
-- 45yo: Q8 shows "When I owe something to someone..." ✅
-- Word simplification: "recover" → "get better" for young users ✅
+### Technical Changes
+- Updated `/app/backend/content_data.py` with 30 VIA questions
+- Updated `/app/backend/ppi_bank_baseline_v1_1.json` to v2.0
+- Modified `ae_engine_v2.py` to handle Likert + MCQ formats
+- Fixed word simplification to use word boundaries (prevents "invest" matching in "investment")
+- API now returns `via_trait` and `weight` for each question
 
 ---
 
 ## Last Updated
-January 6, 2026 - Replaced age-specific variants with universal framing (scalable to 270+ questions)
+January 6, 2026 - Replaced 20-question PPI with 30-question VIA Character Strengths Layer 1
