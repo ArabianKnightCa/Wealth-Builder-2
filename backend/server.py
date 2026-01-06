@@ -1236,56 +1236,124 @@ async def get_ppi_answers(user_id: str = Depends(get_current_user)):
 
 
 # =========================================================================
-# PPI Auto-Save Endpoint
+# GLOBAL AUTO-SAVE SYSTEM
 # =========================================================================
-class PPIAutoSaveRequest(BaseModel):
-    answers: List[dict]  # List of {question_id, selected_option, question_type, via_trait, weight}
-    current_index: int = 0
+# A unified progress saving system that works across all features:
+# - PPI (Personality Profile Inventory)
+# - LPI (Learning Path Inventory / Lessons)
+# - Quizzes
+# - Onboarding
+# - Any future feature that needs progress persistence
 
-@api_router.post("/ppi/autosave")
-async def autosave_ppi(data: PPIAutoSaveRequest, user_id: str = Depends(get_current_user)):
+class ProgressAutoSaveRequest(BaseModel):
+    feature: str  # "ppi", "lpi", "quiz", "onboarding", etc.
+    data: dict    # Feature-specific progress data
+    metadata: Optional[dict] = None  # Optional metadata (timestamps, etc.)
+
+@api_router.post("/progress/save")
+async def save_progress(request: ProgressAutoSaveRequest, user_id: str = Depends(get_current_user)):
     """
-    Auto-save partial PPI progress. Called after each answer.
-    Stores answers in ppi_draft collection (separate from final ppi_answers).
+    Global auto-save endpoint for any feature.
+    
+    Usage:
+    - PPI: feature="ppi", data={"answers": [...], "current_index": 5}
+    - LPI: feature="lpi", data={"chapter_id": "CH01", "lesson_index": 2, "completed_lessons": [...]}
+    - Quiz: feature="quiz_{chapter_id}", data={"answers": [...], "current_question": 2}
+    - Onboarding: feature="onboarding", data={"step": 3, "form_data": {...}}
     """
     try:
-        # Upsert the draft
-        await db.ppi_drafts.update_one(
-            {"user_id": user_id},
+        await db.user_progress.update_one(
+            {"user_id": user_id, "feature": request.feature},
             {
                 "$set": {
                     "user_id": user_id,
-                    "answers": data.answers,
-                    "current_index": data.current_index,
-                    "updated_at": datetime.now(timezone.utc).isoformat(),
-                    "total_questions": 30
+                    "feature": request.feature,
+                    "data": request.data,
+                    "metadata": request.metadata or {},
+                    "updated_at": datetime.now(timezone.utc).isoformat()
                 }
             },
             upsert=True
         )
-        return {"status": "saved", "answers_count": len(data.answers)}
+        return {"status": "saved", "feature": request.feature}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Auto-save failed: {str(e)}")
 
 
+@api_router.get("/progress/{feature}")
+async def get_progress(feature: str, user_id: str = Depends(get_current_user)):
+    """
+    Get saved progress for a specific feature.
+    
+    Args:
+        feature: "ppi", "lpi", "quiz_CH01", "onboarding", etc.
+    """
+    progress = await db.user_progress.find_one(
+        {"user_id": user_id, "feature": feature}, 
+        {"_id": 0}
+    )
+    if progress:
+        return {"has_progress": True, "progress": progress}
+    return {"has_progress": False, "progress": None}
+
+
+@api_router.delete("/progress/{feature}")
+async def delete_progress(feature: str, user_id: str = Depends(get_current_user)):
+    """
+    Delete saved progress for a specific feature (e.g., after completion).
+    """
+    await db.user_progress.delete_one({"user_id": user_id, "feature": feature})
+    return {"status": "deleted", "feature": feature}
+
+
+@api_router.get("/progress")
+async def get_all_progress(user_id: str = Depends(get_current_user)):
+    """
+    Get all saved progress for a user across all features.
+    Useful for dashboard or resuming where user left off.
+    """
+    progress_list = await db.user_progress.find(
+        {"user_id": user_id}, 
+        {"_id": 0}
+    ).to_list(100)
+    
+    # Convert to dict keyed by feature
+    progress_map = {p["feature"]: p for p in progress_list}
+    return {"progress": progress_map}
+
+
+# =========================================================================
+# Legacy PPI Auto-Save Endpoints (redirect to global system)
+# =========================================================================
+class PPIAutoSaveRequest(BaseModel):
+    answers: List[dict]
+    current_index: int = 0
+
+@api_router.post("/ppi/autosave")
+async def autosave_ppi(data: PPIAutoSaveRequest, user_id: str = Depends(get_current_user)):
+    """Legacy endpoint - redirects to global progress system"""
+    return await save_progress(
+        ProgressAutoSaveRequest(
+            feature="ppi",
+            data={"answers": data.answers, "current_index": data.current_index, "total_questions": 30}
+        ),
+        user_id
+    )
+
+
 @api_router.get("/ppi/draft")
 async def get_ppi_draft(user_id: str = Depends(get_current_user)):
-    """
-    Get saved PPI draft to resume where user left off.
-    """
-    draft = await db.ppi_drafts.find_one({"user_id": user_id}, {"_id": 0})
-    if draft:
-        return {"has_draft": True, "draft": draft}
+    """Legacy endpoint - uses global progress system"""
+    result = await get_progress("ppi", user_id)
+    if result["has_progress"]:
+        return {"has_draft": True, "draft": result["progress"]["data"]}
     return {"has_draft": False, "draft": None}
 
 
 @api_router.delete("/ppi/draft")
 async def delete_ppi_draft(user_id: str = Depends(get_current_user)):
-    """
-    Delete PPI draft after successful submission.
-    """
-    await db.ppi_drafts.delete_one({"user_id": user_id})
-    return {"status": "deleted"}
+    """Legacy endpoint - uses global progress system"""
+    return await delete_progress("ppi", user_id)
 
 
 @api_router.get("/ppi/trait-vector")
