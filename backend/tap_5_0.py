@@ -871,56 +871,88 @@ WORD_SIMPLIFICATIONS = {
         ('general direction without strict deadlines', 'a rough idea without due dates'),
         ('short-term goals i can achieve quickly', 'small goals I can reach soon'),
         ('long-term vision with flexibility', 'big dreams that can change'),
-        # Q8 (Q11 in bank): Spending habits  
+        # Q8: Credit cards
+        ('i use them responsibly and pay in full', 'I use them carefully and pay it all back'),
+        ('i avoid them completely', 'I stay away from them'),
+        ('i sometimes carry a balance', 'I sometimes owe money on them'),
+        ('i struggle with credit card debt', 'I have trouble paying them back'),
+        ('credit cards', 'borrow-now-pay-later cards'),
+        ('credit card', 'borrow-now-pay-later card'),
+        # Q9: Setting financial goals (already covered in Q7)
+        # Q10: Financial stress
+        ('making me more motivated to improve', 'making me want to do better'),
+        ('causing me to avoid thinking about money', 'making me not want to think about money'),
+        ('impacting my sleep or mood significantly', 'making it hard to sleep or feel good'),
+        ("i don't experience much financial stress", "I don't worry much about money"),
+        ('financial stress', 'money worries'),
+        # Q11: Spending habits  
         ('very disciplined', 'very careful'),
         ('mostly controlled with occasional splurges', 'usually careful but sometimes I treat myself'),
         ('impulsive at times', 'sometimes I buy without thinking'),
         ('often reactive to emotions', 'I buy based on how I feel'),
-        # Q9 (Q13): Financial setback
+        # Q12: Knowledge of investing
+        ("strong – i actively invest", 'good - I already save and grow my money'),
+        ("basic – i understand the concepts", 'okay - I know what it means'),
+        ("limited – i'm just starting to learn", 'small - I am just learning'),
+        ("none – it seems too complicated", 'none - it seems hard to understand'),
+        ('my knowledge of investing is', 'what I know about growing money is'),
+        ('investing', 'growing money'),
+        ('invest', 'grow money'),
+        # Q13: Financial setback
         ('quickly adjust my plan and move forward', 'fix my plan and keep going'),
         ('feel discouraged but eventually recover', 'feel sad but get better'),
         ('need support from others to cope', 'need help from others'),
         ('find it very difficult to bounce back', 'find it really hard to feel better'),
-        # Q10 (Q15): Risk comfort
-        ("high – i'm willing to take calculated risks", 'high - I like trying new things'),
+        ('financial setback', 'money problem'),
+        ('setback', 'problem'),
+        # Q14: Making purchases
+        ('after careful comparison shopping', 'after looking at different choices'),
+        ('when i find a good deal', 'when I find a good price'),
+        ('when i need or want something', 'when I need or want it'),
+        ('impulsively if it feels right', 'right away if it feels good'),
+        ('comparison shopping', 'looking at choices'),
+        # Q15: Risk comfort
+        ("high – i'm willing to take calculated risks", 'high - I like trying new things safely'),
         ('moderate – some risk is okay', 'medium - a little risk is okay'),
         ('low – i prefer safety and stability', 'low - I like being safe'),
         ('very low – i avoid risk completely', 'very low - I stay away from risk'),
-        # Q11 (Q17): Financial challenge
+        ('comfort level with financial risk', 'how I feel about taking chances with money'),
+        ('financial risk', 'money chances'),
+        ('calculated risks', 'smart chances'),
+        # Q16: Talking about money
+        ('openly and regularly', 'freely and often'),
+        ('occasionally when relevant', 'sometimes when it matters'),
+        ("rarely – it feels uncomfortable", 'not much - it feels weird'),
+        ("never – it's too personal", 'never - it is private'),
+        ('i talk about money with friends/family', 'I talk about money with people I know'),
+        # Q17: Financial challenge
         ('not earning enough', 'not getting enough money'),
         ('controlling my spending', 'being careful with what I spend'),
-        ('understanding financial concepts', 'understanding money stuff'),
+        ('understanding financial concepts', 'understanding money ideas'),
         ('staying motivated to save', 'wanting to keep saving'),
-        # Credit card options (ADAPTED for comprehension)
-        ('use them responsibly and pay in full', 'use them carefully and pay it all back'),
-        ('avoid them entirely', 'stay away from them'),
-        ('use them for emergencies only', 'only use them when I really need to'),
-        ('use them for rewards and points', 'use them to get prizes and points'),
-        # Investment options (ADAPTED)
-        ('stocks and higher-risk investments', 'things that can go up or down a lot'),
-        ('safe, low-risk options', 'safe choices that don\'t change much'),
-        ('mix of both depending on goals', 'a mix of safe and risky based on what I want'),
-        ('real estate or physical assets', 'houses or things I can touch'),
-        # Budget options (ADAPTED)
-        ('strict budget with categories', 'a careful plan with groups for spending'),
-        ('flexible spending limits', 'rules that can change'),
-        ('track everything meticulously', 'write down every little thing'),
-        ('general awareness without strict rules', 'just know roughly where money goes'),
-        # Debt options (ADAPTED)
-        ('pay it off aggressively', 'pay it back as fast as I can'),
-        ('pay minimum and invest extra', 'pay a little and save the rest'),
-        ('balance payoff with other goals', 'pay some back and do other things too'),
-        ('consolidate for lower rates', 'put it together to pay less'),
-        # Retirement options (ADAPTED)
-        ('start early and maximize contributions', 'start young and save as much as I can'),
-        ('save when convenient', 'save when I can'),
-        ('rely on employer plans', 'let my job help me save'),
-        ('haven\'t started yet', 'haven\'t started saving yet'),
-        # Insurance options (ADAPTED)
-        ('comprehensive coverage', 'protection for everything'),
-        ('basic coverage only', 'just the simple protection'),
-        ('shop for best rates', 'look for the best price'),
-        ('minimal insurance', 'just a little protection'),
+        ('my biggest financial challenge', 'the hardest money thing for me'),
+        ('financial challenge', 'money problem'),
+        # Q18: Planning budget
+        ('use detailed spreadsheets or apps', 'use lists or phone apps'),
+        ('keep a rough mental estimate', 'keep track in my head'),
+        ('follow a simple system', 'use a simple plan'),
+        ("don't really budget", "don't plan my money"),
+        ('when planning my budget', 'when I plan how to use my money'),
+        ('spreadsheets', 'lists'),
+        # Q19: Financial personality
+        ('planner and saver', 'someone who plans and saves'),
+        ('balanced and practical', 'careful and sensible'),
+        ('spontaneous spender', 'someone who buys things quickly'),
+        ('still figuring it out', 'still learning'),
+        ('financial personality', 'money style'),
+        # Q20: Motivation for improving
+        ('achieving specific financial goals', 'reaching my money goals'),
+        ('reducing stress and anxiety', 'feeling less worried'),
+        ('building long-term wealth', 'having more money later'),
+        ('feeling more confident and in control', 'feeling sure about money'),
+        ('my motivation for improving financial literacy', 'why I want to learn about money'),
+        ('financial literacy', 'money knowledge'),
+        ('financial goals', 'money goals'),
         # General terms
         ('building an emergency fund', 'saving for emergencies'),
         ('paying off debt', 'paying back money I owe'),
@@ -933,7 +965,6 @@ WORD_SIMPLIFICATIONS = {
         ('discouraged', 'sad'),
         ('recover', 'get better'),
         ('bounce back', 'feel better'),
-        ('calculated risks', 'smart risks'),
         ('stability', 'staying safe'),
         ('investments', 'ways to grow money'),
         ('retirement', 'when you stop working'),
