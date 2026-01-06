@@ -85,33 +85,47 @@ INTENSITY_TEMPLATES: Dict[str, WeightTemplate] = {
 # ANSWER NORMALIZATION
 # =============================================================================
 
-# A/B/C/D → [0.0, 1.0] mapping
-ANSWER_VALUES = {
+# A/B/C/D → [0.0, 1.0] mapping for MCQ
+MCQ_ANSWER_VALUES = {
     "A": 0.00,
     "B": 0.33,
     "C": 0.67,
     "D": 1.00,
 }
 
+# Likert 1-5 → [0.0, 1.0] mapping
+LIKERT_ANSWER_VALUES = {
+    "1": 0.00,   # Strongly Disagree
+    "2": 0.25,   # Disagree
+    "3": 0.50,   # Neutral
+    "4": 0.75,   # Agree
+    "5": 1.00,   # Strongly Agree
+}
 
-def normalize_answer(answer: str, polarity: str) -> float:
+
+def normalize_answer(answer: str, polarity: str, question_type: str = "mcq") -> float:
     """
     Normalize answer to [0.0, 1.0] with polarity adjustment.
     
     Args:
-        answer: "A", "B", "C", or "D"
+        answer: For MCQ: "A", "B", "C", or "D". For Likert: "1"-"5"
         polarity: "normal" or "reverse"
+        question_type: "mcq" or "likert"
     
     Returns:
         float: Normalized value in [0.0, 1.0]
     """
-    # Get base value
-    answer_key = answer.upper().strip()
-    if answer_key not in ANSWER_VALUES:
-        # Handle "A Research extensively..." format
-        answer_key = answer_key[0] if answer_key else "B"
+    answer_key = str(answer).upper().strip()
     
-    v = ANSWER_VALUES.get(answer_key, 0.5)  # Default to middle if unknown
+    if question_type == "likert":
+        # Likert scale: 1-5
+        v = LIKERT_ANSWER_VALUES.get(answer_key, 0.5)
+    else:
+        # MCQ: A/B/C/D
+        if answer_key not in MCQ_ANSWER_VALUES:
+            # Handle "A Research extensively..." format
+            answer_key = answer_key[0] if answer_key else "B"
+        v = MCQ_ANSWER_VALUES.get(answer_key, 0.5)
     
     # Apply polarity
     if polarity == "reverse":
