@@ -1326,11 +1326,14 @@ def apply_word_simplifications(text: str, lc: float) -> str:
     # Apply simplifications for all thresholds ABOVE the user's LC
     for threshold, replacements in sorted(WORD_SIMPLIFICATIONS.items(), reverse=True):
         if lc < threshold:
-            for item in replacements:
+            # Sort replacements by length (longest first) to avoid partial matches
+            sorted_replacements = sorted(replacements, key=lambda x: len(x[0]) if len(x) == 2 else 0, reverse=True)
+            
+            for item in sorted_replacements:
                 if len(item) == 2:
                     complex_word, simple_word = item
-                    # Case-insensitive replacement, preserve first letter case
-                    pattern = re.compile(re.escape(complex_word), re.IGNORECASE)
+                    # Case-insensitive replacement with word boundaries to avoid partial matches
+                    pattern = re.compile(r'\b' + re.escape(complex_word) + r'\b', re.IGNORECASE)
                     
                     def replace_preserve_case(match):
                         matched = match.group(0)
