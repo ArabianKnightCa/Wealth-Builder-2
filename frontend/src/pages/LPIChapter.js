@@ -207,7 +207,9 @@ function LPIChapter({ token, user }) {
               <button
                 onClick={() => {
                   if (currentLessonIndex > 0) {
-                    setCurrentLessonIndex(currentLessonIndex - 1);
+                    const newIndex = currentLessonIndex - 1;
+                    setCurrentLessonIndex(newIndex);
+                    autoSaveProgress('lesson', newIndex, quizAnswers);
                   } else {
                     navigate('/dashboard');
                   }
@@ -220,9 +222,12 @@ function LPIChapter({ token, user }) {
               <button
                 onClick={() => {
                   if (currentLessonIndex < chapter.lessons.length - 1) {
-                    setCurrentLessonIndex(currentLessonIndex + 1);
+                    const newIndex = currentLessonIndex + 1;
+                    setCurrentLessonIndex(newIndex);
+                    autoSaveProgress('lesson', newIndex, quizAnswers);
                   } else {
                     setCurrentView('takeaway');
+                    autoSaveProgress('takeaway', currentLessonIndex, quizAnswers);
                   }
                 }}
                 className="btn-primary"
@@ -255,6 +260,7 @@ function LPIChapter({ token, user }) {
                 onClick={() => {
                   setCurrentView('lesson');
                   setCurrentLessonIndex(chapter.lessons.length - 1);
+                  autoSaveProgress('lesson', chapter.lessons.length - 1, quizAnswers);
                 }}
                 className="btn-primary"
                 data-testid="back-btn"
@@ -265,6 +271,7 @@ function LPIChapter({ token, user }) {
                 onClick={() => {
                   setCurrentView('quiz');
                   setQuizStartTime(Date.now());
+                  autoSaveProgress('quiz', currentLessonIndex, quizAnswers);
                 }}
                 className="btn-primary"
                 data-testid="start-quiz-btn"
