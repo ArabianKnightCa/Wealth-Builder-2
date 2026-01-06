@@ -1234,6 +1234,60 @@ async def get_ppi_answers(user_id: str = Depends(get_current_user)):
     answers = await db.ppi_answers.find({"user_id": user_id}, {"_id": 0}).to_list(100)
     return {"answers": answers}
 
+
+# =========================================================================
+# PPI Auto-Save Endpoint
+# =========================================================================
+class PPIAutoSaveRequest(BaseModel):
+    answers: List[dict]  # List of {question_id, selected_option, question_type, via_trait, weight}
+    current_index: int = 0
+
+@api_router.post("/ppi/autosave")
+async def autosave_ppi(data: PPIAutoSaveRequest, user_id: str = Depends(get_current_user)):
+    """
+    Auto-save partial PPI progress. Called after each answer.
+    Stores answers in ppi_draft collection (separate from final ppi_answers).
+    """
+    try:
+        # Upsert the draft
+        await db.ppi_drafts.update_one(
+            {"user_id": user_id},
+            {
+                "$set": {
+                    "user_id": user_id,
+                    "answers": data.answers,
+                    "current_index": data.current_index,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                    "total_questions": 30
+                }
+            },
+            upsert=True
+        )
+        return {"status": "saved", "answers_count": len(data.answers)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Auto-save failed: {str(e)}")
+
+
+@api_router.get("/ppi/draft")
+async def get_ppi_draft(user_id: str = Depends(get_current_user)):
+    """
+    Get saved PPI draft to resume where user left off.
+    """
+    draft = await db.ppi_drafts.find_one({"user_id": user_id}, {"_id": 0})
+    if draft:
+        return {"has_draft": True, "draft": draft}
+    return {"has_draft": False, "draft": None}
+
+
+@api_router.delete("/ppi/draft")
+async def delete_ppi_draft(user_id: str = Depends(get_current_user)):
+    """
+    Delete PPI draft after successful submission.
+    """
+    await db.ppi_drafts.delete_one({"user_id": user_id})
+    return {"status": "deleted"}
+
+
 @api_router.get("/ppi/trait-vector")
 async def get_ppi_trait_vector(user_id: str = Depends(get_current_user)):
     """
