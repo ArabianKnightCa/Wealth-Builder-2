@@ -6,6 +6,44 @@ import telemetryService from '../utils/telemetry';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Likert scale component
+const LikertScale = ({ options, selectedValue, onSelect, questionId }) => {
+  const likertLabels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
+  
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between text-sm text-gray-500 mb-2">
+        <span>{options[0]}</span>
+        <span>{options[options.length - 1]}</span>
+      </div>
+      <div className="flex justify-between gap-2">
+        {options.map((label, index) => {
+          const value = index + 1; // 1-5 scale
+          const isSelected = selectedValue === value;
+          return (
+            <button
+              key={index}
+              onClick={() => onSelect(questionId, value)}
+              className={`flex-1 py-4 px-2 rounded-lg border-2 transition-all text-center ${
+                isSelected
+                  ? 'bg-gold border-gold text-navy-900 font-bold shadow-lg scale-105'
+                  : 'bg-white border-gray-200 text-gray-700 hover:border-gold hover:bg-yellow-50'
+              }`}
+              data-testid={`likert-${index + 1}`}
+            >
+              <div className="text-2xl mb-1">{value}</div>
+              <div className="text-xs hidden sm:block">{label}</div>
+            </button>
+          );
+        })}
+      </div>
+      <div className="text-center text-sm text-gray-400 mt-2">
+        1 = {options[0]} &nbsp;|&nbsp; 5 = {options[options.length - 1]}
+      </div>
+    </div>
+  );
+};
+
 function PPI({ token, user, onPPIComplete }) {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
@@ -26,19 +64,41 @@ function PPI({ token, user, onPPIComplete }) {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Handle new personalized response format
+      // Handle new VIA-based response format with Likert + MCQ
       if (response.data.items) {
-        // Convert personalized format to legacy format for compatibility
-        const questions = response.data.items.map((item, index) => ({
-          id: index + 1,
-          text: item.prompt,
-          options: item.options.reduce((acc, opt) => {
-            const letter = opt.charAt(0); // Extract "A", "B", etc.
-            const text = opt.substring(2); // Extract text after "A "
-            acc[letter] = text;
-            return acc;
-          }, {})
-        }));
+        const questions = response.data.items.map((item, index) => {
+          const questionType = item.type || 'mcq';
+          
+          if (questionType === 'likert') {
+            // Likert scale question
+            return {
+              id: index + 1,
+              questionId: item.question_id,
+              type: 'likert',
+              text: item.prompt,
+              options: item.options, // Array: ["Strongly Disagree", ..., "Strongly Agree"]
+              viaTrait: item.via_trait,
+              weight: item.weight
+            };
+          } else {
+            // Multiple choice question
+            const options = {};
+            item.options.forEach(opt => {
+              const letter = opt.charAt(0); // Extract "A", "B", etc.
+              const text = opt.substring(2); // Extract text after "A "
+              options[letter] = text;
+            });
+            return {
+              id: index + 1,
+              questionId: item.question_id,
+              type: 'mcq',
+              text: item.prompt,
+              options: options,
+              viaTrait: item.via_trait,
+              weight: item.weight
+            };
+          }
+        });
         setQuestions(questions);
       } else {
         // Fallback to legacy format
@@ -72,10 +132,17 @@ function PPI({ token, user, onPPIComplete }) {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const formattedAnswers = Object.entries(answers).map(([question_id, selected_option]) => ({
-        question_id,
-        selected_option
-      }));
+      // Format answers for both Likert and MCQ
+      const formattedAnswers = Object.entries(answers).map(([question_id, selected_option]) => {
+        const question = questions.find(q => q.id === parseInt(question_id));
+        return {
+          question_id: question?.questionId || `PPI_Q${question_id.toString().padStart(2, '0')}`,
+          selected_option: selected_option.toString(), // Likert: "1"-"5", MCQ: "A"-"D"
+          question_type: question?.type || 'mcq',
+          via_trait: question?.viaTrait,
+          weight: question?.weight
+        };
+      });
 
       const response = await axios.post(
         `${API}/ppi/submit`,
@@ -96,7 +163,7 @@ function PPI({ token, user, onPPIComplete }) {
       if (user?.id) {
         await telemetryService.logPPICompletion(
           user.id,
-          'v1',
+          'v2-via',
           { totalQuestions: questions.length, answeredQuestions: Object.keys(answers).length },
           user.user_type || 'free'
         );
@@ -160,9 +227,9 @@ function PPI({ token, user, onPPIComplete }) {
               <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
                 <h3 className="font-bold text-navy-900 mb-2">What you'll do:</h3>
                 <ul className="list-disc list-inside text-gray-700 space-y-2">
-                  <li>Answer 20 quick questions about yourself</li>
-                  <li>Choose the option that feels most natural to you</li>
-                  <li>Takes about 5-7 minutes to complete</li>
+                  <li>Answer {questions.length || 30} quick questions about yourself</li>
+                  <li>Some questions use a 1-5 scale, others are multiple choice</li>
+                  <li>Takes about 7-10 minutes to complete</li>
                   <li>Your responses help personalize your learning journey</li>
                 </ul>
               </div>
@@ -231,20 +298,44 @@ function PPI({ token, user, onPPIComplete }) {
 
         {currentQuestion && (
           <div className="card" data-testid="question-card">
-            <h3 className="text-2xl font-semibold text-navy-900 mb-6">{currentQuestion.text}</h3>
-            <div className="space-y-3">
-              {Object.entries(currentQuestion.options).map(([key, value]) => (
-                <div
-                  key={key}
-                  className={`quiz-option ${answers[currentQuestion.id] === key ? 'selected' : ''}`}
-                  onClick={() => handleAnswer(currentQuestion.id, key)}
-                  data-testid={`option-${key}`}
-                >
-                  <span className="font-semibold text-gold mr-3">{key}.</span>
-                  {value}
-                </div>
-              ))}
+            {/* Question type indicator */}
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                {currentQuestion.type === 'likert' ? 'Rate 1-5' : 'Choose one'}
+              </span>
+              {currentQuestion.viaTrait && (
+                <span className="text-xs text-gray-400">
+                  {currentQuestion.viaTrait}
+                </span>
+              )}
             </div>
+            
+            <h3 className="text-2xl font-semibold text-navy-900 mb-6">{currentQuestion.text}</h3>
+            
+            {currentQuestion.type === 'likert' ? (
+              // Likert scale UI
+              <LikertScale
+                options={currentQuestion.options}
+                selectedValue={answers[currentQuestion.id]}
+                onSelect={handleAnswer}
+                questionId={currentQuestion.id}
+              />
+            ) : (
+              // Multiple choice UI
+              <div className="space-y-3">
+                {Object.entries(currentQuestion.options).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className={`quiz-option ${answers[currentQuestion.id] === key ? 'selected' : ''}`}
+                    onClick={() => handleAnswer(currentQuestion.id, key)}
+                    data-testid={`option-${key}`}
+                  >
+                    <span className="font-semibold text-gold mr-3">{key}.</span>
+                    {value}
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="flex justify-between mt-8">
               <button
