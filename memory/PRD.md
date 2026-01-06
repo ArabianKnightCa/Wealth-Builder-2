@@ -145,16 +145,36 @@ childiness = 1.0 - LC
 - ~~Q20 Appreciation of Beauty (4/10)~~
 - ~~Q23 Humor (5/10)~~
 
-### Auto-Save Feature (January 6, 2026)
-- **POST /api/ppi/autosave** - Saves answers to `ppi_drafts` collection after each answer
-- **GET /api/ppi/draft** - Returns saved progress (answers + current_index)
-- **DELETE /api/ppi/draft** - Clears draft after successful submission
+### Global Auto-Save System (January 6, 2026)
 
-**Frontend Changes:**
-- Added `checkForDraft()` - Restores answers and currentIndex from draft
-- Added `autoSave()` - Saves after each answer selection
-- Added purple "saved progress" banner on intro when draft exists
-- Button changes from "Let's Begin" to "Continue Where I Left Off"
+**Unified progress saving across ALL features:**
+
+| Endpoint | Function |
+|----------|----------|
+| `POST /api/progress/save` | Save progress for any feature |
+| `GET /api/progress/{feature}` | Get saved progress for a feature |
+| `DELETE /api/progress/{feature}` | Clear progress after completion |
+| `GET /api/progress` | Get ALL saved progress (for dashboard) |
+
+**Features Using Global Auto-Save:**
+- **PPI:** `feature="ppi"` - saves answers + current_index
+- **LPI:** `feature="lpi_{chapterId}"` - saves currentView, lessonIndex, quizAnswers
+- **Future:** Onboarding, quizzes, any new feature
+
+**Frontend Hook:** `/app/frontend/src/hooks/useAutoSave.js`
+```javascript
+const { saveProgress, loadProgress, clearProgress, hasSavedProgress } = useAutoSave('ppi', token);
+```
+
+**Storage Collection:** `user_progress` in MongoDB
+```json
+{
+  "user_id": "...",
+  "feature": "ppi",
+  "data": { "answers": [...], "current_index": 5 },
+  "updated_at": "2026-01-06T..."
+}
+```
 
 ### Test Results (Iteration 2)
 - **Backend:** 12/12 tests passed (100%)
@@ -164,4 +184,4 @@ childiness = 1.0 - LC
 ---
 
 ## Last Updated
-January 6, 2026 - Added PPI auto-save functionality, all 30 questions verified working
+January 6, 2026 - Implemented global auto-save system for PPI, LPI, and future features
