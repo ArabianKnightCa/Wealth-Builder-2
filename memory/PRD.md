@@ -145,12 +145,18 @@ childiness = 1.0 - LC
 - ~~Q20 Appreciation of Beauty (4/10)~~
 - ~~Q23 Humor (5/10)~~
 
-### Technical Changes
-- Updated `/app/backend/content_data.py` with 30 VIA questions
-- Updated `/app/backend/ppi_bank_baseline_v1_1.json` to v2.0
-- Modified `ae_engine_v2.py` to handle Likert + MCQ formats
-- Fixed word simplification to use word boundaries (prevents "invest" matching in "investment")
-- API now returns `via_trait` and `weight` for each question
+### Frontend Changes
+- **PPI.js**: Added `LikertScale` component for 1-5 scale questions
+- UI shows "Rate 1-5" badge for Likert, "Choose one" badge for MCQ
+- VIA trait displayed in top-right corner of each question
+- Progress shows "X / 30" format
+- Intro page updated: "Answer 30 quick questions", "Some questions use a 1-5 scale"
+
+### Backend Changes
+- **ppi_trait_vector.py**: Updated `PPI_TRAIT_TAGS` for all 30 questions
+- Added `LIKERT_ANSWER_VALUES` mapping (1-5 → 0.0-1.0)
+- Updated `normalize_answer()` to handle `question_type` parameter
+- Server now passes `total_questions=30` for stability calculation
 
 ---
 
