@@ -115,36 +115,48 @@ childiness = 1.0 - LC
 
 ---
 
-## Test Results (January 6, 2026 - Round 2)
+## Test Results (January 6, 2026 - Child Variants)
 
-### All Adaptation Issues FIXED ✅
+### Age-Contextualized PPI Variants IMPLEMENTED ✅
 
-| Area | Status | Details |
-|------|--------|---------|
-| PPI Q8-20 | ✅ FIXED | Child-friendly terms: "borrow-now-pay-later cards", "growing money", "money worries" |
-| LPI Lessons | ✅ FIXED | Full content preserved with vocabulary simplification |
-| Quizzes | ✅ FIXED | Adapted questions/options for 7yo comprehension |
-| Chapter Locking | ✅ FIXED | Chapters 2-10 locked until quiz completed |
-| No Starters/Emojis | ✅ FIXED | Disabled all CHILD_FRIENDLY_STARTERS and CONCEPT_EMOJIS |
+| User Type | Variant | Example Q8 |
+|-----------|---------|------------|
+| 7yo (LC < 0.15) | `child_contextualized` | "When I borrow something from a friend (like a toy or book), I:" |
+| 45yo (LC > 0.15) | `word_simplified` | "My relationship with credit cards is:" |
 
-### Key Code Changes
+### All 20 Child-Contextualized Questions
 
-**`get_adaptation_params()` - CRITICAL FIX:**
-- `max_words_per_sentence`: Changed from `25 - (17 * childiness)` → `999` (no limit)
-- `max_sentences`: Changed from `10 - (8 * childiness)` → `999` (no limit)
-- `add_explanations`: Changed to `False` (vocab only)
+| Q# | Adult Topic | Child Context |
+|----|-------------|---------------|
+| Q1 | Financial decisions | Choosing games/activities |
+| Q2 | Saving money | Allowance/birthday money |
+| Q3 | Financial future | Growing up feelings |
+| Q4 | Tracking spending | Counting savings |
+| Q5 | Financial priorities | What money means to me |
+| Q6 | Unexpected money | Surprise money |
+| Q7 | Learning style | How I learn best |
+| **Q8** | **Credit cards** | **Borrowing toys/books from friends** |
+| Q9 | Goal setting | Saving plans |
+| Q10 | Financial stress | Worry response |
+| **Q11** | **Spending habits** | **Waiting for things I want (candy/toys)** |
+| Q12 | Investment knowledge | Saving/growing money knowledge |
+| **Q13** | **Financial setback** | **Losing a game/not getting something** |
+| **Q14** | **Making purchases** | **Picking treats/activities** |
+| Q15 | Risk tolerance | Trying new things |
+| Q16 | Money communication | Talking with family |
+| Q17 | Financial challenges | Hardest thing about money |
+| Q18 | Budgeting | Tracking my money |
+| Q19 | Financial personality | Who I am with money |
+| Q20 | Motivation | Why I want to learn |
 
-This was the root cause of content truncation - the aggressive sentence limits were cutting off most of the lesson content.
+### Key Technical Details
 
-### Word Simplifications Added
-- **0.85 threshold**: "significantly" → "a lot"
-- **0.40 threshold**: 140+ PPI-specific simplifications for Q1-Q20
-- **0.25 threshold**: 70+ LPI/Quiz terms (economy, bartering, transactions, etc.)
-
-### Test Credentials
-- 7yo: `test_7yo_1767657045@test.com / TestPass123!`
+- **Threshold:** `LC < 0.15` triggers child variants (ages ~6-10 with low EL)
+- **Location:** `CHILD_PPI_VARIANTS` dictionary in `/app/backend/tap_5_0.py`
+- **Integration:** `get_child_ppi_variant()` function called in `ae_engine_v2.py`
+- **Trait Mapping:** Each child question measures the SAME personality trait as the adult version
 
 ---
 
 ## Last Updated
-January 6, 2026 - Fixed LPI/Quiz adaptation by removing content truncation, expanded vocabulary dictionary
+January 6, 2026 - Implemented age-contextualized PPI variants for young users
