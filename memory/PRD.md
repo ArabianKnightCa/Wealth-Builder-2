@@ -115,36 +115,50 @@ childiness = 1.0 - LC
 
 ---
 
-## Test Results (January 5, 2026)
+## Test Results (January 6, 2026)
 
 ### All P0 & P1 Features VERIFIED ✅
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| PPI Submit Flow | ✅ PASS | All 20 questions → Submit → Dashboard redirect |
-| Continuous Adaptation | ✅ PASS | 7yo: LC=0.009, 45yo: LC=0.772 |
-| No Emojis in PPI | ✅ PASS | Clean text in questions/options |
-| All 20 Questions | ✅ PASS | No age-based filtering |
-| Dashboard Unlocked | ✅ PASS | All 10 chapters accessible |
-| Quiz Adaptation | ✅ PASS | TAP 5.0 LC/childiness applied |
+| PPI Q12-20 Adaptation | ✅ FIXED | Added 50+ word simplifications for Q12-20 (investing, risk, budget, etc.) |
+| Chapter Locking | ✅ FIXED | Chapters 2-10 locked until previous quiz completed |
+| LPI No Starters | ✅ FIXED | Removed "Let's learn something cool!" and all friendly starters |
+| No Emojis | ✅ FIXED | Disabled all emoji additions in TAP 5.0 |
+| Quiz No 50% Text | ✅ FIXED | Removed "50% required to pass" messaging |
+| Quiz Adaptation | ✅ PASS | Quizzes use TAP 5.0 word simplification |
 
 ### Test Credentials
 - 7yo: `test_7yo_1767657045@test.com / TestPass123!`
 - 45yo: `test_45yo_1767657054@test.com / TestPass123!`
 
 ### Test Files
-- `/app/tests/test_ppi_flow.py` - 11 tests, 100% pass rate
+- `/app/tests/test_ppi_flow.py` - 11 tests
 - `/app/test_reports/iteration_1.json`
 
 ---
 
-## Last Updated
-January 5, 2026 - Full testing completed, all P0/P1 verified
+## Key Changes (January 6, 2026)
 
-### Recent Changes
-1. **ALL 20 PPI questions** now shown to all users (no age filtering)
-2. **Advanced topics (credit cards, investing, retirement)** adapted for comprehension, not hidden
-3. **"Complete each chapter to unlock"** removed - all chapters accessible
-4. **Quiz questions and options** use TAP 5.0 word simplification for children
-5. **270-question PPI structure** future-proofed for tiered phases
-6. **End-to-end PPI flow** verified working (register → complete PPI → dashboard)
+### TAP 5.0 Configuration Changes
+1. **DISABLED `CHILD_FRIENDLY_STARTERS`** - All set to empty strings
+2. **DISABLED `CONCEPT_EMOJIS`** - Empty dictionary
+3. **DISABLED `add_emoji` and `add_starter`** in `get_adaptation_params()` - Always False
+
+### Word Simplifications Added (Q12-20)
+- Q12: investing → growing money, "strong – I actively invest" → "good - I already save and grow my money"
+- Q15: risk → chances, "calculated risks" → "smart chances"
+- Q16: talking about money with friends/family
+- Q17: financial challenge → money problem
+- Q18: budget planning with spreadsheets → lists or phone apps
+- Q19: financial personality → money style
+- Q20: financial literacy → money knowledge
+
+### Frontend Changes
+- **Dashboard.js**: Re-enabled chapter locking (🔒 icon + "Complete previous chapter to unlock")
+- **LPIChapter.js**: Changed quiz text from "50% required to pass" to "Test your understanding of this chapter"
+
+---
+
+## Last Updated
+January 6, 2026 - Fixed adaptation issues for Q12-20, restored chapter locking, removed starters/emojis
