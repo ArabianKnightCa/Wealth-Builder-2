@@ -160,12 +160,18 @@ function PPI({ token, user, onPPIComplete }) {
   };
 
   const handleAnswer = (questionId, option) => {
-    setAnswers({ ...answers, [questionId]: option });
+    const newAnswers = { ...answers, [questionId]: option };
+    setAnswers(newAnswers);
+    // Auto-save after each answer
+    autoSave(newAnswers, currentIndex);
   };
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      // Auto-save progress
+      autoSave(answers, newIndex);
     } else {
       handleSubmit();
     }
