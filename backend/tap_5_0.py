@@ -1098,231 +1098,191 @@ CONCEPT_EMOJIS = {
 }
 
 # =============================================================================
-# CHILD-CONTEXTUALIZED PPI QUESTIONS
+# UNIVERSAL PPI QUESTIONS
 # =============================================================================
-# These replace adult financial concepts with age-appropriate scenarios
-# that measure the SAME personality traits but in a child's world.
-# Applied when LC < 0.15 (approximately ages 6-10 with low EL)
+# These questions are framed to be UNIVERSALLY APPLICABLE across all ages (6-99).
+# The key insight: frame questions around TRAITS, not age-specific scenarios.
+# The user's mind naturally fills in their own context.
+#
+# Philosophy: 
+# - A 7-year-old reading "When I owe something to someone" thinks of borrowed toys
+# - A 30-year-old reading the same thinks of credit cards
+# - The TRAIT being measured is the same: responsible borrowing behavior
+#
+# This eliminates the need for age-specific variants entirely.
 
-CHILD_PPI_VARIANTS = {
-    # Q1: Decision-making style (research vs gut vs social vs authority)
-    1: {
-        "text": "When I need to make a choice (like picking a game or activity), I:",
-        "options": {
-            "A": "Think about it carefully and ask questions first",
-            "B": "Just pick what feels right",
-            "C": "Ask my friends or family what they think",
-            "D": "Do what my teacher or parents suggest"
-        }
-    },
-    # Q2: Saving behavior
-    2: {
-        "text": "When I get money (like allowance or birthday money), I:",
-        "options": {
-            "A": "Put the same amount in my piggy bank every time",
-            "B": "Save whatever I don't spend",
-            "C": "Only save when I want something special",
-            "D": "Find it hard to save - I want to spend it!"
-        }
-    },
-    # Q3: Future outlook / optimism
-    3: {
-        "text": "When I think about growing up, I feel:",
-        "options": {
-            "A": "Excited and happy about it",
-            "B": "A little nervous or worried",
-            "C": "Not sure, but I hope it will be good",
-            "D": "Ready and not worried at all"
-        }
-    },
-    # Q4: Tracking/awareness
-    4: {
-        "text": "I know how much money I have saved:",
-        "options": {
-            "A": "I count it all the time",
-            "B": "I check it sometimes",
-            "C": "I don't really count it",
-            "D": "Only when I want to buy something"
-        }
-    },
-    # Q5: Priorities
-    5: {
-        "text": "The most important thing about money to me right now is:",
-        "options": {
-            "A": "Saving up for emergencies or surprises",
-            "B": "Paying back if I borrowed from someone",
-            "C": "Saving for something special I want",
-            "D": "Learning how to be better with money"
-        }
-    },
-    # Q6: Windfall behavior
-    6: {
-        "text": "If someone gave me surprise money, I would:",
-        "options": {
-            "A": "Save most or all of it",
-            "B": "Buy something I've been wanting",
-            "C": "Save some and spend some",
-            "D": "Use it if I owed anyone anything"
-        }
-    },
-    # Q7: Learning style
-    7: {
-        "text": "I learn new things best by:",
-        "options": {
-            "A": "Reading about it or looking it up",
-            "B": "Trying it myself and practicing",
-            "C": "Watching videos or someone show me",
-            "D": "Talking about it with others"
-        }
-    },
-    # Q8: Borrowing behavior (replaces credit cards)
+UNIVERSAL_PPI_QUESTIONS = {
+    # Q1: Decision-making style - UNIVERSAL (already works for all ages)
+    1: None,  # Keep baseline: "When making financial decisions, I prefer to:"
+    
+    # Q2: Saving behavior - UNIVERSAL (already works for all ages)
+    2: None,  # Keep baseline
+    
+    # Q3: Future outlook - UNIVERSAL (already works for all ages)
+    3: None,  # Keep baseline
+    
+    # Q4: Tracking - UNIVERSAL (already works for all ages)
+    4: None,  # Keep baseline
+    
+    # Q5: Priorities - UNIVERSAL (already works for all ages)
+    5: None,  # Keep baseline
+    
+    # Q6: Windfall - UNIVERSAL (already works for all ages)
+    6: None,  # Keep baseline
+    
+    # Q7: Learning style - UNIVERSAL (already works for all ages)
+    7: None,  # Keep baseline
+    
+    # Q8: BORROWING BEHAVIOR (replaces credit cards)
+    # Trait: Responsible borrowing/debt management
     8: {
-        "text": "When I borrow something from a friend (like a toy or book), I:",
+        "text": "When I owe something to someone (money, items, or favors), I:",
         "options": {
-            "A": "Always return it quickly and take good care of it",
-            "B": "Try not to borrow things at all",
-            "C": "Sometimes forget to return it for a while",
-            "D": "Often lose or break things I borrow"
+            "A": "Always pay back or return it quickly",
+            "B": "Try not to owe anyone anything",
+            "C": "Sometimes take a while to pay back",
+            "D": "Often forget or struggle to pay back"
         }
     },
-    # Q9: Goal-setting style
-    9: {
-        "text": "When I want to save for something, I like to:",
-        "options": {
-            "A": "Make a plan with exact dates and amounts",
-            "B": "Just try to save without a strict plan",
-            "C": "Pick small things I can get quickly",
-            "D": "Dream big but be okay if plans change"
-        }
-    },
-    # Q10: Stress response (replaces financial stress)
+    
+    # Q9: Goal-setting - UNIVERSAL (already works for all ages)
+    9: None,  # Keep baseline
+    
+    # Q10: Stress response - needs universal framing
     10: {
-        "text": "When I'm worried about something, it makes me:",
+        "text": "When I'm worried about not having enough, it makes me:",
         "options": {
             "A": "Want to work harder to fix it",
             "B": "Want to think about something else",
-            "C": "Hard to sleep or feel happy",
-            "D": "I don't worry very much"
+            "C": "Hard to sleep or feel good",
+            "D": "I don't worry much about this"
         }
     },
-    # Q11: Self-control (replaces spending habits)
+    
+    # Q11: SELF-CONTROL (replaces spending habits)
+    # Trait: Impulse control, delayed gratification
     11: {
-        "text": "When I really want something (like candy or a toy), I:",
+        "text": "When I really want something, I:",
         "options": {
-            "A": "Can wait patiently until the right time",
+            "A": "Can wait patiently for the right time",
             "B": "Usually wait, but sometimes give in",
             "C": "Find it hard to wait",
-            "D": "It depends on my mood that day"
+            "D": "It depends on how I feel that day"
         }
     },
-    # Q12: Knowledge/learning level (replaces investing knowledge)
+    
+    # Q12: Knowledge level - needs universal framing
     12: {
         "text": "What I know about saving and growing money is:",
         "options": {
-            "A": "A lot - I already save and know why it grows",
-            "B": "Some - I understand the basics",
-            "C": "A little - I'm just starting to learn",
+            "A": "A lot - I understand how it works",
+            "B": "Some - I know the basics",
+            "C": "A little - I'm still learning",
             "D": "Not much - it seems confusing"
         }
     },
-    # Q13: Resilience (replaces financial setback)
+    
+    # Q13: RESILIENCE (replaces financial setback)
+    # Trait: Recovery from disappointment/loss
     13: {
-        "text": "When something doesn't go my way (like losing a game or not getting what I wanted), I:",
+        "text": "When things don't go as I planned, I:",
         "options": {
-            "A": "Try again or find another way",
-            "B": "Feel sad but get over it soon",
-            "C": "Need a hug or help from someone I trust",
+            "A": "Adjust quickly and find another way",
+            "B": "Feel disappointed but recover soon",
+            "C": "Need support from others to feel better",
             "D": "Stay upset for a long time"
         }
     },
-    # Q14: Decision style for wants (replaces purchases)
+    
+    # Q14: DECISION STYLE (replaces purchases)
+    # Trait: Deliberation vs impulsivity in choices
     14: {
-        "text": "When I get to pick something (like a treat or activity), I:",
+        "text": "When I get to choose something, I:",
         "options": {
-            "A": "Look at all the choices carefully first",
-            "B": "Pick the best deal or value",
-            "C": "Choose what I want or need right then",
-            "D": "Grab whatever looks fun without thinking"
+            "A": "Look at all options carefully first",
+            "B": "Pick what gives the best value",
+            "C": "Choose what I want right away",
+            "D": "Grab whatever catches my eye"
         }
     },
-    # Q15: Risk tolerance
+    
+    # Q15: Risk tolerance - needs universal framing
     15: {
-        "text": "When trying something new (like a game or food), I:",
+        "text": "When trying something new, I:",
         "options": {
-            "A": "Love trying new things, even if I might not like them",
-            "B": "Try new things sometimes if they seem okay",
-            "C": "Prefer things I already know I like",
-            "D": "Really don't like trying new things"
+            "A": "Love it, even if it might not work out",
+            "B": "Try it if it seems reasonable",
+            "C": "Prefer sticking with what I know",
+            "D": "Avoid new things when possible"
         }
     },
-    # Q16: Communication openness
-    16: {
-        "text": "I talk about money with my family:",
-        "options": {
-            "A": "A lot - we talk about it openly",
-            "B": "Sometimes when it comes up",
-            "C": "Not much - it feels weird",
-            "D": "Never - I keep it private"
-        }
-    },
-    # Q17: Challenges
+    
+    # Q16: Communication - UNIVERSAL (already works)
+    16: None,  # Keep baseline
+    
+    # Q17: Challenges - needs universal framing
     17: {
         "text": "The hardest thing about money for me is:",
         "options": {
-            "A": "I don't get very much",
+            "A": "Not having enough of it",
             "B": "Not spending it all right away",
             "C": "Understanding how it all works",
-            "D": "Remembering to save"
+            "D": "Staying motivated to save"
         }
     },
-    # Q18: Planning style (replaces budgeting)
+    
+    # Q18: Planning style - needs universal framing
     18: {
-        "text": "When I think about my money, I:",
+        "text": "When it comes to keeping track of money, I:",
         "options": {
-            "A": "Write it down or keep track carefully",
+            "A": "Write it down or track it carefully",
             "B": "Keep a rough idea in my head",
-            "C": "Have a simple way to remember",
+            "C": "Use a simple system",
             "D": "Don't really keep track"
         }
     },
-    # Q19: Self-identity
-    19: {
-        "text": "When it comes to money, I am:",
-        "options": {
-            "A": "A saver who plans ahead",
-            "B": "Careful but also like to have fun",
-            "C": "Someone who likes to spend on fun things",
-            "D": "Still figuring it out"
-        }
-    },
-    # Q20: Motivation
-    20: {
-        "text": "I want to learn about money because:",
-        "options": {
-            "A": "I want to save for something special",
-            "B": "I don't want to worry about it",
-            "C": "I want to have more when I grow up",
-            "D": "I want to feel smart about money"
-        }
-    },
+    
+    # Q19: Self-identity - UNIVERSAL (already works)
+    19: None,  # Keep baseline
+    
+    # Q20: Motivation - UNIVERSAL (already works)
+    20: None,  # Keep baseline
 }
+
+
+def get_universal_ppi_question(question_id: int) -> dict:
+    """
+    Get universal PPI question if one exists, otherwise return None.
+    Universal questions are framed to work for ALL ages (6-99).
+    
+    Args:
+        question_id: The PPI question ID (1-20)
+    
+    Returns:
+        Universal question dict with 'text' and 'options', or None to use baseline
+    """
+    return UNIVERSAL_PPI_QUESTIONS.get(question_id)
 
 
 def get_child_ppi_variant(question_id: int, lc: float) -> dict:
     """
-    Get child-contextualized PPI question variant if user is young enough.
+    DEPRECATED: Use get_universal_ppi_question instead.
+    This function now just returns the universal question if available.
+    
+    The universal framing approach eliminates the need for age-specific variants.
+    A question like "When I owe something to someone" works for:
+    - A 7yo thinking about borrowed toys
+    - A 30yo thinking about credit cards
+    - A 60yo thinking about loans
     
     Args:
         question_id: The PPI question ID (1-20)
-        lc: User's Learning Complexity score
+        lc: User's Learning Complexity score (no longer used)
     
     Returns:
-        Child variant dict with 'text' and 'options', or None if not applicable
+        Universal question dict, or None to use baseline with word simplification
     """
-    # Apply child variants for LC < 0.15 (young children ages 6-10 with low EL)
-    if lc < 0.15 and question_id in CHILD_PPI_VARIANTS:
-        return CHILD_PPI_VARIANTS[question_id]
-    return None
+    return get_universal_ppi_question(question_id)
 
 
 def get_adaptation_params(childiness: float) -> dict:
