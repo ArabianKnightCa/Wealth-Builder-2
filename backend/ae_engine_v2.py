@@ -108,25 +108,29 @@ class AdaptiveEngineV2:
         tap50_engine = TAP50Engine(el_max_poc=TAP50_EL_MAX_POC)
         
         for idx, item in enumerate(final_items, 1):
-            # Calculate LC to determine if we should use child variants
-            lc = calculate_lc(age, exp_level, TAP50_EL_MAX_POC)
+            # Check if we should use a universal question (works for ALL ages)
+            universal_q = get_universal_ppi_question(idx)
             
-            # Check if we should use a child-contextualized variant
-            child_variant = get_child_ppi_variant(idx, lc)
-            
-            if child_variant:
-                # Use the age-contextualized question variant
-                simple_q = child_variant['text']
+            if universal_q:
+                # Use the universally-framed question
+                # These work for all ages - user's mind fills in their own context
+                base_text = universal_q['text']
+                base_options = universal_q['options']
                 
-                # Build options from child variant
+                # Apply word simplification to the universal question based on age/EL
+                simple_q = adapt_ppi_text(base_text, age, exp_level, TAP50_EL_MAX_POC)
+                
+                # Build options with word simplification
                 formatted_options = []
                 options_detail = []
-                for opt_id, opt_text in child_variant['options'].items():
-                    formatted_options.append(f"{opt_id} {opt_text}")
+                for opt_id, opt_text in base_options.items():
+                    # Apply word simplification to each option
+                    adapted_opt = adapt_ppi_text(opt_text, age, exp_level, TAP50_EL_MAX_POC)
+                    formatted_options.append(f"{opt_id} {adapted_opt}")
                     options_detail.append({
                         "id": opt_id,
-                        "display": opt_text,
-                        "baseline": item['options'][ord(opt_id) - 65] if ord(opt_id) - 65 < len(item['options']) else opt_text,
+                        "display": adapted_opt,
+                        "baseline": opt_text,
                         "gloss": ""
                     })
                 
@@ -141,7 +145,7 @@ class AdaptiveEngineV2:
                     "options": formatted_options,
                     "options_detail": options_detail,
                     "tap_version": "5.0",
-                    "variant": "child_contextualized",
+                    "variant": "universal",
                     "scalars": {
                         "lc": scalars.lc,
                         "childiness": scalars.childiness,
@@ -151,7 +155,7 @@ class AdaptiveEngineV2:
                     }
                 })
             else:
-                # Use standard TAP 5.0 word simplification for older users
+                # Use baseline question with TAP 5.0 word simplification
                 # Create PPIOptionSpec list from item options for TAP 5.0
                 option_specs = []
                 for opt_idx, opt_text in enumerate(item['options']):
@@ -201,7 +205,7 @@ class AdaptiveEngineV2:
                     "options": formatted_options,
                     "options_detail": options_detail,
                     "tap_version": "5.0",
-                    "variant": "word_simplified",
+                    "variant": "baseline_simplified",
                     "scalars": {
                         "lc": scalars.lc,
                         "childiness": scalars.childiness,
