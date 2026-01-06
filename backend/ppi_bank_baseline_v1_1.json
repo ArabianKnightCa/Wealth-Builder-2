@@ -1,390 +1,285 @@
 {
-  "schema_version": "1.1.1",
-  "ppi_bank_version": "POC-v1.1.1-baseline",
-  "note": "Baseline 20 PPI questions from content_data.py converted to bank format. All users get these 20 questions with age/experience filtering.",
+  "schema_version": "2.0.0",
+  "ppi_bank_version": "Layer1-v2.0-VIA",
+  "note": "Layer 1: 30 PPI questions based on VIA 24 Character Strengths. 60% Likert, 40% Multiple Choice. Universal framing for ages 6-99.",
   "items": [
     {
       "id": "PPI_Q01",
-      "type": "mcq",
-      "prompt": "When making financial decisions, I prefer to:",
-      "options": [
-        "A Research extensively before deciding",
-        "B Go with my gut feeling",
-        "C Ask friends or family for advice",
-        "D Follow what experts recommend"
-      ],
+      "type": "likert",
+      "prompt": "When I need to solve a money problem, I can usually come up with ideas that others haven't thought of.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Creativity",
+      "weight": 7,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "base",
-        "decision_style",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
       "id": "PPI_Q02",
       "type": "mcq",
-      "prompt": "My approach to saving money is:",
+      "prompt": "You hear about a new way to save money that sounds interesting but unfamiliar. What do you do?",
       "options": [
-        "A Save a fixed amount each month",
-        "B Save whatever is left over",
-        "C Save only for specific goals",
-        "D I struggle to save consistently"
+        "A Look it up right away and learn more about it",
+        "B Ask someone who might know about it",
+        "C Keep it in mind but don't actively research it",
+        "D Stick with what I already know"
       ],
+      "via_trait": "Curiosity",
+      "weight": 6,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "savings",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
       "id": "PPI_Q03",
-      "type": "mcq",
-      "prompt": "When I think about my financial future, I feel:",
-      "options": [
-        "A Excited and optimistic",
-        "B Anxious or worried",
-        "C Uncertain but hopeful",
-        "D Confident and prepared"
-      ],
+      "type": "likert",
+      "prompt": "Before making a big money decision, I think through all the pros and cons carefully.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Judgment",
+      "weight": 8,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "motivation",
-        "confidence",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
       "id": "PPI_Q04",
       "type": "mcq",
-      "prompt": "I track my spending:",
+      "prompt": "Someone offers to teach you about investing for free. What's your first reaction?",
       "options": [
-        "A Daily or weekly",
-        "B Monthly",
-        "C Rarely or never",
-        "D Only when I'm worried about money"
+        "A Yes! I want to learn everything I can",
+        "B I'm interested but only if it's quick",
+        "C Maybe, if I have time",
+        "D I'd rather not - it sounds boring or complicated"
       ],
+      "via_trait": "Love of Learning",
+      "weight": 6,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "tracking",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
       "id": "PPI_Q05",
+      "type": "likert",
+      "prompt": "Friends and family often ask me for advice about money because I see the bigger picture.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Perspective",
+      "weight": 7,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q06",
+      "type": "mcq",
+      "prompt": "You need to have a tough conversation with someone about money (like asking for a raise or setting a boundary). What do you do?",
+      "options": [
+        "A I go for it - tough conversations don't scare me",
+        "B I do it eventually, but I stress about it first",
+        "C I avoid it unless I absolutely have to",
+        "D I usually find a way to get out of it"
+      ],
+      "via_trait": "Bravery",
+      "weight": 7,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q07",
+      "type": "likert",
+      "prompt": "When I set a financial goal, I stick with it even when it gets hard.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Perseverance",
+      "weight": 9,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q08",
+      "type": "likert",
+      "prompt": "I'm honest about my financial situation, even when it's embarrassing.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Honesty",
+      "weight": 8,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q09",
+      "type": "mcq",
+      "prompt": "When you think about working on your finances, how do you feel?",
+      "options": [
+        "A Energized - I'm ready to tackle it",
+        "B Motivated but a little tired",
+        "C Drained before I even start",
+        "D I'd rather do literally anything else"
+      ],
+      "via_trait": "Zest",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q10",
+      "type": "likert",
+      "prompt": "My relationships with family or friends are one of the main reasons I want to get my money together.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Love",
+      "weight": 7,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q11",
+      "type": "mcq",
+      "prompt": "A friend is struggling with money and you have a little extra. What do you do?",
+      "options": [
+        "A Help them out without thinking twice",
+        "B Help, but make sure I'm not putting myself in a tough spot",
+        "C Offer advice or support instead of money",
+        "D I'd want to help, but I can't afford to"
+      ],
+      "via_trait": "Kindness",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q12",
+      "type": "likert",
+      "prompt": "I'm good at reading people's emotions, especially when money is involved.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Social Intelligence",
+      "weight": 7,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q13",
+      "type": "likert",
+      "prompt": "I work well with others when it comes to managing money or making financial decisions together.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Teamwork",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q14",
+      "type": "mcq",
+      "prompt": "You and a roommate split bills. They've been short on cash lately. What's your approach?",
+      "options": [
+        "A Everyone pays their share - no exceptions",
+        "B I'd cover them this time, but expect them to pay me back",
+        "C I'd adjust how we split things to make it easier for them",
+        "D I'd feel taken advantage of and bring it up"
+      ],
+      "via_trait": "Fairness",
+      "weight": 7,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q15",
+      "type": "likert",
+      "prompt": "When a group needs to make a money decision, I often step up and take charge.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Leadership",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q16",
+      "type": "mcq",
+      "prompt": "Someone close to you made a financial mistake that affected you. How do you handle it?",
+      "options": [
+        "A I let it go pretty quickly - mistakes happen",
+        "B It bothers me for a while, but I move on eventually",
+        "C I forgive but don't forget",
+        "D I have a hard time getting over it"
+      ],
+      "via_trait": "Forgiveness",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q17",
       "type": "mcq",
       "prompt": "My biggest financial priority right now is:",
       "options": [
         "A Building an emergency fund",
         "B Paying off debt",
         "C Saving for a specific goal",
-        "D Learning to budget better"
+        "D Learning to manage money better"
       ],
-      "age_min": 12,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "goals",
-        "motivation",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
-    },
-    {
-      "id": "PPI_Q06",
-      "type": "mcq",
-      "prompt": "When I receive unexpected money, I usually:",
-      "options": [
-        "A Save most or all of it",
-        "B Spend it on something I've wanted",
-        "C Split it between saving and spending",
-        "D Use it to pay bills or debt"
-      ],
+      "via_trait": "Goal-Setting",
+      "weight": 8,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "impulse",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
-      "id": "PPI_Q07",
-      "type": "mcq",
-      "prompt": "I learn best through:",
-      "options": [
-        "A Reading and research",
-        "B Hands-on practice",
-        "C Watching videos or tutorials",
-        "D Discussion and conversation"
-      ],
+      "id": "PPI_Q18",
+      "type": "likert",
+      "prompt": "I think about future consequences before spending money.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Prudence",
+      "weight": 9,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "base",
-        "learning_style",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
-      "id": "PPI_Q08",
+      "id": "PPI_Q19",
       "type": "mcq",
-      "prompt": "My relationship with credit cards is:",
+      "prompt": "You see something you really want but didn't plan to buy. What happens next?",
       "options": [
-        "A I use them responsibly and pay in full",
-        "B I avoid them completely",
-        "C I sometimes carry a balance",
-        "D I struggle with credit card debt"
+        "A I walk away - if it wasn't planned, I don't buy it",
+        "B I think about it for a day or two before deciding",
+        "C I buy it but feel guilty afterward",
+        "D I buy it without thinking twice"
       ],
-      "age_min": 16,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "risk_tolerance",
-        "intermediate_safe"
-      ]
-    },
-    {
-      "id": "PPI_Q09",
-      "type": "mcq",
-      "prompt": "When setting financial goals, I prefer:",
-      "options": [
-        "A Detailed plans with specific timelines",
-        "B General direction without strict deadlines",
-        "C Short-term goals I can achieve quickly",
-        "D Long-term vision with flexibility"
-      ],
+      "via_trait": "Self-Regulation",
+      "weight": 9,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "goals",
-        "planning",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
-      "id": "PPI_Q10",
-      "type": "mcq",
-      "prompt": "Financial stress affects me by:",
-      "options": [
-        "A Making me more motivated to improve",
-        "B Causing me to avoid thinking about money",
-        "C Impacting my sleep or mood significantly",
-        "D I don't experience much financial stress"
-      ],
-      "age_min": 12,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "motivation",
-        "confidence",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
-    },
-    {
-      "id": "PPI_Q11",
-      "type": "mcq",
-      "prompt": "I would describe my spending habits as:",
-      "options": [
-        "A Very disciplined",
-        "B Mostly controlled with occasional splurges",
-        "C Impulsive at times",
-        "D Often reactive to emotions"
-      ],
-      "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "impulse",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
-    },
-    {
-      "id": "PPI_Q12",
+      "id": "PPI_Q20",
       "type": "mcq",
       "prompt": "My knowledge of investing is:",
       "options": [
-        "A Strong \u2013 I actively invest",
-        "B Basic \u2013 I understand the concepts",
-        "C Limited \u2013 I'm just starting to learn",
-        "D None \u2013 It seems too complicated"
+        "A Strong - I actively invest",
+        "B Basic - I understand the concepts",
+        "C Limited - I'm just starting to learn",
+        "D None - It seems too complicated"
       ],
-      "age_min": 16,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "confidence",
-        "knowledge",
-        "intermediate_safe"
-      ]
-    },
-    {
-      "id": "PPI_Q13",
-      "type": "mcq",
-      "prompt": "When facing a financial setback, I:",
-      "options": [
-        "A Quickly adjust my plan and move forward",
-        "B Feel discouraged but eventually recover",
-        "C Need support from others to cope",
-        "D Find it very difficult to bounce back"
-      ],
+      "via_trait": "Financial Literacy",
+      "weight": 7,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "confidence",
-        "resilience",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
-      "id": "PPI_Q14",
-      "type": "mcq",
-      "prompt": "I prefer to make purchases:",
-      "options": [
-        "A After careful comparison shopping",
-        "B When I find a good deal",
-        "C When I need or want something",
-        "D Impulsively if it feels right"
-      ],
-      "age_min": 10,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "impulse",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
-    },
-    {
-      "id": "PPI_Q15",
-      "type": "mcq",
-      "prompt": "My comfort level with financial risk is:",
-      "options": [
-        "A High \u2013 I'm willing to take calculated risks",
-        "B Moderate \u2013 Some risk is okay",
-        "C Low \u2013 I prefer safety and stability",
-        "D Very low \u2013 I avoid risk completely"
-      ],
+      "id": "PPI_Q21",
+      "type": "likert",
+      "prompt": "I regularly feel thankful for what I have, even when money is tight.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Gratitude",
+      "weight": 7,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "risk_tolerance",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
-      "id": "PPI_Q16",
+      "id": "PPI_Q22",
       "type": "mcq",
-      "prompt": "I talk about money with friends/family:",
+      "prompt": "When you think about your financial future, what comes to mind?",
       "options": [
-        "A Openly and regularly",
-        "B Occasionally when relevant",
-        "C Rarely \u2013 it feels uncomfortable",
-        "D Never \u2013 it's too personal"
+        "A I believe things will work out and get better",
+        "B I'm cautiously optimistic",
+        "C I'm not sure - it could go either way",
+        "D I'm pretty pessimistic about it"
       ],
-      "age_min": 12,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "confidence",
-        "social",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "via_trait": "Hope",
+      "weight": 8,
+      "age_min": 6,
+      "age_max": 99
     },
     {
-      "id": "PPI_Q17",
+      "id": "PPI_Q23",
       "type": "mcq",
       "prompt": "My biggest financial challenge is:",
       "options": [
@@ -393,91 +288,100 @@
         "C Understanding financial concepts",
         "D Staying motivated to save"
       ],
+      "via_trait": "Self-Awareness",
+      "weight": 8,
       "age_min": 6,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "motivation",
-        "challenges",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "age_max": 99
     },
     {
-      "id": "PPI_Q18",
-      "type": "mcq",
-      "prompt": "When planning my budget, I:",
-      "options": [
-        "A Use detailed spreadsheets or apps",
-        "B Keep a rough mental estimate",
-        "C Follow a simple system",
-        "D Don't really budget"
-      ],
-      "age_min": 12,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "habits",
-        "planning",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "id": "PPI_Q24",
+      "type": "likert",
+      "prompt": "I feel like managing my money well is connected to a bigger purpose in my life.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Spirituality",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
     },
     {
-      "id": "PPI_Q19",
+      "id": "PPI_Q25",
       "type": "mcq",
-      "prompt": "I would describe my financial personality as:",
+      "prompt": "You're trying to save money but feel stuck. What's your move?",
       "options": [
-        "A Planner and saver",
-        "B Balanced and practical",
-        "C Spontaneous spender",
-        "D Still figuring it out"
+        "A I brainstorm new ideas or try something creative",
+        "B I look for tips online or ask for advice",
+        "C I keep doing what I've been doing and hope it works",
+        "D I give up - nothing seems to work anyway"
       ],
-      "age_min": 10,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
-      ],
-      "tags": [
-        "base",
-        "self_assessment",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "via_trait": "Creativity",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
     },
     {
-      "id": "PPI_Q20",
+      "id": "PPI_Q26",
       "type": "mcq",
-      "prompt": "My motivation for improving financial literacy is:",
+      "prompt": "You've tried to budget before and failed. What happens next?",
       "options": [
-        "A Achieving specific financial goals",
-        "B Reducing stress and anxiety",
-        "C Building long-term wealth",
-        "D Feeling more confident and in control"
+        "A I try again with a different approach",
+        "B I take a break and come back to it later",
+        "C I feel discouraged but eventually give it another shot",
+        "D I assume budgeting just isn't for me"
       ],
-      "age_min": 10,
-      "age_max": 99,
-      "experience_levels": [
-        "beginner",
-        "intermediate",
-        "advanced"
+      "via_trait": "Perseverance",
+      "weight": 8,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q27",
+      "type": "likert",
+      "prompt": "I'm good at controlling my impulses when it comes to spending.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Self-Regulation",
+      "weight": 9,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q28",
+      "type": "likert",
+      "prompt": "No matter how bad my money situation gets, I believe I can turn it around.",
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "via_trait": "Hope",
+      "weight": 8,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q29",
+      "type": "mcq",
+      "prompt": "Someone pitches you an investment opportunity that sounds too good to be true. What do you do?",
+      "options": [
+        "A Research it thoroughly before deciding",
+        "B Ask trusted people for their opinions",
+        "C Go with my gut feeling",
+        "D Jump in if it sounds exciting"
       ],
-      "tags": [
-        "motivation",
-        "goals",
-        "beginner_safe",
-        "intermediate_safe"
-      ]
+      "via_trait": "Judgment",
+      "weight": 8,
+      "age_min": 6,
+      "age_max": 99
+    },
+    {
+      "id": "PPI_Q30",
+      "type": "mcq",
+      "prompt": "When something good happens with your money (like getting paid or finding extra cash), what do you feel?",
+      "options": [
+        "A Grateful and appreciative",
+        "B Relieved but still worried",
+        "C It's nice but doesn't change much",
+        "D I immediately think about what I need to spend it on"
+      ],
+      "via_trait": "Gratitude",
+      "weight": 6,
+      "age_min": 6,
+      "age_max": 99
     }
   ]
 }
