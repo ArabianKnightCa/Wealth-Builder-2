@@ -195,45 +195,10 @@ class AdaptiveEngineV2:
                         "weights": scalars.weights
                     }
                 })
-                
-                # Compute scalars for this question
-                scalars = tap50_engine.compute_scalars(age, exp_level, item['prompt'])
-                
-                # Adapt question prompt using TAP 5.0 continuous adaptation
-                simple_q = self._get_child_question_text(item['prompt'], age, exp_level)
-                
-                # Format options with letter prefix for frontend compatibility
-                formatted_options = []
-                options_detail = []
-                for opt in adapted_options:
-                    formatted_options.append(f"{opt.id} {opt.display if opt.display else opt.baseline}")
-                    options_detail.append({
-                        "id": opt.id,
-                        "display": opt.display if opt.display else opt.baseline,
-                        "baseline": opt.baseline,
-                        "gloss": opt.gloss
-                    })
-                
-                output_items.append({
-                    "question_id": f"PPI_Q{idx:02d}",
-                    "bank_id": item['id'],
-                    "type": item['type'],
-                    "prompt": simple_q,
-                    "options": formatted_options,
-                    "options_detail": options_detail,
-                    "tap_version": "5.0",
-                    "variant": "baseline_simplified",
-                    "scalars": {
-                        "lc": scalars.lc,
-                        "childiness": scalars.childiness,
-                        "age_norm": scalars.age_norm,
-                        "el_norm": scalars.el_norm,
-                        "weights": scalars.weights
-                    }
-                })
         
         return {
-            "ppi_version": "POC-v1.1.1",
+            "ppi_version": "Layer1-v2.0-VIA",
+            "total_questions": len(output_items),
             "items": output_items,
             "user_id": user_id,
             "age": age,
