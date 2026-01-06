@@ -1,171 +1,272 @@
 # Financial Education App Content Data
-# Updated LPI Full Lesson Set v3.5
+# Updated: PPI Layer 1 (30 Questions) - VIA Character Strengths Framework
 
-# Personality Profile Inventory (PPI) Questions
+# Personality Profile Inventory (PPI) - Layer 1
+# Framework: 24 VIA Character Strengths
+# Format: 60% Likert Scale, 40% Multiple Choice
+# Reading Level: 6th-8th grade baseline (universal framing)
+
 PPI_QUESTIONS = [
+    # Q1: Creativity (Likert) - Weight 7/10
     {
         "id": 1,
-        "text": "When making financial decisions, I prefer to:",
-        "options": {
-            "A": "Research extensively before deciding",
-            "B": "Go with my gut feeling",
-            "C": "Ask friends or family for advice",
-            "D": "Follow what experts recommend"
-        }
+        "type": "likert",
+        "text": "When I need to solve a money problem, I can usually come up with ideas that others haven't thought of.",
+        "via_trait": "Creativity",
+        "weight": 7,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
     },
+    # Q2: Curiosity (Multiple Choice) - Weight 6/10
     {
         "id": 2,
-        "text": "My approach to saving money is:",
+        "type": "multiple_choice",
+        "text": "You hear about a new way to save money that sounds interesting but unfamiliar. What do you do?",
+        "via_trait": "Curiosity",
+        "weight": 6,
         "options": {
-            "A": "Save a fixed amount each month",
-            "B": "Save whatever is left over",
-            "C": "Save only for specific goals",
-            "D": "I struggle to save consistently"
+            "A": "Look it up right away and learn more about it",
+            "B": "Ask someone who might know about it",
+            "C": "Keep it in mind but don't actively research it",
+            "D": "Stick with what I already know"
         }
     },
+    # Q3: Judgment/Critical Thinking (Likert) - Weight 8/10
     {
         "id": 3,
-        "text": "When I think about my financial future, I feel:",
-        "options": {
-            "A": "Excited and optimistic",
-            "B": "Anxious or worried",
-            "C": "Uncertain but hopeful",
-            "D": "Confident and prepared"
-        }
+        "type": "likert",
+        "text": "Before making a big money decision, I think through all the pros and cons carefully.",
+        "via_trait": "Judgment",
+        "weight": 8,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
     },
+    # Q4: Love of Learning (Multiple Choice) - Weight 6/10
     {
         "id": 4,
-        "text": "I track my spending:",
+        "type": "multiple_choice",
+        "text": "Someone offers to teach you about investing for free. What's your first reaction?",
+        "via_trait": "Love of Learning",
+        "weight": 6,
         "options": {
-            "A": "Daily or weekly",
-            "B": "Monthly",
-            "C": "Rarely or never",
-            "D": "Only when I'm worried about money"
+            "A": "Yes! I want to learn everything I can",
+            "B": "I'm interested but only if it's quick",
+            "C": "Maybe, if I have time",
+            "D": "I'd rather not - it sounds boring or complicated"
         }
     },
+    # Q5: Perspective/Wisdom (Likert) - Weight 7/10
     {
         "id": 5,
+        "type": "likert",
+        "text": "Friends and family often ask me for advice about money because I see the bigger picture.",
+        "via_trait": "Perspective",
+        "weight": 7,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q6: Bravery (Multiple Choice) - Weight 7/10
+    {
+        "id": 6,
+        "type": "multiple_choice",
+        "text": "You need to have a tough conversation with someone about money (like asking for a raise or setting a boundary). What do you do?",
+        "via_trait": "Bravery",
+        "weight": 7,
+        "options": {
+            "A": "I go for it - tough conversations don't scare me",
+            "B": "I do it eventually, but I stress about it first",
+            "C": "I avoid it unless I absolutely have to",
+            "D": "I usually find a way to get out of it"
+        }
+    },
+    # Q7: Perseverance (Likert) - Weight 9/10
+    {
+        "id": 7,
+        "type": "likert",
+        "text": "When I set a financial goal, I stick with it even when it gets hard.",
+        "via_trait": "Perseverance",
+        "weight": 9,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q8: Honesty/Integrity (Likert) - Weight 8/10
+    {
+        "id": 8,
+        "type": "likert",
+        "text": "I'm honest about my financial situation, even when it's embarrassing.",
+        "via_trait": "Honesty",
+        "weight": 8,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q9: Zest/Vitality (Multiple Choice) - Weight 6/10
+    {
+        "id": 9,
+        "type": "multiple_choice",
+        "text": "When you think about working on your finances, how do you feel?",
+        "via_trait": "Zest",
+        "weight": 6,
+        "options": {
+            "A": "Energized - I'm ready to tackle it",
+            "B": "Motivated but a little tired",
+            "C": "Drained before I even start",
+            "D": "I'd rather do literally anything else"
+        }
+    },
+    # Q10: Love (Likert) - Weight 7/10
+    {
+        "id": 10,
+        "type": "likert",
+        "text": "My relationships with family or friends are one of the main reasons I want to get my money together.",
+        "via_trait": "Love",
+        "weight": 7,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q11: Kindness (Multiple Choice) - Weight 6/10
+    {
+        "id": 11,
+        "type": "multiple_choice",
+        "text": "A friend is struggling with money and you have a little extra. What do you do?",
+        "via_trait": "Kindness",
+        "weight": 6,
+        "options": {
+            "A": "Help them out without thinking twice",
+            "B": "Help, but make sure I'm not putting myself in a tough spot",
+            "C": "Offer advice or support instead of money",
+            "D": "I'd want to help, but I can't afford to"
+        }
+    },
+    # Q12: Social Intelligence (Likert) - Weight 7/10
+    {
+        "id": 12,
+        "type": "likert",
+        "text": "I'm good at reading people's emotions, especially when money is involved.",
+        "via_trait": "Social Intelligence",
+        "weight": 7,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q13: Teamwork (Likert) - Weight 6/10
+    {
+        "id": 13,
+        "type": "likert",
+        "text": "I work well with others when it comes to managing money or making financial decisions together.",
+        "via_trait": "Teamwork",
+        "weight": 6,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q14: Fairness (Multiple Choice) - Weight 7/10
+    {
+        "id": 14,
+        "type": "multiple_choice",
+        "text": "You and a roommate split bills. They've been short on cash lately. What's your approach?",
+        "via_trait": "Fairness",
+        "weight": 7,
+        "options": {
+            "A": "Everyone pays their share - no exceptions",
+            "B": "I'd cover them this time, but expect them to pay me back",
+            "C": "I'd adjust how we split things to make it easier for them",
+            "D": "I'd feel taken advantage of and bring it up"
+        }
+    },
+    # Q15: Leadership (Likert) - Weight 6/10
+    {
+        "id": 15,
+        "type": "likert",
+        "text": "When a group needs to make a money decision, I often step up and take charge.",
+        "via_trait": "Leadership",
+        "weight": 6,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q16: Forgiveness (Multiple Choice) - Weight 6/10
+    {
+        "id": 16,
+        "type": "multiple_choice",
+        "text": "Someone close to you made a financial mistake that affected you. How do you handle it?",
+        "via_trait": "Forgiveness",
+        "weight": 6,
+        "options": {
+            "A": "I let it go pretty quickly - mistakes happen",
+            "B": "It bothers me for a while, but I move on eventually",
+            "C": "I forgive but don't forget",
+            "D": "I have a hard time getting over it"
+        }
+    },
+    # Q17: Financial Priority (OLD Q5) - Diagnostic value
+    {
+        "id": 17,
+        "type": "multiple_choice",
         "text": "My biggest financial priority right now is:",
+        "via_trait": "Goal-Setting",
+        "weight": 8,
         "options": {
             "A": "Building an emergency fund",
             "B": "Paying off debt",
             "C": "Saving for a specific goal",
-            "D": "Learning to budget better"
+            "D": "Learning to manage money better"
         }
     },
+    # Q18: Prudence (Likert) - Weight 9/10
     {
-        "id": 6,
-        "text": "When I receive unexpected money, I usually:",
+        "id": 18,
+        "type": "likert",
+        "text": "I think about future consequences before spending money.",
+        "via_trait": "Prudence",
+        "weight": 9,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q19: Self-Regulation (Multiple Choice) - Weight 9/10
+    {
+        "id": 19,
+        "type": "multiple_choice",
+        "text": "You see something you really want but didn't plan to buy. What happens next?",
+        "via_trait": "Self-Regulation",
+        "weight": 9,
         "options": {
-            "A": "Save most or all of it",
-            "B": "Spend it on something I've wanted",
-            "C": "Split it between saving and spending",
-            "D": "Use it to pay bills or debt"
+            "A": "I walk away - if it wasn't planned, I don't buy it",
+            "B": "I think about it for a day or two before deciding",
+            "C": "I buy it but feel guilty afterward",
+            "D": "I buy it without thinking twice"
         }
     },
+    # Q20: Investing Knowledge (OLD Q12) - Diagnostic value
     {
-        "id": 7,
-        "text": "I learn best through:",
-        "options": {
-            "A": "Reading and research",
-            "B": "Hands-on practice",
-            "C": "Watching videos or tutorials",
-            "D": "Discussion and conversation"
-        }
-    },
-    {
-        "id": 8,
-        "text": "My relationship with credit cards is:",
-        "options": {
-            "A": "I use them responsibly and pay in full",
-            "B": "I avoid them completely",
-            "C": "I sometimes carry a balance",
-            "D": "I struggle with credit card debt"
-        }
-    },
-    {
-        "id": 9,
-        "text": "When setting financial goals, I prefer:",
-        "options": {
-            "A": "Detailed plans with specific timelines",
-            "B": "General direction without strict deadlines",
-            "C": "Short-term goals I can achieve quickly",
-            "D": "Long-term vision with flexibility"
-        }
-    },
-    {
-        "id": 10,
-        "text": "Financial stress affects me by:",
-        "options": {
-            "A": "Making me more motivated to improve",
-            "B": "Causing me to avoid thinking about money",
-            "C": "Impacting my sleep or mood significantly",
-            "D": "I don't experience much financial stress"
-        }
-    },
-    {
-        "id": 11,
-        "text": "I would describe my spending habits as:",
-        "options": {
-            "A": "Very disciplined",
-            "B": "Mostly controlled with occasional splurges",
-            "C": "Impulsive at times",
-            "D": "Often reactive to emotions"
-        }
-    },
-    {
-        "id": 12,
+        "id": 20,
+        "type": "multiple_choice",
         "text": "My knowledge of investing is:",
+        "via_trait": "Financial Literacy",
+        "weight": 7,
         "options": {
-            "A": "Strong – I actively invest",
-            "B": "Basic – I understand the concepts",
-            "C": "Limited – I'm just starting to learn",
-            "D": "None – It seems too complicated"
+            "A": "Strong - I actively invest",
+            "B": "Basic - I understand the concepts",
+            "C": "Limited - I'm just starting to learn",
+            "D": "None - It seems too complicated"
         }
     },
+    # Q21: Gratitude (Likert) - Weight 7/10
     {
-        "id": 13,
-        "text": "When facing a financial setback, I:",
+        "id": 21,
+        "type": "likert",
+        "text": "I regularly feel thankful for what I have, even when money is tight.",
+        "via_trait": "Gratitude",
+        "weight": 7,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q22: Hope (Multiple Choice) - Weight 8/10
+    {
+        "id": 22,
+        "type": "multiple_choice",
+        "text": "When you think about your financial future, what comes to mind?",
+        "via_trait": "Hope",
+        "weight": 8,
         "options": {
-            "A": "Quickly adjust my plan and move forward",
-            "B": "Feel discouraged but eventually recover",
-            "C": "Need support from others to cope",
-            "D": "Find it very difficult to bounce back"
+            "A": "I believe things will work out and get better",
+            "B": "I'm cautiously optimistic",
+            "C": "I'm not sure - it could go either way",
+            "D": "I'm pretty pessimistic about it"
         }
     },
+    # Q23: Biggest Challenge (OLD Q17) - Diagnostic value
     {
-        "id": 14,
-        "text": "I prefer to make purchases:",
-        "options": {
-            "A": "After careful comparison shopping",
-            "B": "When I find a good deal",
-            "C": "When I need or want something",
-            "D": "Impulsively if it feels right"
-        }
-    },
-    {
-        "id": 15,
-        "text": "My comfort level with financial risk is:",
-        "options": {
-            "A": "High – I'm willing to take calculated risks",
-            "B": "Moderate – Some risk is okay",
-            "C": "Low – I prefer safety and stability",
-            "D": "Very low – I avoid risk completely"
-        }
-    },
-    {
-        "id": 16,
-        "text": "I talk about money with friends/family:",
-        "options": {
-            "A": "Openly and regularly",
-            "B": "Occasionally when relevant",
-            "C": "Rarely – it feels uncomfortable",
-            "D": "Never – it's too personal"
-        }
-    },
-    {
-        "id": 17,
+        "id": 23,
+        "type": "multiple_choice",
         "text": "My biggest financial challenge is:",
+        "via_trait": "Self-Awareness",
+        "weight": 8,
         "options": {
             "A": "Not earning enough",
             "B": "Controlling my spending",
@@ -173,34 +274,87 @@ PPI_QUESTIONS = [
             "D": "Staying motivated to save"
         }
     },
+    # Q24: Spirituality/Purpose (Likert) - Weight 6/10
     {
-        "id": 18,
-        "text": "When planning my budget, I:",
+        "id": 24,
+        "type": "likert",
+        "text": "I feel like managing my money well is connected to a bigger purpose in my life.",
+        "via_trait": "Spirituality",
+        "weight": 6,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q25: Creativity 2nd (Multiple Choice) - Weight 6/10
+    {
+        "id": 25,
+        "type": "multiple_choice",
+        "text": "You're trying to save money but feel stuck. What's your move?",
+        "via_trait": "Creativity",
+        "weight": 6,
         "options": {
-            "A": "Use detailed spreadsheets or apps",
-            "B": "Keep a rough mental estimate",
-            "C": "Follow a simple system",
-            "D": "Don't really budget"
+            "A": "I brainstorm new ideas or try something creative",
+            "B": "I look for tips online or ask for advice",
+            "C": "I keep doing what I've been doing and hope it works",
+            "D": "I give up - nothing seems to work anyway"
         }
     },
+    # Q26: Perseverance 2nd (Multiple Choice) - Weight 8/10
     {
-        "id": 19,
-        "text": "I would describe my financial personality as:",
+        "id": 26,
+        "type": "multiple_choice",
+        "text": "You've tried to budget before and failed. What happens next?",
+        "via_trait": "Perseverance",
+        "weight": 8,
         "options": {
-            "A": "Planner and saver",
-            "B": "Balanced and practical",
-            "C": "Spontaneous spender",
-            "D": "Still figuring it out"
+            "A": "I try again with a different approach",
+            "B": "I take a break and come back to it later",
+            "C": "I feel discouraged but eventually give it another shot",
+            "D": "I assume budgeting just isn't for me"
         }
     },
+    # Q27: Self-Regulation 2nd (Likert) - Weight 9/10
     {
-        "id": 20,
-        "text": "My motivation for improving financial literacy is:",
+        "id": 27,
+        "type": "likert",
+        "text": "I'm good at controlling my impulses when it comes to spending.",
+        "via_trait": "Self-Regulation",
+        "weight": 9,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q28: Hope 2nd (Likert) - Weight 8/10
+    {
+        "id": 28,
+        "type": "likert",
+        "text": "No matter how bad my money situation gets, I believe I can turn it around.",
+        "via_trait": "Hope",
+        "weight": 8,
+        "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+    },
+    # Q29: Judgment 2nd (Multiple Choice) - Weight 8/10
+    {
+        "id": 29,
+        "type": "multiple_choice",
+        "text": "Someone pitches you an investment opportunity that sounds too good to be true. What do you do?",
+        "via_trait": "Judgment",
+        "weight": 8,
         "options": {
-            "A": "Achieving specific financial goals",
-            "B": "Reducing stress and anxiety",
-            "C": "Building long-term wealth",
-            "D": "Feeling more confident and in control"
+            "A": "Research it thoroughly before deciding",
+            "B": "Ask trusted people for their opinions",
+            "C": "Go with my gut feeling",
+            "D": "Jump in if it sounds exciting"
+        }
+    },
+    # Q30: Gratitude 2nd (Multiple Choice) - Weight 6/10
+    {
+        "id": 30,
+        "type": "multiple_choice",
+        "text": "When something good happens with your money (like getting paid or finding extra cash), what do you feel?",
+        "via_trait": "Gratitude",
+        "weight": 6,
+        "options": {
+            "A": "Grateful and appreciative",
+            "B": "Relieved but still worried",
+            "C": "It's nice but doesn't change much",
+            "D": "I immediately think about what I need to spend it on"
         }
     }
 ]
