@@ -115,48 +115,39 @@ childiness = 1.0 - LC
 
 ---
 
-## Test Results (January 6, 2026 - Child Variants)
+## Test Results (January 6, 2026 - Universal Framing)
 
-### Age-Contextualized PPI Variants IMPLEMENTED ✅
+### UNIVERSAL PPI Questions Implemented ✅
 
-| User Type | Variant | Example Q8 |
-|-----------|---------|------------|
-| 7yo (LC < 0.15) | `child_contextualized` | "When I borrow something from a friend (like a toy or book), I:" |
-| 45yo (LC > 0.15) | `word_simplified` | "My relationship with credit cards is:" |
+**Philosophy:** Questions framed around TRAITS, not age-specific scenarios. The user's mind naturally fills in their own context.
 
-### All 20 Child-Contextualized Questions
+| Q# | Old (Age-Specific) | New (Universal) |
+|----|-------------------|-----------------|
+| Q8 | "Credit cards" | "When I owe something to someone (money, items, or favors), I:" |
+| Q11 | "Spending habits" | "When I really want something, I:" |
+| Q13 | "Financial setback" | "When things don't go as I planned, I:" |
+| Q14 | "Making purchases" | "When I get to choose something, I:" |
 
-| Q# | Adult Topic | Child Context |
-|----|-------------|---------------|
-| Q1 | Financial decisions | Choosing games/activities |
-| Q2 | Saving money | Allowance/birthday money |
-| Q3 | Financial future | Growing up feelings |
-| Q4 | Tracking spending | Counting savings |
-| Q5 | Financial priorities | What money means to me |
-| Q6 | Unexpected money | Surprise money |
-| Q7 | Learning style | How I learn best |
-| **Q8** | **Credit cards** | **Borrowing toys/books from friends** |
-| Q9 | Goal setting | Saving plans |
-| Q10 | Financial stress | Worry response |
-| **Q11** | **Spending habits** | **Waiting for things I want (candy/toys)** |
-| Q12 | Investment knowledge | Saving/growing money knowledge |
-| **Q13** | **Financial setback** | **Losing a game/not getting something** |
-| **Q14** | **Making purchases** | **Picking treats/activities** |
-| Q15 | Risk tolerance | Trying new things |
-| Q16 | Money communication | Talking with family |
-| Q17 | Financial challenges | Hardest thing about money |
-| Q18 | Budgeting | Tracking my money |
-| Q19 | Financial personality | Who I am with money |
-| Q20 | Motivation | Why I want to learn |
+**Why This Works:**
+- A 7yo reading "When I owe something to someone" thinks: borrowed toys
+- A 15yo thinks: borrowed money from parents
+- A 30yo thinks: credit card balance
+- A 60yo thinks: mortgage payment
 
-### Key Technical Details
+**Same trait measured, zero code bloat.**
 
-- **Threshold:** `LC < 0.15` triggers child variants (ages ~6-10 with low EL)
-- **Location:** `CHILD_PPI_VARIANTS` dictionary in `/app/backend/tap_5_0.py`
-- **Integration:** `get_child_ppi_variant()` function called in `ae_engine_v2.py`
-- **Trait Mapping:** Each child question measures the SAME personality trait as the adult version
+### Technical Implementation
+- `UNIVERSAL_PPI_QUESTIONS` dictionary in `tap_5_0.py` (10 universal questions)
+- Questions that already work universally (Q1-7, Q9, Q16, Q19, Q20) use `None` → baseline + word simplification
+- Word simplification still applies to universal questions based on LC
+- Response includes `"variant": "universal"` or `"variant": "baseline_simplified"`
+
+### Verified
+- 7yo: Q8 shows "When I owe something to someone..." ✅
+- 45yo: Q8 shows "When I owe something to someone..." ✅
+- Word simplification: "recover" → "get better" for young users ✅
 
 ---
 
 ## Last Updated
-January 6, 2026 - Implemented age-contextualized PPI variants for young users
+January 6, 2026 - Replaced age-specific variants with universal framing (scalable to 270+ questions)
