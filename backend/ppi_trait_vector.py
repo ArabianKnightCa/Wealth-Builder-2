@@ -121,173 +121,252 @@ def normalize_answer(answer: str, polarity: str) -> float:
 
 
 # =============================================================================
-# PPI QUESTION TRAIT TAGS (POC 20 QUESTIONS)
+# PPI QUESTION TRAIT TAGS (VIA Layer 1 - 30 Questions)
 # =============================================================================
 
 # This maps each PPI question to its trait tags
-# These should ideally be stored in the database, but we define them here
-# for the POC implementation
+# Updated for the new VIA Character Strengths framework
 
 PPI_TRAIT_TAGS: Dict[str, Dict[str, Any]] = {
+    # Q1: Creativity (Likert) - Weight 7/10
     "PPI_Q01": {
-        # "When making financial decisions, I prefer to:"
-        # A=Research, B=Gut, C=Ask others, D=Follow experts
-        "primary_trait": "T18",    # Prudence
-        "secondary_trait": "T02",  # Curiosity
-        "polarity": "normal",      # A (research) = high prudence
-        "intensity": "medium"
+        "primary_trait": "T01",    # Creativity
+        "secondary_trait": None,
+        "polarity": "normal",      # Higher = more creative
+        "intensity": "medium",
+        "type": "likert"
     },
+    # Q2: Curiosity (MCQ) - Weight 6/10
     "PPI_Q02": {
-        # "My approach to saving money is:"
-        # A=Fixed amount, B=Whatever left, C=Specific goals, D=Struggle
-        "primary_trait": "T19",    # Self-Regulation
-        "secondary_trait": "T07",  # Persistence
-        "polarity": "normal",      # A (fixed amount) = high self-regulation
-        "intensity": "heavy"
+        "primary_trait": "T02",    # Curiosity
+        "secondary_trait": "T04",  # Love of Learning
+        "polarity": "normal",      # A = high curiosity
+        "intensity": "medium",
+        "type": "mcq"
     },
+    # Q3: Judgment (Likert) - Weight 8/10
     "PPI_Q03": {
-        # "When I think about my financial future, I feel:"
-        # A=Excited, B=Anxious, C=Uncertain hopeful, D=Confident
-        "primary_trait": "T22",    # Hope/Optimism
-        "secondary_trait": "T06",  # Bravery
-        "polarity": "normal",      # A (excited) = high optimism
-        "intensity": "medium"
+        "primary_trait": "T03",    # Open-mindedness/Judgment
+        "secondary_trait": "T18",  # Prudence
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "likert"
     },
+    # Q4: Love of Learning (MCQ) - Weight 6/10
     "PPI_Q04": {
-        # "I track my spending:"
-        # A=Daily/weekly, B=Monthly, C=Rarely, D=Only when worried
-        "primary_trait": "T19",    # Self-Regulation
-        "secondary_trait": "T18",  # Prudence
-        "polarity": "normal",      # A (daily) = high self-regulation
-        "intensity": "heavy"
-    },
-    "PPI_Q05": {
-        # "My biggest financial priority right now is:"
-        # A=Emergency fund, B=Paying debt, C=Specific goal, D=Budget better
-        "primary_trait": "T18",    # Prudence
-        "secondary_trait": "T05",  # Perspective
-        "polarity": "normal",      # All answers show prudent thinking
-        "intensity": "light"
-    },
-    "PPI_Q06": {
-        # "When I receive unexpected money, I usually:"
-        # A=Save it, B=Spend on want, C=Split, D=Pay bills
-        "primary_trait": "T19",    # Self-Regulation
-        "secondary_trait": "T18",  # Prudence
-        "polarity": "normal",      # A (save) = high self-regulation
-        "intensity": "medium"
-    },
-    "PPI_Q07": {
-        # "I learn best through:"
-        # A=Reading, B=Hands-on, C=Videos, D=Discussion
         "primary_trait": "T04",    # Love of Learning
         "secondary_trait": "T02",  # Curiosity
-        "polarity": "normal",      # All answers show learning engagement
-        "intensity": "light"
+        "polarity": "normal",      # A = high learning engagement
+        "intensity": "medium",
+        "type": "mcq"
     },
+    # Q5: Perspective (Likert) - Weight 7/10
+    "PPI_Q05": {
+        "primary_trait": "T05",    # Perspective
+        "secondary_trait": "T14",  # Leadership
+        "polarity": "normal",
+        "intensity": "medium",
+        "type": "likert"
+    },
+    # Q6: Bravery (MCQ) - Weight 7/10
+    "PPI_Q06": {
+        "primary_trait": "T06",    # Bravery
+        "secondary_trait": "T08",  # Integrity
+        "polarity": "normal",      # A = high bravery
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q7: Perseverance (Likert) - Weight 9/10
+    "PPI_Q07": {
+        "primary_trait": "T07",    # Persistence/Perseverance
+        "secondary_trait": "T19",  # Self-Regulation
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "likert"
+    },
+    # Q8: Honesty (Likert) - Weight 8/10
     "PPI_Q08": {
-        # "My relationship with credit cards is:"
-        # A=Responsible, B=Avoid, C=Sometimes balance, D=Struggle
-        "primary_trait": "T19",    # Self-Regulation
-        "secondary_trait": "T18",  # Prudence
-        "polarity": "normal",      # A (responsible) = high self-regulation
-        "intensity": "heavy"
+        "primary_trait": "T08",    # Integrity/Honesty
+        "secondary_trait": "T06",  # Bravery
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "likert"
     },
+    # Q9: Zest (MCQ) - Weight 6/10
     "PPI_Q09": {
-        # "When setting financial goals, I prefer:"
-        # A=Detailed plans, B=General direction, C=Short-term, D=Long-term flex
+        "primary_trait": "T09",    # Vitality/Zest
+        "secondary_trait": "T22",  # Hope
+        "polarity": "normal",      # A = high zest
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q10: Love (Likert) - Weight 7/10
+    "PPI_Q10": {
+        "primary_trait": "T11",    # Love
+        "secondary_trait": "T10",  # Kindness
+        "polarity": "normal",
+        "intensity": "medium",
+        "type": "likert"
+    },
+    # Q11: Kindness (MCQ) - Weight 6/10
+    "PPI_Q11": {
+        "primary_trait": "T10",    # Kindness
+        "secondary_trait": "T11",  # Love
+        "polarity": "normal",      # A = high kindness
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q12: Social Intelligence (Likert) - Weight 7/10
+    "PPI_Q12": {
+        "primary_trait": "T12",    # Social Intelligence
+        "secondary_trait": "T05",  # Perspective
+        "polarity": "normal",
+        "intensity": "medium",
+        "type": "likert"
+    },
+    # Q13: Teamwork (Likert) - Weight 6/10
+    "PPI_Q13": {
+        "primary_trait": "T15",    # Teamwork
+        "secondary_trait": "T12",  # Social Intelligence
+        "polarity": "normal",
+        "intensity": "light",
+        "type": "likert"
+    },
+    # Q14: Fairness (MCQ) - Weight 7/10
+    "PPI_Q14": {
+        "primary_trait": "T13",    # Fairness
+        "secondary_trait": "T10",  # Kindness
+        "polarity": "normal",
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q15: Leadership (Likert) - Weight 6/10
+    "PPI_Q15": {
+        "primary_trait": "T14",    # Leadership
+        "secondary_trait": "T06",  # Bravery
+        "polarity": "normal",
+        "intensity": "light",
+        "type": "likert"
+    },
+    # Q16: Forgiveness (MCQ) - Weight 6/10
+    "PPI_Q16": {
+        "primary_trait": "T16",    # Forgiveness
+        "secondary_trait": "T10",  # Kindness
+        "polarity": "normal",      # A = high forgiveness
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q17: Financial Priority (OLD Q5) - Goal-Setting - Weight 8/10
+    "PPI_Q17": {
         "primary_trait": "T18",    # Prudence
         "secondary_trait": "T07",  # Persistence
-        "polarity": "normal",      # A (detailed) = high prudence
-        "intensity": "medium"
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "mcq"
     },
-    "PPI_Q10": {
-        # "Financial stress affects me by:"
-        # A=More motivated, B=Avoid, C=Impacts mood, D=Not much stress
+    # Q18: Prudence (Likert) - Weight 9/10
+    "PPI_Q18": {
+        "primary_trait": "T18",    # Prudence
+        "secondary_trait": "T19",  # Self-Regulation
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "likert"
+    },
+    # Q19: Self-Regulation (MCQ) - Weight 9/10
+    "PPI_Q19": {
+        "primary_trait": "T19",    # Self-Regulation
+        "secondary_trait": "T18",  # Prudence
+        "polarity": "normal",      # A = high self-regulation
+        "intensity": "heavy",
+        "type": "mcq"
+    },
+    # Q20: Financial Literacy (OLD Q12) - Weight 7/10
+    "PPI_Q20": {
+        "primary_trait": "T04",    # Love of Learning
+        "secondary_trait": "T02",  # Curiosity
+        "polarity": "normal",      # A = high knowledge
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q21: Gratitude (Likert) - Weight 7/10
+    "PPI_Q21": {
+        "primary_trait": "T21",    # Gratitude
+        "secondary_trait": "T22",  # Hope
+        "polarity": "normal",
+        "intensity": "medium",
+        "type": "likert"
+    },
+    # Q22: Hope (MCQ) - Weight 8/10
+    "PPI_Q22": {
         "primary_trait": "T22",    # Hope/Optimism
-        "secondary_trait": "T09",  # Vitality/Zest
-        "polarity": "normal",      # A (motivated) = high optimism
-        "intensity": "medium"
+        "secondary_trait": "T06",  # Bravery
+        "polarity": "normal",      # A = high hope
+        "intensity": "heavy",
+        "type": "mcq"
     },
-    "PPI_Q11": {
-        # "I would describe my spending habits as:"
-        # A=Disciplined, B=Mostly controlled, C=Impulsive, D=Emotional
+    # Q23: Self-Awareness (OLD Q17) - Weight 8/10
+    "PPI_Q23": {
+        "primary_trait": "T05",    # Perspective (self-awareness)
+        "secondary_trait": "T07",  # Persistence
+        "polarity": "reverse",     # Identifies challenge areas
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q24: Spirituality (Likert) - Weight 6/10
+    "PPI_Q24": {
+        "primary_trait": "T24",    # Spirituality
+        "secondary_trait": "T22",  # Hope
+        "polarity": "normal",
+        "intensity": "light",
+        "type": "likert"
+    },
+    # Q25: Creativity 2 (MCQ) - Weight 6/10
+    "PPI_Q25": {
+        "primary_trait": "T01",    # Creativity
+        "secondary_trait": "T07",  # Persistence
+        "polarity": "normal",      # A = high creativity
+        "intensity": "medium",
+        "type": "mcq"
+    },
+    # Q26: Perseverance 2 (MCQ) - Weight 8/10
+    "PPI_Q26": {
+        "primary_trait": "T07",    # Persistence
+        "secondary_trait": "T22",  # Hope
+        "polarity": "normal",      # A = high persistence
+        "intensity": "heavy",
+        "type": "mcq"
+    },
+    # Q27: Self-Regulation 2 (Likert) - Weight 9/10
+    "PPI_Q27": {
         "primary_trait": "T19",    # Self-Regulation
         "secondary_trait": None,
-        "polarity": "normal",      # A (disciplined) = high self-regulation
-        "intensity": "heavy"
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "likert"
     },
-    "PPI_Q12": {
-        # "My knowledge of investing is:"
-        # A=Strong, B=Basic, C=Limited, D=None
-        "primary_trait": "T04",    # Love of Learning
-        "secondary_trait": "T06",  # Bravery
-        "polarity": "normal",      # A (strong) = high learning engagement
-        "intensity": "medium"
-    },
-    "PPI_Q13": {
-        # "When facing a financial setback, I:"
-        # A=Quickly adjust, B=Discouraged but recover, C=Need support, D=Difficult
-        "primary_trait": "T07",    # Persistence
-        "secondary_trait": "T22",  # Hope/Optimism
-        "polarity": "normal",      # A (adjust) = high persistence
-        "intensity": "heavy"
-    },
-    "PPI_Q14": {
-        # "I prefer to make purchases:"
-        # A=After comparison, B=Good deal, C=When need, D=Impulsively
-        "primary_trait": "T18",    # Prudence
-        "secondary_trait": "T19",  # Self-Regulation
-        "polarity": "normal",      # A (comparison) = high prudence
-        "intensity": "medium"
-    },
-    "PPI_Q15": {
-        # "My comfort level with financial risk is:"
-        # A=High, B=Moderate, C=Low, D=Very low
-        "primary_trait": "T06",    # Bravery
-        "secondary_trait": "T03",  # Open-mindedness
-        "polarity": "normal",      # A (high risk) = high bravery
-        "intensity": "medium"
-    },
-    "PPI_Q16": {
-        # "I talk about money with friends/family:"
-        # A=Openly, B=Occasionally, C=Rarely, D=Never
-        "primary_trait": "T12",    # Social Intelligence
-        "secondary_trait": "T08",  # Integrity/Honesty
-        "polarity": "normal",      # A (openly) = high social intelligence
-        "intensity": "light"
-    },
-    "PPI_Q17": {
-        # "My biggest financial challenge is:"
-        # A=Not earning enough, B=Controlling spending, C=Understanding, D=Motivation
-        "primary_trait": "T07",    # Persistence
-        "secondary_trait": "T04",  # Love of Learning
-        "polarity": "reverse",     # D (motivation) indicates need for persistence
-        "intensity": "medium"
-    },
-    "PPI_Q18": {
-        # "When planning my budget, I:"
-        # A=Detailed spreadsheets, B=Mental estimate, C=Simple system, D=Don't budget
-        "primary_trait": "T18",    # Prudence
-        "secondary_trait": "T19",  # Self-Regulation
-        "polarity": "normal",      # A (detailed) = high prudence
-        "intensity": "heavy"
-    },
-    "PPI_Q19": {
-        # "I would describe my financial personality as:"
-        # A=Planner/saver, B=Balanced, C=Spontaneous, D=Figuring out
-        "primary_trait": "T19",    # Self-Regulation
-        "secondary_trait": "T18",  # Prudence
-        "polarity": "normal",      # A (planner) = high self-regulation
-        "intensity": "heavy"
-    },
-    "PPI_Q20": {
-        # "My motivation for improving financial literacy is:"
-        # A=Goals, B=Reduce stress, C=Build wealth, D=Confidence
-        "primary_trait": "T22",    # Hope/Optimism
+    # Q28: Hope 2 (Likert) - Weight 8/10
+    "PPI_Q28": {
+        "primary_trait": "T22",    # Hope
         "secondary_trait": "T07",  # Persistence
-        "polarity": "normal",      # All answers show positive motivation
-        "intensity": "light"
+        "polarity": "normal",
+        "intensity": "heavy",
+        "type": "likert"
+    },
+    # Q29: Judgment 2 (MCQ) - Weight 8/10
+    "PPI_Q29": {
+        "primary_trait": "T03",    # Judgment
+        "secondary_trait": "T18",  # Prudence
+        "polarity": "normal",      # A = high judgment
+        "intensity": "heavy",
+        "type": "mcq"
+    },
+    # Q30: Gratitude 2 (MCQ) - Weight 6/10
+    "PPI_Q30": {
+        "primary_trait": "T21",    # Gratitude
+        "secondary_trait": "T22",  # Hope
+        "polarity": "normal",      # A = high gratitude
+        "intensity": "medium",
+        "type": "mcq"
     },
 }
 
