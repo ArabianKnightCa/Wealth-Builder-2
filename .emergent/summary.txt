@@ -1,125 +1,127 @@
-<analysis>**original_problem_statement:** The user's primary goal is to build a Wealth Builder application featuring a sophisticated Adaptive Engine (AE) with a Text Adaptation Processor (TAP). The core requirement is to make financial content accessible to a wide range of users (from age 6 to 99) while adhering to a strict Baseline Immutability rule, meaning the original expert text cannot be rewritten.
+<analysis>**original_problem_statement:** The user's primary goal is to build a Wealth Builder application featuring a sophisticated Adaptive Engine (AE). The core requirement is to make financial content accessible to all ages (6-99) by adapting a single, immutable baseline text.
 
-The most recent user requests focused on resolving critical bugs and refining the philosophy of the newly implemented TAP 5.0 engine. The user reported that the adaptation was not working correctly for children, questions were being filtered by age instead of adapted, the PPI flow was broken, and chapter content was locked. The user has reiterated that the system must be fully continuous and scalable for all ages (6-99) and for an upcoming 270-question PPI database.
+Initially, the project was plagued by adaptation issues, with content being filtered or truncated instead of simplified. After multiple rounds of user feedback and iterative fixes, the agent implemented a Universal Framing philosophy. This involves using universally applicable questions whose language is then simplified based on the user's Learning Complexity (LC) score.
+
+The most recent user request is to integrate a full 270-question, 7-layer Personality Profile Instrument (PPI) database that the user has provided. The user has specified that users should be able to select a target layer during onboarding and must complete all preceding layers sequentially to finish their profile.
 
 **User's preferred language**: English
 
 **what currently exists?**
 - A full-stack application (React frontend, FastAPI backend, MongoDB).
-- **TAP 5.0 is the sole adaptation engine.** All previous versions (TAP v2.x, v3.x) and their associated files, imports, and fallback logic have been completely removed from the codebase and archived.
-- The system now uses a **continuous adaptation model**. Instead of selecting from pre-written child/bridge/expert text buckets, the  engine dynamically simplifies a single baseline text in real-time. This is based on the user's Learning Complexity (LC) score, applying a cascade of word/phrase simplifications from a dictionary ().
-- The backend (, ) is fully refactored to exclusively use the TAP 5.0 engine for all content endpoints: PPI, LPI (lessons), and Quizzes.
-- The previous bug that filtered PPI questions by age has been fixed. **All 20 questions are now presented to all users**, with the language adapted for their comprehension.
-- The frontend  has been modified to remove the complete each chapter to unlock... logic, making all lessons accessible.
-- Specific adaptation for PPI content has been implemented () to prevent conversational starters and emojis from appearing in question/option text.
+- A **Universal PPI Framing** model is in place.  contains universally framed questions that are adapted for vocabulary only, not concept, using the  engine.
+- A **30-question Layer 1 PPI** is fully integrated. This includes:
+    - A  file that drives the questions.
+    - A frontend () that dynamically renders both Likert scale (1-5) and Multiple Choice Question (MCQ) formats.
+    - A backend () that scores responses based on the 24 VIA Character Strengths.
+- A **Global Auto-Save System** has been implemented.
+    - Backend endpoints (, ) provide a generic way to save and load progress.
+    - A frontend React hook () makes it easy to add auto-save functionality to any feature. This is currently used in the PPI and LPI lessons.
+- The **Chapter Locking** logic is working correctly: users must complete a chapter's quiz to unlock the next chapter.
 
 **Last working item**:
-- **Last item agent was working:** Refining the continuous adaptation logic in . The user pointed out that adaptation stopped for users with a high Learning Complexity (LC) score. The agent fixed this by expanding the  dictionary with a full range of LC thresholds (from 0.25 up to 0.95), ensuring that adaptation is truly continuous across the entire 6-99 age range.
-- **Status:** USER VERIFICATION PENDING
-- **Agent Testing Done:** Y (Tested via curl with a wide range of user ages to confirm the continuous adaptation logic works as expected).
-- **Which testing method agent to use?** Frontend testing agent. The series of fixes to the backend PPI submission flow and the frontend chapter locking needs end-to-end verification. A test should cover logging in, completing the full PPI flow, and checking LPI/Quiz content.
+- **Last item agent was working:** The user provided the complete 240 questions for PPI Layers 2-7 and specified the implementation logic for the full 270-question experience. The agent analyzed the new data and user requirements and was preparing to begin implementation.
+- **Status:** NOT STARTED
+- **Agent Testing Done:** N
+- **Which testing method agent to use?** both. This is a major feature implementation. Backend logic for layer progression and data handling needs to be tested, and the frontend needs to be tested for the new layer selection UI and the sequential completion flow. The  is recommended after implementation.
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: PPI Submit Button Advancement (P0)**
-  - **Description**: The user reported that the submit button on the PPI page did not advance after the 11th question. The agent fixed several backend  bugs on the  endpoint that were causing it to fail.
-  - **Status**: TESTING PENDING
-  - **Why fix this issue and what will be achieved with the fix?**: This is a critical blocker for the core user journey. Fixing it will allow users to complete their personality profile, which is essential for generating their DNA and personalizing all subsequent content.
-  - **Should Test frontend/backend/both after fix?**: Both (End-to-end flow).
-- **Issue 2: Comprehensive User Verification of Continuous Adaptation (P1)**
-  - **Description**: The user needs to confirm if the current continuous adaptation across all ages (6-99) and content types (PPI, LPI, Quiz) is now working as expected. This includes verifying the language, tone, and absence of incorrect styling (e.g., emojis in PPI options).
-  - **Status**: USER VERIFICATION PENDING
-  - **Why fix this issue and what will be achieved with the fix?**: This validates that the core product requirement of adaptive content is finally met.
-  - **Should Test frontend/backend/both after fix?**: Frontend (Visual verification by user).
+- There are no pending or in-progress issues. All previously reported bugs regarding adaptation, chapter locking, and PPI functionality have been resolved.
 
 **In progress Task List**:
-- **Task 1: Complete Full TAP v5.0 Integration & Validation (P0)**
-  - **Description**: The final step of the TAP 5.0 migration is to replace the current 20-question PPI with the user's new 270-question database.
+- **Task 1: Implement Full 270-Question, 7-Layer PPI Experience (P0)**
+  - **Description**: Integrate the newly provided 240 questions with the existing 30-question Layer 1 to create the full 270-question PPI. Implement the sequential layer completion logic as specified by the user.
   - **Where to resume**:
-    1.  Wait for the user to provide the JSON file for the new 7-layer, 270-question PPI database.
-    2.  Once received, write a script to clear the old  collection in MongoDB and insert the new 270 questions.
-    3.  Verify that  and  can correctly process the new question structure (e.g., layer-based weighting).
-  - **What will be achieved with this?**: The application's core adaptive content system will be fully powered by the new, more sophisticated TAP v5.0 and the deep psychological profile it can generate.
-  - **Status:** BLOCKED (Waiting for user to provide the 270-question JSON file).
+    1.  Create the new, complete 270-question data structure, likely by merging the new markdown file's content into an expanded  file.
+    2.  Modify the frontend onboarding flow to include a dropdown for the user to select their desired PPI layer.
+    3.  Update the backend (, ) and frontend () to handle the sequential layer logic (e.g., if a user selects L4, they must complete L1, L2, L3, and then L4).
+    4.  Ensure the DNA/trait vector is generated only *after* the user completes their entire selected sequence.
+  - **What will be achieved with this?**: The application's core data collection and personality profiling mechanism will be fully implemented as per the user's specification.
+  - **Status:** NOT STARTED
   - **Should Test frontend/backend/both after fix?** Both.
+  - **Blocked on something:** No.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-  - **P1: Implement TAP 5.0 Validators:** Integrate the previously discussed validators (Grammar, Readability, Meaning Drift) into the  engine. This requires installing new dependencies (, , , ).
+  - **P1: Implement TAP 5.0 Validators:** Integrate Grammar, Readability, and Meaning Drift validators into the  engine to ensure the quality of adapted text. This will require installing , , and .
+  - **P2: Display VIA Trait Report:** Create a component on the user's dashboard to visualize the results of their completed PPI, showing their dominant VIA Character Strengths.
 - **Future Tasks:**
   - Connect the React Native app to the backend APIs.
   - Implement RED Priority scaling features (Performance/Caching, Basic CMS, DB Query Optimization).
-  - Implement the user feedback loop from the TAP v5.0 specification to persist and analyze adaptation metrics for continuous optimization.
+  - Implement the user feedback loop from the TAP v5.0 specification.
   - Finalize and integrate the Country/City Selector UI.
 
 **Completed work in this session**
-- **Removed All Old TAP Versions:** Successfully archived all files and references related to TAP v2.x and v3.x, refactoring the codebase (, , ) to make TAP v5.0 the exclusive adaptation engine.
-- **Implemented Continuous Adaptation:** Replaced the flawed bucket-based system with a dynamic, continuous simplification engine in  that adapts baseline text in real-time based on the user's LC score across the full 6-99 age range.
-- **Fixed PPI Question Filtering:** Corrected the core philosophy by modifying  to adapt all 20 PPI questions for comprehension rather than incorrectly filtering them by age.
-- **Fixed PPI Styling:** Created a dedicated adaptation function () to prevent emojis and conversational starters from appearing in PPI questions and options.
-- **Fixed Quiz Adaptation:** Updated the quiz endpoint in  to use the dynamic TAP 5.0 functions with the user's actual age, ensuring quizzes are adapted continuously.
-- **Removed Chapter Locking:** Modified  to remove the UI logic that locked lesson chapters.
-- **Fixed PPI Submit Backend Bugs:** Resolved critical  exceptions on the  endpoint that were blocking user progression.
+- **Resolved Core Adaptation Philosophy:** Successfully diagnosed and fixed fundamental flaws in the adaptation engine. Moved from simple word replacement to contextual variants, and finally to a scalable **Universal Framing** model, which resolved persistent user complaints.
+- **Fixed Content Truncation Bug:** Identified and fixed an issue where aggressive adaptation parameters (, ) were truncating content for young users instead of simplifying it.
+- **Implemented New 30-Question VIA PPI:** Replaced the old 20-question PPI with a new, scientifically-backed 30-question version based on VIA Character Strengths.
+- **Built Dynamic PPI Frontend:** Updated  to handle and render both Likert-scale and multiple-choice questions dynamically based on data from the backend.
+- **Implemented VIA Trait Scoring:** Updated  to correctly process and score responses from the new 30-question PPI, including logic for both question types.
+- **Implemented Global Auto-Save System:** Created a generic, reusable system for saving and resuming user progress. This includes backend endpoints and a frontend React hook (), now used in both PPI and LPI.
+- **Verified Full PPI Flow:** Used the testing agent to confirm the 30-question flow, including auto-save and resume functionality, works end-to-end.
+- **Fixed and Re-enabled Chapter Locking:** Corrected the logic that had left all lesson chapters unlocked and re-implemented the intended flow where quiz completion unlocks the next chapter.
 
 **Earlier issues found/mentioned but not fixed**
-- The **TAP 4.0/5.0 validators** feature (Grammar, Readability, Meaning Drift) was discussed but its implementation is pending. This is now listed as an upcoming task.
+- The **TAP 4.0/5.0 validators** feature (Grammar, Readability, Meaning Drift) was discussed in the previous fork but its implementation is still pending. It is listed in the Upcoming Tasks.
 
 **Known issue recurrence from previous fork**
-- **Issue recurrence in previous fork:** The fundamental challenge of making complex financial content comprehensible for a 6-year-old remains the central focus. The new continuous adaptation model is the latest and most promising attempt to solve this.
-- **Recurrence count:** High.
-- **Status:** IN PROGRESS. The new continuous model requires thorough user verification.
+- **Issue recurrence in previous fork:** The core challenge of adapting content for a wide age range was a major recurring issue throughout this session. The agent iterated through four different solutions before landing on the Universal Framing approach, which finally satisfied the user's need for a scalable and conceptually sound model.
+- **Recurrence count:** High (4 major revisions in this session).
+- **Status:** RESOLVED. The universal framing model has been approved by the user.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Continuous Adaptation:** The system no longer selects from pre-written , , or  texts. It performs a real-time transformation of a single  text. This is driven by the  dictionary in .
-- **LC-based Thresholds:** The  dictionary uses Learning Complexity (LC) values (e.g., 0.95, 0.85, ... 0.25) as keys. A simplification is applied if the user's LC is *below* the threshold, creating a cascading effect where users with lower LC receive more simplifications. This ensures smooth adaptation across the entire 6-99 age range.
+- **Universal Framing:** The core adaptation philosophy. Questions are written to be conceptually applicable to any age, allowing the user's own life context to fill in the meaning. Vocabulary simplification is then applied on top.
+- **Global Auto-Save Hook:** The  React hook provides a debounce mechanism and abstracts away the API calls to the generic  endpoints, making it simple to add auto-save to any component.
+- **Dynamic Question Rendering:** The  component inspects the  field of each question ( or ) and renders the appropriate UI, allowing the PPI to be data-driven.
 
 **key DB schema**
-- **ppi_bank**: Currently holds the 20 baseline PPI questions. This collection will be replaced by the new 270-question structure once the user provides the data.
+- **progress_saves**: . A new collection to store drafts for any feature (e.g., , ).
 
 **changes in tech stack**
 - **Pending Dependencies:** , , ,  will need to be installed when implementing the TAP validators.
 
 **All files of reference**
-- **Core Engine:** 
-- **Engine Integrations:** , 
-- **Frontend Changes:** , 
+- **New PPI Data:** 
+- **Global Auto-Save Hook:** 
+- **Core Logic:** , , 
+- **Frontend Components:** , 
 - **Project Documentation:** 
 
 **Areas that need refactoring**:
-- The  dictionary in  is becoming large and is maintained directly in the code. For easier management and scalability, it could be refactored into a separate, loadable JSON file.
+- With 270 questions, the main  file will become very large. Consider splitting the JSON data by layer (e.g., , , etc.) for better organization and performance.
 
 **key api endpoints**
-- : **FIXED**. Now returns all 20 questions, adapted for the user's age.
-- : **FIXED**. Uses TAP 5.0 continuous adaptation.
-- : **FIXED**. Uses TAP 5.0 continuous adaptation.
-- : **FIXED**. Backend errors resolved, now returns a success message. End-to-end flow requires testing.
+- ****: Saves a JSON payload for a given user and feature key.
+- ****: Loads the last saved progress for a user and feature key.
+- ****: Deletes the saved progress for a feature.
+- ****: Submits the final PPI answers and triggers DNA generation.
 
 **Critical Info for New Agent**
-- **The philosophy is ADAPT, DON'T FILTER.** All content, regardless of topic complexity, must be presented to all users. The language is adapted for comprehension; the content itself is not filtered by age.
-- **Adaptation is now CONTINUOUS and SCALABLE.** The system is designed to handle any number of questions and adapt for any age from 6 to 99 without hardcoded mappings. Do not re-introduce hardcoded logic or buckets.
-- **You are blocked on user input.** Do not proceed with the 270-question PPI task until you receive the JSON data from the user. Prioritize verifying the existing fixes with the user first.
-- The codebase is clean of old TAP versions. All new logic should build upon the existing TAP 5.0 engine.
+- You are about to implement the full 270-question, 7-layer PPI. The user has provided very specific instructions:
+    1.  Onboarding must have a dropdown for users to select their target layer.
+    2.  The flow must be **sequential**. If a user selects Layer 4, they must complete Layers 1, 2, 3, and 4 in a single, continuous flow.
+    3.  The user's DNA (trait vector) should only be calculated **after** they have successfully completed all questions in their selected sequence.
+- The global auto-save system is already in place and should be leveraged for this long session. Do not create a new auto-save mechanism.
+- The next logical task after the 270-question PPI is to implement the TAP 5.0 validators.
 
 **documents and test reports created in this job**
 - 
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: PPI has icons, starters on every option, only 11 questions, questions 7-11 are baseline, vocab is wrong, and submit button is broken.
-2.  **Agent**: Acknowledged all issues and began investigation.
-3.  **Agent**: Fixed PPI styling, fixed the 11 questions bug by removing age-based filtering, added more word mappings, and removed chapter-locking.
-4.  **Agent**: Fixed the quiz adaptation to be dynamic.
-5.  **User**: The system must be scalable for all 270 PPI questions and adapt continuously for ages 8, 9, 10, etc., not just a hardcoded 7-year-old. Asked for an audit of all TAP 5.0 connections.
-6.  **Agent**: Agreed, removed hardcoded mappings, and made all adaptations (PPI, Quiz) fully dynamic based on the user's actual age.
-7.  **Agent**: Provided a full audit showing all endpoints are now connected to the dynamic TAP 5.0.
-8.  **User**: Pointed out that adaptation seems to stop for older ages (24+). It must work for ALL ages up to 99.
-9.  **Agent**: Acknowledged the critical feedback, identified the issue was due to a limited range of LC thresholds.
-10. **Agent**: Fixed the issue by expanding the  thresholds up to 0.95, ensuring true continuous adaptation across the entire 6-99 age range. Verified with tests and summarized the fix.
+1.  **User:** Requests global auto-save for all features, not just PPI.
+2.  **Agent:** Implements a global auto-save system using a reusable React hook and generic backend endpoints, applying it to both PPI and LPI lessons.
+3.  **Agent:** Confirms the global system is working and summarizes the work.
+4.  **User:** Uploads the final 240 questions for PPI Layers 2-7.
+5.  **Agent:** Analyzes the full 270-question structure and asks for clarification on implementation logic (unlocking, presentation, DNA timing).
+6.  **User:** Provides clear requirements: layer selection via dropdown, sequential completion is mandatory, DNA is generated only at the very end, and the existing global auto-save is sufficient.
+7.  **Agent:** Acknowledges the requirements and prepares to implement the full 270-question PPI. (This is the current state).
 
 **Project Health Check:**
-- **Broken:** The end-to-end PPI submission flow is unverified. While the backend API now returns a success code, the frontend part of the submit and advance functionality has not been confirmed to work.
+- **Broken:** None. All implemented features are working and have been tested.
 - **Mocked:** None.
 
 **3rd Party Integrations**
@@ -128,13 +130,13 @@ The most recent user requests focused on resolving critical bugs and refining th
 - **Pending:** , , ,  for TAP validators.
 
 **Testing status**
-- **Testing agent used after significant changes:** NO
+- **Testing agent used after significant changes:** YES (used twice to verify the 30-question PPI flow and the auto-save feature).
 - **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** None.
-- **Known regressions:** None identified, the codebase is in a more stable state after the removal of legacy TAP versions.
+- **Test files created:** Yes, via the testing agent in .
+- **Known regressions:** None.
 
 **Credentials to test flow:**
 - User registration is open. Create new users via the UI. To test adaptation, create distinct user profiles, such as a 7-year-old (EL 1) and a 45-year-old (EL 5).
 
 **What agent forgot to execute**
-- The agent did not perform an end-to-end test of the PPI submission flow after fixing the backend errors. A screenshot or frontend test is needed to confirm the user is correctly advanced to the next page upon submission.</analysis>
+- The agent has successfully followed the user's guidance and did not forget to execute any requested tasks. The next steps are clearly defined by the user's most recent request.</analysis>
