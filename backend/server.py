@@ -228,10 +228,34 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 class SettingsUpdate(BaseModel):
+    # Profile
+    first_name: Optional[str] = None
+    avatar: Optional[str] = None
+    profile_picture_url: Optional[str] = None
+    # Personal Info
     language: Optional[str] = None
     experience_level: Optional[int] = None
-    notifications_enabled: Optional[bool] = None
+    life_stage: Optional[str] = None
+    occupation: Optional[str] = None
+    location: Optional[dict] = None
+    # Learning Preferences
     financial_goals: Optional[List[str]] = None
+    daily_goal_minutes: Optional[int] = None
+    reminder_time: Optional[str] = None
+    lesson_length: Optional[str] = None
+    enable_hints: Optional[bool] = None
+    # Notifications
+    notifications_enabled: Optional[bool] = None
+    weekly_email: Optional[bool] = None
+    achievement_alerts: Optional[bool] = None
+    quiet_hours_start: Optional[str] = None
+    quiet_hours_end: Optional[str] = None
+    # Display
+    dark_mode: Optional[bool] = None
+    text_size: Optional[str] = None
+    reduce_animations: Optional[bool] = None
+    # Parent (for minors)
+    parent_email: Optional[str] = None
 
 # ===========================
 # Database Schema v1.0: Identity & Family Models (Complete Spec)
