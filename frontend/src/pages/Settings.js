@@ -178,15 +178,24 @@ function Settings({ user, token }) {
         <div className="card mb-6 bg-gradient-to-r from-navy-900 to-navy-700 text-white">
           <h2 className="text-2xl font-bold mb-4">Your Account</h2>
           <div className="space-y-3">
+            {/* Primary UID - Most prominent */}
+            {user.uid && (
+              <div className="flex justify-between items-center bg-white/10 rounded-lg p-3">
+                <span className="text-white font-semibold">UID:</span>
+                <span className="bg-gold text-navy-900 px-4 py-1 rounded-full font-bold text-lg" data-testid="uid-display">
+                  {user.uid}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between items-center">
-              <span className="text-gray-300">User ID:</span>
+              <span className="text-gray-300">User Code:</span>
               <span className="bg-gold/20 text-gold px-3 py-1 rounded-full font-semibold" data-testid="user-id-display">
-                {user.user_code}
+                {user.user_code || 'Not assigned'}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-300">Person Key:</span>
-              <span className="font-mono text-sm text-gray-300">{user.person_key}</span>
+              <span className="font-mono text-sm text-gray-300">{user.person_key || 'Not assigned'}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-300">Email:</span>
@@ -195,7 +204,7 @@ function Settings({ user, token }) {
             <div className="flex justify-between items-center">
               <span className="text-gray-300">Cohort:</span>
               <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm font-semibold">
-                {user.cohort}
+                {user.cohort || 'Not assigned'}
               </span>
             </div>
           </div>
