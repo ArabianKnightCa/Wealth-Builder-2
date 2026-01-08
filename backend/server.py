@@ -1696,19 +1696,128 @@ async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(
         upsert=True
     )
     
-    # Sync relevant fields to user record
-    user_update = {}
-    if 'language' in update_data:
-        user_update['language'] = update_data['language']
-    if 'experience_level' in update_data:
-        user_update['experience_level'] = update_data['experience_level']
-    if 'financial_goals' in update_data:
-        user_update['financial_goals'] = update_data['financial_goals']
+    # Sync all relevant fields to user record
+    user_sync_fields = [
+        'first_name', 'avatar', 'profile_picture_url',
+        'language', 'experience_level', 'life_stage', 'occupation', 'location',
+        'financial_goals', 'daily_goal_minutes', 'reminder_time', 'lesson_length', 'enable_hints',
+        'notifications_enabled', 'weekly_email', 'achievement_alerts', 'quiet_hours_start', 'quiet_hours_end',
+        'dark_mode', 'text_size', 'reduce_animations', 'parent_email'
+    ]
+    
+    user_update = {k: v for k, v in update_data.items() if k in user_sync_fields}
     
     if user_update:
         await db.users.update_one({"id": user_id}, {"$set": user_update})
     
     return {"message": "Settings updated successfully"}
+
+# ========================================================================
+# USER DATA MANAGEMENT ENDPOINTS
+# ========================================================================
+
+@api_router.post("/auth/change-password")
+async def change_password(request: dict, user_id: str = Depends(get_current_user)):
+    """Change user password"""
+    current_password = request.get('current_password')
+    new_password = request.get('new_password')
+    
+    if not current_password or not new_password:
+        raise HTTPException(status_code=400, detail="Both current and new password required")
+    
+    if len(new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Verify current password
+    if not bcrypt.checkpw(current_password.encode(), user['password'].encode()):
+        raise HTTPException(status_code=401, detail="Current password is incorrect")
+    
+    # Hash and update new password
+    new_hash = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+    await db.users.update_one({"id": user_id}, {"$set": {"password": new_hash}})
+    
+    return {"message": "Password changed successfully"}
+
+@api_router.get("/user/export-data")
+async def export_user_data(user_id: str = Depends(get_current_user)):
+    """Export all user data (GDPR compliant)"""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Gather all user data
+    settings = await db.settings.find_one({"user_id": user_id}, {"_id": 0})
+    progress = await db.user_progress.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    quiz_results = await db.quiz_results.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    ppi_responses = await db.ppi_responses.find_one({"user_id": user_id}, {"_id": 0})
+    profiles = await db.profiles.find({"account_id": user_id}, {"_id": 0}).to_list(10)
+    
+    export_data = {
+        "export_date": datetime.now(timezone.utc).isoformat(),
+        "user_profile": user,
+        "settings": settings,
+        "learning_progress": progress,
+        "quiz_results": quiz_results,
+        "ppi_responses": ppi_responses,
+        "family_profiles": profiles
+    }
+    
+    return export_data
+
+@api_router.post("/user/reset-progress")
+async def reset_user_progress(user_id: str = Depends(get_current_user)):
+    """Reset all learning progress while keeping account"""
+    # Clear progress
+    await db.user_progress.delete_many({"user_id": user_id})
+    await db.quiz_results.delete_many({"user_id": user_id})
+    await db.ppi_responses.delete_many({"user_id": user_id})
+    await db.progress_saves.delete_many({"user_id": user_id})
+    
+    # Reset user learning state
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "ppi_completed": False,
+            "financial_dna": None,
+            "chapters_unlocked": ["CH01"],
+            "current_chapter": "CH01",
+            "quiz_scores": {}
+        }}
+    )
+    
+    return {"message": "All progress has been reset"}
+
+@api_router.post("/upload/profile-picture")
+async def upload_profile_picture(
+    file: UploadFile = File(...),
+    user_id: str = Depends(get_current_user)
+):
+    """Upload profile picture (stores as base64 in DB for POC)"""
+    # Validate file type
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="File must be an image")
+    
+    # Read and validate size (5MB max)
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large (max 5MB)")
+    
+    # Convert to base64 data URL for POC (in production, use cloud storage)
+    import base64
+    base64_data = base64.b64encode(contents).decode()
+    data_url = f"data:{file.content_type};base64,{base64_data}"
+    
+    # Update user record
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"profile_picture_url": data_url}}
+    )
+    
+    return {"url": data_url, "message": "Profile picture uploaded successfully"}
 
 @api_router.post("/telemetry")
 async def log_telemetry(data: dict, user_id: str = Depends(get_current_user)):
