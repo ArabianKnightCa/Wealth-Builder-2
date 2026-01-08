@@ -106,6 +106,31 @@ function Settings({ user, token }) {
     { value: 5, label: 'Expert' }
   ];
 
+  const toggleCategory = (categoryId) => {
+    setOpenCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
+  };
+
+  const handleGoalToggle = (goalId) => {
+    const currentGoals = settings.financial_goals || [];
+    const newGoals = currentGoals.includes(goalId)
+      ? currentGoals.filter(id => id !== goalId)
+      : [...currentGoals, goalId];
+    setSettings({ ...settings, financial_goals: newGoals });
+  };
+
+  const handleAddCustomGoal = () => {
+    if (customGoal.trim()) {
+      const customId = `custom_${Date.now()}`;
+      const currentGoals = settings.financial_goals || [];
+      setSettings({ ...settings, financial_goals: [...currentGoals, customId] });
+      localStorage.setItem(customId, customGoal.trim());
+      setCustomGoal('');
+    }
+  };
+
   const handleSave = async () => {
     setLoading(true);
     setMessage('');
