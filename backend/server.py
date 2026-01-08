@@ -1672,12 +1672,16 @@ async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(
         upsert=True
     )
     
-    if 'language' in update_data or 'experience_level' in update_data:
-        user_update = {}
-        if 'language' in update_data:
-            user_update['language'] = update_data['language']
-        if 'experience_level' in update_data:
-            user_update['experience_level'] = update_data['experience_level']
+    # Sync relevant fields to user record
+    user_update = {}
+    if 'language' in update_data:
+        user_update['language'] = update_data['language']
+    if 'experience_level' in update_data:
+        user_update['experience_level'] = update_data['experience_level']
+    if 'financial_goals' in update_data:
+        user_update['financial_goals'] = update_data['financial_goals']
+    
+    if user_update:
         await db.users.update_one({"id": user_id}, {"$set": user_update})
     
     return {"message": "Settings updated successfully"}
