@@ -238,13 +238,6 @@ function LocationSelectorGooglePlaces({ value, onChange, token }) {
       <p className="text-xs text-gray-500">
         💡 <strong>Tip:</strong> Allow location access for instant detection, or type your city name for manual search.
       </p>
-
-      {/* Mock mode indicator (remove when using real API) */}
-      {!process.env.REACT_APP_GOOGLE_PLACES_API_KEY && (
-        <p className="text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded">
-          ℹ️ Using mock geocoding. Configure Google Places API key for production.
-        </p>
-      )}
     </div>
   );
 }
