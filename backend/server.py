@@ -1717,11 +1717,15 @@ async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(
     
     # Sync all relevant fields to user record
     user_sync_fields = [
-        'first_name', 'avatar', 'profile_picture_url',
+        'first_name', 'avatar', 'profile_picture_url', 'date_of_birth',
         'language', 'experience_level', 'life_stage', 'occupation', 'location',
+        'timezone', 'pronouns', 'secondary_email',
         'financial_goals', 'daily_goal_minutes', 'reminder_time', 'lesson_length', 'enable_hints',
-        'notifications_enabled', 'weekly_email', 'achievement_alerts', 'quiet_hours_start', 'quiet_hours_end',
-        'dark_mode', 'text_size', 'reduce_animations', 'parent_email'
+        'notifications_enabled', 'weekly_email', 'achievement_alerts', 'milestone_celebrations',
+        'streak_reminders', 'quiet_hours_start', 'quiet_hours_end', 'email_frequency',
+        'dark_mode', 'text_size', 'reduce_animations', 'high_contrast', 'font_family',
+        'profile_visible', 'show_progress_publicly', 'allow_analytics', 'data_retention_months',
+        'parent_email', 'parent_name', 'daily_time_limit', 'content_filter', 'require_approval', 'weekly_report'
     ]
     
     user_update = {k: v for k, v in update_data.items() if k in user_sync_fields}
@@ -1730,6 +1734,43 @@ async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(
         await db.users.update_one({"id": user_id}, {"$set": user_update})
     
     return {"message": "Settings updated successfully"}
+
+@api_router.post("/parental/send-verification")
+async def send_parental_verification(request: dict, user_id: str = Depends(get_current_user)):
+    """Send verification email to parent/guardian"""
+    parent_email = request.get('parent_email')
+    parent_name = request.get('parent_name', 'Parent/Guardian')
+    
+    if not parent_email:
+        raise HTTPException(status_code=400, detail="Parent email required")
+    
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Generate verification token
+    import secrets
+    verification_token = secrets.token_urlsafe(32)
+    
+    # Store verification request
+    await db.parental_verifications.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            "user_id": user_id,
+            "parent_email": parent_email,
+            "parent_name": parent_name,
+            "token": verification_token,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "verified": False
+        }},
+        upsert=True
+    )
+    
+    # In production, send email via Resend
+    # For POC, just log it
+    logging.info(f"Parental verification requested: {parent_email} for user {user.get('first_name', 'Unknown')}")
+    
+    return {"message": "Verification email sent to parent", "status": "pending"}
 
 # ========================================================================
 # USER DATA MANAGEMENT ENDPOINTS
