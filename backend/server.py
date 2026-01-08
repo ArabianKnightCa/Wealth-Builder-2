@@ -233,11 +233,15 @@ class SettingsUpdate(BaseModel):
     avatar: Optional[str] = None
     profile_picture_url: Optional[str] = None
     # Personal Info
+    date_of_birth: Optional[str] = None
     language: Optional[str] = None
     experience_level: Optional[int] = None
     life_stage: Optional[str] = None
     occupation: Optional[str] = None
     location: Optional[dict] = None
+    timezone: Optional[str] = None
+    pronouns: Optional[str] = None
+    secondary_email: Optional[str] = None
     # Learning Preferences
     financial_goals: Optional[List[str]] = None
     daily_goal_minutes: Optional[int] = None
@@ -248,14 +252,29 @@ class SettingsUpdate(BaseModel):
     notifications_enabled: Optional[bool] = None
     weekly_email: Optional[bool] = None
     achievement_alerts: Optional[bool] = None
+    milestone_celebrations: Optional[bool] = None
+    streak_reminders: Optional[bool] = None
     quiet_hours_start: Optional[str] = None
     quiet_hours_end: Optional[str] = None
+    email_frequency: Optional[str] = None
     # Display
     dark_mode: Optional[bool] = None
     text_size: Optional[str] = None
     reduce_animations: Optional[bool] = None
-    # Parent (for minors)
+    high_contrast: Optional[bool] = None
+    font_family: Optional[str] = None
+    # Privacy
+    profile_visible: Optional[bool] = None
+    show_progress_publicly: Optional[bool] = None
+    allow_analytics: Optional[bool] = None
+    data_retention_months: Optional[int] = None
+    # Parental Controls
     parent_email: Optional[str] = None
+    parent_name: Optional[str] = None
+    daily_time_limit: Optional[int] = None
+    content_filter: Optional[str] = None
+    require_approval: Optional[bool] = None
+    weekly_report: Optional[bool] = None
 
 # ===========================
 # Database Schema v1.0: Identity & Family Models (Complete Spec)
