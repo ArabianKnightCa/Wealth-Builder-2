@@ -231,6 +231,7 @@ class SettingsUpdate(BaseModel):
     language: Optional[str] = None
     experience_level: Optional[int] = None
     notifications_enabled: Optional[bool] = None
+    financial_goals: Optional[List[str]] = None
 
 # ===========================
 # Database Schema v1.0: Identity & Family Models (Complete Spec)
