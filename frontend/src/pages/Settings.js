@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProfileManager from '../components/ProfileManager';
+import { FINANCIAL_GOALS_CONFIG, getGoalLabel } from '../data/financialGoals';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -11,13 +12,16 @@ function Settings({ user, token }) {
   const [settings, setSettings] = useState({
     language: user.language || 'en',
     experience_level: user.experience_level || 3,
-    notifications_enabled: true
+    notifications_enabled: true,
+    financial_goals: user.financial_goals || []
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteStep, setDeleteStep] = useState(1); // 1 = first confirm, 2 = second confirm
+  const [openCategories, setOpenCategories] = useState({});
+  const [customGoal, setCustomGoal] = useState('');
 
   const handleDeleteAccount = () => {
     console.log('Delete button clicked - showing confirmation modal');
