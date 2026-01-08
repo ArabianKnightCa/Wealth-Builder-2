@@ -1034,7 +1034,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
 
                 <div className={`p-4 rounded-lg ${display.dark_mode ? 'bg-blue-900/30' : 'bg-blue-50'} border border-blue-200`}>
                   <p className="text-sm mb-4">
-                    Since you're under 18, a parent or guardian needs to be connected to your account.
+                    Since you are under 18, a parent or guardian needs to be connected to your account.
                   </p>
                 </div>
 
@@ -1053,7 +1053,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                     }`}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    They'll receive a notification about your account activity
+                    They will receive a notification about your account activity
                   </p>
                 </div>
               </div>
