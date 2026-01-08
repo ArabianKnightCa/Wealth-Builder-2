@@ -252,6 +252,111 @@ function Settings({ user, token }) {
               </select>
             </div>
 
+            {/* Financial Goals Section */}
+            <div className="pt-4 border-t border-gray-200">
+              <label className="block text-gray-700 font-semibold mb-2">Financial Goals</label>
+              <p className="text-sm text-gray-500 mb-3">
+                {settings.financial_goals?.length || 0} goal{(settings.financial_goals?.length || 0) !== 1 ? 's' : ''} selected
+              </p>
+              
+              <div className="space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
+                {FINANCIAL_GOALS_CONFIG.categories.map((category) => (
+                  <div key={category.id} className="border-b border-gray-100 last:border-b-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory(category.id)}
+                      className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+                    >
+                      <span className="font-medium text-navy-900 text-sm">
+                        {category.label}
+                      </span>
+                      <span className="text-gold">
+                        {openCategories[category.id] ? '−' : '+'}
+                      </span>
+                    </button>
+
+                    {openCategories[category.id] && (
+                      <div className="p-3 bg-white space-y-1">
+                        {category.goals.map((goal) => (
+                          <label
+                            key={goal.id}
+                            className="flex items-start space-x-2 p-2 rounded hover:bg-gray-50 cursor-pointer text-sm"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={settings.financial_goals?.includes(goal.id) || false}
+                              onChange={() => handleGoalToggle(goal.id)}
+                              className="mt-0.5 w-4 h-4 text-gold border-gray-300 rounded focus:ring-gold"
+                            />
+                            <span className="text-gray-700">{goal.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Custom Goal Input */}
+              <div className="mt-3 flex gap-2">
+                <input
+                  type="text"
+                  value={customGoal}
+                  onChange={(e) => setCustomGoal(e.target.value)}
+                  placeholder="Add a custom goal..."
+                  maxLength={200}
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddCustomGoal();
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddCustomGoal}
+                  disabled={!customGoal.trim()}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    customGoal.trim()
+                      ? 'bg-gold hover:bg-yellow-500 text-navy-900'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  Add
+                </button>
+              </div>
+
+              {/* Display Custom Goals */}
+              {settings.financial_goals?.some(id => id.startsWith('custom_')) && (
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs font-semibold text-gray-600">Your Custom Goals:</p>
+                  {settings.financial_goals
+                    .filter(id => id.startsWith('custom_'))
+                    .map(customId => (
+                      <div
+                        key={customId}
+                        className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded text-sm"
+                      >
+                        <span className="text-gray-700">
+                          {localStorage.getItem(customId) || customId}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleGoalToggle(customId);
+                            localStorage.removeItem(customId);
+                          }}
+                          className="text-red-500 hover:text-red-700 text-xs font-semibold"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+
             <div className="flex items-center">
               <input
                 type="checkbox"
