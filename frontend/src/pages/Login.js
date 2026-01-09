@@ -11,6 +11,10 @@ function Login({ onLogin }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showMagicLink, setShowMagicLink] = useState(false);
+  const [magicLinkEmail, setMagicLinkEmail] = useState('');
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [magicLinkLoading, setMagicLinkLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +31,103 @@ function Login({ onLogin }) {
       setLoading(false);
     }
   };
+
+  const handleMagicLinkSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMagicLinkLoading(true);
+
+    try {
+      await axios.post(`${API}/auth/magic-link/send`, { email: magicLinkEmail });
+      setMagicLinkSent(true);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to send magic link. Please try again.');
+    } finally {
+      setMagicLinkLoading(false);
+    }
+  };
+
+  // Magic Link Success View
+  if (magicLinkSent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
+        <div className="max-w-md w-full">
+          <div className="card text-center p-8">
+            <div className="text-6xl mb-6">✉️</div>
+            <h2 className="text-2xl font-bold text-navy-900 mb-2">Check your email!</h2>
+            <p className="text-gray-600 mb-4">
+              We sent a magic link to <strong>{magicLinkEmail}</strong>
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Click the link in the email to sign in instantly. The link expires in 15 minutes.
+            </p>
+            <button
+              onClick={() => { setMagicLinkSent(false); setShowMagicLink(false); }}
+              className="text-gold font-semibold hover:underline"
+            >
+              ← Back to login options
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Magic Link Form View
+  if (showMagicLink) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
+        <div className="max-w-md w-full">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-white mb-2">✨ Magic Link</h2>
+            <p className="text-gray-300">Sign in without a password</p>
+          </div>
+
+          <div className="card">
+            <form onSubmit={handleMagicLinkSubmit} className="space-y-6">
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Email Address</label>
+                <input
+                  type="email"
+                  className="input-field"
+                  value={magicLinkEmail}
+                  onChange={(e) => setMagicLinkEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  data-testid="magic-link-email"
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="btn-primary w-full" 
+                disabled={magicLinkLoading}
+                data-testid="send-magic-link-btn"
+              >
+                {magicLinkLoading ? 'Sending...' : '✨ Send Magic Link'}
+              </button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowMagicLink(false)}
+                  className="text-gold font-semibold hover:underline"
+                >
+                  ← Back to all sign-in options
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center p-4">
