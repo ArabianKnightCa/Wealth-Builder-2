@@ -4,73 +4,20 @@ import axios from 'axios';
 import ProfileManager from '../components/ProfileManager';
 import { FINANCIAL_GOALS_CONFIG } from '../data/financialGoals';
 import LocationSelectorWrapper from '../components/LocationSelectorWrapper';
+import {
+  AVATAR_OPTIONS,
+  LIFE_STAGE_OPTIONS,
+  OCCUPATION_OPTIONS,
+  TIMEZONE_OPTIONS,
+  FONT_OPTIONS,
+  EXPERIENCE_LEVELS,
+  LANGUAGE_OPTIONS,
+  getLifeStageLabel,
+  getExperienceLabel
+} from '../components/settings/constants';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-
-// Avatar options
-const AVATAR_OPTIONS = [
-  "👦", "👧", "👨", "👩", "🧒", "👶",
-  "🦁", "🐻", "🐼", "🐨", "🦊", "🐸",
-  "⭐", "🌟", "💫", "🎯", "🎨", "📚",
-  "🚀", "🌈", "🎓", "💼", "🏠", "🌱"
-];
-
-// Life stage options
-const LIFE_STAGE_OPTIONS = [
-  { value: 'ES', label: 'Elementary School' },
-  { value: 'JH', label: 'Junior High' },
-  { value: 'HS', label: 'High School' },
-  { value: 'CL', label: 'College' },
-  { value: 'UN', label: 'University' },
-  { value: 'AD', label: 'Adult / Non-Student' }
-];
-
-// Occupation options
-const OCCUPATION_OPTIONS = [
-  'Student',
-  'Full-Time Employee',
-  'Part-Time Employee',
-  'Self-Employed',
-  'Business Owner',
-  'Freelancer',
-  'Unemployed',
-  'Retired',
-  'Homemaker',
-  'Other'
-];
-
-// Timezone options
-const TIMEZONE_OPTIONS = [
-  { value: 'America/New_York', label: 'Eastern Time (ET)' },
-  { value: 'America/Chicago', label: 'Central Time (CT)' },
-  { value: 'America/Denver', label: 'Mountain Time (MT)' },
-  { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
-  { value: 'America/Anchorage', label: 'Alaska Time (AKT)' },
-  { value: 'Pacific/Honolulu', label: 'Hawaii Time (HT)' },
-  { value: 'Europe/London', label: 'London (GMT/BST)' },
-  { value: 'Europe/Paris', label: 'Central European (CET)' },
-  { value: 'Asia/Tokyo', label: 'Japan (JST)' },
-  { value: 'Asia/Shanghai', label: 'China (CST)' },
-  { value: 'Asia/Kolkata', label: 'India (IST)' },
-  { value: 'Australia/Sydney', label: 'Sydney (AEST)' }
-];
-
-// Font options with preview styles
-const FONT_OPTIONS = [
-  { value: 'default', label: 'System Default', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'inter', label: 'Inter', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'georgia', label: 'Georgia (Serif)', style: 'font-serif', preview: 'Aa Bb Cc 123' },
-  { value: 'times', label: 'Times New Roman', style: 'font-serif', preview: 'Aa Bb Cc 123' },
-  { value: 'arial', label: 'Arial', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'verdana', label: 'Verdana', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'courier', label: 'Courier (Monospace)', style: 'font-mono', preview: 'Aa Bb Cc 123' },
-  { value: 'comic', label: 'Comic Sans', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'dyslexic', label: 'OpenDyslexic', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'roboto', label: 'Roboto', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'lato', label: 'Lato', style: 'font-sans', preview: 'Aa Bb Cc 123' },
-  { value: 'merriweather', label: 'Merriweather (Serif)', style: 'font-serif', preview: 'Aa Bb Cc 123' }
-];
 
 function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   const navigate = useNavigate();
