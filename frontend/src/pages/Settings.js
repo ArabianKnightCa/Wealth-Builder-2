@@ -511,7 +511,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
               <div className="space-y-6">
                 <div className={`border-b pb-4 mb-6 ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <h2 className="text-2xl font-bold">👤 Profile</h2>
-                  <p className={subTextClass}>Manage your identity</p>
+                  <p className={subTextClass}>Manage your identity and personal information</p>
                 </div>
                 
                 {/* User Stats Card - Enhanced */}
@@ -550,20 +550,12 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         <p className="text-xl font-bold">{userAge !== null ? `${userAge} yrs` : 'Not set'}</p>
                       </div>
                       <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Level</p>
-                        <p className="text-lg font-semibold">{getExperienceLabel(preferences.experience_level)}</p>
-                      </div>
-                      <div>
                         <p className="text-gold text-xs uppercase tracking-wide">Stage</p>
                         <p className="text-lg font-semibold">{getLifeStageLabel(personalInfo.life_stage)}</p>
                       </div>
                       <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Goals</p>
-                        <p className="text-lg font-semibold">{preferences.financial_goals?.length || 0} selected</p>
-                      </div>
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Daily Goal</p>
-                        <p className="text-lg font-semibold">{preferences.daily_goal_minutes} min</p>
+                        <p className="text-gold text-xs uppercase tracking-wide">Location</p>
+                        <p className="text-lg font-semibold">{personalInfo.location?.city || 'Not set'}</p>
                       </div>
                     </div>
                   </div>
@@ -594,39 +586,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                     placeholder="Enter your name"
                     data-testid="name-input"
                   />
-                </div>
-
-                {/* Your ID - Simplified (removed cohort, person_key) */}
-                <div className={`p-4 rounded-xl ${display.dark_mode ? 'bg-gray-700/50' : 'bg-gray-100'} border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className={`text-xs ${subTextClass} uppercase tracking-wide`}>Your ID</p>
-                      <p className="text-sm text-gray-500">Use this for support & sharing</p>
-                    </div>
-                    <span className="font-mono font-bold text-lg bg-gold text-navy-900 px-4 py-2 rounded-full">
-                      {user.uid || user.user_code || 'N/A'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Profile Manager */}
-                <div className={`pt-6 border-t ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <h3 className="font-semibold mb-3">👥 Manage Profiles</h3>
-                  <ProfileManager 
-                    token={token} 
-                    currentProfile={user} 
-                    onProfileSwitch={() => window.location.reload()} 
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* ==================== PERSONAL INFO SECTION ==================== */}
-            {activeSection === 'personal' && (
-              <div className="space-y-6">
-                <div className={`border-b pb-4 mb-6 ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <h2 className="text-2xl font-bold">📋 Personal Information</h2>
-                  <p className={subTextClass}>Your details help us personalize content</p>
                 </div>
 
                 {/* Date of Birth */}
@@ -698,17 +657,27 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   </select>
                 </div>
 
-                {/* Backup Email */}
-                <div>
-                  <label className={`block font-semibold mb-2 ${labelClass}`}>Backup Email (optional)</label>
-                  <input
-                    type="email"
-                    value={personalInfo.secondary_email}
-                    onChange={(e) => setPersonalInfo(prev => ({ ...prev, secondary_email: e.target.value }))}
-                    className={`w-full px-4 py-3 rounded-lg border-2 ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
-                    placeholder="backup@example.com"
+                {/* Your ID */}
+                <div className={`p-4 rounded-xl ${display.dark_mode ? 'bg-gray-700/50' : 'bg-gray-100'} border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className={`text-xs ${subTextClass} uppercase tracking-wide`}>Your ID</p>
+                      <p className="text-sm text-gray-500">Use this for support & sharing</p>
+                    </div>
+                    <span className="font-mono font-bold text-lg bg-gold text-navy-900 px-4 py-2 rounded-full">
+                      {user.uid || user.user_code || 'N/A'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Profile Manager */}
+                <div className={`pt-6 border-t ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
+                  <h3 className="font-semibold mb-3">👥 Manage Profiles</h3>
+                  <ProfileManager 
+                    token={token} 
+                    currentProfile={user} 
+                    onProfileSwitch={() => window.location.reload()} 
                   />
-                  <p className={`text-xs mt-1 ${subTextClass}`}>For account recovery</p>
                 </div>
               </div>
             )}
