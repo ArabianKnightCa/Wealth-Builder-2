@@ -16,7 +16,7 @@ import os
 import uuid
 from datetime import datetime
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://finance-coach-37.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://wealth-journey-79.preview.emergentagent.com').rstrip('/')
 
 # Likert question indices (1-based) - from ppi_trait_vector.py
 LIKERT_QUESTIONS = [1, 3, 5, 7, 8, 10, 12, 13, 15, 18, 21, 24, 27, 28]
