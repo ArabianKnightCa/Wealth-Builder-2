@@ -277,6 +277,36 @@ class SettingsUpdate(BaseModel):
     weekly_report: Optional[bool] = None
 
 # ===========================
+# Topic Selection & Badge Models
+# ===========================
+
+class TopicSelection(BaseModel):
+    """User's selected financial topics"""
+    topic_ids: List[str]
+
+class TopicSelectionResponse(BaseModel):
+    topic_ids: List[str]
+    selected_at: str
+    topic_count: int
+
+class BadgeProgress(BaseModel):
+    """Badge unlock progress for a user"""
+    badge_id: str
+    unlocked: bool
+    unlocked_at: Optional[str] = None
+    progress: Optional[Dict[str, Any]] = None
+
+class PPILayerRequest(BaseModel):
+    """Request for a specific PPI layer"""
+    layer_number: int
+
+class PPILayerSubmit(BaseModel):
+    """Submit answers for a specific PPI layer"""
+    layer_number: int
+    answers: List[Dict[str, Any]]
+    time_spent_seconds: Optional[int] = None
+
+# ===========================
 # Database Schema v1.0: Identity & Family Models (Complete Spec)
 # ===========================
 
