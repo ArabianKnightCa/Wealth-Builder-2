@@ -82,7 +82,7 @@ const TopicItem = ({ topic, isSelected, onToggle, onHover, onLeave }) => {
       className={`relative flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
         isSelected
           ? 'bg-gold/20 border-2 border-gold'
-          : 'bg-gray-50 border-2 border-transparent hover:border-gray-300 hover:bg-gray-100'
+          : 'bg-gray-50 border-2 border-transparent hover:border-gray-300 hover:bg-gray-200'
       }`}
       onClick={() => onToggle(topic)}
       onMouseEnter={(e) => onHover(topic, e)}
@@ -111,7 +111,7 @@ const CategoryAccordion = ({ category, topics, selectedTopics, onToggleTopic, on
   return (
     <div className="border-2 border-gray-200 rounded-xl overflow-hidden mb-4" data-testid={`category-${category.id}`}>
       <button
-        className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition"
+        className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-200 transition"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-3">

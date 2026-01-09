@@ -101,7 +101,7 @@ function AddProfile({ token }) {
                   className={`text-4xl p-3 rounded-lg transition-all ${
                     formData.avatar === avatar
                       ? 'bg-blue-100 ring-2 ring-blue-500'
-                      : 'bg-gray-50 hover:bg-gray-100'
+                      : 'bg-gray-50 hover:bg-gray-200'
                   }`}
                 >
                   {avatar}
@@ -204,7 +204,7 @@ function AddProfile({ token }) {
             <button
               type="button"
               onClick={() => navigate('/profiles')}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
             >
               Cancel
             </button>
