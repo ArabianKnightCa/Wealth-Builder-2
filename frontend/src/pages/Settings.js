@@ -432,7 +432,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   // Navigation sections
   const sections = [
     { id: 'profile', label: 'Profile', icon: '👤' },
-    { id: 'personal', label: 'Personal Info', icon: '📋' },
     { id: 'learning', label: 'Learning', icon: '📚' },
     { id: 'notifications', label: 'Notifications', icon: '🔔' },
     { id: 'display', label: 'Display', icon: '🎨' },
