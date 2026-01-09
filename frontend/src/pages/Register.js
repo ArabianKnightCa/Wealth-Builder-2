@@ -343,7 +343,10 @@ function Register({ onLogin }) {
                   className={`input-field ${fieldErrors.first_name ? 'border-red-500 border-2 bg-red-50' : ''}`}
                   value={formData.first_name}
                   onChange={(e) => {
-                    setFormData({ ...formData, first_name: e.target.value });
+                    // Auto-capitalize first letter of each word
+                    const value = e.target.value;
+                    const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+                    setFormData({ ...formData, first_name: capitalized });
                     setFieldErrors({ ...fieldErrors, first_name: false });
                   }}
                   required
