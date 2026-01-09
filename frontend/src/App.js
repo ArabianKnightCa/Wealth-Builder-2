@@ -168,6 +168,7 @@ function AppContent() {
         <Route path="/ae-test-harness" element={user ? <AETestHarness token={token} /> : <Navigate to="/login" />} />
         <Route path="/location-demo" element={user ? <LocationSelectorDemo token={token} /> : <Navigate to="/login" />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/auth/magic-link" element={<MagicLinkVerify onLogin={handleLogin} />} />
         <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to={getOnboardingRedirect()} />} />
         <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : <Navigate to={getOnboardingRedirect()} />} />
         <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to={getOnboardingRedirect()} />} />
