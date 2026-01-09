@@ -137,7 +137,7 @@ function LocationSelectorAutocomplete({ value, onChange, token }) {
               onKeyDown={handleKeyDown}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
-              placeholder="Start typing... (e.g., San Francisco, London, Tokyo)"
+              placeholder="Start typing... (e.g., Sacramento, London, Tokyo)"
               className="input-field pr-10"
             />
             {loading && (

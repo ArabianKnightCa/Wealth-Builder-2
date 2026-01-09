@@ -162,7 +162,7 @@ function LocationSelectorGooglePlaces({ value, onChange, token }) {
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="or type city name (e.g., San Francisco, USA)"
+            placeholder="or type city name (e.g., Sacramento, USA)"
             className="input-field flex-1"
             disabled={geolocating}
           />

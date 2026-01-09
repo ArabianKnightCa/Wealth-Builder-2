@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
  */
 
 const COUNTRIES_AND_CITIES = {
-  "United States": ["San Francisco", "San Jose", "Los Angeles", "New York", "Chicago", "Seattle", "Boston", "Austin", "Miami", "Denver"],
+  "United States": ["Sacramento", "San Jose", "Los Angeles", "New York", "Chicago", "Seattle", "Boston", "Austin", "Miami", "Denver"],
   "United Kingdom": ["London", "Manchester", "Birmingham", "Edinburgh", "Glasgow"],
   "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa"],
   "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide"],
