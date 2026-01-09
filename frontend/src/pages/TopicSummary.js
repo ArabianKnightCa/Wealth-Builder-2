@@ -122,7 +122,7 @@ function TopicSummary({ token, user }) {
   };
 
   const handleStartLearning = () => {
-    navigate('/ppi');
+    navigate('/ppi-layers');
   };
 
   const handleEditTopics = () => {
