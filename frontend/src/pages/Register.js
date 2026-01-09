@@ -180,6 +180,18 @@ function Register({ onLogin }) {
       errors.email = true;
     }
     
+    // Check if email already exists
+    if (emailExists) {
+      errors.email = true;
+      setError('This email is already registered. Please use a different email or login.');
+    }
+    
+    // Check if email check is still in progress
+    if (emailChecking) {
+      setError('Please wait while we verify your email...');
+      return;
+    }
+    
     if (!formData.password) {
       errors.password = true;
     }
