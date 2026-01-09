@@ -28,7 +28,18 @@ The TAP system adapts financial education content based on:
 
 ### Latest Updates (January 9, 2026)
 
-#### Comprehensive Authentication System ✅ (NEW - This Session)
+#### Bug Fix: OAuth "Pretty-Print" Issue ✅ (This Session)
+- **Problem:** OAuth buttons showed "pretty-print" checkbox due to malformed redirect URLs with `#provider=` hash fragments
+- **Solution:** Removed hash fragments from all OAuth redirect URLs in Login.js and Settings.js
+- **Files Fixed:** `Login.js`, `Settings.js`, `AuthCallback.js`
+
+#### Settings.js Partial Refactoring ✅ (This Session)
+- Imported constants from `/app/frontend/src/components/settings/constants.js`
+- Removed duplicate constant definitions (AVATAR_OPTIONS, LIFE_STAGE_OPTIONS, etc.)
+- Reduced file from 1800+ lines to 1746 lines
+- Full component-based refactoring deferred (would require significant prop drilling)
+
+#### Comprehensive Authentication System ✅ (This Session)
 **8 Sign-In Methods Available:**
 1. Email/Password (traditional)
 2. Google OAuth
