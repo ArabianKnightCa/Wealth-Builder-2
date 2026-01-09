@@ -18,6 +18,7 @@ import uuid
 import bcrypt
 import jwt
 import random
+import secrets
 import string
 from content_data import LPI_CHAPTERS, LPI_ANSWER_KEY
 from ae_engine_v2 import get_adaptive_engine_v2
