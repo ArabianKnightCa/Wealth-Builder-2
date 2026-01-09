@@ -356,19 +356,26 @@ function Register({ onLogin }) {
 
               <div data-field="email">
                 <label className="block text-gray-700 font-semibold mb-2">Email</label>
-                <input
-                  type="email"
-                  className={`input-field ${fieldErrors.email ? 'border-red-500 border-2 bg-red-50' : ''}`}
-                  value={formData.email}
-                  onChange={(e) => {
-                    setFormData({ ...formData, email: e.target.value });
-                    setFieldErrors({ ...fieldErrors, email: false });
-                  }}
-                  required
-                  data-testid="email-input"
-                />
-                {fieldErrors.email && (
-                  <p className="text-red-600 text-sm mt-1">⚠️ Please enter your email</p>
+                <div className="relative">
+                  <input
+                    type="email"
+                    className={`input-field ${fieldErrors.email || emailExists ? 'border-red-500 border-2 bg-red-50' : ''}`}
+                    value={formData.email}
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    required
+                    data-testid="email-input"
+                  />
+                  {emailChecking && (
+                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                      Checking...
+                    </span>
+                  )}
+                </div>
+                {emailExists && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ This email is already registered. <button onClick={() => navigate('/login')} className="underline text-gold hover:text-yellow-600">Login instead?</button></p>
+                )}
+                {fieldErrors.email && !emailExists && (
+                  <p className="text-red-600 text-sm mt-1">⚠️ Please enter a valid email</p>
                 )}
               </div>
 
