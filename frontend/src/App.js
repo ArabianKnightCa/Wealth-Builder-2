@@ -21,6 +21,9 @@ import FeedbackViewer from './pages/FeedbackViewer';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AETestHarness from './pages/AETestHarness';
 import LocationSelectorDemo from './pages/LocationSelectorDemo';
+import PPILayerSelector from './pages/PPILayerSelector';
+import TopicSelection from './pages/TopicSelection';
+import TopicSummary from './pages/TopicSummary';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
