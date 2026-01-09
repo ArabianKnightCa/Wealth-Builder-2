@@ -960,7 +960,8 @@ async def google_oauth_callback(data: GoogleAuthCallback, response: Response):
         user_id = str(uuid.uuid4())
         person_key = f"PK-{uuid.uuid4().hex[:8].upper()}"
         timestamp = datetime.now(timezone.utc).strftime('%y%m%d%H%M')
-        seq_num = await get_next_sequence_number()
+        # Use random 4-digit sequence instead of DB counter
+        seq_num = int(uuid.uuid4().hex[:4], 16) % 10000
         user_code = f"WB-POC-GEN-{seq_num:04d}-{timestamp}"
         
         new_user = {
