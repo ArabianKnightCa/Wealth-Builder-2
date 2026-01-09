@@ -922,11 +922,105 @@ async def submit_quiz_answer(answer_data: dict, user_id: str = Depends(get_curre
 class EmailCheck(BaseModel):
     email: EmailStr
 
+class GoogleAuthCallback(BaseModel):
+    google_id: str
+    email: EmailStr
+    name: str
+    picture: Optional[str] = None
+    session_token: str
+
 @api_router.post("/auth/check-email")
 async def check_email_exists(data: EmailCheck):
     """Check if an email is already registered"""
     existing_user = await db.users.find_one({"email": data.email})
     return {"exists": existing_user is not None}
+
+@api_router.post("/auth/google/callback")
+async def google_oauth_callback(data: GoogleAuthCallback, response: Response):
+    """
+    Handle Google OAuth callback - create or update user and establish session
+    """
+    # Check if user exists by email
+    existing_user = await db.users.find_one({"email": data.email}, {"_id": 0})
+    
+    if existing_user:
+        # Update existing user with Google info
+        await db.users.update_one(
+            {"email": data.email},
+            {"$set": {
+                "google_id": data.google_id,
+                "profile_picture_url": data.picture,
+                "google_connected": True,
+                "last_login": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        user = await db.users.find_one({"email": data.email}, {"_id": 0})
+    else:
+        # Create new user from Google data
+        user_id = str(uuid.uuid4())
+        person_key = f"PK-{uuid.uuid4().hex[:8].upper()}"
+        timestamp = datetime.now(timezone.utc).strftime('%y%m%d%H%M')
+        seq_num = await get_next_sequence_number()
+        user_code = f"WB-POC-GEN-{seq_num:04d}-{timestamp}"
+        
+        new_user = {
+            "id": user_id,
+            "person_key": person_key,
+            "user_code": user_code,
+            "google_id": data.google_id,
+            "email": data.email,
+            "first_name": data.name.split()[0] if data.name else "User",
+            "profile_picture_url": data.picture,
+            "google_connected": True,
+            "user_type": "POC",
+            "life_stage": "AD",
+            "cohort": "GEN",
+            "dob_month": 1,
+            "dob_year": 1990,
+            "language": "en",
+            "experience_level": 2,
+            "occupation": "Other",
+            "ppi_completed": False,
+            "topics_selected": False,
+            "account_status": "active",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "last_login": datetime.now(timezone.utc).isoformat()
+        }
+        await db.users.insert_one(new_user)
+        user = {k: v for k, v in new_user.items() if k != "_id"}
+    
+    # Store session token
+    session_expires = datetime.now(timezone.utc) + timedelta(days=7)
+    await db.user_sessions.update_one(
+        {"user_id": user["id"]},
+        {"$set": {
+            "user_id": user["id"],
+            "session_token": data.session_token,
+            "expires_at": session_expires.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    
+    # Set httpOnly cookie
+    response.set_cookie(
+        key="session_token",
+        value=data.session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=7 * 24 * 60 * 60,  # 7 days
+        path="/"
+    )
+    
+    # Generate JWT token for API auth
+    access_token = create_access_token({"sub": user["id"]})
+    
+    return {
+        "user": user,
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
