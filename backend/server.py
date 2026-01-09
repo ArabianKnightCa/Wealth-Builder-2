@@ -1379,6 +1379,319 @@ async def verify_magic_link(request: MagicLinkVerify, response: Response):
     }
 
 
+# =========================================================================
+# Passkey / WebAuthn Authentication
+# =========================================================================
+import base64
+from webauthn import (
+    generate_registration_options,
+    verify_registration_response,
+    generate_authentication_options,
+    verify_authentication_response,
+    options_to_json,
+)
+from webauthn.helpers.structs import (
+    AuthenticatorSelectionCriteria,
+    ResidentKeyRequirement,
+    UserVerificationRequirement,
+    PublicKeyCredentialDescriptor,
+)
+from webauthn.helpers.cose import COSEAlgorithmIdentifier
+
+# WebAuthn Configuration
+RP_ID = os.getenv("RP_ID", "localhost")  # Your domain
+RP_NAME = "Wealth Builder"
+ORIGIN = os.getenv("WEBAUTHN_ORIGIN", "http://localhost:3000")
+
+class PasskeyRegisterRequest(BaseModel):
+    email: EmailStr
+
+class PasskeyRegisterVerifyRequest(BaseModel):
+    email: EmailStr
+    credential: dict
+
+class PasskeyAuthRequest(BaseModel):
+    email: Optional[EmailStr] = None  # Optional for discoverable credentials
+
+class PasskeyAuthVerifyRequest(BaseModel):
+    credential: dict
+
+
+@api_router.post("/auth/passkey/register/options")
+async def passkey_register_options(request: PasskeyRegisterRequest):
+    """
+    Generate WebAuthn registration options for creating a passkey.
+    User must already exist (registered via email/password first).
+    """
+    email = request.email
+    
+    # Get or create user
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found. Please register first.")
+    
+    user_id = user["id"]
+    
+    # Get existing credentials for this user
+    existing_credentials = []
+    async for cred in db.passkey_credentials.find({"user_id": user_id}):
+        existing_credentials.append(
+            PublicKeyCredentialDescriptor(id=base64.urlsafe_b64decode(cred["credential_id"]))
+        )
+    
+    # Generate registration options
+    options = generate_registration_options(
+        rp_id=RP_ID,
+        rp_name=RP_NAME,
+        user_id=user_id.encode('utf-8'),
+        user_name=email,
+        user_display_name=user.get("first_name", email.split("@")[0]),
+        exclude_credentials=existing_credentials,
+        authenticator_selection=AuthenticatorSelectionCriteria(
+            resident_key=ResidentKeyRequirement.REQUIRED,
+            user_verification=UserVerificationRequirement.REQUIRED,
+        ),
+        supported_pub_key_algs=[
+            COSEAlgorithmIdentifier.ECDSA_SHA_256,
+            COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256,
+        ],
+        timeout=60000,  # 60 seconds
+    )
+    
+    # Store challenge for verification
+    await db.passkey_challenges.update_one(
+        {"user_id": user_id, "type": "registration"},
+        {"$set": {
+            "user_id": user_id,
+            "email": email,
+            "challenge": base64.urlsafe_b64encode(options.challenge).decode('utf-8'),
+            "type": "registration",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
+        }},
+        upsert=True
+    )
+    
+    return {"options": options_to_json(options)}
+
+
+@api_router.post("/auth/passkey/register/verify")
+async def passkey_register_verify(request: PasskeyRegisterVerifyRequest):
+    """
+    Verify WebAuthn registration response and store the passkey credential.
+    """
+    email = request.email
+    credential = request.credential
+    
+    # Get user
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user_id = user["id"]
+    
+    # Get stored challenge
+    challenge_doc = await db.passkey_challenges.find_one({
+        "user_id": user_id,
+        "type": "registration"
+    })
+    
+    if not challenge_doc:
+        raise HTTPException(status_code=400, detail="No registration challenge found. Please start over.")
+    
+    # Check expiration
+    expires_at = datetime.fromisoformat(challenge_doc["expires_at"])
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Registration challenge expired. Please start over.")
+    
+    expected_challenge = base64.urlsafe_b64decode(challenge_doc["challenge"])
+    
+    try:
+        # Verify the registration response
+        verification = verify_registration_response(
+            credential=credential,
+            expected_challenge=expected_challenge,
+            expected_origin=ORIGIN,
+            expected_rp_id=RP_ID,
+        )
+        
+        # Store the credential
+        await db.passkey_credentials.insert_one({
+            "user_id": user_id,
+            "email": email,
+            "credential_id": base64.urlsafe_b64encode(verification.credential_id).decode('utf-8'),
+            "public_key": base64.urlsafe_b64encode(verification.credential_public_key).decode('utf-8'),
+            "sign_count": verification.sign_count,
+            "transports": [str(t) for t in (verification.credential_device_type.split(',') if verification.credential_device_type else [])],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        
+        # Update user to indicate passkey is enabled
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"passkey_enabled": True}}
+        )
+        
+        # Clean up challenge
+        await db.passkey_challenges.delete_one({"user_id": user_id, "type": "registration"})
+        
+        return {"status": "ok", "message": "Passkey registered successfully!"}
+        
+    except Exception as e:
+        print(f"❌ Passkey registration verification failed: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Passkey registration failed: {str(e)}")
+
+
+@api_router.post("/auth/passkey/authenticate/options")
+async def passkey_auth_options(request: PasskeyAuthRequest):
+    """
+    Generate WebAuthn authentication options for signing in with a passkey.
+    """
+    email = request.email
+    allow_credentials = []
+    user_id = None
+    
+    if email:
+        # Get user's credentials
+        user = await db.users.find_one({"email": email})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        user_id = user["id"]
+        
+        async for cred in db.passkey_credentials.find({"user_id": user_id}):
+            allow_credentials.append(
+                PublicKeyCredentialDescriptor(
+                    id=base64.urlsafe_b64decode(cred["credential_id"])
+                )
+            )
+        
+        if not allow_credentials:
+            raise HTTPException(status_code=400, detail="No passkey registered for this account")
+    
+    # Generate authentication options
+    options = generate_authentication_options(
+        rp_id=RP_ID,
+        allow_credentials=allow_credentials if allow_credentials else None,  # None = discoverable credentials
+        user_verification=UserVerificationRequirement.REQUIRED,
+        timeout=60000,
+    )
+    
+    # Store challenge
+    await db.passkey_challenges.update_one(
+        {"challenge_id": base64.urlsafe_b64encode(options.challenge).decode('utf-8')},
+        {"$set": {
+            "challenge_id": base64.urlsafe_b64encode(options.challenge).decode('utf-8'),
+            "user_id": user_id,
+            "email": email,
+            "challenge": base64.urlsafe_b64encode(options.challenge).decode('utf-8'),
+            "type": "authentication",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
+        }},
+        upsert=True
+    )
+    
+    return {"options": options_to_json(options)}
+
+
+@api_router.post("/auth/passkey/authenticate/verify")
+async def passkey_auth_verify(request: PasskeyAuthVerifyRequest, response: Response):
+    """
+    Verify WebAuthn authentication response and sign in user.
+    """
+    credential = request.credential
+    credential_id = credential.get("id", "")
+    
+    # Find the stored credential
+    stored_cred = await db.passkey_credentials.find_one({
+        "credential_id": credential_id
+    })
+    
+    if not stored_cred:
+        raise HTTPException(status_code=400, detail="Unknown passkey credential")
+    
+    user_id = stored_cred["user_id"]
+    
+    # Get the challenge (try both by user_id and by looking at recent auth challenges)
+    challenge_doc = await db.passkey_challenges.find_one({
+        "type": "authentication",
+        "$or": [
+            {"user_id": user_id},
+            {"user_id": None}  # For discoverable credential flow
+        ]
+    }, sort=[("created_at", -1)])
+    
+    if not challenge_doc:
+        raise HTTPException(status_code=400, detail="No authentication challenge found. Please start over.")
+    
+    # Check expiration
+    expires_at = datetime.fromisoformat(challenge_doc["expires_at"])
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Authentication challenge expired. Please start over.")
+    
+    expected_challenge = base64.urlsafe_b64decode(challenge_doc["challenge"])
+    credential_public_key = base64.urlsafe_b64decode(stored_cred["public_key"])
+    
+    try:
+        # Verify the authentication response
+        verification = verify_authentication_response(
+            credential=credential,
+            expected_challenge=expected_challenge,
+            expected_origin=ORIGIN,
+            expected_rp_id=RP_ID,
+            credential_public_key=credential_public_key,
+            credential_current_sign_count=stored_cred.get("sign_count", 0),
+        )
+        
+        # Update sign count
+        await db.passkey_credentials.update_one(
+            {"credential_id": credential_id},
+            {"$set": {"sign_count": verification.new_sign_count}}
+        )
+        
+        # Clean up challenge
+        await db.passkey_challenges.delete_one({"_id": challenge_doc["_id"]})
+        
+        # Get user
+        user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Update last login
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        # Set session cookie
+        session_token = secrets.token_urlsafe(32)
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            max_age=7 * 24 * 60 * 60,
+            path="/"
+        )
+        
+        # Generate JWT token
+        access_token = create_access_token({"sub": user_id})
+        
+        return {
+            "user": user,
+            "access_token": access_token,
+            "token_type": "bearer",
+            "message": "Successfully signed in with passkey!"
+        }
+        
+    except Exception as e:
+        print(f"❌ Passkey authentication verification failed: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Passkey authentication failed: {str(e)}")
+
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
