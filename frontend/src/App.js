@@ -154,6 +154,13 @@ function AppContent() {
     return '/ppi-layers';
   };
 
+  // CRITICAL: Check URL fragment for session_id SYNCHRONOUSLY during render
+  // This prevents race conditions - OAuth callback must be processed BEFORE auth checks
+  const hash = window.location.hash;
+  if (hash?.includes('session_id=')) {
+    return <AuthCallback onLogin={handleLogin} />;
+  }
+
   return (
     <>
       {user && <GlobalHUD user={user} token={token} onLogout={handleLogout} />}
