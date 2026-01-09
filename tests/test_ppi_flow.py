@@ -15,7 +15,7 @@ import os
 import uuid
 from datetime import datetime
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://trait-compass-5.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://finance-coach-37.preview.emergentagent.com').rstrip('/')
 
 # Test user data
 TEST_7YO_EMAIL = f"test7yo_{uuid.uuid4().hex[:8]}@test.com"
