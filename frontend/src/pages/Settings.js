@@ -753,25 +753,44 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   </select>
                 </div>
 
-                {/* Daily Learning Goal */}
+                {/* Daily Learning Goal - Slider */}
                 <div>
                   <label className={`block font-semibold mb-2 ${labelClass}`}>Daily Learning Goal</label>
-                  <div className="flex flex-wrap gap-2">
-                    {dailyGoalOptions.map(mins => (
-                      <button
-                        key={mins}
-                        onClick={() => setPreferences(prev => ({ ...prev, daily_goal_minutes: mins }))}
-                        className={`px-4 py-2 rounded-lg font-semibold transition border-2 ${
-                          preferences.daily_goal_minutes === mins
-                            ? 'bg-gradient-to-r from-gold to-yellow-400 text-navy-900 shadow-md border-yellow-500'
-                            : display.dark_mode
-                              ? 'bg-gray-700 text-gray-300 border-gray-600 hover:border-gray-400'
-                              : 'bg-gray-100 text-gray-700 border-gray-200 hover:border-gray-400'
-                        }`}
-                      >
-                        {mins} min
-                      </button>
-                    ))}
+                  <div className={`p-4 rounded-xl border-2 ${display.dark_mode ? 'bg-gray-700/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`text-sm ${subTextClass}`}>5 min</span>
+                      <span className="text-2xl font-bold text-gold">{preferences.daily_goal_minutes} min</span>
+                      <span className={`text-sm ${subTextClass}`}>60 min</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max="60"
+                      step="5"
+                      value={preferences.daily_goal_minutes}
+                      onChange={(e) => setPreferences(prev => ({ ...prev, daily_goal_minutes: parseInt(e.target.value) }))}
+                      className="w-full h-3 rounded-full appearance-none cursor-pointer bg-gray-300 accent-gold"
+                      style={{
+                        background: `linear-gradient(to right, #F5A623 0%, #F5A623 ${((preferences.daily_goal_minutes - 5) / 55) * 100}%, ${display.dark_mode ? '#4B5563' : '#D1D5DB'} ${((preferences.daily_goal_minutes - 5) / 55) * 100}%, ${display.dark_mode ? '#4B5563' : '#D1D5DB'} 100%)`
+                      }}
+                      data-testid="daily-goal-slider"
+                    />
+                    <div className="flex justify-between mt-2 text-xs">
+                      {[5, 15, 30, 45, 60].map(mark => (
+                        <span 
+                          key={mark} 
+                          className={`${preferences.daily_goal_minutes === mark ? 'text-gold font-bold' : subTextClass}`}
+                        >
+                          {mark}
+                        </span>
+                      ))}
+                    </div>
+                    <p className={`text-center text-sm mt-3 ${subTextClass}`}>
+                      {preferences.daily_goal_minutes <= 10 ? '🌱 Quick daily practice' : 
+                       preferences.daily_goal_minutes <= 20 ? '📖 Good learning habit' :
+                       preferences.daily_goal_minutes <= 40 ? '🔥 Serious learner!' :
+                       '🏆 Power learner mode!'}
+                    </p>
                   </div>
                 </div>
 
