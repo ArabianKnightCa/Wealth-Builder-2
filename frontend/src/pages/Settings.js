@@ -1202,7 +1202,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         <button 
                           onClick={() => {
                             const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/google';
-                            const redirectUri = `${window.location.origin}/auth/callback#provider=google`;
+                            const redirectUri = `${window.location.origin}/auth/callback`;
                             window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                           }}
                           className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
@@ -1230,7 +1230,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         <button 
                           onClick={() => {
                             const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/apple';
-                            const redirectUri = `${window.location.origin}/auth/callback#provider=apple`;
+                            const redirectUri = `${window.location.origin}/auth/callback`;
                             window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                           }}
                           className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
@@ -1261,7 +1261,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         <button 
                           onClick={() => {
                             const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/microsoft';
-                            const redirectUri = `${window.location.origin}/auth/callback#provider=microsoft`;
+                            const redirectUri = `${window.location.origin}/auth/callback`;
                             window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                           }}
                           className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
@@ -1289,7 +1289,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         <button 
                           onClick={() => {
                             const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/facebook';
-                            const redirectUri = `${window.location.origin}/auth/callback#provider=facebook`;
+                            const redirectUri = `${window.location.origin}/auth/callback`;
                             window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                           }}
                           className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
@@ -1317,7 +1317,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         <button 
                           onClick={() => {
                             const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/linkedin';
-                            const redirectUri = `${window.location.origin}/auth/callback#provider=linkedin`;
+                            const redirectUri = `${window.location.origin}/auth/callback`;
                             window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                           }}
                           className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
