@@ -492,7 +492,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                       ? 'bg-gradient-to-r from-gold to-yellow-400 text-navy-900 font-bold shadow-lg border-yellow-500 scale-[1.02]'
                       : display.dark_mode
                         ? 'text-gray-300 border-transparent hover:bg-gray-700 hover:border-gray-500 hover:shadow-md'
-                        : 'text-gray-700 border-transparent hover:bg-gray-100 hover:border-gray-300 hover:shadow-md'
+                        : 'text-gray-700 border-transparent hover:bg-gray-200 hover:border-gray-300 hover:shadow-md'
                   }`}
                   data-testid={`nav-${section.id}`}
                 >
@@ -889,7 +889,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                                 <label key={goal.id} className={`flex items-center gap-3 p-2 rounded cursor-pointer transition border ${
                                   preferences.financial_goals?.includes(goal.id)
                                     ? display.dark_mode ? 'bg-gold/20 border-gold/50' : 'bg-gold/10 border-gold/30'
-                                    : display.dark_mode ? 'border-transparent hover:bg-gray-700' : 'border-transparent hover:bg-gray-50'
+                                    : display.dark_mode ? 'border-transparent hover:bg-gray-700' : 'border-transparent hover:bg-gray-200'
                                 }`}>
                                   <input
                                     type="checkbox"
