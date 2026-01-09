@@ -1497,7 +1497,458 @@ async def compute_trait_vector_endpoint(data: dict):
         "summary": get_trait_summary(result)
     }
 
-@api_router.get("/ppi/tap-controls")
+# ===========================
+# PPI Layers 2-7 Endpoints
+# ===========================
+
+@api_router.get("/ppi/layers")
+async def get_ppi_layers_info():
+    """
+    Get overview of all 7 PPI layers with metadata.
+    """
+    return {
+        "total_layers": 7,
+        "total_questions": 270,
+        "layers": [
+            {"layer": 1, "name": "Identity", "questions": 30, "minutes": 5, "accuracy": 60, "status": "available"},
+            {"layer": 2, "name": "Context", "questions": 40, "minutes": 8, "accuracy": 73, "status": "available"},
+            {"layer": 3, "name": "Motivation", "questions": 40, "minutes": 8, "accuracy": 85, "status": "available"},
+            {"layer": 4, "name": "Patterns", "questions": 40, "minutes": 8, "accuracy": 90, "status": "available"},
+            {"layer": 5, "name": "Origins", "questions": 40, "minutes": 8, "accuracy": 93, "status": "available"},
+            {"layer": 6, "name": "Blind Spots", "questions": 40, "minutes": 8, "accuracy": 96, "status": "available"},
+            {"layer": 7, "name": "Meta-Awareness", "questions": 40, "minutes": 8, "accuracy": 99, "status": "available"}
+        ],
+        "accuracy_by_layer": {1: 60, 2: 73, 3: 85, 4: 90, 5: 93, 6: 96, 7: 99}
+    }
+
+@api_router.get("/ppi/layer/{layer_number}")
+async def get_ppi_layer_questions(layer_number: int):
+    """
+    Get questions for a specific PPI layer (1-7).
+    Layer 1 uses ppi_270_full.json, Layers 2-7 use ppi_layers_2_7.json.
+    """
+    if layer_number < 1 or layer_number > 7:
+        raise HTTPException(status_code=400, detail="Layer number must be between 1 and 7")
+    
+    try:
+        if layer_number == 1:
+            # Load Layer 1 from existing file
+            import json
+            ppi_file = ROOT_DIR / "ppi_270_full.json"
+            with open(ppi_file, 'r') as f:
+                ppi_data = json.load(f)
+            
+            # Filter to Layer 1 questions (Q001-Q030)
+            layer_questions = [q for q in ppi_data.get("items", []) if q.get("layer") == 1]
+            
+            return {
+                "layer_number": 1,
+                "layer_name": "Identity",
+                "question_count": len(layer_questions),
+                "estimated_minutes": 5,
+                "accuracy_unlocked": 60,
+                "questions": layer_questions
+            }
+        else:
+            # Load Layers 2-7 from new file
+            import json
+            layers_file = ROOT_DIR / "data" / "ppi_layers_2_7.json"
+            with open(layers_file, 'r') as f:
+                layers_data = json.load(f)
+            
+            # Find the requested layer
+            layer_data = None
+            for layer in layers_data.get("layers", []):
+                if layer.get("layerNumber") == layer_number:
+                    layer_data = layer
+                    break
+            
+            if not layer_data:
+                raise HTTPException(status_code=404, detail=f"Layer {layer_number} not found")
+            
+            # Calculate accuracy based on layer
+            accuracy_map = {2: 73, 3: 85, 4: 90, 5: 93, 6: 96, 7: 99}
+            
+            return {
+                "layer_number": layer_number,
+                "layer_name": layer_data.get("layerName"),
+                "question_count": layer_data.get("questionCount"),
+                "estimated_minutes": layer_data.get("estimatedMinutes"),
+                "accuracy_unlocked": accuracy_map.get(layer_number, 0),
+                "questions": layer_data.get("questions", [])
+            }
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="PPI data file not found")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid PPI data file format")
+
+@api_router.post("/ppi/layer/{layer_number}/submit")
+async def submit_ppi_layer(layer_number: int, submission: PPILayerSubmit, user_id: str = Depends(get_current_user)):
+    """
+    Submit answers for a specific PPI layer.
+    """
+    if layer_number < 1 or layer_number > 7:
+        raise HTTPException(status_code=400, detail="Layer number must be between 1 and 7")
+    
+    if submission.layer_number != layer_number:
+        raise HTTPException(status_code=400, detail="Layer number mismatch")
+    
+    # Save answers to ppi_layer_answers collection
+    layer_submission = {
+        "user_id": user_id,
+        "layer_number": layer_number,
+        "answers": submission.answers,
+        "time_spent_seconds": submission.time_spent_seconds,
+        "submitted_at": datetime.now(timezone.utc).isoformat(),
+        "answer_count": len(submission.answers)
+    }
+    
+    # Upsert - replace if layer already submitted
+    await db.ppi_layer_answers.update_one(
+        {"user_id": user_id, "layer_number": layer_number},
+        {"$set": layer_submission},
+        upsert=True
+    )
+    
+    # Update user's completed layers count
+    completed_layers = await db.ppi_layer_answers.count_documents({"user_id": user_id})
+    
+    # Calculate new accuracy
+    accuracy_map = {0: 0, 1: 60, 2: 73, 3: 85, 4: 90, 5: 93, 6: 96, 7: 99}
+    new_accuracy = accuracy_map.get(min(completed_layers, 7), 99)
+    
+    # Update user settings with completed layers
+    await db.settings.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            "ppi_completed_layers": completed_layers,
+            "ppi_accuracy": new_accuracy,
+            "ppi_last_completed_layer": layer_number,
+            "ppi_last_updated": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    
+    # Check for badge unlocks
+    badges_earned = await check_ppi_badges(user_id, completed_layers, submission)
+    
+    return {
+        "success": True,
+        "layer_number": layer_number,
+        "completed_layers": completed_layers,
+        "profile_accuracy": new_accuracy,
+        "badges_earned": badges_earned,
+        "next_layer": layer_number + 1 if layer_number < 7 else None
+    }
+
+@api_router.get("/ppi/progress")
+async def get_ppi_progress(user_id: str = Depends(get_current_user)):
+    """
+    Get user's PPI completion progress across all layers.
+    """
+    # Get all completed layers
+    completed = await db.ppi_layer_answers.find(
+        {"user_id": user_id},
+        {"_id": 0, "layer_number": 1, "submitted_at": 1, "answer_count": 1, "time_spent_seconds": 1}
+    ).to_list(10)
+    
+    completed_layers = [c["layer_number"] for c in completed]
+    completed_count = len(completed_layers)
+    
+    # Calculate accuracy
+    accuracy_map = {0: 0, 1: 60, 2: 73, 3: 85, 4: 90, 5: 93, 6: 96, 7: 99}
+    current_accuracy = accuracy_map.get(min(completed_count, 7), 99)
+    
+    # Determine next layer
+    next_layer = None
+    for i in range(1, 8):
+        if i not in completed_layers:
+            next_layer = i
+            break
+    
+    return {
+        "completed_layers": sorted(completed_layers),
+        "completed_count": completed_count,
+        "total_layers": 7,
+        "profile_accuracy": current_accuracy,
+        "next_layer": next_layer,
+        "is_complete": completed_count >= 7,
+        "layer_details": completed
+    }
+
+async def check_ppi_badges(user_id: str, completed_layers: int, submission: PPILayerSubmit) -> List[dict]:
+    """
+    Check and award PPI-related badges.
+    Returns list of newly earned badges.
+    """
+    badges_earned = []
+    
+    # Badge definitions
+    badge_checks = [
+        {"id": "foundation_builder", "condition": completed_layers >= 1, "layer": 1},
+        {"id": "profile_seeker", "condition": completed_layers >= 3, "layer": 3},
+        {"id": "deep_diver", "condition": completed_layers >= 5, "layer": 5},
+        {"id": "dna_master", "condition": completed_layers >= 7, "layer": 7},
+        {"id": "data_driven", "condition": completed_layers >= 3},
+        {"id": "self_aware", "condition": completed_layers >= 5},
+    ]
+    
+    # Check speed badge (under 5 minutes)
+    if submission.time_spent_seconds and submission.time_spent_seconds < 300:
+        badge_checks.append({"id": "quick_thinker", "condition": True})
+    
+    # Check 100% complete badge (no skips)
+    expected_questions = 30 if submission.layer_number == 1 else 40
+    if len(submission.answers) >= expected_questions:
+        badge_checks.append({"id": "hundred_percent", "condition": True})
+    
+    for badge in badge_checks:
+        if badge["condition"]:
+            # Check if badge already earned
+            existing = await db.user_badges.find_one({
+                "user_id": user_id,
+                "badge_id": badge["id"]
+            })
+            
+            if not existing:
+                # Award new badge
+                badge_record = {
+                    "user_id": user_id,
+                    "badge_id": badge["id"],
+                    "unlocked_at": datetime.now(timezone.utc).isoformat(),
+                    "unlock_context": {
+                        "layer_completed": submission.layer_number,
+                        "total_layers": completed_layers
+                    }
+                }
+                await db.user_badges.insert_one(badge_record)
+                badges_earned.append({"badge_id": badge["id"], "unlocked_at": badge_record["unlocked_at"]})
+    
+    return badges_earned
+
+# ===========================
+# Topic Selection Endpoints
+# ===========================
+
+@api_router.post("/topics/select")
+async def save_selected_topics(selection: TopicSelection, user_id: str = Depends(get_current_user)):
+    """
+    Save user's selected financial topics.
+    """
+    if not selection.topic_ids:
+        raise HTTPException(status_code=400, detail="At least one topic must be selected")
+    
+    # Remove duplicates while preserving order
+    unique_topics = list(dict.fromkeys(selection.topic_ids))
+    
+    topic_record = {
+        "user_id": user_id,
+        "topic_ids": unique_topics,
+        "topic_count": len(unique_topics),
+        "selected_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Upsert - update if exists, create if not
+    await db.user_topics.update_one(
+        {"user_id": user_id},
+        {"$set": topic_record},
+        upsert=True
+    )
+    
+    return {
+        "success": True,
+        "topic_ids": unique_topics,
+        "topic_count": len(unique_topics),
+        "selected_at": topic_record["selected_at"]
+    }
+
+@api_router.get("/topics/user")
+async def get_user_topics(user_id: str = Depends(get_current_user)):
+    """
+    Get user's selected topics.
+    """
+    topics = await db.user_topics.find_one(
+        {"user_id": user_id},
+        {"_id": 0}
+    )
+    
+    if not topics:
+        return {
+            "has_topics": False,
+            "topic_ids": [],
+            "topic_count": 0,
+            "selected_at": None
+        }
+    
+    return {
+        "has_topics": True,
+        "topic_ids": topics.get("topic_ids", []),
+        "topic_count": topics.get("topic_count", 0),
+        "selected_at": topics.get("selected_at")
+    }
+
+@api_router.put("/topics/update")
+async def update_user_topics(selection: TopicSelection, user_id: str = Depends(get_current_user)):
+    """
+    Update user's selected topics (add or remove).
+    """
+    if not selection.topic_ids:
+        raise HTTPException(status_code=400, detail="At least one topic must be selected")
+    
+    unique_topics = list(dict.fromkeys(selection.topic_ids))
+    
+    await db.user_topics.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            "topic_ids": unique_topics,
+            "topic_count": len(unique_topics),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    
+    # Check for topic completion badges
+    await check_topic_badges(user_id, len(unique_topics))
+    
+    return {
+        "success": True,
+        "topic_ids": unique_topics,
+        "topic_count": len(unique_topics)
+    }
+
+@api_router.delete("/topics/remove/{topic_id}")
+async def remove_user_topic(topic_id: str, user_id: str = Depends(get_current_user)):
+    """
+    Remove a single topic from user's selection.
+    """
+    result = await db.user_topics.update_one(
+        {"user_id": user_id},
+        {"$pull": {"topic_ids": topic_id}, "$inc": {"topic_count": -1}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Topic not found in user's selection")
+    
+    # Get updated topics
+    updated = await db.user_topics.find_one({"user_id": user_id}, {"_id": 0})
+    
+    return {
+        "success": True,
+        "removed_topic": topic_id,
+        "remaining_topics": updated.get("topic_ids", []) if updated else []
+    }
+
+# ===========================
+# Badge Endpoints
+# ===========================
+
+@api_router.get("/badges")
+async def get_all_badges():
+    """
+    Get the complete badge catalog with unlock conditions.
+    """
+    badges = [
+        # PPI Progress
+        {"id": "foundation_builder", "name": "Foundation Builder", "icon": "🎖️", "category": "ppi_progress", "description": "Completed Layer 1 of your Personality Profile", "rarity": "common", "unlock_condition": {"type": "ppi_layer_complete", "layer": 1}},
+        {"id": "profile_seeker", "name": "Profile Seeker", "icon": "🧭", "category": "ppi_progress", "description": "Completed Layer 3 of your Personality Profile", "rarity": "uncommon", "unlock_condition": {"type": "ppi_layer_complete", "layer": 3}},
+        {"id": "deep_diver", "name": "Deep Diver", "icon": "🏅", "category": "ppi_progress", "description": "Completed Layer 5 of your Personality Profile", "rarity": "rare", "unlock_condition": {"type": "ppi_layer_complete", "layer": 5}},
+        {"id": "dna_master", "name": "DNA Master", "icon": "🏆", "category": "ppi_progress", "description": "Completed all 7 layers - Full DNA Profile unlocked!", "rarity": "legendary", "unlock_condition": {"type": "ppi_layer_complete", "layer": 7}},
+        # Achievements
+        {"id": "quick_thinker", "name": "Quick Thinker", "icon": "⚡", "category": "achievements", "description": "Completed a PPI layer in under 5 minutes", "rarity": "common", "unlock_condition": {"type": "ppi_layer_speed", "max_minutes": 5}},
+        {"id": "hundred_percent", "name": "100% Complete", "icon": "💯", "category": "achievements", "description": "Answered every question in a layer without skipping", "rarity": "uncommon", "unlock_condition": {"type": "ppi_layer_no_skips"}},
+        {"id": "data_driven", "name": "Data Driven", "icon": "📊", "category": "achievements", "description": "Completed 3+ PPI layers", "rarity": "uncommon", "unlock_condition": {"type": "ppi_layers_count", "min_layers": 3}},
+        {"id": "self_aware", "name": "Self-Aware", "icon": "🧠", "category": "achievements", "description": "Completed 5+ PPI layers", "rarity": "rare", "unlock_condition": {"type": "ppi_layers_count", "min_layers": 5}},
+        {"id": "honest_contributor", "name": "Honest Contributor", "icon": "✨", "category": "achievements", "description": "Showed thoughtful variation in responses", "rarity": "common", "unlock_condition": {"type": "ppi_response_variance"}},
+        {"id": "reflective", "name": "Reflective", "icon": "🤔", "category": "achievements", "description": "Took time on challenging questions", "rarity": "common", "unlock_condition": {"type": "ppi_avg_time"}},
+        # Topic Completion
+        {"id": "topic_starter", "name": "Topic Starter", "icon": "🌱", "category": "topic_completion", "description": "Completed your first topic!", "rarity": "common", "unlock_condition": {"type": "topics_completed_count", "min_topics": 1}},
+        {"id": "topic_explorer", "name": "Topic Explorer", "icon": "🗺️", "category": "topic_completion", "description": "Completed 3 different topics", "rarity": "uncommon", "unlock_condition": {"type": "topics_completed_count", "min_topics": 3}},
+        {"id": "topic_champion", "name": "Topic Champion", "icon": "⭐", "category": "topic_completion", "description": "Completed 5 topics", "rarity": "rare", "unlock_condition": {"type": "topics_completed_count", "min_topics": 5}},
+        {"id": "learning_machine", "name": "Learning Machine", "icon": "🚀", "category": "topic_completion", "description": "Completed 10+ topics", "rarity": "legendary", "unlock_condition": {"type": "topics_completed_count", "min_topics": 10}},
+    ]
+    
+    return {
+        "badge_count": len(badges),
+        "categories": ["ppi_progress", "achievements", "topic_completion"],
+        "badges": badges
+    }
+
+@api_router.get("/badges/user")
+async def get_user_badges(user_id: str = Depends(get_current_user)):
+    """
+    Get all badges earned by the user.
+    """
+    badges = await db.user_badges.find(
+        {"user_id": user_id},
+        {"_id": 0}
+    ).to_list(50)
+    
+    return {
+        "badge_count": len(badges),
+        "badges": badges
+    }
+
+@api_router.get("/badges/user/check")
+async def check_user_badge_status(user_id: str = Depends(get_current_user)):
+    """
+    Check which badges user has earned and which are still locked.
+    """
+    # Get all badges
+    all_badges = (await get_all_badges())["badges"]
+    
+    # Get user's earned badges
+    earned = await db.user_badges.find(
+        {"user_id": user_id},
+        {"_id": 0, "badge_id": 1, "unlocked_at": 1}
+    ).to_list(50)
+    
+    earned_ids = {b["badge_id"]: b["unlocked_at"] for b in earned}
+    
+    # Categorize badges
+    result = {
+        "earned": [],
+        "locked": [],
+        "earned_count": len(earned),
+        "total_count": len(all_badges)
+    }
+    
+    for badge in all_badges:
+        if badge["id"] in earned_ids:
+            result["earned"].append({
+                **badge,
+                "unlocked_at": earned_ids[badge["id"]]
+            })
+        else:
+            result["locked"].append(badge)
+    
+    return result
+
+async def check_topic_badges(user_id: str, topic_count: int):
+    """
+    Check and award topic-related badges.
+    """
+    badge_thresholds = [
+        {"id": "topic_starter", "min": 1},
+        {"id": "topic_explorer", "min": 3},
+        {"id": "topic_champion", "min": 5},
+        {"id": "learning_machine", "min": 10},
+    ]
+    
+    for badge in badge_thresholds:
+        if topic_count >= badge["min"]:
+            existing = await db.user_badges.find_one({
+                "user_id": user_id,
+                "badge_id": badge["id"]
+            })
+            
+            if not existing:
+                await db.user_badges.insert_one({
+                    "user_id": user_id,
+                    "badge_id": badge["id"],
+                    "unlocked_at": datetime.now(timezone.utc).isoformat(),
+                    "unlock_context": {"topic_count": topic_count}
+                })
 async def get_ppi_tap_controls(user_id: str = Depends(get_current_user)):
     """
     Get TAP control scalars (8 controls) from user's PPI trait vector.
