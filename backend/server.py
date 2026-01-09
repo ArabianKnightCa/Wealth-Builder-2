@@ -1029,15 +1029,16 @@ async def google_oauth_callback(data: GoogleAuthCallback, response: Response):
 # =========================================================================
 
 class OAuthCallback(BaseModel):
-    """Generic OAuth callback model for Apple, Microsoft, Facebook"""
+    """Generic OAuth callback model for Apple, Microsoft, Facebook, LinkedIn"""
     email: EmailStr
     name: str
     picture: Optional[str] = None
     session_token: str
-    provider: str  # apple, microsoft, facebook
+    provider: str  # apple, microsoft, facebook, linkedin
     apple_id: Optional[str] = None
     microsoft_id: Optional[str] = None
     facebook_id: Optional[str] = None
+    linkedin_id: Optional[str] = None
 
 
 async def handle_oauth_callback(provider: str, provider_id: str, email: str, name: str, picture: Optional[str], session_token: str, response: Response):
