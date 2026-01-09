@@ -212,7 +212,7 @@ function Login({ onLogin }) {
                 type="button"
                 onClick={() => {
                   const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/google';
-                  const redirectUri = `${window.location.origin}/auth/callback#provider=google`;
+                  const redirectUri = `${window.location.origin}/auth/callback`;
                   window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                 }}
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-all font-semibold"
@@ -232,7 +232,7 @@ function Login({ onLogin }) {
                 type="button"
                 onClick={() => {
                   const baseUrl = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/apple';
-                  const redirectUri = `${window.location.origin}/auth/callback#provider=apple`;
+                  const redirectUri = `${window.location.origin}/auth/callback`;
                   window.location.href = `${baseUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
                 }}
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-semibold"
