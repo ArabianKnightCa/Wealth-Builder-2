@@ -127,6 +127,46 @@ function Register({ onLogin }) {
     setShowParentConsent(age !== null && age < 18);
   };
 
+  // Check if email already exists (debounced)
+  const checkEmailExists = async (email) => {
+    if (!email || !email.includes('@')) {
+      setEmailExists(false);
+      setEmailChecking(false);
+      return;
+    }
+    
+    setEmailChecking(true);
+    try {
+      const response = await axios.post(`${API}/auth/check-email`, { email });
+      setEmailExists(response.data.exists);
+    } catch (err) {
+      // If endpoint doesn't exist or error, assume email is available
+      setEmailExists(false);
+    } finally {
+      setEmailChecking(false);
+    }
+  };
+
+  // Handle email change with debounce
+  const handleEmailChange = (email) => {
+    // Auto-capitalize first letter and lowercase the rest for email
+    const normalizedEmail = email.toLowerCase();
+    setFormData({ ...formData, email: normalizedEmail });
+    setFieldErrors({ ...fieldErrors, email: false });
+    setEmailExists(false);
+    
+    // Clear existing timeout
+    if (emailCheckTimeout) {
+      clearTimeout(emailCheckTimeout);
+    }
+    
+    // Set new timeout for email check (debounce 500ms)
+    const timeout = setTimeout(() => {
+      checkEmailExists(normalizedEmail);
+    }, 500);
+    setEmailCheckTimeout(timeout);
+  };
+
   const handlePage1Next = () => {
     setError('');
     setFieldErrors({});
