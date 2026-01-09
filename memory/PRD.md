@@ -26,6 +26,29 @@ The TAP system adapts financial education content based on:
 
 ## What's Been Implemented
 
+### Latest Updates (January 9, 2026)
+
+#### Google OAuth Integration ✅
+- **Login Page**: Added "Sign in with Google" button
+- **Settings > Security**: Added Google Connect functionality
+- **AuthCallback component**: Handles OAuth callback flow
+- **Backend**: `/api/auth/google/callback` endpoint for user creation/linking
+- Files: `AuthCallback.js`, `GoogleSignInButton.js`, `Login.js`, `Settings.js`, `server.py`
+
+#### Settings Constants Extracted ✅
+- Created `/app/frontend/src/components/settings/constants.js`
+- Contains: AVATAR_OPTIONS, LIFE_STAGE_OPTIONS, OCCUPATION_OPTIONS, TIMEZONE_OPTIONS, FONT_OPTIONS, EXPERIENCE_LEVELS, LANGUAGE_OPTIONS, SECTIONS
+- Helper functions: `getLifeStageLabel()`, `getExperienceLabel()`
+
+#### Previous Session Fixes ✅
+- Combined Profile + Personal Info sections (removed duplication)
+- Daily learning goal slider: 5-240 min range
+- Enter key on confirm password triggers Continue
+- City placeholder: "Sacramento" instead of "San Francisco"
+- Auto-capitalize first name
+- Darker hover states for accessibility
+- Email validation on registration Step 1 (real-time check)
+
 ### Completed (January 2026)
 - [x] **TAP 5.0 Engine** (`/app/backend/tap_5_0.py`)
   - DNA generation from 24 VIA Character Strengths
