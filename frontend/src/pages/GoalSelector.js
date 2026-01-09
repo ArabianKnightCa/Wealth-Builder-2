@@ -106,7 +106,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
                 {/* Category Header */}
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                  className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-200 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-semibold text-navy-900 text-left">
@@ -142,7 +142,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
                     {category.goals.map((goal) => (
                       <label
                         key={goal.id}
-                        className="flex items-start space-x-3 p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="flex items-start space-x-3 p-2 rounded hover:bg-gray-200 cursor-pointer transition-colors"
                       >
                         <input
                           type="checkbox"
