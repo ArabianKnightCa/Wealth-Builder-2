@@ -308,6 +308,15 @@ function Login({ onLogin }) {
                 <span className="text-xl">✨</span>
                 <span>Sign in with Magic Link</span>
               </button>
+
+              {/* Passkey (WebAuthn) */}
+              {isPasskeySupported() && (
+                <PasskeyButton 
+                  mode="login" 
+                  onSuccess={handlePasskeySuccess}
+                  onError={(err) => setError(err)}
+                />
+              )}
             </div>
           </form>
 
