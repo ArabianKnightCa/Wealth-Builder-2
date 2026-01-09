@@ -1175,6 +1175,195 @@ async def facebook_oauth_callback(data: OAuthCallback, response: Response):
     )
 
 
+@api_router.post("/auth/linkedin/callback")
+async def linkedin_oauth_callback(data: OAuthCallback, response: Response):
+    """Handle LinkedIn OAuth callback"""
+    return await handle_oauth_callback(
+        provider="linkedin",
+        provider_id=data.linkedin_id or data.email,
+        email=data.email,
+        name=data.name,
+        picture=data.picture,
+        session_token=data.session_token,
+        response=response
+    )
+
+
+# =========================================================================
+# Magic Link Authentication (Passwordless Email Sign-In)
+# =========================================================================
+
+class MagicLinkRequest(BaseModel):
+    email: EmailStr
+
+class MagicLinkVerify(BaseModel):
+    token: str
+
+@api_router.post("/auth/magic-link/send")
+async def send_magic_link(request: MagicLinkRequest):
+    """
+    Send a magic link for passwordless sign-in.
+    Creates user if doesn't exist, sends email with login link.
+    """
+    import resend
+    import secrets
+    
+    email = request.email
+    
+    # Check if user exists, if not create a minimal account
+    existing_user = await db.users.find_one({"email": email})
+    
+    if not existing_user:
+        # Create minimal user for magic link sign-in
+        user_id = str(uuid.uuid4())
+        person_key = f"PK-{uuid.uuid4().hex[:8].upper()}"
+        timestamp = datetime.now(timezone.utc).strftime('%y%m%d%H%M')
+        seq_num = int(uuid.uuid4().hex[:4], 16) % 10000
+        user_code = f"WB-POC-GEN-{seq_num:04d}-{timestamp}"
+        
+        new_user = {
+            "id": user_id,
+            "person_key": person_key,
+            "user_code": user_code,
+            "email": email,
+            "first_name": email.split('@')[0].capitalize(),
+            "user_type": "POC",
+            "life_stage": "AD",
+            "cohort": "GEN",
+            "dob_month": 1,
+            "dob_year": 1990,
+            "language": "en",
+            "experience_level": 2,
+            "occupation": "Other",
+            "ppi_completed": False,
+            "topics_selected": False,
+            "account_status": "active",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.users.insert_one(new_user)
+    
+    # Generate magic link token
+    magic_token = secrets.token_urlsafe(32)
+    token_expires = datetime.now(timezone.utc) + timedelta(minutes=15)  # 15 min expiry
+    
+    # Store token in database
+    await db.magic_links.update_one(
+        {"email": email},
+        {"$set": {
+            "email": email,
+            "token": magic_token,
+            "expires_at": token_expires.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "used": False
+        }},
+        upsert=True
+    )
+    
+    # Send magic link email via Resend
+    resend.api_key = os.getenv("RESEND_API_KEY")
+    app_domain = os.getenv("APP_DOMAIN", "http://localhost:3000")
+    magic_link_url = f"{app_domain}/auth/magic-link?token={magic_token}"
+    
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #1a365d;">🔐 Sign in to Wealth Builder</h2>
+                <p>Click the button below to securely sign in to your account:</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{magic_link_url}" style="background-color: #F5A623; color: #1a365d; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">
+                        ✨ Sign In Now
+                    </a>
+                </div>
+                <p style="color: #666; font-size: 14px;">Or copy and paste this link:</p>
+                <p style="word-break: break-all; color: #666; font-size: 12px; background: #f5f5f5; padding: 10px; border-radius: 4px;">{magic_link_url}</p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+                <p style="color: #999; font-size: 12px;">
+                    ⏰ This link expires in 15 minutes.<br>
+                    🔒 If you didn't request this, you can safely ignore this email.
+                </p>
+            </div>
+        </body>
+    </html>
+    """
+    
+    try:
+        params = {
+            "from": os.getenv("SENDER_EMAIL"),
+            "to": [email],
+            "subject": "✨ Your Magic Sign-In Link - Wealth Builder",
+            "html": html_content,
+        }
+        resend.Emails.send(params)
+        print(f"✅ Magic link sent to {email}")
+    except Exception as e:
+        print(f"❌ Failed to send magic link: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to send magic link email")
+    
+    return {"message": "Magic link sent! Check your email.", "email": email}
+
+
+@api_router.post("/auth/magic-link/verify")
+async def verify_magic_link(request: MagicLinkVerify, response: Response):
+    """
+    Verify magic link token and sign in user.
+    Returns JWT token on success.
+    """
+    token = request.token
+    
+    # Find the magic link record
+    magic_link = await db.magic_links.find_one({"token": token, "used": False})
+    
+    if not magic_link:
+        raise HTTPException(status_code=400, detail="Invalid or expired magic link")
+    
+    # Check if token is expired
+    expires_at = datetime.fromisoformat(magic_link["expires_at"])
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Magic link has expired. Please request a new one.")
+    
+    # Mark token as used
+    await db.magic_links.update_one(
+        {"token": token},
+        {"$set": {"used": True, "used_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Get user
+    email = magic_link["email"]
+    user = await db.users.find_one({"email": email}, {"_id": 0, "password": 0})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Update last login
+    await db.users.update_one(
+        {"email": email},
+        {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Set httpOnly cookie
+    session_token = secrets.token_urlsafe(32)
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=7 * 24 * 60 * 60,
+        path="/"
+    )
+    
+    # Generate JWT token
+    access_token = create_access_token({"sub": user["id"]})
+    
+    return {
+        "user": user,
+        "access_token": access_token,
+        "token_type": "bearer",
+        "message": "Successfully signed in!"
+    }
+
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
