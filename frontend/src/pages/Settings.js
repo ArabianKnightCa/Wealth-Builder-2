@@ -193,8 +193,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
     { value: 'xl', label: 'Extra Large', class: 'text-xl' }
   ];
 
-  const dailyGoalOptions = [5, 10, 15, 20, 30, 45, 60];
-
   // Show message helper
   const showMessage = (text, type = 'success') => {
     setMessage({ text, type });
