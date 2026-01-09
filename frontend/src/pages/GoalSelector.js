@@ -21,6 +21,22 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
     onGoalsChange(newGoals);
   };
 
+  // Select all goals in a category
+  const handleSelectAllInCategory = (category) => {
+    const categoryGoalIds = category.goals.map(g => g.id);
+    const allSelected = categoryGoalIds.every(id => selectedGoals.includes(id));
+    
+    if (allSelected) {
+      // Deselect all in this category
+      onGoalsChange(selectedGoals.filter(id => !categoryGoalIds.includes(id)));
+    } else {
+      // Select all in this category
+      const newGoals = [...new Set([...selectedGoals, ...categoryGoalIds])];
+      onGoalsChange(newGoals);
+    }
+    setShowError(false);
+  };
+
   const handleAddCustomGoal = () => {
     if (customGoal.trim()) {
       const customId = `custom_${Date.now()}`;
@@ -45,20 +61,12 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
         <div className="mb-6">
           <p className="text-gold font-semibold mb-2">Step 3 of 4</p>
           <h2 className="text-3xl font-bold text-navy-900 mb-2">
-            What are your financial goals?
+            What brought you here?
           </h2>
           <p className="text-gray-600">
             Check all that applies, but must check at least one to help us personalize your learning journey.
           </p>
         </div>
-
-        {/* Backend Error Message */}
-        {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded" data-testid="error-message">
-            <p className="font-semibold">⚠️ Registration Error</p>
-            <p className="text-sm mt-1">{error}</p>
-          </div>
-        )}
 
         {/* Selection Counter */}
         <div className="mb-4 p-3 bg-gold bg-opacity-10 border-l-4 border-gold rounded">
@@ -69,7 +77,7 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
           </p>
         </div>
 
-        {/* Error Message */}
+        {/* Validation Error Message */}
         {showError && (
           <div className="mb-4 p-3 bg-red-100 border-l-4 border-red-500 rounded">
             <p className="text-red-700 font-semibold">
@@ -78,44 +86,78 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
           </div>
         )}
 
+        {/* Backend Error Message - Moved below validation error */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded" data-testid="error-message">
+            <p className="font-semibold">⚠️ Registration Error</p>
+            <p className="text-sm mt-1">{error}</p>
+          </div>
+        )}
+
         {/* Goal Categories */}
         <div className="space-y-3 mb-6 max-h-96 overflow-y-auto pr-2">
-          {FINANCIAL_GOALS_CONFIG.categories.map((category) => (
-            <div key={category.id} className="border border-gray-200 rounded-lg overflow-hidden">
-              {/* Category Header */}
-              <button
-                onClick={() => toggleCategory(category.id)}
-                className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
-              >
-                <span className="font-semibold text-navy-900 text-left">
-                  {category.label}
-                </span>
-                <span className="text-gold text-xl">
-                  {openCategories[category.id] ? '−' : '+'}
-                </span>
-              </button>
+          {FINANCIAL_GOALS_CONFIG.categories.map((category) => {
+            const categoryGoalIds = category.goals.map(g => g.id);
+            const selectedInCategory = categoryGoalIds.filter(id => selectedGoals.includes(id)).length;
+            const allSelectedInCategory = selectedInCategory === categoryGoalIds.length;
+            
+            return (
+              <div key={category.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                {/* Category Header */}
+                <button
+                  onClick={() => toggleCategory(category.id)}
+                  className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold text-navy-900 text-left">
+                      {category.label}
+                    </span>
+                    {selectedInCategory > 0 && (
+                      <span className="text-xs bg-gold text-navy-900 px-2 py-0.5 rounded-full">
+                        {selectedInCategory}/{categoryGoalIds.length}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-gold text-xl">
+                    {openCategories[category.id] ? '−' : '+'}
+                  </span>
+                </button>
 
-              {/* Category Goals */}
-              {openCategories[category.id] && (
-                <div className="p-4 bg-white space-y-2">
-                  {category.goals.map((goal) => (
-                    <label
-                      key={goal.id}
-                      className="flex items-start space-x-3 p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
+                {/* Category Goals */}
+                {openCategories[category.id] && (
+                  <div className="p-4 bg-white space-y-2">
+                    {/* Select All Button */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleSelectAllInCategory(category); }}
+                      className={`mb-2 text-sm font-medium px-3 py-1 rounded-full transition ${
+                        allSelectedInCategory 
+                          ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' 
+                          : 'bg-gold/20 text-gold hover:bg-gold/30'
+                      }`}
+                      data-testid={`select-all-${category.id}`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedGoals.includes(goal.id)}
-                        onChange={() => handleGoalToggle(goal.id)}
-                        className="mt-1 w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold"
-                      />
-                      <span className="text-gray-700">{goal.label}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                      {allSelectedInCategory ? 'Deselect All' : 'Select All'}
+                    </button>
+                    
+                    {category.goals.map((goal) => (
+                      <label
+                        key={goal.id}
+                        className="flex items-start space-x-3 p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedGoals.includes(goal.id)}
+                          onChange={() => handleGoalToggle(goal.id)}
+                          className="mt-1 w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold"
+                        />
+                        <span className="text-gray-700">{goal.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Custom Goal Section */}
