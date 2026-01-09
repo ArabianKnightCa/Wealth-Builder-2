@@ -7,7 +7,7 @@ const API = `${BACKEND_URL}/api`;
 
 /**
  * AuthCallback component handles OAuth callbacks from multiple providers
- * Supports: Google, Apple, Microsoft, Facebook
+ * Supports: Google, Apple, Microsoft, Facebook, LinkedIn
  * Processes the session_id from URL fragment and establishes user session
  * 
  * REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -29,9 +29,27 @@ function AuthCallback() {
         const hash = location.hash;
         const sessionId = hash?.split('session_id=')[1]?.split('&')[0];
         
-        // Detect provider from hash or state parameter
-        const providerMatch = hash?.match(/provider=(\w+)/);
-        const provider = providerMatch ? providerMatch[1] : 'google'; // default to google
+        // Try to detect provider from state parameter or referrer
+        // The Emergent OAuth will include provider info in the state or we default to google
+        const stateMatch = hash?.match(/state=([^&]+)/);
+        let provider = 'google'; // default
+        
+        if (stateMatch) {
+          try {
+            const stateData = JSON.parse(decodeURIComponent(stateMatch[1]));
+            if (stateData.provider) {
+              provider = stateData.provider;
+            }
+          } catch (e) {
+            // State might not be JSON, check if it contains provider name
+            const stateValue = decodeURIComponent(stateMatch[1]).toLowerCase();
+            if (stateValue.includes('apple')) provider = 'apple';
+            else if (stateValue.includes('microsoft')) provider = 'microsoft';
+            else if (stateValue.includes('facebook')) provider = 'facebook';
+            else if (stateValue.includes('linkedin')) provider = 'linkedin';
+          }
+        }
+        
         setProviderName(provider.charAt(0).toUpperCase() + provider.slice(1));
 
         if (!sessionId) {
