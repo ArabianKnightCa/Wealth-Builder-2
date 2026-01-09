@@ -290,6 +290,17 @@ function Login({ onLogin }) {
                 </svg>
                 <span>Continue with LinkedIn</span>
               </button>
+
+              {/* Magic Link (Passwordless) */}
+              <button
+                type="button"
+                onClick={() => setShowMagicLink(true)}
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg hover:from-purple-600 hover:to-indigo-600 transition-all font-semibold"
+                data-testid="magic-link-btn"
+              >
+                <span className="text-xl">✨</span>
+                <span>Sign in with Magic Link</span>
+              </button>
             </div>
           </form>
 
