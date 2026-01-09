@@ -288,20 +288,62 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 
 ---
 
+## Phase 2: Backend Endpoints (January 9, 2026) ✅
+
+### API Endpoints Added
+
+#### PPI Layers API
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/ppi/layers` | GET | Get all 7 layers metadata | No |
+| `/api/ppi/layer/{n}` | GET | Get questions for layer 1-7 | No |
+| `/api/ppi/layer/{n}/submit` | POST | Submit layer answers, earn badges | Yes |
+| `/api/ppi/progress` | GET | Get user's PPI completion status | Yes |
+
+#### Topics API
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/topics/select` | POST | Save selected topics | Yes |
+| `/api/topics/user` | GET | Get user's selected topics | Yes |
+| `/api/topics/update` | PUT | Update selected topics | Yes |
+| `/api/topics/remove/{id}` | DELETE | Remove a single topic | Yes |
+
+#### Badges API
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/badges` | GET | Get all 14 badges catalog | No |
+| `/api/badges/user` | GET | Get user's earned badges | Yes |
+| `/api/badges/user/check` | GET | Get earned vs locked badges | Yes |
+
+### Database Collections Added
+- `ppi_layer_answers` - Stores layer submissions per user
+- `user_topics` - Stores selected topics per user
+- `user_badges` - Stores earned badges per user
+
+### Features
+- **Auto Badge Awarding:** Badges automatically awarded on PPI completion
+  - Layer completion badges (Foundation Builder → DNA Master)
+  - Speed badges (Quick Thinker - <5 min)
+  - Completion badges (100% Complete - no skips)
+- **Accuracy Calculation:** Profile accuracy updates per layer completed
+- **Progress Tracking:** Full progress tracking across all 7 layers
+
+### Test Results
+- All 11 endpoints tested and working ✅
+- Badge awarding verified (Foundation Builder, Quick Thinker earned) ✅
+- Topic save/retrieve verified ✅
+- PPI progress tracking verified ✅
+
+---
+
 ## Upcoming Tasks
 
-### Phase 2: Backend Endpoints (Next)
-- [ ] Add `/api/ppi/layer/{layer_number}` endpoint for layers 2-7
-- [ ] Add `/api/topics/select` - Save selected topics
-- [ ] Add `/api/topics/user` - Get user's selected topics
-- [ ] Add `/api/badges` - Get user's badges and unlock status
-- [ ] Add badge unlock logic to relevant endpoints
-
-### Phase 3: Frontend Components
+### Phase 3: Frontend Components (Next)
 - [ ] Topic Selection page with search, categories, tooltips
-- [ ] Post-Selection Summary page
+- [ ] Post-Selection Summary page with stage detection
 - [ ] PPI Layer Selection UI (Quick Start / Balanced / Complete)
-- [ ] Badge display component for Settings
+- [ ] PPI Question Flow component
+- [ ] Badge display component for Settings/Dashboard
 
 ### Backlog
 - [ ] Refactor Settings.js (1300+ lines → smaller components)
@@ -312,4 +354,4 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 ---
 
 ## Last Updated
-January 9, 2026 - Phase 1 Foundation complete (utilities, topics, badges, PPI layers 2-7)
+January 9, 2026 - Phase 2 Backend Endpoints complete (11 new endpoints)
