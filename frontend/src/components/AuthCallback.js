@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -6,7 +6,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 /**
- * AuthCallback component handles the Google OAuth callback
+ * AuthCallback component handles OAuth callbacks from multiple providers
+ * Supports: Google, Apple, Microsoft, Facebook
  * Processes the session_id from URL fragment and establishes user session
  * 
  * REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -15,6 +16,7 @@ function AuthCallback() {
   const navigate = useNavigate();
   const location = useLocation();
   const hasProcessed = useRef(false);
+  const [providerName, setProviderName] = useState('');
 
   useEffect(() => {
     // Prevent double processing in StrictMode
@@ -26,6 +28,11 @@ function AuthCallback() {
         // Extract session_id from URL fragment
         const hash = location.hash;
         const sessionId = hash?.split('session_id=')[1]?.split('&')[0];
+        
+        // Detect provider from hash or state parameter
+        const providerMatch = hash?.match(/provider=(\w+)/);
+        const provider = providerMatch ? providerMatch[1] : 'google'; // default to google
+        setProviderName(provider.charAt(0).toUpperCase() + provider.slice(1));
 
         if (!sessionId) {
           console.error('No session_id found in URL');
@@ -33,7 +40,7 @@ function AuthCallback() {
           return;
         }
 
-        // Exchange session_id for user data
+        // Exchange session_id for user data from Emergent OAuth
         const response = await axios.get(
           'https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data',
           {
@@ -43,16 +50,23 @@ function AuthCallback() {
 
         const { id, email, name, picture, session_token } = response.data;
 
+        // Determine backend endpoint based on provider
+        const callbackEndpoint = `${API}/auth/${provider}/callback`;
+        
+        // Build payload based on provider
+        const payload = {
+          [`${provider}_id`]: id,
+          email,
+          name,
+          picture,
+          session_token,
+          provider
+        };
+
         // Send to our backend to create/update user and set session
         const backendResponse = await axios.post(
-          `${API}/auth/google/callback`,
-          {
-            google_id: id,
-            email,
-            name,
-            picture,
-            session_token
-          },
+          callbackEndpoint,
+          payload,
           { withCredentials: true }
         );
 
@@ -81,7 +95,7 @@ function AuthCallback() {
     <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-gold mx-auto mb-4"></div>
-        <p className="text-white text-xl">Completing sign in...</p>
+        <p className="text-white text-xl">Completing {providerName || ''} sign in...</p>
       </div>
     </div>
   );
