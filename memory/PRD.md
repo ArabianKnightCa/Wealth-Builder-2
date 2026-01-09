@@ -350,6 +350,7 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 | Topic Tooltips | ✅ | Hover tooltips with detailed descriptions |
 | Conflict Detection | ✅ | Modal warns of contradictory selections |
 | Save & Continue | ✅ | Saves to `/api/topics/select` → redirects to summary |
+| Skip Option | ✅ | "Skip for now" link → /ppi-layers |
 
 #### 2. Topic Summary Page (`/topic-summary`)
 | Feature | Status | Description |
@@ -360,6 +361,7 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 | Timeline | ✅ | Estimated learning timeline |
 | Recommended Path | ✅ | Phased learning approach |
 | Next Steps | ✅ | Action items for the user |
+| Start Learning | ✅ | "Let's Start Learning!" → /ppi-layers |
 
 #### 3. PPI Layer Selector Page (`/ppi-layers`)
 | Feature | Status | Description |
@@ -370,6 +372,7 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 | Complete Profile | ✅ | 7 layers, 45 min, 99% accuracy |
 | Layer Breakdown | ✅ | Shows all 7 layers when "Complete" selected |
 | Progress Display | ✅ | Shows completed layers if any |
+| Skip Option | ✅ | "Use default" link → /ppi |
 
 #### 4. Badge Display Component
 | Feature | Status | Description |
@@ -379,12 +382,33 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 | Badge Catalog | ✅ | Shows all 14 badges with unlock status |
 | Rarity Display | ✅ | Common → Legendary badge classification |
 
-### Routes Added to App.js
-```javascript
-<Route path="/topics" element={<TopicSelection />} />
-<Route path="/topic-summary" element={<TopicSummary />} />
-<Route path="/ppi-layers" element={<PPILayerSelector />} />
+### Connected Onboarding Flow (January 9, 2026) ✅
+
+Full user journey from registration to dashboard is now seamlessly connected:
+
 ```
+Register → /topics → /topic-summary → /ppi-layers → /ppi → /dashboard
+```
+
+#### Routing Logic (App.js)
+```javascript
+const getOnboardingRedirect = () => {
+  if (!user) return '/login';
+  if (user.ppi_completed) return '/dashboard';
+  if (!user.topics_selected) return '/topics';
+  return '/ppi-layers';
+};
+```
+
+#### User State Tracking
+| Field | Set When | Effect |
+|-------|----------|--------|
+| `topics_selected` | User saves topics | Skip /topics on return |
+| `ppi_completed` | User completes PPI | Go to /dashboard |
+
+#### Skip Options
+- `/topics`: "Skip for now" → /ppi-layers
+- `/ppi-layers`: "Use default" → /ppi (with balanced option)
 
 ### Test Results
 - **TopicSelection:** Search, categories, selection all working ✅
@@ -392,6 +416,7 @@ Complete foundational data and utility modules for the 270-question PPI and Topi
 - **PPILayerSelector:** All 3 options working with selection ✅
 - **BadgeDisplay:** Integrated into Dashboard showing 0/14 badges ✅
 - **Backend APIs:** All endpoints verified working ✅
+- **Onboarding Flow:** Complete e2e flow tested ✅
 
 ---
 
