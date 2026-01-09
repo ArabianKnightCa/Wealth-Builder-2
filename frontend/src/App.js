@@ -25,6 +25,7 @@ import PPILayerSelector from './pages/PPILayerSelector';
 import TopicSelection from './pages/TopicSelection';
 import TopicSummary from './pages/TopicSummary';
 import AuthCallback from './components/AuthCallback';
+import MagicLinkVerify from './pages/MagicLinkVerify';
 import GlobalHUD from './components/GlobalHUD';
 import telemetryService from './utils/telemetry';
 
