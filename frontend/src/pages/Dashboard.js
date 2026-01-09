@@ -105,6 +105,11 @@ function Dashboard({ user, token, onLogout }) {
       </div>
 
       <div className="max-w-7xl mx-auto p-8">
+        {/* Badges Section */}
+        <div className="mb-8">
+          <BadgeDisplay token={token} compact={true} />
+        </div>
+        
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-navy-900 mb-2">Your Learning Path</h2>
           <p className="text-gray-600">Complete each chapter's quiz to unlock the next one.</p>
