@@ -75,3 +75,6 @@ gensim==4.4.0
 nltk==3.9.2
 sentence-transformers==5.2.0
 textdescriptives==2.8.4
+cbor2==5.8.0
+pyOpenSSL==25.3.0
+webauthn==2.7.0
