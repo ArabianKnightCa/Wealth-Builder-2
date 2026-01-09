@@ -229,5 +229,87 @@ The Settings page has been fully built with 9 sections:
 
 ---
 
+## Phase 1: Foundation Data & Utilities (January 9, 2026) ✅
+
+### Topic Selection & Onboarding System
+
+Complete foundational data and utility modules for the 270-question PPI and Topic Selection features:
+
+#### Frontend Utility Modules (`/app/frontend/src/lib/`)
+
+| Module | Purpose | Key Functions |
+|--------|---------|---------------|
+| `profileAccuracy.js` | Calculate profile accuracy % based on completed PPI layers | `getProfileAccuracy()`, `getAccuracyLabel()`, `getNextMilestone()` |
+| `stageDetector.js` | Detect user's financial stage from topic selections | `detectUserStage()` → 5 stages: crisis, wealth_building, income_maximization, comprehensive, balanced |
+| `topicGrouper.js` | Group selected topics by theme for summary display | `groupTopicsByTheme()`, `getThemeByCategory()` |
+| `timelineCalculator.js` | Estimate learning completion time | `calculateTimeline()` → accounts for urgency |
+| `conflictDetector.js` | Detect contradictory topic selections | `detectConflicts()` → 4 conflict types with recommendations |
+| `topicSearch.js` | Fuzzy search for topics | `searchTopics()`, `highlightMatches()`, `getSearchSuggestions()` |
+| `summaryGenerator.js` | Orchestrate post-selection summary | `generatePostSelectionSummary()` |
+| `index.js` | Central export for all modules | All exports in one place |
+
+#### Data Files
+
+| File | Location | Contents |
+|------|----------|----------|
+| `topicCatalog.js` | `/app/frontend/src/data/` | 67 financial topics across 10 categories with detailed tooltips |
+| `badgeCatalog.js` | `/app/frontend/src/data/` | 14 achievement badges with unlock conditions |
+| `ppi_layers_2_7.json` | `/app/backend/data/` | 240 PPI questions (Layers 2-7, 40 questions each) |
+
+#### Topic Categories (10 total, 67 topics)
+1. Everyday Money (7 topics)
+2. Debt & Credit (6 topics)
+3. Saving & Planning (7 topics)
+4. Investing & Wealth (8 topics)
+5. Income & Career (6 topics)
+6. Lifestyle & Wellbeing (6 topics)
+7. Family & Relationships (5 topics)
+8. Confidence & Mindset (8 topics)
+9. Big Picture (7 topics)
+10. Honest Reflections (7 topics)
+
+#### Badge Categories (3 categories, 14 badges)
+1. PPI Progress (4 badges): Foundation Builder → DNA Master
+2. Achievements (6 badges): Quick Thinker, 100% Complete, etc.
+3. Topic Completion (4 badges): Topic Starter → Learning Machine
+
+#### PPI Layers Summary
+| Layer | Name | Questions | Focus |
+|-------|------|-----------|-------|
+| 1 | Identity | 30 | Already exists |
+| 2 | Context | 40 | Financial resilience, decision-making style |
+| 3 | Motivation | 40 | Drivers and blockers |
+| 4 | Patterns | 40 | Behavioral patterns |
+| 5 | Origins | 40 | Money history and upbringing |
+| 6 | Blind Spots | 40 | Self-awareness gaps |
+| 7 | Meta-Awareness | 40 | Integration and reflection |
+
+**Total: 270 questions across 7 layers**
+
+---
+
+## Upcoming Tasks
+
+### Phase 2: Backend Endpoints (Next)
+- [ ] Add `/api/ppi/layer/{layer_number}` endpoint for layers 2-7
+- [ ] Add `/api/topics/select` - Save selected topics
+- [ ] Add `/api/topics/user` - Get user's selected topics
+- [ ] Add `/api/badges` - Get user's badges and unlock status
+- [ ] Add badge unlock logic to relevant endpoints
+
+### Phase 3: Frontend Components
+- [ ] Topic Selection page with search, categories, tooltips
+- [ ] Post-Selection Summary page
+- [ ] PPI Layer Selection UI (Quick Start / Balanced / Complete)
+- [ ] Badge display component for Settings
+
+### Backlog
+- [ ] Refactor Settings.js (1300+ lines → smaller components)
+- [ ] Implement Phase 1 Parental Controls
+- [ ] TAP 5.0 validators (Grammar, Readability, Meaning Drift)
+- [ ] Clarify PostgreSQL migration intent
+
+---
+
 ## Last Updated
-January 9, 2026 - Settings page UI fix completed (Daily Learning Goal slider)
+January 9, 2026 - Phase 1 Foundation complete (utilities, topics, badges, PPI layers 2-7)
