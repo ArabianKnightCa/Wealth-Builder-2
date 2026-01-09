@@ -144,6 +144,14 @@ function AppContent() {
     );
   }
 
+  // Determine where to redirect based on onboarding progress
+  const getOnboardingRedirect = () => {
+    if (!user) return '/login';
+    if (user.ppi_completed) return '/dashboard';
+    if (!user.topics_selected) return '/topics';
+    return '/ppi-layers';
+  };
+
   return (
     <>
       {user && <GlobalHUD user={user} token={token} onLogout={handleLogout} />}
@@ -157,10 +165,10 @@ function AppContent() {
         <Route path="/analytics" element={user ? <AnalyticsDashboard token={token} /> : <Navigate to="/login" />} />
         <Route path="/ae-test-harness" element={user ? <AETestHarness token={token} /> : <Navigate to="/login" />} />
         <Route path="/location-demo" element={user ? <LocationSelectorDemo token={token} /> : <Navigate to="/login" />} />
-        <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
-        <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
-        <Route path="/forgot-password" element={!user ? <ForgotPassword /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
-        <Route path="/reset-password" element={!user ? <ResetPassword /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
+        <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to={getOnboardingRedirect()} />} />
+        <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : <Navigate to={getOnboardingRedirect()} />} />
+        <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to={getOnboardingRedirect()} />} />
+        <Route path="/reset-password" element={!user ? <ResetPassword /> : <Navigate to={getOnboardingRedirect()} />} />
         <Route path="/onboarding" element={user ? <Onboarding user={user} token={token} /> : <Navigate to="/login" />} />
         <Route path="/ppi" element={user ? <PPI token={token} user={user} onPPIComplete={handlePPIComplete} /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
