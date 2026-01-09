@@ -625,6 +625,163 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                     onProfileSwitch={() => window.location.reload()} 
                   />
                 </div>
+
+                {/* Mobile App Download QR Codes */}
+                <div className={`pt-6 border-t ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
+                  <h3 className="font-semibold mb-3">📱 Get the Mobile App</h3>
+                  <p className={`text-sm mb-4 ${subTextClass}`}>Scan the QR code to download Wealth Builder on your device</p>
+                  
+                  <div className="grid grid-cols-2 gap-6">
+                    {/* Apple App Store QR */}
+                    <div className={`p-4 rounded-xl border-2 ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} text-center`}>
+                      <div className="relative inline-block">
+                        {/* QR Code Pattern - Apple */}
+                        <svg width="140" height="140" viewBox="0 0 140 140" className="mx-auto">
+                          {/* QR Background */}
+                          <rect width="140" height="140" fill="white" rx="8"/>
+                          
+                          {/* QR Pattern - Corners */}
+                          <rect x="10" y="10" width="30" height="30" fill="black"/>
+                          <rect x="14" y="14" width="22" height="22" fill="white"/>
+                          <rect x="18" y="18" width="14" height="14" fill="black"/>
+                          
+                          <rect x="100" y="10" width="30" height="30" fill="black"/>
+                          <rect x="104" y="14" width="22" height="22" fill="white"/>
+                          <rect x="108" y="18" width="14" height="14" fill="black"/>
+                          
+                          <rect x="10" y="100" width="30" height="30" fill="black"/>
+                          <rect x="14" y="104" width="22" height="22" fill="white"/>
+                          <rect x="18" y="108" width="14" height="14" fill="black"/>
+                          
+                          {/* QR Data Pattern */}
+                          <rect x="50" y="10" width="6" height="6" fill="black"/>
+                          <rect x="62" y="10" width="6" height="6" fill="black"/>
+                          <rect x="74" y="10" width="6" height="6" fill="black"/>
+                          <rect x="86" y="10" width="6" height="6" fill="black"/>
+                          
+                          <rect x="10" y="50" width="6" height="6" fill="black"/>
+                          <rect x="22" y="50" width="6" height="6" fill="black"/>
+                          <rect x="10" y="62" width="6" height="6" fill="black"/>
+                          <rect x="10" y="74" width="6" height="6" fill="black"/>
+                          <rect x="22" y="74" width="6" height="6" fill="black"/>
+                          <rect x="10" y="86" width="6" height="6" fill="black"/>
+                          
+                          <rect x="50" y="124" width="6" height="6" fill="black"/>
+                          <rect x="62" y="124" width="6" height="6" fill="black"/>
+                          <rect x="74" y="124" width="6" height="6" fill="black"/>
+                          <rect x="86" y="124" width="6" height="6" fill="black"/>
+                          
+                          <rect x="124" y="50" width="6" height="6" fill="black"/>
+                          <rect x="112" y="50" width="6" height="6" fill="black"/>
+                          <rect x="124" y="62" width="6" height="6" fill="black"/>
+                          <rect x="124" y="74" width="6" height="6" fill="black"/>
+                          <rect x="112" y="74" width="6" height="6" fill="black"/>
+                          <rect x="124" y="86" width="6" height="6" fill="black"/>
+                          
+                          {/* Random QR data points */}
+                          <rect x="50" y="50" width="4" height="4" fill="black"/>
+                          <rect x="58" y="54" width="4" height="4" fill="black"/>
+                          <rect x="78" y="50" width="4" height="4" fill="black"/>
+                          <rect x="86" y="54" width="4" height="4" fill="black"/>
+                          <rect x="50" y="82" width="4" height="4" fill="black"/>
+                          <rect x="58" y="86" width="4" height="4" fill="black"/>
+                          <rect x="78" y="82" width="4" height="4" fill="black"/>
+                          <rect x="86" y="86" width="4" height="4" fill="black"/>
+                          
+                          {/* Center white circle for logo */}
+                          <circle cx="70" cy="70" r="22" fill="white"/>
+                          <circle cx="70" cy="70" r="20" fill="black"/>
+                          
+                          {/* Apple Logo */}
+                          <path d="M70 55c-1.5-3.5 1-7 4-7.5 0.3 3-2 5-4 7.5zm6 4c-2.5-0.5-4.5 1-6 1s-3-1.5-5-1.5c-3.5 0-7 3-7 8 0 6 4 13 7 13 1.5 0 3-1 5-1s3.5 1 5 1c3 0 6-7 7-10-4-2-5-6-3-10-2-1-3-1.5-3-1.5z" fill="white" transform="translate(0, 2)"/>
+                        </svg>
+                      </div>
+                      <p className="mt-3 font-semibold text-sm">App Store</p>
+                      <p className={`text-xs ${subTextClass}`}>iOS / iPadOS</p>
+                    </div>
+
+                    {/* Google Play Store QR */}
+                    <div className={`p-4 rounded-xl border-2 ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} text-center`}>
+                      <div className="relative inline-block">
+                        {/* QR Code Pattern - Android */}
+                        <svg width="140" height="140" viewBox="0 0 140 140" className="mx-auto">
+                          {/* QR Background */}
+                          <rect width="140" height="140" fill="white" rx="8"/>
+                          
+                          {/* QR Pattern - Corners */}
+                          <rect x="10" y="10" width="30" height="30" fill="black"/>
+                          <rect x="14" y="14" width="22" height="22" fill="white"/>
+                          <rect x="18" y="18" width="14" height="14" fill="black"/>
+                          
+                          <rect x="100" y="10" width="30" height="30" fill="black"/>
+                          <rect x="104" y="14" width="22" height="22" fill="white"/>
+                          <rect x="108" y="18" width="14" height="14" fill="black"/>
+                          
+                          <rect x="10" y="100" width="30" height="30" fill="black"/>
+                          <rect x="14" y="104" width="22" height="22" fill="white"/>
+                          <rect x="18" y="108" width="14" height="14" fill="black"/>
+                          
+                          {/* QR Data Pattern - Different from Apple */}
+                          <rect x="50" y="10" width="6" height="6" fill="black"/>
+                          <rect x="56" y="16" width="6" height="6" fill="black"/>
+                          <rect x="68" y="10" width="6" height="6" fill="black"/>
+                          <rect x="80" y="16" width="6" height="6" fill="black"/>
+                          <rect x="86" y="10" width="6" height="6" fill="black"/>
+                          
+                          <rect x="10" y="50" width="6" height="6" fill="black"/>
+                          <rect x="16" y="56" width="6" height="6" fill="black"/>
+                          <rect x="10" y="68" width="6" height="6" fill="black"/>
+                          <rect x="16" y="80" width="6" height="6" fill="black"/>
+                          <rect x="10" y="86" width="6" height="6" fill="black"/>
+                          
+                          <rect x="50" y="124" width="6" height="6" fill="black"/>
+                          <rect x="56" y="118" width="6" height="6" fill="black"/>
+                          <rect x="68" y="124" width="6" height="6" fill="black"/>
+                          <rect x="80" y="118" width="6" height="6" fill="black"/>
+                          <rect x="86" y="124" width="6" height="6" fill="black"/>
+                          
+                          <rect x="124" y="50" width="6" height="6" fill="black"/>
+                          <rect x="118" y="56" width="6" height="6" fill="black"/>
+                          <rect x="124" y="68" width="6" height="6" fill="black"/>
+                          <rect x="118" y="80" width="6" height="6" fill="black"/>
+                          <rect x="124" y="86" width="6" height="6" fill="black"/>
+                          
+                          {/* Random QR data points - Different pattern */}
+                          <rect x="50" y="52" width="4" height="4" fill="black"/>
+                          <rect x="56" y="56" width="4" height="4" fill="black"/>
+                          <rect x="80" y="52" width="4" height="4" fill="black"/>
+                          <rect x="86" y="56" width="4" height="4" fill="black"/>
+                          <rect x="50" y="80" width="4" height="4" fill="black"/>
+                          <rect x="56" y="84" width="4" height="4" fill="black"/>
+                          <rect x="80" y="80" width="4" height="4" fill="black"/>
+                          <rect x="86" y="84" width="4" height="4" fill="black"/>
+                          
+                          {/* Center white circle for logo */}
+                          <circle cx="70" cy="70" r="22" fill="white"/>
+                          <circle cx="70" cy="70" r="20" fill="#3DDC84"/>
+                          
+                          {/* Android Robot Logo */}
+                          {/* Head */}
+                          <path d="M58 62 L82 62 L82 75 Q82 80 70 80 Q58 80 58 75 Z" fill="white"/>
+                          {/* Eyes */}
+                          <circle cx="64" cy="68" r="2" fill="#3DDC84"/>
+                          <circle cx="76" cy="68" r="2" fill="#3DDC84"/>
+                          {/* Antennas */}
+                          <line x1="63" y1="56" x2="66" y2="62" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                          <line x1="77" y1="56" x2="74" y2="62" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </div>
+                      <p className="mt-3 font-semibold text-sm">Google Play</p>
+                      <p className={`text-xs ${subTextClass}`}>Android</p>
+                    </div>
+                  </div>
+                  
+                  <p className={`text-xs mt-4 text-center ${subTextClass}`}>
+                    <span className="inline-flex items-center gap-1">
+                      <span>🚀</span> Coming Soon - Mobile apps in development
+                    </span>
+                  </p>
+                </div>
               </div>
             )}
 
