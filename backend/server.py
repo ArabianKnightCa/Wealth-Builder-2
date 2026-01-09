@@ -1756,6 +1756,12 @@ async def save_selected_topics(selection: TopicSelection, user_id: str = Depends
         upsert=True
     )
     
+    # Mark user as having selected topics (for onboarding flow)
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"topics_selected": True}}
+    )
+    
     return {
         "success": True,
         "topic_ids": unique_topics,
