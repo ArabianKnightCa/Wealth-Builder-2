@@ -265,21 +265,30 @@ function PPILayerSelector({ token, user, onSelectLayers }) {
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg py-4 px-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div>
+          <div className="flex items-center gap-4">
             <span className="text-lg font-bold text-navy-900">
               {options.find(o => o.id === selectedOption)?.name}
             </span>
-            <span className="text-sm text-gray-500 ml-2">
+            <span className="text-sm text-gray-500">
               {options.find(o => o.id === selectedOption)?.timeMinutes} min · {options.find(o => o.id === selectedOption)?.accuracy}% accuracy
             </span>
           </div>
-          <button
-            onClick={handleContinue}
-            className="px-8 py-3 bg-gradient-to-r from-gold to-yellow-400 text-navy-900 rounded-xl font-bold hover:shadow-lg transition"
-            data-testid="start-ppi-btn"
-          >
-            Start Profile →
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/ppi')}
+              className="text-sm text-gray-400 hover:text-gray-600 underline transition"
+              data-testid="skip-layer-selection-btn"
+            >
+              Use default
+            </button>
+            <button
+              onClick={handleContinue}
+              className="px-8 py-3 bg-gradient-to-r from-gold to-yellow-400 text-navy-900 rounded-xl font-bold hover:shadow-lg transition"
+              data-testid="start-ppi-btn"
+            >
+              Start Profile →
+            </button>
+          </div>
         </div>
       </div>
     </div>
