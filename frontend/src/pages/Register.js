@@ -43,6 +43,9 @@ function Register({ onLogin }) {
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({}); // Track which fields have errors
   const [loading, setLoading] = useState(false);
+  const [emailChecking, setEmailChecking] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
+  const [emailCheckTimeout, setEmailCheckTimeout] = useState(null);
 
   const experienceLevels = [
     { value: 1, label: 'Beginner - Just starting with financial concepts' },
