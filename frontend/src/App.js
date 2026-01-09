@@ -167,6 +167,9 @@ function AppContent() {
         <Route path="/chapter/:chapterId" element={user ? <LPIChapter token={token} user={user} /> : <Navigate to="/login" />} />
         <Route path="/settings" element={user ? <Settings user={user} token={token} /> : <Navigate to="/login" />} />
         <Route path="/completed" element={user ? <Completed token={token} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+        <Route path="/topics" element={user ? <TopicSelection token={token} user={user} /> : <Navigate to="/login" />} />
+        <Route path="/topic-summary" element={user ? <TopicSummary token={token} user={user} /> : <Navigate to="/login" />} />
+        <Route path="/ppi-layers" element={user ? <PPILayerSelector token={token} user={user} /> : <Navigate to="/login" />} />
       </Routes>
     </>
   );
