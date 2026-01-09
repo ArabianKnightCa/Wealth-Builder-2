@@ -919,6 +919,15 @@ async def submit_quiz_answer(answer_data: dict, user_id: str = Depends(get_curre
         "selected_answer": selected_answer
     }
 
+class EmailCheck(BaseModel):
+    email: EmailStr
+
+@api_router.post("/auth/check-email")
+async def check_email_exists(data: EmailCheck):
+    """Check if an email is already registered"""
+    existing_user = await db.users.find_one({"email": data.email})
+    return {"exists": existing_user is not None}
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
