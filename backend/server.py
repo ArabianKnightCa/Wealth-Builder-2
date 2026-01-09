@@ -1023,6 +1023,157 @@ async def google_oauth_callback(data: GoogleAuthCallback, response: Response):
         "token_type": "bearer"
     }
 
+
+# =========================================================================
+# Multi-Provider OAuth Callbacks (Apple, Microsoft, Facebook)
+# =========================================================================
+
+class OAuthCallback(BaseModel):
+    """Generic OAuth callback model for Apple, Microsoft, Facebook"""
+    email: EmailStr
+    name: str
+    picture: Optional[str] = None
+    session_token: str
+    provider: str  # apple, microsoft, facebook
+    apple_id: Optional[str] = None
+    microsoft_id: Optional[str] = None
+    facebook_id: Optional[str] = None
+
+
+async def handle_oauth_callback(provider: str, provider_id: str, email: str, name: str, picture: Optional[str], session_token: str, response: Response):
+    """
+    Shared OAuth callback handler for Apple, Microsoft, Facebook
+    Creates or updates user and establishes session
+    """
+    provider_id_field = f"{provider}_id"
+    provider_connected_field = f"{provider}_connected"
+    
+    # Check if user exists by email
+    existing_user = await db.users.find_one({"email": email}, {"_id": 0})
+    
+    if existing_user:
+        # Update existing user with provider info
+        await db.users.update_one(
+            {"email": email},
+            {"$set": {
+                provider_id_field: provider_id,
+                "profile_picture_url": picture or existing_user.get("profile_picture_url"),
+                provider_connected_field: True,
+                "last_login": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        user = await db.users.find_one({"email": email}, {"_id": 0})
+    else:
+        # Create new user from OAuth data
+        user_id = str(uuid.uuid4())
+        person_key = f"PK-{uuid.uuid4().hex[:8].upper()}"
+        timestamp = datetime.now(timezone.utc).strftime('%y%m%d%H%M')
+        seq_num = int(uuid.uuid4().hex[:4], 16) % 10000
+        user_code = f"WB-POC-GEN-{seq_num:04d}-{timestamp}"
+        
+        new_user = {
+            "id": user_id,
+            "person_key": person_key,
+            "user_code": user_code,
+            provider_id_field: provider_id,
+            "email": email,
+            "first_name": name.split()[0] if name else "User",
+            "profile_picture_url": picture,
+            provider_connected_field: True,
+            "user_type": "POC",
+            "life_stage": "AD",
+            "cohort": "GEN",
+            "dob_month": 1,
+            "dob_year": 1990,
+            "language": "en",
+            "experience_level": 2,
+            "occupation": "Other",
+            "ppi_completed": False,
+            "topics_selected": False,
+            "account_status": "active",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "last_login": datetime.now(timezone.utc).isoformat()
+        }
+        await db.users.insert_one(new_user)
+        user = {k: v for k, v in new_user.items() if k != "_id"}
+    
+    # Store session token
+    session_expires = datetime.now(timezone.utc) + timedelta(days=7)
+    await db.user_sessions.update_one(
+        {"user_id": user["id"]},
+        {"$set": {
+            "user_id": user["id"],
+            "session_token": session_token,
+            "provider": provider,
+            "expires_at": session_expires.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    
+    # Set httpOnly cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=7 * 24 * 60 * 60,  # 7 days
+        path="/"
+    )
+    
+    # Generate JWT token for API auth
+    access_token = create_access_token({"sub": user["id"]})
+    
+    return {
+        "user": user,
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+
+
+@api_router.post("/auth/apple/callback")
+async def apple_oauth_callback(data: OAuthCallback, response: Response):
+    """Handle Apple OAuth callback"""
+    return await handle_oauth_callback(
+        provider="apple",
+        provider_id=data.apple_id or data.email,  # Apple may not always provide ID
+        email=data.email,
+        name=data.name,
+        picture=data.picture,
+        session_token=data.session_token,
+        response=response
+    )
+
+
+@api_router.post("/auth/microsoft/callback")
+async def microsoft_oauth_callback(data: OAuthCallback, response: Response):
+    """Handle Microsoft OAuth callback"""
+    return await handle_oauth_callback(
+        provider="microsoft",
+        provider_id=data.microsoft_id or data.email,
+        email=data.email,
+        name=data.name,
+        picture=data.picture,
+        session_token=data.session_token,
+        response=response
+    )
+
+
+@api_router.post("/auth/facebook/callback")
+async def facebook_oauth_callback(data: OAuthCallback, response: Response):
+    """Handle Facebook OAuth callback"""
+    return await handle_oauth_callback(
+        provider="facebook",
+        provider_id=data.facebook_id or data.email,
+        email=data.email,
+        name=data.name,
+        picture=data.picture,
+        session_token=data.session_token,
+        response=response
+    )
+
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
