@@ -28,6 +28,20 @@ The TAP system adapts financial education content based on:
 
 ### Latest Updates (January 9, 2026)
 
+#### Multi-Provider OAuth Integration ✅ (NEW)
+- **Providers Supported**: Google, Apple, Microsoft, Facebook
+- **Login Page**: 4 OAuth sign-in buttons with branded styling
+- **Settings > Security**: Connect/disconnect all 4 OAuth providers
+- **AuthCallback component**: Universal handler for all OAuth providers
+- **Backend Endpoints**:
+  - `POST /api/auth/google/callback`
+  - `POST /api/auth/apple/callback`
+  - `POST /api/auth/microsoft/callback`
+  - `POST /api/auth/facebook/callback`
+- **User Model Fields**: `google_connected`, `apple_connected`, `microsoft_connected`, `facebook_connected`
+- **Test Coverage**: 14/14 tests passed (100%)
+- **Files Modified**: `AuthCallback.js`, `Login.js`, `Settings.js`, `server.py`, `SecuritySection.js`
+
 #### Google OAuth Integration ✅
 - **Login Page**: Added "Sign in with Google" button
 - **Settings > Security**: Added Google Connect functionality
