@@ -396,13 +396,20 @@ function TopicSelection({ token, user, onComplete }) {
       {/* Footer with continue button */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div>
+          <div className="flex items-center gap-4">
             <span className="text-lg font-bold text-navy-900">
               {selectedTopics.length} selected
             </span>
-            <span className="text-sm text-gray-500 ml-2">
+            <span className="text-sm text-gray-500">
               (minimum 1 required)
             </span>
+            <button
+              onClick={() => navigate('/ppi-layers')}
+              className="text-sm text-gray-400 hover:text-gray-600 underline transition"
+              data-testid="skip-topics-btn"
+            >
+              Skip for now
+            </button>
           </div>
           <button
             onClick={handleSaveAndContinue}
