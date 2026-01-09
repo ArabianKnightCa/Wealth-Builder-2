@@ -1297,7 +1297,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   <span className="text-5xl mb-3 block">🚀</span>
                   <h3 className="text-xl font-bold mb-2">Coming Soon</h3>
                   <p className={`${subTextClass} text-sm`}>
-                    Powerful tools for parents to guide their children's financial education journey
+                    Powerful tools for parents to guide their child&apos;s financial education journey
                   </p>
                 </div>
 
@@ -1369,9 +1369,9 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   <div className={`mt-4 p-4 rounded-lg ${display.dark_mode ? 'bg-gray-800' : 'bg-white'} border ${display.dark_mode ? 'border-gray-600' : 'border-blue-200'}`}>
                     <p className="text-sm font-semibold mb-2">🐷 Virtual Piggybank Highlights</p>
                     <ul className={`text-xs ${subTextClass} space-y-1`}>
-                      <li>• Parents physically deposit in child's presence → app mirrors it</li>
+                      <li>• Parents physically deposit in child&apos;s presence → app mirrors it</li>
                       <li>• Accountability on both ends - win/win!</li>
-                      <li>• Child answers: "What will you invest in after reaching your goal?"</li>
+                      <li>• Child answers: &quot;What will you invest in after reaching your goal?&quot;</li>
                       <li>• Ties lessons to real-world decisions</li>
                     </ul>
                   </div>
