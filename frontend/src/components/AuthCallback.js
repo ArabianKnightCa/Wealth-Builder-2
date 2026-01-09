@@ -11,7 +11,7 @@ const API = `${BACKEND_URL}/api`;
  * 
  * REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
  */
-function AuthCallback() {
+function AuthCallback({ onLogin }) {
   const navigate = useNavigate();
   const location = useLocation();
   const hasProcessed = useRef(false);
@@ -24,8 +24,8 @@ function AuthCallback() {
 
     const processSession = async () => {
       try {
-        // Extract session_id from URL fragment
-        const hash = location.hash;
+        // Extract session_id from URL fragment (check both location.hash and window.location.hash)
+        const hash = location.hash || window.location.hash;
         const sessionId = hash?.split('session_id=')[1]?.split('&')[0];
 
         if (!sessionId) {
@@ -62,9 +62,16 @@ function AuthCallback() {
         // Store auth data
         localStorage.setItem('token', backendResponse.data.access_token);
         
+        // Call onLogin if provided
+        if (onLogin) {
+          onLogin(backendResponse.data.user, backendResponse.data.access_token);
+        }
+        
         setStatus('success');
         
-        // Navigate to dashboard with user data
+        // Clear the hash from URL and navigate to dashboard
+        window.history.replaceState(null, '', window.location.pathname);
+        
         setTimeout(() => {
           navigate('/dashboard', { 
             replace: true,
@@ -85,7 +92,7 @@ function AuthCallback() {
     };
 
     processSession();
-  }, [location, navigate]);
+  }, [location, navigate, onLogin]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-700 flex items-center justify-center">
