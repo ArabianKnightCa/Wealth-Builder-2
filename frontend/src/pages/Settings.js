@@ -1216,10 +1216,15 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                       <span className="text-2xl">🔵</span>
                       <span>Google</span>
                     </div>
-                    <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600">
+                    <button 
+                      onClick={() => showMessage('Google OAuth integration coming soon! This will allow you to sign in with your Google account.')}
+                      className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600"
+                      data-testid="connect-google-btn"
+                    >
                       Connect
                     </button>
                   </div>
+                  <p className={`text-xs mt-2 ${subTextClass}`}>Connect your Google account for easier sign-in</p>
                 </div>
               </div>
             )}
