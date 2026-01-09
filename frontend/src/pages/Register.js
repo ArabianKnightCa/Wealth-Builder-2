@@ -419,6 +419,12 @@ function Register({ onLogin }) {
                       setFormData({ ...formData, confirmPassword: e.target.value });
                       setFieldErrors({ ...fieldErrors, confirmPassword: false });
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handlePage1Next();
+                      }
+                    }}
                     minLength={8}
                     required
                     data-testid="confirm-password-input"
