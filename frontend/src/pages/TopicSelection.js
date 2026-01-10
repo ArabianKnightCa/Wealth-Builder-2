@@ -311,7 +311,7 @@ function TopicSelection({ token, user, onComplete }) {
       {/* Header */}
       <div className="bg-gradient-to-r from-navy-900 to-navy-700 text-white py-8 px-4">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">What brings you here?</h1>
+          <h1 className="text-3xl font-bold mb-2 text-gold">What brings you here?</h1>
           <p className="text-gray-300">
             Select the financial topics you want to explore. You can always change these later.
           </p>
