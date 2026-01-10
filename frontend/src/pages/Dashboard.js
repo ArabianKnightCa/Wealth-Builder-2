@@ -48,6 +48,11 @@ function Dashboard({ user, token, onLogout }) {
   };
 
   const isChapterUnlocked = (chapterId) => {
+    // Chapter 1 is ALWAYS unlocked
+    if (chapterId === 'CH01' || chapterId === 1 || chapterId === '1') {
+      return true;
+    }
+    // Other chapters are unlocked if user has any progress
     return progress.some(p => p.chapter_id === chapterId);
   };
 
