@@ -45,7 +45,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
     experience_level: user.experience_level || 3,
     financial_goals: user.financial_goals || [],
     notifications_enabled: user.notifications_enabled !== false,
-    daily_goal_minutes: user.daily_goal_minutes || 10,
+    daily_goal_minutes: user.daily_goal_minutes || 15,
     reminder_time: user.reminder_time || '09:00',
     enable_hints: user.enable_hints !== false,
     weekly_email: user.weekly_email !== false,
