@@ -276,76 +276,31 @@ Before finalizing, ensure:
 
 ## EXAMPLE QUESTIONS BY LAYER
 
-### Layer 1 Example (Baseline)
+These examples show the **EXACT FORMAT** your output must follow. Copy this style precisely:
+
+### Layer 1 Example (Baseline - Likert)
 ```json
-{
-  "id": "PPI_Q005",
-  "layer": 1,
-  "type": "likert",
-  "prompt": "I think about future consequences before spending money.",
-  "via_trait": "Prudence",
-  "weight": 9
-}
+{"id": "PPI_Q018", "layer": 1, "type": "likert", "prompt": "I think about future consequences before spending money.", "via_trait": "Prudence", "weight": 9}
 ```
 
-### Layer 3 Example (Motivations)
+### Layer 1 Example (Baseline - MCQ)
 ```json
-{
-  "id": "PPI_Q085",
-  "layer": 3,
-  "type": "mcq",
-  "prompt": "What's the main reason you want to be better with money?",
-  "options": [
-    "A To prove I'm capable and responsible",
-    "B To create the life I've always wanted",
-    "C To not let down the people who count on me",
-    "D To finally feel secure and stop worrying"
-  ],
-  "via_trait": "Hope",
-  "weight": 8,
-  "delta_weights": {
-    "A": {"Perseverance": 0.3, "Self-Regulation": 0.2},
-    "B": {"Zest": 0.3, "Hope": 0.2},
-    "C": {"Love": 0.3, "Kindness": 0.2},
-    "D": {"Prudence": 0.3, "Hope": 0.1}
-  }
-}
+{"id": "PPI_Q002", "layer": 1, "type": "mcq", "prompt": "You hear about a new way to save money that sounds interesting but unfamiliar. What do you do?", "options": ["A Look it up right away and learn more about it", "B Ask someone who might know about it", "C Keep it in mind but don't actively research it", "D Stick with what I already know"], "via_trait": "Curiosity", "weight": 6}
 ```
 
-### Layer 6 Example (Blind Spots)
+### Layer 3 Example (Motivations - MCQ)
 ```json
-{
-  "id": "PPI_Q210",
-  "layer": 6,
-  "type": "likert",
-  "prompt": "I realize I sometimes confuse being careful with being afraid.",
-  "via_trait": "Bravery",
-  "weight": 7
-}
+{"id": "PPI_Q085", "layer": 3, "type": "mcq", "prompt": "What's the main reason you want to be better with money?", "options": ["A To prove I'm capable and responsible", "B To create the life I've always wanted", "C To not let down the people who count on me", "D To finally feel secure and stop worrying"], "via_trait": "Hope", "weight": 8}
 ```
 
-### Layer 7 Example (Meta-Awareness)
+### Layer 6 Example (Blind Spots - Likert)
 ```json
-{
-  "id": "PPI_Q255",
-  "layer": 7,
-  "type": "mcq",
-  "prompt": "What have you learned about yourself and money through this reflection?",
-  "options": [
-    "A My patterns are more consistent than I realized",
-    "B My relationship with money connects to deeper needs",
-    "C I have more control over my habits than I thought",
-    "D There's still much I don't understand about myself"
-  ],
-  "via_trait": "Perspective",
-  "weight": 9,
-  "delta_weights": {
-    "A": {"Judgment": 0.3, "Perspective": 0.2},
-    "B": {"Perspective": 0.3, "Spirituality": 0.2},
-    "C": {"Self-Regulation": 0.3, "Hope": 0.2},
-    "D": {"Humility": 0.3, "Curiosity": 0.2}
-  }
-}
+{"id": "PPI_Q210", "layer": 6, "type": "likert", "prompt": "I realize I sometimes confuse being careful with being afraid.", "via_trait": "Bravery", "weight": 7}
+```
+
+### Layer 7 Example (Meta-Awareness - MCQ)
+```json
+{"id": "PPI_Q255", "layer": 7, "type": "mcq", "prompt": "What have you learned about yourself and money through this reflection?", "options": ["A My patterns are more consistent than I realized", "B My relationship with money connects to deeper needs", "C I have more control over my habits than I thought", "D There's still much I don't understand about myself"], "via_trait": "Perspective", "weight": 9}
 ```
 
 ---
