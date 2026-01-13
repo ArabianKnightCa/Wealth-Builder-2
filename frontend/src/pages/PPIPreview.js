@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Upload, CheckCircle, AlertCircle, Layers, FileJson, BarChart3 } from 'lucide-react';
 
-// Sample PPI questions for preview (will be replaced with uploaded content)
+// Sample PPI questions for preview (matches your exact format)
 const SAMPLE_QUESTIONS = [
   {
     id: "PPI_Q001",
     layer: 1,
-    type: "mcq",
-    prompt: "You receive unexpected money. What do you do first?",
-    options: [
-      "A Think about what I need or want to buy",
-      "B Put it aside and decide later",
-      "C Research the best use for it",
-      "D Feel excited about the possibilities"
-    ],
-    via_trait: "Self-Regulation",
-    weight: 7,
-    delta_weights: {
-      "A": { "Zest": 0.2, "Self-Regulation": -0.2 },
-      "B": { "Prudence": 0.3, "Self-Regulation": 0.2 },
-      "C": { "Judgment": 0.3, "Curiosity": 0.2 },
-      "D": { "Zest": 0.3, "Hope": 0.2 }
-    }
+    type: "likert",
+    prompt: "When I need to solve a money problem, I can usually come up with ideas that others haven't thought of.",
+    via_trait: "Creativity",
+    weight: 7
   },
   {
     id: "PPI_Q002",
     layer: 1,
-    type: "likert",
-    prompt: "I think about future consequences before spending money.",
-    via_trait: "Prudence",
-    weight: 9
+    type: "mcq",
+    prompt: "You hear about a new way to save money that sounds interesting but unfamiliar. What do you do?",
+    options: [
+      "A Look it up right away and learn more about it",
+      "B Ask someone who might know about it",
+      "C Keep it in mind but don't actively research it",
+      "D Stick with what I already know"
+    ],
+    via_trait: "Curiosity",
+    weight: 6
   },
   {
     id: "PPI_Q071",
@@ -43,13 +37,7 @@ const SAMPLE_QUESTIONS = [
       "D To finally feel secure and stop worrying"
     ],
     via_trait: "Hope",
-    weight: 8,
-    delta_weights: {
-      "A": { "Perseverance": 0.3, "Self-Regulation": 0.2 },
-      "B": { "Zest": 0.3, "Hope": 0.2 },
-      "C": { "Love": 0.3, "Kindness": 0.2 },
-      "D": { "Prudence": 0.3, "Hope": 0.1 }
-    }
+    weight: 8
   },
   {
     id: "PPI_Q191",
