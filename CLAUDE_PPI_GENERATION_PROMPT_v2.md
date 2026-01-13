@@ -47,43 +47,26 @@ Generate a JSON file with this exact structure:
 ```
 
 ### 2. Question Item Schema
-Each question must follow this schema:
+Each question must follow this **EXACT** schema to be compatible with our system:
 
 **For MCQ (Multiple Choice) Questions:**
 ```json
-{
-  "id": "PPI_Q001",
-  "layer": 1,
-  "type": "mcq",
-  "prompt": "Question text goes here",
-  "options": [
-    "A First option text",
-    "B Second option text", 
-    "C Third option text",
-    "D Fourth option text"
-  ],
-  "via_trait": "Primary VIA Trait Name",
-  "weight": 6,
-  "delta_weights": {
-    "A": {"Trait1": 0.3, "Trait2": -0.1},
-    "B": {"Trait1": 0.1, "Trait3": 0.2},
-    "C": {"Trait2": 0.2, "Trait4": 0.1},
-    "D": {"Trait1": -0.2, "Trait5": 0.1}
-  }
-}
+{"id": "PPI_Q001", "layer": 1, "type": "mcq", "prompt": "Question text goes here", "options": ["A First option text", "B Second option text", "C Third option text", "D Fourth option text"], "via_trait": "Creativity", "weight": 6}
 ```
 
 **For Likert Scale Questions:**
 ```json
-{
-  "id": "PPI_Q002",
-  "layer": 1,
-  "type": "likert",
-  "prompt": "Statement for agreement scale",
-  "via_trait": "Primary VIA Trait Name",
-  "weight": 7
-}
+{"id": "PPI_Q002", "layer": 1, "type": "likert", "prompt": "Statement for agreement scale", "via_trait": "Prudence", "weight": 7}
 ```
+
+### CRITICAL FORMAT RULES:
+1. **id**: Format as `PPI_Q001` through `PPI_Q270` (3-digit zero-padded)
+2. **layer**: Integer 1-7
+3. **type**: Either `"mcq"` or `"likert"` (lowercase)
+4. **prompt**: The question text (string)
+5. **options** (MCQ only): Array of 4 strings, each starting with letter + space: `["A text", "B text", "C text", "D text"]`
+6. **via_trait**: One of the 24 VIA Character Strengths (exact spelling)
+7. **weight**: Integer 1-10 indicating importance for trait scoring
 
 ### 3. Question Distribution Rules
 - **Total Questions:** 270
