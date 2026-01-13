@@ -1,5 +1,21 @@
 # Claude Prompt: Generate Complete 7-Layer PPI for Wealth Builder
 
+## PRE-GENERATION CONFIRMATION
+
+Before generating the PPI, please confirm you will include ALL of the following:
+
+**Answer YES to each:**
+1. ☐ Using the **24 VIA Character Strengths** framework as the psychological foundation?
+2. ☐ Following the **7-layer psychological depth model** (Baseline → Meta-Awareness)?
+3. ☐ Outputting **valid JSON** matching the exact schema below?
+4. ☐ Including **delta_weights** for granular trait scoring on ALL MCQ questions?
+5. ☐ Maintaining **stealth assessment design** (questions feel like financial conversations, not psych tests)?
+6. ☐ Creating exactly **270 questions** (30 in L1, 40 each in L2-L7)?
+7. ☐ Ensuring all **24 VIA traits** are measured multiple times across layers?
+8. ☐ Using **~60% Likert / ~40% MCQ** distribution per layer?
+
+---
+
 ## MISSION
 Generate a complete, psychologically-sound 270-question Personality Profile Instrument (PPI) for the Mizo Wealth Builder application. This PPI measures the 24 VIA Character Strengths through stealth financial scenarios, outputting a user's "Financial DNA" for personalized learning.
 
