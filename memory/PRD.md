@@ -46,6 +46,13 @@ Build a "Wealth Builder" application with an Adaptive Engine (AE) for personaliz
 - Prompt file: `/app/CLAUDE_PPI_GENERATION_PROMPT_v2.md`
 - Existing reference prompts: `/app/TAP_5_0_PPI_PROMPT_FOR_CLAUDE.md`
 
+#### PPI Preview Tool (Dec 2025)
+- Visual mock preview tool at `/ppi-preview`
+- Features: Upload JSON, Validate structure, Filter by layer, Preview questions
+- Shows delta_weights on MCQ options
+- Validates: question counts, VIA trait coverage, layer distribution
+- File: `/app/frontend/src/pages/PPIPreview.js`
+
 ### 📋 Backlog
 
 #### P0 - Critical
