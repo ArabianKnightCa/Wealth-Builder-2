@@ -235,30 +235,6 @@ Later layers build on earlier ones:
 
 ---
 
-## DELTA WEIGHT GUIDELINES
-
-For MCQ questions, each option should have `delta_weights` showing how that answer affects trait scores:
-
-**Ranges:**
-- Strong positive: +0.3 to +0.5
-- Moderate positive: +0.1 to +0.2
-- Neutral: 0
-- Moderate negative: -0.1 to -0.2
-- Strong negative: -0.3 to -0.5
-
-**Rules:**
-- Each option affects 2-4 traits
-- Primary trait (listed in `via_trait`) should have strongest delta
-- Related traits have smaller deltas
-- Opposite traits may have negative deltas
-- Total absolute value per option: 0.4 to 0.8 (decreasing with layer depth)
-
-**Example delta logic:**
-Option A (impulsive choice) → Self-Regulation: -0.3, Zest: +0.2
-Option B (cautious choice) → Prudence: +0.3, Self-Regulation: +0.2
-
----
-
 ## WEIGHT GUIDELINES
 
 The `weight` field (1-10 scale) indicates question importance for trait scoring:
