@@ -517,9 +517,9 @@ function PPIPreview() {
           </div>
           <div className="bg-slate-800 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-violet-400">
-              {questions.filter(q => q.delta_weights).length}
+              {new Set(questions.map(q => q.via_trait)).size}
             </div>
-            <div className="text-sm text-gray-400">With Delta Weights</div>
+            <div className="text-sm text-gray-400">VIA Traits Used</div>
           </div>
         </div>
 
