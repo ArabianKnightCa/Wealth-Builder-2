@@ -545,7 +545,7 @@ function PPIPreview() {
             </li>
             <li className="flex items-start gap-2">
               <span className="flex-shrink-0 w-6 h-6 bg-amber-500 text-slate-900 rounded-full flex items-center justify-center text-sm font-bold">5</span>
-              <span>For MCQs, check delta_weights to verify trait scoring is correct</span>
+              <span>Check that each question has a valid VIA trait and weight assigned</span>
             </li>
           </ol>
         </div>
