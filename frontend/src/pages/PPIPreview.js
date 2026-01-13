@@ -285,7 +285,6 @@ function PPIPreview() {
   const [showValidation, setShowValidation] = useState(false);
   const [uploadedJson, setUploadedJson] = useState(null);
   const [filterLayer, setFilterLayer] = useState(null);
-  const [showDeltaWeights, setShowDeltaWeights] = useState(true);
 
   const filteredQuestions = filterLayer 
     ? questions.filter(q => q.layer === filterLayer)
