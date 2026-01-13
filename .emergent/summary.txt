@@ -1,142 +1,143 @@
-<analysis>**original_problem_statement:** The user's primary goal is to build a Wealth Builder application featuring a sophisticated Adaptive Engine (AE). The core requirement is to make financial content accessible to all ages (6-99) by adapting a single, immutable baseline text.
-
-Initially, the project was plagued by adaptation issues, with content being filtered or truncated instead of simplified. After multiple rounds of user feedback and iterative fixes, the agent implemented a Universal Framing philosophy. This involves using universally applicable questions whose language is then simplified based on the user's Learning Complexity (LC) score.
-
-The most recent user request is to integrate a full 270-question, 7-layer Personality Profile Instrument (PPI) database that the user has provided. The user has specified that users should be able to select a target layer during onboarding and must complete all preceding layers sequentially to finish their profile.
+<analysis>**original_problem_statement:** The user's goal is to build a Wealth Builder application with an Adaptive Engine (AE) for financial content. The project initially focused on integrating a 270-question Personality Profile Instrument (PPI). However, the scope has recently expanded significantly to include a full Google Places API integration for location services and a comprehensive overhaul of the application's  page. The most recent user request is to generate a prompt for the Claude LLM to create a new set of PPI questions (Layers 1-7) that are psychologically sound and fit the application's data format, effectively replacing the current PPI content. The user has also provided a complete PostgreSQL schema, hinting at a potential future database migration from the current MongoDB.
 
 **User's preferred language**: English
 
 **what currently exists?**
 - A full-stack application (React frontend, FastAPI backend, MongoDB).
-- A **Universal PPI Framing** model is in place.  contains universally framed questions that are adapted for vocabulary only, not concept, using the  engine.
-- A **30-question Layer 1 PPI** is fully integrated. This includes:
-    - A  file that drives the questions.
-    - A frontend () that dynamically renders both Likert scale (1-5) and Multiple Choice Question (MCQ) formats.
-    - A backend () that scores responses based on the 24 VIA Character Strengths.
-- A **Global Auto-Save System** has been implemented.
-    - Backend endpoints (, ) provide a generic way to save and load progress.
-    - A frontend React hook () makes it easy to add auto-save functionality to any feature. This is currently used in the PPI and LPI lessons.
-- The **Chapter Locking** logic is working correctly: users must complete a chapter's quiz to unlock the next chapter.
+- A **live Google Places API integration** for location services, replacing the previous mock system. The API key is stored in .
+- A highly detailed, multi-section **Settings page** () that allows users to manage their profile, personal info, learning preferences, notifications, display settings (including a font picker with live previews), security, and privacy.
+- A **Financial Goals selector** within Settings that features per-category Select All functionality and an improved UI.
+- A detailed, multi-phase **Coming Soon section for Parental Controls**, which serves as a visual roadmap for future implementation, designed based on extensive user feedback.
+- Backend endpoints have been created or updated to support all the new settings, including changing passwords, exporting user data, and resetting progress.
 
 **Last working item**:
-- **Last item agent was working:** The user provided the complete 240 questions for PPI Layers 2-7 and specified the implementation logic for the full 270-question experience. The agent analyzed the new data and user requirements and was preparing to begin implementation.
+- **Last item agent was working:** The user requested a prompt to be generated for the Claude LLM. This prompt's purpose is to obtain a new, psychologically upgraded set of questions for all 7 layers of the Personality Profile Instrument (PPI). The new content is intended to replace the existing PPI data. The agent was in the process of analyzing the current PPI data structure to create an accurate and effective prompt.
 - **Status:** NOT STARTED
 - **Agent Testing Done:** N
-- **Which testing method agent to use?** both. This is a major feature implementation. Backend logic for layer progression and data handling needs to be tested, and the frontend needs to be tested for the new layer selection UI and the sequential completion flow. The  is recommended after implementation.
+- **Which testing method agent to use?** N/A (Task is to generate a text prompt).
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- There are no pending or in-progress issues. All previously reported bugs regarding adaptation, chapter locking, and PPI functionality have been resolved.
+- **Issue 1: Use Current Location Fails in Preview (P2)**
+  - **Description**: The Use Current Location button in the registration and settings pages displays an error. This is because browser geolocation APIs require a secure (HTTPS) connection, and the preview environment runs on HTTP.
+  - **Status**: BLOCKED. This is an environmental constraint, not a code bug. The agent has explained this to the user, who has acknowledged it. The feature is expected to work correctly in a production HTTPS environment. No further action is required at this time.
+- **Issue 2: Learning History Page is Empty (P2)**
+  - **Description**: The user noted that the Learning History link in the settings leads to an empty page. The UI for this feature has not been built yet.
+  - **Status**: NOT STARTED.
 
 **In progress Task List**:
-- **Task 1: Implement Full 270-Question, 7-Layer PPI Experience (P0)**
-  - **Description**: Integrate the newly provided 240 questions with the existing 30-question Layer 1 to create the full 270-question PPI. Implement the sequential layer completion logic as specified by the user.
-  - **Where to resume**:
-    1.  Create the new, complete 270-question data structure, likely by merging the new markdown file's content into an expanded  file.
-    2.  Modify the frontend onboarding flow to include a dropdown for the user to select their desired PPI layer.
-    3.  Update the backend (, ) and frontend () to handle the sequential layer logic (e.g., if a user selects L4, they must complete L1, L2, L3, and then L4).
-    4.  Ensure the DNA/trait vector is generated only *after* the user completes their entire selected sequence.
-  - **What will be achieved with this?**: The application's core data collection and personality profiling mechanism will be fully implemented as per the user's specification.
-  - **Status:** NOT STARTED
-  - **Should Test frontend/backend/both after fix?** Both.
-  - **Blocked on something:** No.
+- There are no tasks currently in progress.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-  - **P1: Implement TAP 5.0 Validators:** Integrate Grammar, Readability, and Meaning Drift validators into the  engine to ensure the quality of adapted text. This will require installing , , and .
-  - **P2: Display VIA Trait Report:** Create a component on the user's dashboard to visualize the results of their completed PPI, showing their dominant VIA Character Strengths.
+    - **P0: Generate Prompt for Claude to Create New PPI Content:** Formulate a detailed prompt for the Claude LLM to generate questions for all 7 PPI layers that match the application's required data format.
+    - **P0: Implement Full 7-Layer PPI Experience:** Once the new content is obtained from Claude, integrate it into the application. This includes creating the full , adding a layer selection UI to the onboarding flow, and implementing the logic for sequential layer completion.
+    - **P1: Implement Parental Controls (MVP - Phase 1):** Begin implementation of the Coming Soon features, starting with: Parent Account Linking, Weekly Progress Emails, a Weak Topics dashboard, Custom Time Limits, Parent-Only Password Control, Account Deletion Block, and Parent-to-Child Messaging.
+    - **P2: Implement TAP 5.0 Validators:** Integrate Grammar, Readability, and Meaning Drift validators into the  adaptation engine by installing and using , , and .
+    - **P2: Display VIA Trait Report:** Create a dashboard component to visualize the user's personality traits based on their completed PPI results.
+
 - **Future Tasks:**
-  - Connect the React Native app to the backend APIs.
-  - Implement RED Priority scaling features (Performance/Caching, Basic CMS, DB Query Optimization).
-  - Implement the user feedback loop from the TAP v5.0 specification.
-  - Finalize and integrate the Country/City Selector UI.
+    - Implement Phases 2 and 3 of the Parental Controls roadmap, including the Virtual Piggybank and flexible scheduling.
+    - Investigate and potentially implement a migration from **MongoDB to PostgreSQL**, as suggested by the user-provided SQL schema.
+    - Connect the existing React Native mobile app to the backend APIs.
+    - Implement the Virtual Piggybank feature with learning application tie-ins.
+    - Integrate with Plaid for real bank account syncing.
+    - Implement community features and the associated parental controls.
 
 **Completed work in this session**
-- **Resolved Core Adaptation Philosophy:** Successfully diagnosed and fixed fundamental flaws in the adaptation engine. Moved from simple word replacement to contextual variants, and finally to a scalable **Universal Framing** model, which resolved persistent user complaints.
-- **Fixed Content Truncation Bug:** Identified and fixed an issue where aggressive adaptation parameters (, ) were truncating content for young users instead of simplifying it.
-- **Implemented New 30-Question VIA PPI:** Replaced the old 20-question PPI with a new, scientifically-backed 30-question version based on VIA Character Strengths.
-- **Built Dynamic PPI Frontend:** Updated  to handle and render both Likert-scale and multiple-choice questions dynamically based on data from the backend.
-- **Implemented VIA Trait Scoring:** Updated  to correctly process and score responses from the new 30-question PPI, including logic for both question types.
-- **Implemented Global Auto-Save System:** Created a generic, reusable system for saving and resuming user progress. This includes backend endpoints and a frontend React hook (), now used in both PPI and LPI.
-- **Verified Full PPI Flow:** Used the testing agent to confirm the 30-question flow, including auto-save and resume functionality, works end-to-end.
-- **Fixed and Re-enabled Chapter Locking:** Corrected the logic that had left all lesson chapters unlocked and re-implemented the intended flow where quiz completion unlocks the next chapter.
+- **Google Places API Integration:** The location selection feature was upgraded from a mock database to use the live Google Places Autocomplete and Geocoding APIs. The backend () was updated, the  dependency was added, and the API key was stored securely.
+- **Comprehensive Settings Page Overhaul:** The settings page was iteratively built and refined from a basic stub into a feature-rich hub.
+  - **Features Implemented:** Profile picture upload, name/DOB updates, location/life stage/occupation selectors, a daily learning goal slider, a font picker with live previews, dark mode, and detailed notification controls.
+  - **Security & Privacy:** Added a Change Password form, a GDPR-compliant Export My Data button, and separate, clearly defined actions for Reset Progress and Delete Account.
+  - **UI/UX Refinements:** Improved sidebar navigation with more pronounced active/hover states and redesigned the financial goals selector to have per-category Select All buttons.
+  - **Parental Controls Roadmap:** Collaboratively designed a detailed, multi-phase roadmap for parental controls and implemented it as a Coming Soon placeholder in the UI to guide future development.
+  - **Backend Support:** The  endpoint and corresponding Pydantic models in  were expanded to save and retrieve all the new settings fields.
 
 **Earlier issues found/mentioned but not fixed**
-- The **TAP 4.0/5.0 validators** feature (Grammar, Readability, Meaning Drift) was discussed in the previous fork but its implementation is still pending. It is listed in the Upcoming Tasks.
+- The **TAP 4.0/5.0 validators** feature was previously discussed and remains pending. It is listed in the Upcoming Tasks.
 
 **Known issue recurrence from previous fork**
-- **Issue recurrence in previous fork:** The core challenge of adapting content for a wide age range was a major recurring issue throughout this session. The agent iterated through four different solutions before landing on the Universal Framing approach, which finally satisfied the user's need for a scalable and conceptually sound model.
-- **Recurrence count:** High (4 major revisions in this session).
-- **Status:** RESOLVED. The universal framing model has been approved by the user.
+- None.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Universal Framing:** The core adaptation philosophy. Questions are written to be conceptually applicable to any age, allowing the user's own life context to fill in the meaning. Vocabulary simplification is then applied on top.
-- **Global Auto-Save Hook:** The  React hook provides a debounce mechanism and abstracts away the API calls to the generic  endpoints, making it simple to add auto-save to any component.
-- **Dynamic Question Rendering:** The  component inspects the  field of each question ( or ) and renders the appropriate UI, allowing the PPI to be data-driven.
+- **External API Integration:** Using  in the FastAPI backend to communicate with the Google Places API for location data.
+- **Complex Frontend State Management:** The rewritten  handles a large, multi-section state object using React hooks (, ) to manage user preferences and sync them with the backend.
+- **Dynamic UI Generation:** The Financial Goals and Font Picker sections are generated dynamically from data structures.
+- **Product Design & Roadmapping:** The agent and user collaboratively designed a detailed feature roadmap for Parental Controls, which was then implemented as a visual Coming Soon page in the UI.
 
 **key DB schema**
-- **progress_saves**: . A new collection to store drafts for any feature (e.g., , ).
+- The application currently uses **MongoDB**.
+- **CRITICAL:** The user has provided a complete **PostgreSQL schema** in the chat history. This schema defines tables, columns, indexes, and relationships for PPI, goals, badges, and analytics. This strongly suggests a future desire to migrate the database technology from NoSQL to SQL. The agent must be aware of this but should not act on it without explicit user confirmation.
 
 **changes in tech stack**
-- **Pending Dependencies:** , , ,  will need to be installed when implementing the TAP validators.
+- **** was added to the backend to facilitate calls to the Google Places API.
+- A potential future migration from **MongoDB to PostgreSQL** is anticipated based on user-provided artifacts.
 
 **All files of reference**
-- **New PPI Data:** 
-- **Global Auto-Save Hook:** 
-- **Core Logic:** , , 
-- **Frontend Components:** , 
-- **Project Documentation:** 
+-  (Primary file for recent work)
+-  (Backend logic for settings and Google Places)
+-  (Contains the new Google API key)
+-  (Defines the structure for the goal selector)
+- **User-provided SQL Schema:** Contained within the message history, this is a critical document for future planning.
 
 **Areas that need refactoring**:
-- With 270 questions, the main  file will become very large. Consider splitting the JSON data by layer (e.g., , , etc.) for better organization and performance.
+-  has grown to over 1,300 lines and is a prime candidate for refactoring. It should be broken down into smaller, self-contained components for each major section (e.g., , , ).
+-  is becoming monolithic. The numerous settings-related endpoints should be moved into their own FastAPI router file (e.g., ) to improve organization.
 
 **key api endpoints**
-- ****: Saves a JSON payload for a given user and feature key.
-- ****: Loads the last saved progress for a user and feature key.
-- ****: Deletes the saved progress for a feature.
-- ****: Submits the final PPI answers and triggers DNA generation.
+- ****: Heavily expanded to handle a large number of new user settings fields.
+- ****: Upgraded to use the Google Places Autocomplete API.
+- ****: Upgraded to use the Google Geocoding API.
+- **New Endpoints Created**:
+  - 
+  - 
+  - 
+  - 
+  - 
 
 **Critical Info for New Agent**
-- You are about to implement the full 270-question, 7-layer PPI. The user has provided very specific instructions:
-    1.  Onboarding must have a dropdown for users to select their target layer.
-    2.  The flow must be **sequential**. If a user selects Layer 4, they must complete Layers 1, 2, 3, and 4 in a single, continuous flow.
-    3.  The user's DNA (trait vector) should only be calculated **after** they have successfully completed all questions in their selected sequence.
-- The global auto-save system is already in place and should be leveraged for this long session. Do not create a new auto-save mechanism.
-- The next logical task after the 270-question PPI is to implement the TAP 5.0 validators.
+- **New Primary Task:** Your immediate priority is to fulfill the user's request to create a prompt for the Claude LLM. This prompt will be used to generate new, psychologically-sound content for the app's 7-layer PPI. You must first examine the existing PPI data format to ensure the prompt asks for compatible output.
+- **Anticipate a Database Migration:** The user has supplied a complete PostgreSQL schema. While the current database is MongoDB, this is a strong signal that they want to migrate in the future. Be prepared for this request, but do not initiate it without explicit instruction.
+- **Settings Page Complexity:** The  file is very large and complex. Be mindful of this if asked to make further changes. It is a good candidate for refactoring, which you could propose to the user.
+- **Parental Controls Roadmap:** The Coming Soon section in Settings contains a detailed, user-approved, multi-phase plan. Refer to this plan if the user asks you to implement parental control features.
 
 **documents and test reports created in this job**
-- 
-- 
+- No new report or documentation files were created in this session.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Requests global auto-save for all features, not just PPI.
-2.  **Agent:** Implements a global auto-save system using a reusable React hook and generic backend endpoints, applying it to both PPI and LPI lessons.
-3.  **Agent:** Confirms the global system is working and summarizes the work.
-4.  **User:** Uploads the final 240 questions for PPI Layers 2-7.
-5.  **Agent:** Analyzes the full 270-question structure and asks for clarification on implementation logic (unlocking, presentation, DNA timing).
-6.  **User:** Provides clear requirements: layer selection via dropdown, sequential completion is mandatory, DNA is generated only at the very end, and the existing global auto-save is sufficient.
-7.  **Agent:** Acknowledges the requirements and prepares to implement the full 270-question PPI. (This is the current state).
+10. **Request:** Fix DOB saving, add Select All to financial goals, and improve settings UI.
+9. **Request:** Refine user ID display, remove pronouns, improve sidebar highlights, and add a font picker with live previews.
+8. **Request:** Make Select All per-category for goals and research parental control options.
+7. **Refinement:** Provided detailed feedback on parental control ideas, suggesting a virtual piggybank.
+6. **Refinement:** Expanded on the piggybank concept, confirmed Plaid integration as a future goal, and refined parent messaging.
+5. **Request:** Add custom message templates for parents and implement the full parental controls roadmap as a Coming Soon section.
+4. **Request:** Change the daily learning goal from buttons to a slider.
+3. **Information:** User provided a complete PostgreSQL database schema.
+2. **Request:** Create a prompt for Claude to generate new PPI content (L1-L7) to replace the current version. The new content should match the app's data format.
+1. **Instruction:** Generate the summary now.
 
 **Project Health Check:**
-- **Broken:** None. All implemented features are working and have been tested.
-- **Mocked:** None.
+- **Broken:** The Use Current Location feature does not work in the HTTP-based preview environment, which is expected browser behavior.
+- **Mocked:** The extensive Parental Controls section is currently a detailed Coming Soon placeholder that functions as a visual roadmap.
 
 **3rd Party Integrations**
-- **Resend:** For password reset emails.
-- **Google Places API:** UI exists but is not connected to a live backend.
-- **Pending:** , , ,  for TAP validators.
+- **Google Places API / Google Geocoding API:** Fully integrated for location search and reverse geocoding. Requires the  in .
+- **Resend:** Used for password reset emails.
+- **Pending:** , ,  for TAP validators.
+- **Future:** Plaid integration has been discussed and added to the long-term roadmap.
 
 **Testing status**
-- **Testing agent used after significant changes:** YES (used twice to verify the 30-question PPI flow and the auto-save feature).
+- **Testing agent used after significant changes:** NO. The agent performed extensive manual testing via screenshots and  commands to verify the Google Places integration and the numerous UI changes on the Settings page. A full run of the testing agent would be beneficial.
 - **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** Yes, via the testing agent in .
-- **Known regressions:** None.
+- **Test files created:** None in this session.
+- **Known regressions:** None identified.
 
 **Credentials to test flow:**
-- User registration is open. Create new users via the UI. To test adaptation, create distinct user profiles, such as a 7-year-old (EL 1) and a 45-year-old (EL 5).
+- User registration is open. You can create a new user through the UI.
+- The Google Places API requires a valid key in . A key was provided by the user in this session.
 
 **What agent forgot to execute**
-- The agent has successfully followed the user's guidance and did not forget to execute any requested tasks. The next steps are clearly defined by the user's most recent request.</analysis>
+- The agent successfully kept pace with a series of rapid and evolving user requests. No tasks were forgotten; the last user request to create a Claude prompt became the new immediate priority.</analysis>

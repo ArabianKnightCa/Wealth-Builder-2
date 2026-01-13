@@ -29,7 +29,7 @@ import sys
 from datetime import datetime
 
 # Get backend URL from environment
-BACKEND_URL = "https://trait-compass-5.preview.emergentagent.com/api"
+BACKEND_URL = "https://wealth-wisdom-49.preview.emergentagent.com/api"
 
 class TAP324Tester:
     def __init__(self):

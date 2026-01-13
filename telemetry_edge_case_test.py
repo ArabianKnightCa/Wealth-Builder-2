@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import sys
 
 # Configuration
-BACKEND_URL = "https://trait-compass-5.preview.emergentagent.com/api"
+BACKEND_URL = "https://wealth-wisdom-49.preview.emergentagent.com/api"
 
 def test_invalid_data_scenarios():
     """Test various invalid data scenarios"""
