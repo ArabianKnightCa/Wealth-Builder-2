@@ -192,7 +192,6 @@ const ValidationReport = ({ questions }) => {
     // Check for issues
     if (!q.via_trait) issues.push(`${q.id}: Missing via_trait`);
     if (!q.weight) issues.push(`${q.id}: Missing weight`);
-    if (q.type === 'mcq' && !q.delta_weights) issues.push(`${q.id}: MCQ missing delta_weights`);
     if (q.type === 'mcq' && (!q.options || q.options.length !== 4)) issues.push(`${q.id}: MCQ should have 4 options`);
   });
 
