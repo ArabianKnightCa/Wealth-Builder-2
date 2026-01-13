@@ -155,6 +155,7 @@ function AppContent() {
         <Route path="/analytics" element={user ? <AnalyticsDashboard token={token} /> : <Navigate to="/login" />} />
         <Route path="/ae-test-harness" element={user ? <AETestHarness token={token} /> : <Navigate to="/login" />} />
         <Route path="/location-demo" element={user ? <LocationSelectorDemo token={token} /> : <Navigate to="/login" />} />
+        <Route path="/ppi-preview" element={<PPIPreview />} />
         <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
         <Route path="/register" element={!user ? <Register onLogin={handleLogin} /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
         <Route path="/forgot-password" element={!user ? <ForgotPassword /> : (user.ppi_completed ? <Navigate to="/dashboard" /> : <Navigate to="/ppi" />)} />
