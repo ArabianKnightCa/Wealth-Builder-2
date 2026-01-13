@@ -122,7 +122,6 @@ const MCQPreview = ({ question, selectedOption, onSelect }) => {
         const letter = opt.charAt(0);
         const text = opt.substring(2);
         const isSelected = selectedOption === letter;
-        const deltaWeights = question.delta_weights?.[letter];
         
         return (
           <button
@@ -140,25 +139,7 @@ const MCQPreview = ({ question, selectedOption, onSelect }) => {
               }`}>
                 {letter}
               </span>
-              <div className="flex-1">
-                <span className="font-medium">{text}</span>
-                {deltaWeights && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {Object.entries(deltaWeights).map(([trait, value]) => (
-                      <span 
-                        key={trait}
-                        className={`text-xs px-2 py-0.5 rounded-full ${
-                          value > 0 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700'
-                        }`}
-                      >
-                        {trait}: {value > 0 ? '+' : ''}{value}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <span className="font-medium">{text}</span>
             </div>
           </button>
         );
