@@ -465,21 +465,6 @@ function PPIPreview() {
                   onSelect={handleAnswer}
                 />
               )}
-
-              {/* Delta Weights Toggle */}
-              {currentQuestion.type === 'mcq' && currentQuestion.delta_weights && (
-                <div className="mt-6 pt-6 border-t border-slate-700">
-                  <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={showDeltaWeights}
-                      onChange={(e) => setShowDeltaWeights(e.target.checked)}
-                      className="rounded border-gray-600 bg-slate-700 text-amber-500 focus:ring-amber-500"
-                    />
-                    Show delta weights on options
-                  </label>
-                </div>
-              )}
             </div>
 
             {/* Navigation */}
