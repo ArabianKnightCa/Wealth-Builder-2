@@ -1164,6 +1164,26 @@ async def reset_password(request: ResetPasswordRequest):
     return {"message": "Password has been reset successfully"}
 
 
+@api_router.get("/ppi/results")
+async def get_ppi_results(user_id: str = Depends(get_current_user)):
+    """Get PPI results including trait vector and financial DNA (for testing phase)"""
+    progress = await db.progress.find_one({"user_id": user_id}, {"_id": 0})
+    
+    if not progress or not progress.get('learning_map'):
+        return {"results": None, "message": "No PPI results found"}
+    
+    lm = progress['learning_map']
+    return {
+        "results": {
+            "profile": lm.get('user_profile'),
+            "learning_style": lm.get('learning_style'),
+            "financial_dna": lm.get('financial_dna'),
+            "trait_vector": lm.get('trait_vector'),
+            "generated_at": lm.get('generated_at')
+        }
+    }
+
+
 @api_router.post("/ppi/submit")
 async def submit_ppi(ppi_data: PPISubmit, user_id: str = Depends(get_current_user)):
     """
