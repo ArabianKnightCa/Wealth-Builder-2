@@ -532,13 +532,12 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
               <div className="space-y-6">
                 <div className={`border-b pb-4 mb-6 ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <h2 className="text-2xl font-bold">👤 Profile</h2>
-                  <p className={subTextClass}>Your identity and linked profiles</p>
+                  <p className={subTextClass}>Manage your profile</p>
                 </div>
                 
-                {/* Main Profile Card */}
-                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
-                  {/* Header with Avatar and Quick Stats */}
-                  <div className="p-6 bg-navy-900 text-white">
+                {/* Main Profile Card - All in One */}
+                <div className="rounded-xl overflow-hidden shadow-lg bg-navy-900 text-white">
+                  <div className="p-6">
                     <div className="flex items-start gap-5">
                       {/* Avatar */}
                       <div className="relative flex-shrink-0">
@@ -546,10 +545,10 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                           <img 
                             src={profile.profile_picture_url} 
                             alt="Profile" 
-                            className="w-20 h-20 rounded-full object-cover border-4 border-gold shadow-lg"
+                            className="w-24 h-24 rounded-full object-cover border-4 border-gold shadow-lg"
                           />
                         ) : (
-                          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold to-yellow-400 flex items-center justify-center text-4xl border-4 border-white/30 shadow-lg">
+                          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gold to-yellow-400 flex items-center justify-center text-5xl border-4 border-white/30 shadow-lg">
                             {profile.avatar}
                           </div>
                         )}
@@ -562,59 +561,68 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         </button>
                       </div>
                       
-                      {/* Name, Info, and Badges */}
-                      <div className="flex-1">
+                      {/* Name, Info, and Stats */}
+                      <div className="flex-1 min-w-0">
+                        {/* Name Row with Owner Badge */}
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-2xl font-bold text-white">{profile.first_name || 'Your Name'}</h3>
-                          <span className="bg-gold/20 text-gold text-xs px-2 py-0.5 rounded-full font-medium">
+                          <h3 className="text-2xl font-bold text-white truncate">{profile.first_name || 'Your Name'}</h3>
+                          <span className="bg-gold text-navy-900 text-xs px-2 py-0.5 rounded-full font-bold">
                             Owner
                           </span>
                         </div>
-                        <p className="text-gold text-sm mt-1">{user.email}</p>
+                        
+                        {/* Email */}
+                        <p className="text-gold text-sm mt-1 truncate">{user.email}</p>
                         
                         {/* Stats Row */}
-                        <div className="flex flex-wrap gap-3 mt-3">
-                          <div className="text-center">
-                            <p className="text-lg font-bold text-white">{userAge !== null ? userAge : '--'}</p>
+                        <div className="flex items-center gap-4 mt-4">
+                          <div>
+                            <p className="text-2xl font-bold text-white">{userAge !== null ? userAge : '--'}</p>
                             <p className="text-xs text-gray-400">Age</p>
                           </div>
-                          <div className="w-px bg-white/20"></div>
-                          <div className="text-center">
-                            <p className="text-lg font-bold text-white">{preferences.experience_level}/5</p>
+                          <div className="w-px h-10 bg-white/20"></div>
+                          <div>
+                            <p className="text-2xl font-bold text-white">{preferences.experience_level}/5</p>
                             <p className="text-xs text-gray-400">Level</p>
                           </div>
-                          <div className="w-px bg-white/20"></div>
-                          <div className="text-center">
+                          <div className="w-px h-10 bg-white/20"></div>
+                          <div>
                             <p className="text-lg font-bold text-white">{getLifeStageLabel(personalInfo.life_stage)}</p>
                             <p className="text-xs text-gray-400">Stage</p>
                           </div>
                         </div>
                         
                         {/* User ID */}
-                        <div className="mt-3">
-                          <span className="font-mono text-xs bg-white/10 text-gray-300 px-2 py-1 rounded">
-                            ID: {user.person_key || user.uid || user.user_code || 'N/A'}
+                        <div className="mt-4">
+                          <span className="font-mono text-sm bg-white/10 text-white px-3 py-1.5 rounded-lg">
+                            {user.user_code || user.uid || 'N/A'}
                           </span>
                         </div>
                       </div>
                       
-                      {/* Switch Profile Button */}
-                      <button
-                        onClick={() => {
-                          const profileSection = document.querySelector('[data-testid="linked-profiles"]');
-                          if (profileSection) {
-                            profileSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                          }
-                        }}
-                        className="flex-shrink-0 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors border border-white/20"
-                      >
-                        Switch Profile
-                      </button>
+                      {/* Action Buttons Column */}
+                      <div className="flex flex-col gap-2 flex-shrink-0">
+                        <button
+                          onClick={() => navigate('/profiles/add')}
+                          className="px-4 py-2 bg-gold hover:bg-yellow-400 text-navy-900 rounded-lg text-sm font-bold transition-colors"
+                        >
+                          + Add Profile
+                        </button>
+                        <button
+                          onClick={() => {
+                            // TODO: Implement profile switcher modal
+                            alert('Profile switcher coming soon!');
+                          }}
+                          className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors border border-white/20"
+                        >
+                          Switch Profile
+                        </button>
+                      </div>
                     </div>
                     
                     {/* Photo Options */}
-                    <div className="mt-4 pt-3 border-t border-white/20 flex flex-wrap gap-4">
-                      <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm">
+                    <div className="mt-5 pt-4 border-t border-white/20 flex flex-wrap gap-4">
+                      <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm font-medium">
                         📷 {uploadingPicture ? 'Uploading...' : 'Upload photo'}
                         <input
                           type="file"
@@ -624,7 +632,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                           disabled={uploadingPicture}
                         />
                       </label>
-                      <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm">
+                      <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm font-medium">
                         🤳 Take selfie
                         <input
                           type="file"
@@ -637,48 +645,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                       </label>
                     </div>
                   </div>
-                  
-                  {/* Edit Fields */}
-                  <div className="p-6 space-y-5">
-                    {/* Name and Email in Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className={`block text-sm font-medium mb-1.5 ${labelClass}`}>Display Name</label>
-                        <input
-                          type="text"
-                          value={profile.first_name}
-                          onChange={(e) => setProfile(prev => ({ ...prev, first_name: e.target.value }))}
-                          className={`w-full px-4 py-2.5 rounded-lg border ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
-                          placeholder="Enter your name"
-                          data-testid="name-input"
-                        />
-                      </div>
-                      <div>
-                        <label className={`block text-sm font-medium mb-1.5 ${labelClass}`}>Email Address</label>
-                        <input
-                          type="email"
-                          value={profile.email || user.email || ''}
-                          onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
-                          className={`w-full px-4 py-2.5 rounded-lg border ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
-                          placeholder="your@email.com"
-                          data-testid="email-input"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Linked Profiles Section */}
-                <div 
-                  data-testid="linked-profiles"
-                  className={`rounded-xl overflow-hidden ${display.dark_mode ? 'bg-gray-700' : 'bg-white'} shadow-lg border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}
-                >
-                  <ProfileManager 
-                    token={token} 
-                    currentProfile={user} 
-                    onProfileSwitch={() => window.location.reload()}
-                    darkMode={display.dark_mode}
-                  />
                 </div>
               </div>
             )}
