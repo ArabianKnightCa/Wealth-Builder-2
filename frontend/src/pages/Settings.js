@@ -809,7 +809,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   </button>
                 </div>
 
-                {/* Financial Goals - Enhanced with per-category Select All */}
+                {/* Financial Goals - Dropdown Categories with Select All */}
                 <div className={`p-5 rounded-xl border-2 ${display.dark_mode ? 'border-gold/30 bg-gray-700/30' : 'border-gold/50 bg-gradient-to-br from-yellow-50 to-orange-50'}`}>
                   <div className="flex justify-between items-center mb-4">
                     <div>
@@ -826,64 +826,72 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                     </button>
                   </div>
                   
-                  <div className={`border-2 rounded-lg max-h-80 overflow-y-auto ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-300 bg-white'}`}>
-                    {FINANCIAL_GOALS_CONFIG.categories.map((category, idx) => {
-                      // Remove "Goals" from label for display
+                  <div className="space-y-3">
+                    {FINANCIAL_GOALS_CONFIG.categories.map((category) => {
                       const displayLabel = category.label.replace(/ Goals?$/i, '');
                       const categoryGoalIds = category.goals.map(g => g.id);
                       const selectedInCategory = category.goals.filter(g => preferences.financial_goals?.includes(g.id)).length;
                       const allSelectedInCategory = selectedInCategory === category.goals.length;
+                      const isOpen = openCategories[category.id];
                       
                       return (
-                        <div key={category.id} className={idx > 0 ? `border-t-2 ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}` : ''}>
-                          <div className={`flex items-center justify-between p-3 ${
-                            display.dark_mode ? 'bg-gray-700' : 'bg-gray-50'
-                          }`}>
-                            <button
-                              type="button"
-                              onClick={() => setOpenCategories(prev => ({ ...prev, [category.id]: !prev[category.id] }))}
-                              className="flex-1 flex items-center gap-2 text-left hover:opacity-80"
-                            >
-                              <span className="text-gold text-lg font-bold w-6">{openCategories[category.id] ? '−' : '+'}</span>
-                              <span className="font-medium text-sm">{displayLabel}</span>
+                        <div key={category.id} className={`rounded-lg border-2 overflow-hidden ${
+                          display.dark_mode ? 'border-gray-600' : 'border-gray-300'
+                        }`}>
+                          {/* Dropdown Header */}
+                          <div 
+                            className={`flex items-center justify-between p-3 cursor-pointer select-none ${
+                              display.dark_mode ? 'bg-gray-700 hover:bg-gray-650' : 'bg-gray-100 hover:bg-gray-150'
+                            }`}
+                            onClick={() => setOpenCategories(prev => ({ ...prev, [category.id]: !prev[category.id] }))}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className={`text-lg transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                                ▼
+                              </span>
+                              <span className="font-semibold">{displayLabel}</span>
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
                                 allSelectedInCategory 
                                   ? 'bg-green-500 text-white' 
-                                  : display.dark_mode ? 'bg-gray-600' : 'bg-gray-200'
+                                  : selectedInCategory > 0
+                                    ? 'bg-gold text-navy-900'
+                                    : display.dark_mode ? 'bg-gray-600 text-gray-300' : 'bg-gray-300 text-gray-600'
                               }`}>
                                 {selectedInCategory}/{category.goals.length}
                               </span>
-                            </button>
+                            </div>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (allSelectedInCategory) {
-                                  // Deselect all in this category
                                   setPreferences(prev => ({
                                     ...prev,
                                     financial_goals: (prev.financial_goals || []).filter(id => !categoryGoalIds.includes(id))
                                   }));
                                 } else {
-                                  // Select all in this category
                                   setPreferences(prev => ({
                                     ...prev,
                                     financial_goals: [...new Set([...(prev.financial_goals || []), ...categoryGoalIds])]
                                   }));
                                 }
                               }}
-                              className={`px-2 py-1 text-xs font-bold rounded transition ${
+                              className={`px-3 py-1.5 text-xs font-bold rounded-full transition ${
                                 allSelectedInCategory
-                                  ? 'bg-gray-400 text-white hover:bg-gray-500'
+                                  ? 'bg-red-500 text-white hover:bg-red-600'
                                   : 'bg-green-500 text-white hover:bg-green-600'
                               }`}
                             >
-                              {allSelectedInCategory ? '✕ Clear' : '✓ All'}
+                              {allSelectedInCategory ? '✕ Clear All' : '✓ Select All'}
                             </button>
                           </div>
-                          {openCategories[category.id] && (
-                            <div className={`p-3 space-y-1 ${display.dark_mode ? 'bg-gray-800' : 'bg-white'}`}>
+                          
+                          {/* Dropdown Content */}
+                          {isOpen && (
+                            <div className={`p-3 space-y-1 border-t-2 ${
+                              display.dark_mode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'
+                            }`}>
                               {category.goals.map((goal) => (
-                                <label key={goal.id} className={`flex items-center gap-3 p-2 rounded cursor-pointer transition border ${
+                                <label key={goal.id} className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition border-2 ${
                                   preferences.financial_goals?.includes(goal.id)
                                     ? display.dark_mode ? 'bg-gold/20 border-gold/50' : 'bg-gold/10 border-gold/30'
                                     : display.dark_mode ? 'border-transparent hover:bg-gray-700' : 'border-transparent hover:bg-gray-50'
@@ -892,12 +900,17 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                                     type="checkbox"
                                     checked={preferences.financial_goals?.includes(goal.id) || false}
                                     onChange={() => handleGoalToggle(goal.id)}
-                                    className="w-4 h-4 text-gold rounded focus:ring-gold"
+                                    className="w-5 h-5 text-gold rounded focus:ring-gold"
                                   />
                                   <span className="text-sm">{goal.label}</span>
                                 </label>
                               ))}
                             </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                           )}
                         </div>
                       );
