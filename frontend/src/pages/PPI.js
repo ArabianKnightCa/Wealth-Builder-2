@@ -357,11 +357,6 @@ function PPI({ token, user, onPPIComplete }) {
               <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
                 {currentQuestion.type === 'likert' ? 'Rate 1-5' : 'Choose one'}
               </span>
-              {currentQuestion.viaTrait && (
-                <span className="text-xs text-gray-400">
-                  {currentQuestion.viaTrait}
-                </span>
-              )}
             </div>
             
             <h3 className="text-2xl font-semibold text-navy-900 mb-6">{currentQuestion.text}</h3>
