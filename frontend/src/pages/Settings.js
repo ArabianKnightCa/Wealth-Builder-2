@@ -532,6 +532,24 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
     const found = experienceLevels.find(l => l.value === level);
     return found ? found.label : 'Unknown';
   };
+  
+  // Get short experience label for display in profile card
+  const getExperienceLabelShort = (level) => {
+    const labels = { 1: 'Beginner', 2: 'Novice', 3: 'Intermediate', 4: 'Advanced', 5: 'Expert' };
+    return labels[level] || 'Unknown';
+  };
+
+  // Get goal label from ID
+  const getGoalLabel = (goalId) => {
+    for (const category of FINANCIAL_GOALS_CONFIG.categories) {
+      const goal = category.goals.find(g => g.id === goalId);
+      if (goal) return goal.label;
+    }
+    // Check if it's a custom goal stored in localStorage
+    const customLabel = localStorage.getItem(goalId);
+    if (customLabel) return customLabel;
+    return goalId; // Fallback to ID if not found
+  };
 
   // Get life stage label
   const getLifeStageLabel = (stage) => {
