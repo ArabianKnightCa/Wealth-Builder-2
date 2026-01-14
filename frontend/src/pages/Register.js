@@ -124,7 +124,7 @@ function Register({ onLogin }) {
     setShowParentConsent(age !== null && age < 18);
   };
 
-  const handlePage1Next = () => {
+  const handlePage1Next = async () => {
     setError('');
     setFieldErrors({});
     const errors = {};
@@ -160,6 +160,19 @@ function Register({ onLogin }) {
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       return;
+    }
+    
+    // Check if email already exists before proceeding
+    try {
+      const checkResponse = await axios.post(`${API}/auth/check-email`, { email: formData.email });
+      if (checkResponse.data.exists) {
+        setFieldErrors({ email: true });
+        setError('This email is already registered. Please use a different email or sign in.');
+        return;
+      }
+    } catch (err) {
+      // If endpoint doesn't exist or returns error, continue (will be caught at final submit)
+      console.log('Email check skipped:', err.message);
     }
     
     setCurrentPage(2);
