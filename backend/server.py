@@ -481,35 +481,26 @@ async def generate_user_code(user_type: str, cohort: str, created_at: datetime) 
 
 async def generate_uid(user_type: str, life_stage: str, created_at: datetime) -> str:
     """
-    Generate UID: APP_STAGE-LIFE_STAGE-SEQ-DATEBLOCK-TIMEBLOCK
+    Generate UID: PHASE-LIFE_STAGE-MMDDYYYYHHMM-RANDOM4
     
-    Format: POC-ES-1832-12042025-101300
+    Format: POC-JH-011420261312-2N6H
     
-    - APP_STAGE: POC, B1, B2, B3, COM
-    - LIFE_STAGE: ES, JH, HS, CL, UN, AD (expandable)
-    - SEQ: Sequential integer (starts at 1, increments)
-    - DATEBLOCK: MMDDYYYY
-    - TIMEBLOCK: HHMMSS (24-hour military time)
-    
-    SEQ is generated ONLY after onboarding completion (PPI submission)
+    - PHASE: POC, B1, B2, B3, COM (phase of app)
+    - LIFE_STAGE: ES, JH, HS, CL, UN, AD (educational level)
+    - MMDDYYYYHHMM: Date and time of account creation
+    - RANDOM4: 4-digit alphanumeric for uniqueness (tie breaker)
     """
-    # Get and increment SEQ counter
-    counter = await db.seq_counter.find_one_and_update(
-        {"_id": "uid_seq"},
-        {"$inc": {"seq": 1}},
-        upsert=True,
-        return_document=True
-    )
-    seq = counter.get("seq", 1)
+    import random
+    import string
     
-    # Format DATEBLOCK: MMDDYYYY
-    dateblock = created_at.strftime("%m%d%Y")
+    # Format datetime: MMDDYYYYHHMM
+    datetime_block = created_at.strftime("%m%d%Y%H%M")
     
-    # Format TIMEBLOCK: HHMMSS (24-hour military time)
-    timeblock = created_at.strftime("%H%M%S")
+    # Generate random 4-character alphanumeric (uppercase + digits)
+    random_chars = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
     
     # Construct UID
-    uid = f"{user_type}-{life_stage}-{seq}-{dateblock}-{timeblock}"
+    uid = f"{user_type}-{life_stage}-{datetime_block}-{random_chars}"
     
     return uid
 
