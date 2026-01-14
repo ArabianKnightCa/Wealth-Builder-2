@@ -652,7 +652,10 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                 </div>
 
                 {/* Linked Profiles Section */}
-                <div className={`rounded-xl overflow-hidden ${display.dark_mode ? 'bg-gray-700' : 'bg-white'} shadow-lg border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
+                <div 
+                  data-testid="linked-profiles"
+                  className={`rounded-xl overflow-hidden ${display.dark_mode ? 'bg-gray-700' : 'bg-white'} shadow-lg border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}
+                >
                   <ProfileManager 
                     token={token} 
                     currentProfile={user} 
