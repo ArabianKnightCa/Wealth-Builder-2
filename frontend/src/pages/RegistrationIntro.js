@@ -121,7 +121,7 @@ function RegistrationIntro({ onStart }) {
 
         {/* Footer Note */}
         <div className="text-center mt-8 text-gray-300 text-sm">
-          <p>Step 0 of 4 • Registration Introduction</p>
+          <p>Registration Introduction</p>
         </div>
       </div>
     </div>
