@@ -286,11 +286,11 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   ];
 
   const experienceLevels = [
-    { value: 1, label: 'Beginner' },
-    { value: 2, label: 'Novice' },
-    { value: 3, label: 'Intermediate' },
-    { value: 4, label: 'Advanced' },
-    { value: 5, label: 'Expert' }
+    { value: 1, label: 'Beginner - Just starting with financial concepts' },
+    { value: 2, label: 'Novice - Know some basics, want to learn more' },
+    { value: 3, label: 'Intermediate - Comfortable with basic finance' },
+    { value: 4, label: 'Advanced - Strong financial knowledge' },
+    { value: 5, label: 'Expert - Deep understanding of finance' }
   ];
 
   const textSizeOptions = [
