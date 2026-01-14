@@ -108,10 +108,24 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
       
       const learningMap = response.data.progress?.learning_map;
       if (learningMap) {
+        // Parse trait vector data
+        const traitVector = learningMap.trait_vector || {};
+        const traits = traitVector.traits || {};
+        const dominantTraits = traitVector.dominant_traits || [];
+        
+        // Convert traits object to sorted array
+        const sortedTraits = Object.entries(traits)
+          .map(([trait, score]) => ({ trait, score }))
+          .sort((a, b) => b.score - a.score);
+        
         setPpiResults({
-          traitVector: learningMap.trait_vector,
+          traitVector: {
+            ...traitVector,
+            top_traits: sortedTraits
+          },
           financialDna: learningMap.financial_dna,
           profile: learningMap.user_profile,
+          learningStyle: learningMap.learning_style,
           generatedAt: learningMap.generated_at
         });
       }
