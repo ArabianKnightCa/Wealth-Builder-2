@@ -7,6 +7,20 @@ import useAutoSave from '../hooks/useAutoSave';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+/**
+ * PPI LAYER ACCESS RULES:
+ * -----------------------
+ * Layer 1 (L1): ALWAYS FREE - Never locked, no paywall, no restrictions
+ * Layers 2-7: May require subscription/payment in future phases
+ * 
+ * This ensures all users can complete their baseline personality profile.
+ */
+const PPI_ACCESS_RULES = {
+  LAYER_1_ALWAYS_FREE: true,
+  FREE_LAYERS: [1],
+  PAID_LAYERS: [2, 3, 4, 5, 6, 7]
+};
+
 // Likert scale component
 const LikertScale = ({ options, selectedValue, onSelect, questionId }) => {
   return (
