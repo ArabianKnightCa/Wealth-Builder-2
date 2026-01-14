@@ -1211,4 +1211,122 @@ function StatCard({ title, value, icon, color }) {
   );
 }
 
+// Feedback Panel Component - Shows feedback inline in Analytics
+function FeedbackPanel({ token }) {
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    fetchFeedback();
+  }, [token]);
+
+  const fetchFeedback = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/feedback`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFeedbacks(response.data.feedback || []);
+    } catch (error) {
+      console.error('Failed to fetch feedback:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteFeedback = async (feedbackId) => {
+    if (!window.confirm('Delete this feedback?')) return;
+    try {
+      await axios.delete(`${API}/admin/feedback/${feedbackId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchFeedback();
+    } catch (error) {
+      console.error('Failed to delete:', error);
+    }
+  };
+
+  const filterFeedback = () => {
+    const now = new Date();
+    return feedbacks.filter(fb => {
+      if (filter === 'all') return true;
+      const fbDate = new Date(fb.submitted_at);
+      if (filter === 'today') return fbDate.toDateString() === now.toDateString();
+      if (filter === 'week') {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        return fbDate >= weekAgo;
+      }
+      return true;
+    });
+  };
+
+  const filteredFeedbacks = filterFeedback();
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="text-center text-gray-600">Loading feedback...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold text-gray-800">💬 User Feedback</h2>
+        <div className="flex gap-2">
+          {['all', 'today', 'week'].map(f => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                filter === f ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {f === 'all' ? `All (${feedbacks.length})` : f.charAt(0).toUpperCase() + f.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filteredFeedbacks.length === 0 ? (
+        <div className="text-center py-8">
+          <div className="text-5xl mb-3">📭</div>
+          <p className="text-gray-600">No feedback {filter !== 'all' ? `for ${filter}` : 'yet'}</p>
+        </div>
+      ) : (
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          {filteredFeedbacks.map((fb, idx) => (
+            <div key={fb._id || idx} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <span className="font-medium text-gray-800">{fb.user_email || 'Anonymous'}</span>
+                  <span className="text-gray-400 mx-2">•</span>
+                  <span className="text-sm text-gray-500">
+                    {new Date(fb.submitted_at).toLocaleString()}
+                  </span>
+                  {fb.context_page && (
+                    <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                      {fb.context_page}
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={() => deleteFeedback(fb._id)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  🗑️
+                </button>
+              </div>
+              <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded p-3">
+                {fb.feedback_text || fb.feedback}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default AnalyticsDashboard;
