@@ -78,44 +78,87 @@ function GoalSelector({ selectedGoals, onGoalsChange, onNext, onBack, loading, e
           </div>
         )}
 
-        {/* Goal Categories */}
+        {/* Goal Categories - Dropdown with Select All per category */}
         <div className="space-y-3 mb-6 max-h-96 overflow-y-auto pr-2">
-          {FINANCIAL_GOALS_CONFIG.categories.map((category) => (
-            <div key={category.id} className="border border-gray-200 rounded-lg overflow-hidden">
-              {/* Category Header */}
-              <button
-                onClick={() => toggleCategory(category.id)}
-                className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
-              >
-                <span className="font-semibold text-navy-900 text-left">
-                  {category.label}
-                </span>
-                <span className="text-gold text-xl">
-                  {openCategories[category.id] ? '−' : '+'}
-                </span>
-              </button>
-
-              {/* Category Goals */}
-              {openCategories[category.id] && (
-                <div className="p-4 bg-white space-y-2">
-                  {category.goals.map((goal) => (
-                    <label
-                      key={goal.id}
-                      className="flex items-start space-x-3 p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedGoals.includes(goal.id)}
-                        onChange={() => handleGoalToggle(goal.id)}
-                        className="mt-1 w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold"
-                      />
-                      <span className="text-gray-700">{goal.label}</span>
-                    </label>
-                  ))}
+          {FINANCIAL_GOALS_CONFIG.categories.map((category) => {
+            const categoryGoalIds = category.goals.map(g => g.id);
+            const selectedInCategory = category.goals.filter(g => selectedGoals.includes(g.id)).length;
+            const allSelectedInCategory = selectedInCategory === category.goals.length;
+            const isOpen = openCategories[category.id];
+            
+            return (
+              <div key={category.id} className="border-2 border-gray-200 rounded-lg overflow-hidden">
+                {/* Category Header */}
+                <div className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="flex-1 flex items-center gap-3 text-left"
+                  >
+                    <span className={`text-lg transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                      ▼
+                    </span>
+                    <span className="font-semibold text-navy-900">
+                      {category.label}
+                    </span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      allSelectedInCategory 
+                        ? 'bg-green-500 text-white' 
+                        : selectedInCategory > 0
+                          ? 'bg-gold text-navy-900'
+                          : 'bg-gray-300 text-gray-600'
+                    }`}>
+                      {selectedInCategory}/{category.goals.length}
+                    </span>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (allSelectedInCategory) {
+                        // Deselect all in this category
+                        const newGoals = selectedGoals.filter(id => !categoryGoalIds.includes(id));
+                        onGoalsChange(newGoals);
+                      } else {
+                        // Select all in this category
+                        const newGoals = [...new Set([...selectedGoals, ...categoryGoalIds])];
+                        onGoalsChange(newGoals);
+                      }
+                    }}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-full transition ${
+                      allSelectedInCategory
+                        ? 'bg-red-500 text-white hover:bg-red-600'
+                        : 'bg-green-500 text-white hover:bg-green-600'
+                    }`}
+                  >
+                    {allSelectedInCategory ? '✕ Clear All' : '✓ Select All'}
+                  </button>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* Category Goals */}
+                {isOpen && (
+                  <div className="p-4 bg-white space-y-2 border-t border-gray-200">
+                    {category.goals.map((goal) => (
+                      <label
+                        key={goal.id}
+                        className={`flex items-start space-x-3 p-2 rounded-lg cursor-pointer transition-colors border-2 ${
+                          selectedGoals.includes(goal.id)
+                            ? 'bg-gold/10 border-gold/30'
+                            : 'border-transparent hover:bg-gray-50'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedGoals.includes(goal.id)}
+                          onChange={() => handleGoalToggle(goal.id)}
+                          className="mt-1 w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold"
+                        />
+                        <span className="text-gray-700">{goal.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Custom Goal Section */}
