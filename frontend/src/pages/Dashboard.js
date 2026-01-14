@@ -10,10 +10,34 @@ function Dashboard({ user, token, onLogout }) {
   const [chapters, setChapters] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastViewedChapter, setLastViewedChapter] = useState(null);
 
   useEffect(() => {
     fetchData();
+    // Check for last viewed chapter from localStorage
+    const storedChapter = localStorage.getItem('lastViewedChapter');
+    if (storedChapter) {
+      setLastViewedChapter(storedChapter);
+    }
   }, []);
+
+  // Scroll to last viewed chapter after chapters load
+  useEffect(() => {
+    if (lastViewedChapter && chapters.length > 0) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        const chapterElement = document.querySelector(`[data-testid="chapter-${lastViewedChapter}"]`);
+        if (chapterElement) {
+          chapterElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Add a brief highlight effect
+          chapterElement.classList.add('ring-4', 'ring-gold', 'ring-opacity-75');
+          setTimeout(() => {
+            chapterElement.classList.remove('ring-4', 'ring-gold', 'ring-opacity-75');
+          }, 2000);
+        }
+      }, 300);
+    }
+  }, [lastViewedChapter, chapters]);
 
   const fetchData = async () => {
     try {
