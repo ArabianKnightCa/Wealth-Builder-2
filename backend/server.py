@@ -912,6 +912,9 @@ async def register(user_data: UserCreate):
     created_at = datetime.now(timezone.utc)
     user_code = await generate_user_code(user_data.user_type, cohort, created_at)
     
+    # Generate UID immediately at registration
+    uid = await generate_uid(user_data.user_type, user_data.life_stage, created_at)
+    
     # Extract DOB parts
     dob = datetime.strptime(user_data.date_of_birth, "%Y-%m-%d")
     
@@ -925,6 +928,7 @@ async def register(user_data: UserCreate):
         experience_level=user_data.experience_level,
         person_key=person_key,
         user_code=user_code,
+        uid=uid,  # Set UID at registration
         user_type=user_data.user_type,
         life_stage=user_data.life_stage,
         cohort=cohort,
