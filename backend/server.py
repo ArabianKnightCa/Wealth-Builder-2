@@ -1710,6 +1710,12 @@ async def get_settings(user_id: str = Depends(get_current_user)):
 async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(get_current_user)):
     update_data = {k: v for k, v in settings_data.model_dump().items() if v is not None}
     
+    # If email is being changed, check if it's already in use
+    if 'email' in update_data:
+        existing_user = await db.users.find_one({"email": update_data['email'], "id": {"$ne": user_id}})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email is already in use by another account")
+    
     await db.settings.update_one(
         {"user_id": user_id},
         {"$set": update_data},
@@ -1718,7 +1724,7 @@ async def update_settings(settings_data: SettingsUpdate, user_id: str = Depends(
     
     # Sync all relevant fields to user record
     user_sync_fields = [
-        'first_name', 'avatar', 'profile_picture_url', 'date_of_birth',
+        'first_name', 'email', 'avatar', 'profile_picture_url', 'date_of_birth',
         'language', 'experience_level', 'life_stage', 'occupation', 'location',
         'timezone', 'pronouns', 'secondary_email',
         'financial_goals', 'daily_goal_minutes', 'reminder_time', 'lesson_length', 'enable_hints',
