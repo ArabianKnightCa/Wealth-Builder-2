@@ -261,6 +261,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
     try {
       const payload = {
         first_name: profile.first_name,
+        email: profile.email,
         avatar: profile.avatar,
         profile_picture_url: profile.profile_picture_url,
         date_of_birth: personalInfo.date_of_birth,
