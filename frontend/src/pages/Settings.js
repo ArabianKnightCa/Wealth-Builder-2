@@ -594,8 +594,34 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
 
   // Get life stage label
   const getLifeStageLabel = (stage) => {
-    const found = LIFE_STAGE_OPTIONS.find(l => l.value === stage);
+    // Map onboarding values to standard codes
+    const stageMap = {
+      'early_career': 'AD',
+      'mid_career': 'AD',
+      'late_career': 'AD',
+      'retired': 'AD',
+      'student': 'CL',
+      'professional': 'AD',
+      'established_professional': 'AD'
+    };
+    
+    const mappedStage = stageMap[stage] || stage;
+    const found = LIFE_STAGE_OPTIONS.find(l => l.value === mappedStage);
     return found ? found.label : stage;
+  };
+  
+  // Get life stage short code for display in profile card
+  const getLifeStageShort = (stage) => {
+    const stageMap = {
+      'early_career': 'AD',
+      'mid_career': 'AD',
+      'late_career': 'AD',
+      'retired': 'AD',
+      'student': 'CL',
+      'professional': 'AD',
+      'established_professional': 'AD'
+    };
+    return stageMap[stage] || stage;
   };
 
   // Navigation sections
