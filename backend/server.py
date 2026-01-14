@@ -230,6 +230,7 @@ class ResetPasswordRequest(BaseModel):
 class SettingsUpdate(BaseModel):
     # Profile
     first_name: Optional[str] = None
+    email: Optional[EmailStr] = None
     avatar: Optional[str] = None
     profile_picture_url: Optional[str] = None
     # Personal Info
