@@ -2069,6 +2069,85 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
           </div>
         </div>
       )}
+
+      {/* Profile Switcher Modal */}
+      {showProfileSwitcher && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`${cardClass} rounded-xl p-6 max-w-md w-full shadow-2xl border-2 ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
+            <h3 className="text-xl font-bold mb-4">👥 Switch Profile</h3>
+            <p className={`${subTextClass} mb-4 text-sm`}>
+              Each profile has separate progress and learning journey.
+            </p>
+            
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {profiles.map((profileItem) => {
+                const isCurrentProfile = user.id === profileItem.account_id && profileItem.is_primary;
+                
+                return (
+                  <div
+                    key={profileItem.id}
+                    className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                      isCurrentProfile
+                        ? 'bg-gold/10 border-gold'
+                        : display.dark_mode
+                          ? 'bg-gray-700 border-gray-600 hover:border-gray-400'
+                          : 'bg-gray-50 border-gray-200 hover:border-gray-400'
+                    }`}
+                  >
+                    <span className="text-3xl">{profileItem.avatar}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">{profileItem.name}</span>
+                        {isCurrentProfile && (
+                          <span className="bg-gold text-navy-900 text-xs px-2 py-0.5 rounded-full font-bold">
+                            Active
+                          </span>
+                        )}
+                        {profileItem.is_primary && (
+                          <span className={`text-xs px-2 py-0.5 rounded-full ${display.dark_mode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-600'}`}>
+                            Owner
+                          </span>
+                        )}
+                      </div>
+                      <p className={`text-xs ${subTextClass}`}>
+                        {profileItem.age} yrs • Level {profileItem.experience_level}/5
+                        {profileItem.ppi_completed && ' • ✓ PPI'}
+                      </p>
+                    </div>
+                    {!isCurrentProfile && (
+                      <button
+                        onClick={() => handleSwitchProfile(profileItem)}
+                        disabled={switchingProfile}
+                        className="px-3 py-1.5 bg-gold text-navy-900 rounded-lg text-sm font-bold hover:bg-yellow-400 disabled:opacity-50"
+                      >
+                        {switchingProfile ? '...' : 'Switch'}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-200 flex gap-3">
+              <button
+                onClick={() => setShowProfileSwitcher(false)}
+                className={`flex-1 py-2 rounded-lg font-semibold border-2 ${display.dark_mode ? 'bg-gray-600 hover:bg-gray-500 border-gray-500' : 'bg-gray-200 hover:bg-gray-300 border-gray-300'}`}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowProfileSwitcher(false);
+                  navigate('/profiles/add');
+                }}
+                className="flex-1 py-2 bg-gold text-navy-900 rounded-lg font-bold hover:bg-yellow-400 border-2 border-yellow-500"
+              >
+                + Add New Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
