@@ -47,7 +47,8 @@ function AnalyticsDashboard({ token }) {
     onboarding: 0,
     ppiCompleted: 0,
     topicsCompleted: 0,
-    quizAttempts: 0
+    quizAttempts: 0,
+    feedbackCount: 0
   });
 
   useEffect(() => {
