@@ -875,12 +875,12 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   <div className="p-5">
                     {preferences.financial_goals && preferences.financial_goals.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
-                        {preferences.financial_goals.slice(0, 6).map((goal, index) => (
+                        {preferences.financial_goals.slice(0, 6).map((goalId, index) => (
                           <span 
                             key={index}
                             className={`px-3 py-1.5 rounded-full text-sm font-medium ${display.dark_mode ? 'bg-gold/20 text-gold' : 'bg-gold/10 text-navy-900'}`}
                           >
-                            {goal}
+                            {getGoalLabel(goalId)}
                           </span>
                         ))}
                         {preferences.financial_goals.length > 6 && (
