@@ -743,7 +743,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         {/* User ID */}
                         <div className="mt-4">
                           <span className="font-mono text-sm bg-white/10 text-white px-3 py-1.5 rounded-lg">
-                            {user.user_code || user.uid || 'N/A'}
+                            {user.uid || user.user_code || 'N/A'}
                           </span>
                         </div>
                       </div>
