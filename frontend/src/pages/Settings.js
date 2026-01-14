@@ -237,6 +237,47 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   const [exportingData, setExportingData] = useState(false);
   const [uploadingPicture, setUploadingPicture] = useState(false);
   const [showFontPicker, setShowFontPicker] = useState(false);
+  const [showProfileSwitcher, setShowProfileSwitcher] = useState(false);
+  const [profiles, setProfiles] = useState([]);
+  const [switchingProfile, setSwitchingProfile] = useState(false);
+
+  // Fetch profiles for switcher
+  const fetchProfiles = async () => {
+    try {
+      const response = await axios.get(`${API}/profiles`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setProfiles(response.data.profiles || []);
+    } catch (error) {
+      console.error('Failed to fetch profiles:', error);
+    }
+  };
+
+  // Switch to different profile
+  const handleSwitchProfile = async (profileToSwitch) => {
+    setSwitchingProfile(true);
+    try {
+      await axios.post(
+        `${API}/profiles/${profileToSwitch.id}/activate`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Store active profile ID and reload page to get new profile data
+      localStorage.setItem('activeProfileId', profileToSwitch.id);
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to switch profile:', error);
+      setMessage({ text: 'Failed to switch profile', type: 'error' });
+    } finally {
+      setSwitchingProfile(false);
+    }
+  };
+
+  // Load profiles on mount
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
   // Calculate age from DOB or dob_month/dob_year
   const calculateAge = (dob) => {
