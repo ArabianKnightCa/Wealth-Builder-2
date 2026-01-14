@@ -519,9 +519,9 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                 </div>
                 
                 {/* Main Profile Card */}
-                <div className={`rounded-xl overflow-hidden ${display.dark_mode ? 'bg-gray-700' : 'bg-white'} shadow-lg border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
+                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
                   {/* Header with Avatar and Quick Stats */}
-                  <div className={`p-6 ${display.dark_mode ? 'bg-gradient-to-br from-gray-700 to-gray-800' : 'bg-gradient-to-br from-navy-900 to-navy-800'} text-white`}>
+                  <div className="p-6 bg-navy-900 text-white">
                     <div className="flex items-center gap-5">
                       {/* Avatar */}
                       <div className="relative flex-shrink-0">
@@ -529,10 +529,10 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                           <img 
                             src={profile.profile_picture_url} 
                             alt="Profile" 
-                            className="w-20 h-20 rounded-full object-cover border-3 border-gold shadow-lg"
+                            className="w-20 h-20 rounded-full object-cover border-4 border-gold shadow-lg"
                           />
                         ) : (
-                          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold to-yellow-400 flex items-center justify-center text-4xl border-3 border-white/20 shadow-lg">
+                          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold to-yellow-400 flex items-center justify-center text-4xl border-4 border-white/30 shadow-lg">
                             {profile.avatar}
                           </div>
                         )}
@@ -547,16 +547,16 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                       
                       {/* Name and Quick Info */}
                       <div className="flex-1">
-                        <h3 className="text-2xl font-bold">{profile.first_name || 'Your Name'}</h3>
+                        <h3 className="text-2xl font-bold text-white">{profile.first_name || 'Your Name'}</h3>
                         <p className="text-gold text-sm mt-1">{user.email}</p>
-                        <div className="flex flex-wrap gap-3 mt-2">
-                          <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">
                             {userAge !== null ? `${userAge} yrs` : 'Age not set'}
                           </span>
-                          <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
+                          <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">
                             {getExperienceLabel(preferences.experience_level)}
                           </span>
-                          <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
+                          <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">
                             {getLifeStageLabel(personalInfo.life_stage)}
                           </span>
                         </div>
