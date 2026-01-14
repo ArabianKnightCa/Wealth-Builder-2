@@ -488,6 +488,8 @@ function LPIChapter({ token, user }) {
                         setQuizResult(null);
                         setQuizAnswers({});
                         setCurrentView('quiz');
+                        // Scroll to top of page
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="btn-primary"
                       data-testid="retake-quiz-btn"
