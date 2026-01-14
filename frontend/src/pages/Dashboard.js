@@ -49,12 +49,12 @@ function Dashboard({ user, token, onLogout }) {
   /**
    * LPI CHAPTER ACCESS RULES:
    * -------------------------
-   * Chapter 1: ALWAYS UNLOCKED - Never locked, available to all users
+   * Chapter 1 (CH01): ALWAYS UNLOCKED - Never locked, available to all users
    * Chapters 2+: Unlocked after completing previous chapter's quiz
    */
   const isChapterUnlocked = (chapterId) => {
     // Chapter 1 is ALWAYS unlocked - never put a lock on it
-    if (chapterId === 1 || chapterId === '1' || chapterId === 'ch1' || chapterId === 'chapter_1') {
+    if (chapterId === 'CH01' || chapterId === 1 || chapterId === '1') {
       return true;
     }
     return progress.some(p => p.chapter_id === chapterId);
