@@ -598,6 +598,20 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   />
                 </div>
 
+                {/* Primary Email */}
+                <div>
+                  <label className={`block font-semibold mb-2 ${labelClass}`}>Email Address</label>
+                  <input
+                    type="email"
+                    value={profile.email || user.email || ''}
+                    onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                    className={`w-full px-4 py-3 rounded-lg border-2 ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
+                    placeholder="your@email.com"
+                    data-testid="email-input"
+                  />
+                  <p className={`text-xs mt-1 ${subTextClass}`}>Used for login and notifications</p>
+                </div>
+
                 {/* Your ID - Simplified (removed cohort, person_key) */}
                 <div className={`p-4 rounded-xl ${display.dark_mode ? 'bg-gray-700/50' : 'bg-gray-100'} border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
                   <div className="flex justify-between items-center">
