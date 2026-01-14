@@ -392,18 +392,17 @@ function PPI({ token, user, onPPIComplete }) {
             )}
 
             <div className="flex justify-between mt-8">
-              <button
-                onClick={handleBack}
-                disabled={currentIndex === 0}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                  currentIndex === 0 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'btn-primary'
-                }`}
-                data-testid="back-btn"
-              >
-                ← Back
-              </button>
+              {currentIndex > 0 ? (
+                <button
+                  onClick={handleBack}
+                  className="btn-primary"
+                  data-testid="back-btn"
+                >
+                  ← Back
+                </button>
+              ) : (
+                <div></div>
+              )}
               <button
                 onClick={handleNext}
                 disabled={!answers[currentQuestion.id] || submitting}
