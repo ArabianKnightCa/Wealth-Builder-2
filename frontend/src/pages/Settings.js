@@ -522,7 +522,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                 <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
                   {/* Header with Avatar and Quick Stats */}
                   <div className="p-6 bg-navy-900 text-white">
-                    <div className="flex items-center gap-5">
+                    <div className="flex items-start gap-5">
                       {/* Avatar */}
                       <div className="relative flex-shrink-0">
                         {profile.profile_picture_url ? (
@@ -545,31 +545,74 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         </button>
                       </div>
                       
-                      {/* Name and Quick Info */}
+                      {/* Name, Info, and Badges */}
                       <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-white">{profile.first_name || 'Your Name'}</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-2xl font-bold text-white">{profile.first_name || 'Your Name'}</h3>
+                          <span className="bg-gold/20 text-gold text-xs px-2 py-0.5 rounded-full font-medium">
+                            Owner
+                          </span>
+                        </div>
                         <p className="text-gold text-sm mt-1">{user.email}</p>
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">
-                            {userAge !== null ? `${userAge} yrs` : 'Age not set'}
-                          </span>
-                          <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">
-                            {getExperienceLabel(preferences.experience_level)}
-                          </span>
-                          <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">
-                            {getLifeStageLabel(personalInfo.life_stage)}
+                        
+                        {/* Stats Row */}
+                        <div className="flex flex-wrap gap-3 mt-3">
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-white">{userAge !== null ? userAge : '--'}</p>
+                            <p className="text-xs text-gray-400">Age</p>
+                          </div>
+                          <div className="w-px bg-white/20"></div>
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-white">{preferences.experience_level}/5</p>
+                            <p className="text-xs text-gray-400">Level</p>
+                          </div>
+                          <div className="w-px bg-white/20"></div>
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-white">{getLifeStageLabel(personalInfo.life_stage)}</p>
+                            <p className="text-xs text-gray-400">Stage</p>
+                          </div>
+                        </div>
+                        
+                        {/* User ID */}
+                        <div className="mt-3">
+                          <span className="font-mono text-xs bg-white/10 text-gray-300 px-2 py-1 rounded">
+                            ID: {user.person_key || user.uid || user.user_code || 'N/A'}
                           </span>
                         </div>
                       </div>
+                      
+                      {/* Switch Profile Button */}
+                      <button
+                        onClick={() => {
+                          const profileSection = document.querySelector('[data-testid="linked-profiles"]');
+                          if (profileSection) {
+                            profileSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }
+                        }}
+                        className="flex-shrink-0 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors border border-white/20"
+                      >
+                        Switch Profile
+                      </button>
                     </div>
                     
-                    {/* Upload Photo Link */}
-                    <div className="mt-4 pt-3 border-t border-white/20">
+                    {/* Photo Options */}
+                    <div className="mt-4 pt-3 border-t border-white/20 flex flex-wrap gap-4">
                       <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm">
-                        📷 {uploadingPicture ? 'Uploading...' : 'Upload custom photo'}
+                        📷 {uploadingPicture ? 'Uploading...' : 'Upload photo'}
                         <input
                           type="file"
                           accept="image/*"
+                          onChange={handlePictureUpload}
+                          className="hidden"
+                          disabled={uploadingPicture}
+                        />
+                      </label>
+                      <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm">
+                        🤳 Take selfie
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="user"
                           onChange={handlePictureUpload}
                           className="hidden"
                           disabled={uploadingPicture}
@@ -604,17 +647,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                           data-testid="email-input"
                         />
                       </div>
-                    </div>
-                    
-                    {/* User ID Badge */}
-                    <div className={`flex items-center justify-between p-3 rounded-lg ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                      <div>
-                        <p className={`text-xs font-medium ${subTextClass}`}>Your ID</p>
-                        <p className={`text-xs ${subTextClass}`}>For support & sharing</p>
-                      </div>
-                      <span className="font-mono font-bold text-sm bg-gold text-navy-900 px-3 py-1.5 rounded-full">
-                        {user.uid || user.user_code || 'N/A'}
-                      </span>
                     </div>
                   </div>
                 </div>
