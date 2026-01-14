@@ -2675,10 +2675,16 @@ async def activate_profile(
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
     
-    # Update last active time
+    # Update last active time on profile
     await db.profiles.update_one(
         {"id": profile_id},
         {"$set": {"last_active": datetime.now(timezone.utc)}}
+    )
+    
+    # Set active profile on user account
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"active_profile_id": profile_id}}
     )
     
     return {
