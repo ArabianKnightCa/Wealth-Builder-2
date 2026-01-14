@@ -75,6 +75,95 @@ const FONT_OPTIONS = [
 function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   const navigate = useNavigate();
   
+  // Progress & Stats
+  const [progressStats, setProgressStats] = useState({
+    chaptersCompleted: 0,
+    totalChapters: 10,
+    quizzesPassed: 0,
+    avgQuizScore: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    totalLearningMinutes: 0,
+    lastActiveDate: null
+  });
+  
+  // Achievements
+  const [achievements, setAchievements] = useState([]);
+  
+  // Fetch progress stats on mount
+  useEffect(() => {
+    fetchProgressStats();
+    fetchAchievements();
+  }, []);
+  
+  const fetchProgressStats = async () => {
+    try {
+      // Fetch progress data
+      const progressRes = await axios.get(`${API}/progress`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Fetch quiz results
+      const quizRes = await axios.get(`${API}/quiz-history`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(() => ({ data: { results: [] } }));
+      
+      const progress = progressRes.data.progress || {};
+      const quizResults = quizRes.data.results || [];
+      
+      // Calculate stats
+      const completedChapters = Object.values(progress).filter(p => p.completed).length;
+      const passedQuizzes = quizResults.filter(q => q.passed).length;
+      const avgScore = quizResults.length > 0 
+        ? Math.round(quizResults.reduce((sum, q) => sum + (q.score || 0), 0) / quizResults.length)
+        : 0;
+      
+      setProgressStats(prev => ({
+        ...prev,
+        chaptersCompleted: completedChapters,
+        quizzesPassed: passedQuizzes,
+        avgQuizScore: avgScore
+      }));
+    } catch (error) {
+      console.error('Failed to fetch progress stats:', error);
+    }
+  };
+  
+  const fetchAchievements = async () => {
+    // Define achievement badges based on user progress
+    const badges = [];
+    
+    // Check for various achievements
+    if (user.ppi_completed) {
+      badges.push({ id: 'ppi_complete', icon: '🧠', name: 'Self-Aware', desc: 'Completed PPI Assessment' });
+    }
+    if (user.created_at) {
+      badges.push({ id: 'first_steps', icon: '👣', name: 'First Steps', desc: 'Joined Mizo' });
+    }
+    if (progressStats.chaptersCompleted >= 1) {
+      badges.push({ id: 'chapter_1', icon: '📖', name: 'Chapter One', desc: 'Completed first chapter' });
+    }
+    if (progressStats.quizzesPassed >= 1) {
+      badges.push({ id: 'quiz_ace', icon: '✅', name: 'Quiz Ace', desc: 'Passed your first quiz' });
+    }
+    if (progressStats.currentStreak >= 7) {
+      badges.push({ id: 'week_streak', icon: '🔥', name: 'On Fire', desc: '7-day learning streak' });
+    }
+    if (progressStats.chaptersCompleted >= 5) {
+      badges.push({ id: 'halfway', icon: '🏆', name: 'Halfway There', desc: 'Completed 5 chapters' });
+    }
+    if (progressStats.chaptersCompleted >= 10) {
+      badges.push({ id: 'master', icon: '👑', name: 'Money Master', desc: 'Completed all chapters' });
+    }
+    
+    setAchievements(badges);
+  };
+  
+  // Update achievements when progress changes
+  useEffect(() => {
+    fetchAchievements();
+  }, [progressStats, user.ppi_completed]);
+  
   // Profile Settings
   const [profile, setProfile] = useState({
     first_name: user.first_name || '',
