@@ -477,6 +477,8 @@ function LPIChapter({ token, user }) {
                         setCurrentLessonIndex(0);
                         setQuizResult(null); 
                         setQuizAnswers({}); 
+                        // Scroll to top of page
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="btn-secondary"
                       data-testid="review-lessons-btn"
