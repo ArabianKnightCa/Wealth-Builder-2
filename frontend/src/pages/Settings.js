@@ -90,11 +90,35 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   // Achievements
   const [achievements, setAchievements] = useState([]);
   
+  // PPI/VIA Results (for testing phase)
+  const [ppiResults, setPpiResults] = useState(null);
+  
   // Fetch progress stats on mount
   useEffect(() => {
     fetchProgressStats();
     fetchAchievements();
+    fetchPPIResults();
   }, []);
+  
+  const fetchPPIResults = async () => {
+    try {
+      const response = await axios.get(`${API}/progress`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const learningMap = response.data.progress?.learning_map;
+      if (learningMap) {
+        setPpiResults({
+          traitVector: learningMap.trait_vector,
+          financialDna: learningMap.financial_dna,
+          profile: learningMap.user_profile,
+          generatedAt: learningMap.generated_at
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch PPI results:', error);
+    }
+  };
   
   const fetchProgressStats = async () => {
     try {
