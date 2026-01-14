@@ -9,11 +9,10 @@ const API = `${BACKEND_URL}/api`;
  * Profile Manager Component
  * Shows current profile and allows switching/managing profiles
  */
-function ProfileManager({ token, currentProfile, onProfileSwitch }) {
+function ProfileManager({ token, currentProfile, onProfileSwitch, darkMode = false }) {
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showSwitcher, setShowSwitcher] = useState(false);
 
   useEffect(() => {
     fetchProfiles();
@@ -41,7 +40,6 @@ function ProfileManager({ token, currentProfile, onProfileSwitch }) {
       );
       
       onProfileSwitch(profile);
-      setShowSwitcher(false);
     } catch (error) {
       console.error('Failed to switch profile:', error);
     }
@@ -65,103 +63,122 @@ function ProfileManager({ token, currentProfile, onProfileSwitch }) {
     }
   };
 
+  // Theme classes
+  const bgClass = darkMode ? 'bg-gray-800' : 'bg-white';
+  const textClass = darkMode ? 'text-white' : 'text-gray-800';
+  const subTextClass = darkMode ? 'text-gray-400' : 'text-gray-600';
+  const borderClass = darkMode ? 'border-gray-600' : 'border-gray-200';
+  const hoverBgClass = darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50';
+  const activeBgClass = darkMode ? 'bg-gold/10 border-gold' : 'bg-gold/10 border-gold';
+  const infoBgClass = darkMode ? 'bg-gray-700' : 'bg-blue-50';
+  const infoTextClass = darkMode ? 'text-gray-300' : 'text-blue-800';
+  const infoBorderClass = darkMode ? 'border-gray-600' : 'border-blue-200';
+
   if (loading) {
-    return <div className="text-gray-600">Loading profiles...</div>;
+    return (
+      <div className={`p-6 ${bgClass}`}>
+        <div className={`${subTextClass}`}>Loading profiles...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Manage Profiles</h2>
+    <div className={`${bgClass}`}>
+      {/* Header */}
+      <div className={`px-6 py-4 border-b ${borderClass} flex justify-between items-center`}>
+        <div>
+          <h3 className={`text-lg font-bold ${textClass}`}>👥 Linked Profiles</h3>
+          <p className={`text-sm ${subTextClass}`}>{profiles.length}/5 profiles • Click to switch</p>
+        </div>
         {profiles.length < 5 && (
           <button
             onClick={() => navigate('/profiles/add')}
-            className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="px-4 py-2 bg-gold text-navy-900 rounded-lg hover:bg-yellow-400 transition-colors text-sm font-semibold"
+            data-testid="add-profile-btn"
           >
             + Add Profile
           </button>
         )}
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">
-        Click a profile to switch. ({profiles.length}/5 profiles)
-      </p>
-
-      {/* All Profiles - Click to Switch */}
-      <div className="space-y-3">
-        {profiles.map(profile => (
-          <div
-            key={profile.id}
-            className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-              currentProfile?.id === profile.id
-                ? 'bg-blue-50 border-blue-500 shadow-md'
-                : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow cursor-pointer'
-            }`}
-            onClick={() => currentProfile?.id !== profile.id && handleSwitchProfile(profile)}
-          >
-            {/* Avatar */}
-            <div className="text-4xl sm:text-5xl">{profile.avatar}</div>
-            
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <div className="font-semibold text-base sm:text-lg text-gray-800 truncate">
-                  {profile.name}
+      {/* Profiles List */}
+      <div className="p-4 space-y-2">
+        {profiles.map(profile => {
+          const isActive = currentProfile?.id === profile.id;
+          
+          return (
+            <div
+              key={profile.id}
+              className={`flex items-center gap-4 p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                isActive
+                  ? activeBgClass
+                  : `${borderClass} ${hoverBgClass}`
+              }`}
+              onClick={() => !isActive && handleSwitchProfile(profile)}
+              data-testid={`profile-${profile.id}`}
+            >
+              {/* Avatar */}
+              <div className="text-3xl flex-shrink-0">{profile.avatar}</div>
+              
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`font-semibold ${textClass} truncate`}>
+                    {profile.name}
+                  </span>
+                  {isActive && (
+                    <span className="bg-gold text-navy-900 text-xs px-2 py-0.5 rounded-full font-bold">
+                      Active
+                    </span>
+                  )}
+                  {profile.is_primary && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-600'}`}>
+                      Owner
+                    </span>
+                  )}
                 </div>
-                {currentProfile?.id === profile.id && (
-                  <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                    Active
-                  </span>
-                )}
-                {profile.is_primary && (
-                  <span className="bg-gold/20 text-gold text-xs px-2 py-0.5 rounded-full font-medium">
-                    Owner
-                  </span>
-                )}
+                <p className={`text-xs ${subTextClass} mt-0.5`}>
+                  {profile.age} yrs • Level {profile.experience_level}/5
+                  {profile.ppi_completed && ' • ✓ PPI'}
+                </p>
               </div>
-              <div className="text-xs sm:text-sm text-gray-600 mt-0.5">
-                {profile.age} years old • Level {profile.experience_level}/5
-                {profile.ppi_completed && ' • ✓ PPI Done'}
-              </div>
-            </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              {currentProfile?.id !== profile.id && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSwitchProfile(profile);
-                  }}
-                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs sm:text-sm font-medium hover:bg-blue-200 transition-colors"
-                >
-                  Switch
-                </button>
-              )}
-              {!profile.is_primary && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteProfile(profile.id);
-                  }}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                  title="Delete Profile"
-                >
-                  🗑️
-                </button>
-              )}
+              {/* Actions */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {!isActive && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSwitchProfile(profile);
+                    }}
+                    className="px-3 py-1.5 bg-gold text-navy-900 rounded-lg text-xs font-semibold hover:bg-yellow-400 transition-colors"
+                  >
+                    Switch
+                  </button>
+                )}
+                {!profile.is_primary && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteProfile(profile.id);
+                    }}
+                    className={`p-1.5 rounded transition-colors ${darkMode ? 'text-red-400 hover:bg-red-900/30' : 'text-red-500 hover:bg-red-50'}`}
+                    title="Delete Profile"
+                  >
+                    🗑️
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Info Box */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
-        <div className="text-xs sm:text-sm text-blue-800 space-y-1">
-          <p>• Click any profile to switch to it</p>
-          <p>• Each profile has separate progress and personalization</p>
-          <p>• Owner profile cannot be deleted</p>
-        </div>
+      <div className={`mx-4 mb-4 p-3 rounded-lg border ${infoBgClass} ${infoBorderClass}`}>
+        <p className={`text-xs ${infoTextClass}`}>
+          Each profile has separate progress and settings. Owner profile cannot be deleted.
+        </p>
       </div>
     </div>
   );
