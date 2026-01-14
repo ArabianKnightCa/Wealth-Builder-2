@@ -1180,18 +1180,7 @@ function AnalyticsDashboard({ token }) {
 
             {/* Feedback Tab */}
             {activeTab === 'feedback' && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">User Feedback</h2>
-                <p className="text-gray-600 mb-4">
-                  View all user feedback in the dedicated Feedback Viewer page.
-                </p>
-                <a
-                  href="/feedback"
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Go to Feedback Viewer →
-                </a>
-              </div>
+              <FeedbackPanel token={token} />
             )}
           </>
         )}
