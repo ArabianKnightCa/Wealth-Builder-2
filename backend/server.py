@@ -481,12 +481,13 @@ async def generate_user_code(user_type: str, cohort: str, created_at: datetime) 
 
 async def generate_uid(user_type: str, life_stage: str, created_at: datetime) -> str:
     """
-    Generate UID: PHASE-LIFE_STAGE-MMDDYYYYHHMM-RANDOM4
+    Generate UID: PHASE-LIFE_STAGE-SEQ-MMDDYYYYHHMM-RANDOM4
     
-    Format: POC-JH-011420261312-2N6H
+    Format: POC-JH-5-011420261312-2N6H
     
     - PHASE: POC, B1, B2, B3, COM (phase of app)
     - LIFE_STAGE: ES, JH, HS, CL, UN, AD (educational level short code)
+    - SEQ: Sequential number starting from 0
     - MMDDYYYYHHMM: Date and time of account creation
     - RANDOM4: 4-digit alphanumeric for uniqueness (tie breaker)
     """
@@ -511,6 +512,15 @@ async def generate_uid(user_type: str, life_stage: str, created_at: datetime) ->
     }
     short_life_stage = life_stage_map.get(life_stage, 'AD')
     
+    # Get and increment SEQ counter (starts at 0)
+    counter = await db.seq_counter.find_one_and_update(
+        {"_id": "uid_seq"},
+        {"$inc": {"seq": 1}},
+        upsert=True,
+        return_document=True
+    )
+    seq = counter.get("seq", 1) - 1  # Start from 0
+    
     # Format datetime: MMDDYYYYHHMM
     datetime_block = created_at.strftime("%m%d%Y%H%M")
     
@@ -518,7 +528,7 @@ async def generate_uid(user_type: str, life_stage: str, created_at: datetime) ->
     random_chars = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
     
     # Construct UID
-    uid = f"{user_type}-{short_life_stage}-{datetime_block}-{random_chars}"
+    uid = f"{user_type}-{short_life_stage}-{seq}-{datetime_block}-{random_chars}"
     
     return uid
 
