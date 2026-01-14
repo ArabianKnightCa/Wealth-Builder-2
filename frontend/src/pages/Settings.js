@@ -911,11 +911,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                       );
                     })}
                   </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
               </div>
             )}
