@@ -102,16 +102,15 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   
   const fetchPPIResults = async () => {
     try {
-      const response = await axios.get(`${API}/progress`, {
+      const response = await axios.get(`${API}/ppi/results`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      const learningMap = response.data.progress?.learning_map;
-      if (learningMap) {
+      const results = response.data.results;
+      if (results) {
         // Parse trait vector data
-        const traitVector = learningMap.trait_vector || {};
+        const traitVector = results.trait_vector || {};
         const traits = traitVector.traits || {};
-        const dominantTraits = traitVector.dominant_traits || [];
         
         // Convert traits object to sorted array
         const sortedTraits = Object.entries(traits)
@@ -123,10 +122,10 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
             ...traitVector,
             top_traits: sortedTraits
           },
-          financialDna: learningMap.financial_dna,
-          profile: learningMap.user_profile,
-          learningStyle: learningMap.learning_style,
-          generatedAt: learningMap.generated_at
+          financialDna: results.financial_dna,
+          profile: results.profile,
+          learningStyle: results.learning_style,
+          generatedAt: results.generated_at
         });
       }
     } catch (error) {
