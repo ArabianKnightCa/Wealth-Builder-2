@@ -515,125 +515,117 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
               <div className="space-y-6">
                 <div className={`border-b pb-4 mb-6 ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <h2 className="text-2xl font-bold">👤 Profile</h2>
-                  <p className={subTextClass}>Manage your identity</p>
+                  <p className={subTextClass}>Your identity and linked profiles</p>
                 </div>
                 
-                {/* User Stats Card - Enhanced */}
-                <div className={`p-6 rounded-xl ${display.dark_mode ? 'bg-gradient-to-br from-gray-700 to-gray-800' : 'bg-gradient-to-br from-navy-900 to-navy-800'} text-white`}>
-                  <div className="flex items-start gap-6">
-                    {/* Avatar */}
-                    <div className="relative group flex-shrink-0">
-                      {profile.profile_picture_url ? (
-                        <img 
-                          src={profile.profile_picture_url} 
-                          alt="Profile" 
-                          className="w-24 h-24 rounded-full object-cover border-4 border-gold shadow-lg"
-                        />
-                      ) : (
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gold to-yellow-400 flex items-center justify-center text-5xl border-4 border-white/20 shadow-lg">
-                          {profile.avatar}
+                {/* Main Profile Card */}
+                <div className={`rounded-xl overflow-hidden ${display.dark_mode ? 'bg-gray-700' : 'bg-white'} shadow-lg border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
+                  {/* Header with Avatar and Quick Stats */}
+                  <div className={`p-6 ${display.dark_mode ? 'bg-gradient-to-br from-gray-700 to-gray-800' : 'bg-gradient-to-br from-navy-900 to-navy-800'} text-white`}>
+                    <div className="flex items-center gap-5">
+                      {/* Avatar */}
+                      <div className="relative flex-shrink-0">
+                        {profile.profile_picture_url ? (
+                          <img 
+                            src={profile.profile_picture_url} 
+                            alt="Profile" 
+                            className="w-20 h-20 rounded-full object-cover border-3 border-gold shadow-lg"
+                          />
+                        ) : (
+                          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold to-yellow-400 flex items-center justify-center text-4xl border-3 border-white/20 shadow-lg">
+                            {profile.avatar}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => setShowAvatarPicker(true)}
+                          className="absolute -bottom-1 -right-1 bg-gold text-navy-900 rounded-full p-1.5 shadow-lg hover:bg-yellow-400 transition transform hover:scale-110"
+                          title="Change avatar"
+                        >
+                          ✏️
+                        </button>
+                      </div>
+                      
+                      {/* Name and Quick Info */}
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold">{profile.first_name || 'Your Name'}</h3>
+                        <p className="text-gold text-sm mt-1">{user.email}</p>
+                        <div className="flex flex-wrap gap-3 mt-2">
+                          <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
+                            {userAge !== null ? `${userAge} yrs` : 'Age not set'}
+                          </span>
+                          <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
+                            {getExperienceLabel(preferences.experience_level)}
+                          </span>
+                          <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
+                            {getLifeStageLabel(personalInfo.life_stage)}
+                          </span>
                         </div>
-                      )}
-                      <button
-                        onClick={() => setShowAvatarPicker(true)}
-                        className="absolute bottom-0 right-0 bg-gold text-navy-900 rounded-full p-1.5 shadow-lg hover:bg-yellow-400 transition transform hover:scale-110"
-                        title="Change avatar"
-                      >
-                        ✏️
-                      </button>
+                      </div>
                     </div>
                     
-                    {/* Stats Grid */}
-                    <div className="flex-1 grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Name</p>
-                        <p className="text-xl font-bold">{profile.first_name || 'Not set'}</p>
-                      </div>
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Age</p>
-                        <p className="text-xl font-bold">{userAge !== null ? `${userAge} yrs` : 'Not set'}</p>
-                      </div>
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Level</p>
-                        <p className="text-lg font-semibold">{getExperienceLabel(preferences.experience_level)}</p>
-                      </div>
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Stage</p>
-                        <p className="text-lg font-semibold">{getLifeStageLabel(personalInfo.life_stage)}</p>
-                      </div>
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Goals</p>
-                        <p className="text-lg font-semibold">{preferences.financial_goals?.length || 0} selected</p>
-                      </div>
-                      <div>
-                        <p className="text-gold text-xs uppercase tracking-wide">Daily Goal</p>
-                        <p className="text-lg font-semibold">{preferences.daily_goal_minutes} min</p>
-                      </div>
+                    {/* Upload Photo Link */}
+                    <div className="mt-4 pt-3 border-t border-white/20">
+                      <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm">
+                        📷 {uploadingPicture ? 'Uploading...' : 'Upload custom photo'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePictureUpload}
+                          className="hidden"
+                          disabled={uploadingPicture}
+                        />
+                      </label>
                     </div>
                   </div>
                   
-                  {/* Upload Photo Link */}
-                  <div className="mt-4 pt-4 border-t border-white/20">
-                    <label className="cursor-pointer inline-flex items-center gap-2 text-gold hover:text-yellow-300 text-sm">
-                      📷 {uploadingPicture ? 'Uploading...' : 'Upload custom photo'}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handlePictureUpload}
-                        className="hidden"
-                        disabled={uploadingPicture}
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                {/* Edit Name */}
-                <div>
-                  <label className={`block font-semibold mb-2 ${labelClass}`}>Display Name</label>
-                  <input
-                    type="text"
-                    value={profile.first_name}
-                    onChange={(e) => setProfile(prev => ({ ...prev, first_name: e.target.value }))}
-                    className={`w-full px-4 py-3 rounded-lg border-2 ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
-                    placeholder="Enter your name"
-                    data-testid="name-input"
-                  />
-                </div>
-
-                {/* Primary Email */}
-                <div>
-                  <label className={`block font-semibold mb-2 ${labelClass}`}>Email Address</label>
-                  <input
-                    type="email"
-                    value={profile.email || user.email || ''}
-                    onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
-                    className={`w-full px-4 py-3 rounded-lg border-2 ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
-                    placeholder="your@email.com"
-                    data-testid="email-input"
-                  />
-                  <p className={`text-xs mt-1 ${subTextClass}`}>Used for login and notifications</p>
-                </div>
-
-                {/* Your ID - Simplified (removed cohort, person_key) */}
-                <div className={`p-4 rounded-xl ${display.dark_mode ? 'bg-gray-700/50' : 'bg-gray-100'} border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className={`text-xs ${subTextClass} uppercase tracking-wide`}>Your ID</p>
-                      <p className="text-sm text-gray-500">Use this for support & sharing</p>
+                  {/* Edit Fields */}
+                  <div className="p-6 space-y-5">
+                    {/* Name and Email in Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className={`block text-sm font-medium mb-1.5 ${labelClass}`}>Display Name</label>
+                        <input
+                          type="text"
+                          value={profile.first_name}
+                          onChange={(e) => setProfile(prev => ({ ...prev, first_name: e.target.value }))}
+                          className={`w-full px-4 py-2.5 rounded-lg border ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
+                          placeholder="Enter your name"
+                          data-testid="name-input"
+                        />
+                      </div>
+                      <div>
+                        <label className={`block text-sm font-medium mb-1.5 ${labelClass}`}>Email Address</label>
+                        <input
+                          type="email"
+                          value={profile.email || user.email || ''}
+                          onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                          className={`w-full px-4 py-2.5 rounded-lg border ${inputClass} focus:ring-2 focus:ring-gold focus:border-gold`}
+                          placeholder="your@email.com"
+                          data-testid="email-input"
+                        />
+                      </div>
                     </div>
-                    <span className="font-mono font-bold text-lg bg-gold text-navy-900 px-4 py-2 rounded-full">
-                      {user.uid || user.user_code || 'N/A'}
-                    </span>
+                    
+                    {/* User ID Badge */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                      <div>
+                        <p className={`text-xs font-medium ${subTextClass}`}>Your ID</p>
+                        <p className={`text-xs ${subTextClass}`}>For support & sharing</p>
+                      </div>
+                      <span className="font-mono font-bold text-sm bg-gold text-navy-900 px-3 py-1.5 rounded-full">
+                        {user.uid || user.user_code || 'N/A'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Profile Manager */}
-                <div className={`pt-6 border-t ${display.dark_mode ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <h3 className="font-semibold mb-3">👥 Manage Profiles</h3>
+                {/* Linked Profiles Section */}
+                <div className={`rounded-xl overflow-hidden ${display.dark_mode ? 'bg-gray-700' : 'bg-white'} shadow-lg border ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
                   <ProfileManager 
                     token={token} 
                     currentProfile={user} 
-                    onProfileSwitch={() => window.location.reload()} 
+                    onProfileSwitch={() => window.location.reload()}
+                    darkMode={display.dark_mode}
                   />
                 </div>
               </div>
