@@ -761,7 +761,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                           </div>
                           <div className="w-px h-10 bg-white/20"></div>
                           <div>
-                            <p className="text-lg font-bold text-white">{getLifeStageLabel(personalInfo.life_stage)}</p>
+                            <p className="text-lg font-bold text-white">{getLifeStageShort(personalInfo.life_stage)}</p>
                             <p className="text-xs text-gray-400">Stage</p>
                           </div>
                         </div>
