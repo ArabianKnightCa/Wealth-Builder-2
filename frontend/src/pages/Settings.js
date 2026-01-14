@@ -624,7 +624,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   <p className={subTextClass}>Manage your profile</p>
                 </div>
                 
-                {/* Main Profile Card - All in One */}
+                {/* Main Profile Card */}
                 <div className="rounded-xl overflow-hidden shadow-lg bg-navy-900 text-white">
                   <div className="p-6">
                     <div className="flex items-start gap-5">
@@ -699,7 +699,6 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                         </button>
                         <button
                           onClick={() => {
-                            // TODO: Implement profile switcher modal
                             alert('Profile switcher coming soon!');
                           }}
                           className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors border border-white/20"
@@ -732,6 +731,230 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                           disabled={uploadingPicture}
                         />
                       </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress & Engagement Section */}
+                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+                  <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
+                    <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>📊 Progress & Engagement</h3>
+                  </div>
+                  <div className="p-5">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className={`text-center p-4 rounded-xl ${display.dark_mode ? 'bg-gray-800' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+                        <p className="text-3xl font-bold text-blue-600">{progressStats.chaptersCompleted}</p>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Chapters Done</p>
+                        <p className={`text-xs ${subTextClass}`}>of {progressStats.totalChapters}</p>
+                      </div>
+                      <div className={`text-center p-4 rounded-xl ${display.dark_mode ? 'bg-gray-800' : 'bg-gradient-to-br from-green-50 to-green-100'}`}>
+                        <p className="text-3xl font-bold text-green-600">{progressStats.quizzesPassed}</p>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Quizzes Passed</p>
+                        <p className={`text-xs ${subTextClass}`}>Avg: {progressStats.avgQuizScore}%</p>
+                      </div>
+                      <div className={`text-center p-4 rounded-xl ${display.dark_mode ? 'bg-gray-800' : 'bg-gradient-to-br from-orange-50 to-orange-100'}`}>
+                        <p className="text-3xl font-bold text-orange-500">🔥 {progressStats.currentStreak}</p>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Day Streak</p>
+                        <p className={`text-xs ${subTextClass}`}>Best: {progressStats.longestStreak}</p>
+                      </div>
+                      <div className={`text-center p-4 rounded-xl ${display.dark_mode ? 'bg-gray-800' : 'bg-gradient-to-br from-purple-50 to-purple-100'}`}>
+                        <p className="text-3xl font-bold text-purple-600">{progressStats.totalLearningMinutes}</p>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Minutes Learned</p>
+                        <p className={`text-xs ${subTextClass}`}>This week</p>
+                      </div>
+                    </div>
+                    {/* Progress Bar */}
+                    <div className="mt-4">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className={`text-sm font-medium ${subTextClass}`}>Overall Progress</span>
+                        <span className={`text-sm font-bold ${display.dark_mode ? 'text-gold' : 'text-navy-900'}`}>
+                          {Math.round((progressStats.chaptersCompleted / progressStats.totalChapters) * 100)}%
+                        </span>
+                      </div>
+                      <div className={`h-3 rounded-full overflow-hidden ${display.dark_mode ? 'bg-gray-600' : 'bg-gray-200'}`}>
+                        <div 
+                          className="h-full bg-gradient-to-r from-gold to-yellow-400 rounded-full transition-all duration-500"
+                          style={{ width: `${(progressStats.chaptersCompleted / progressStats.totalChapters) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => navigate('/dashboard')}
+                      className="mt-4 w-full py-2 bg-navy-900 hover:bg-navy-800 text-gold rounded-lg text-sm font-medium transition-colors"
+                    >
+                      ▶ Continue Learning
+                    </button>
+                  </div>
+                </div>
+
+                {/* Achievements & Gamification Section */}
+                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+                  <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
+                    <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>🏆 Achievements</h3>
+                  </div>
+                  <div className="p-5">
+                    {/* PPI Status */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg mb-4 ${
+                      user.ppi_completed 
+                        ? (display.dark_mode ? 'bg-green-900/30 border border-green-700' : 'bg-green-50 border border-green-200')
+                        : (display.dark_mode ? 'bg-yellow-900/30 border border-yellow-700' : 'bg-yellow-50 border border-yellow-200')
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{user.ppi_completed ? '✅' : '📝'}</span>
+                        <div>
+                          <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
+                            PPI Assessment
+                          </p>
+                          <p className={`text-xs ${subTextClass}`}>
+                            {user.ppi_completed ? 'Completed - Personalized learning unlocked!' : 'Take assessment to personalize your journey'}
+                          </p>
+                        </div>
+                      </div>
+                      {!user.ppi_completed && (
+                        <button
+                          onClick={() => navigate('/ppi')}
+                          className="px-3 py-1.5 bg-gold text-navy-900 rounded-lg text-sm font-bold hover:bg-yellow-400"
+                        >
+                          Start
+                        </button>
+                      )}
+                    </div>
+                    
+                    {/* Badges */}
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                      {achievements.length > 0 ? achievements.map(badge => (
+                        <div 
+                          key={badge.id}
+                          className={`text-center p-3 rounded-xl transition-transform hover:scale-105 ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-50'}`}
+                          title={badge.desc}
+                        >
+                          <span className="text-3xl">{badge.icon}</span>
+                          <p className={`text-xs font-medium mt-1 ${display.dark_mode ? 'text-white' : 'text-gray-700'}`}>{badge.name}</p>
+                        </div>
+                      )) : (
+                        <>
+                          {/* Locked badges placeholder */}
+                          {['🔒 Chapter 1', '🔒 Quiz Ace', '🔒 7-Day Streak', '🔒 Halfway'].map((badge, i) => (
+                            <div 
+                              key={i}
+                              className={`text-center p-3 rounded-xl opacity-40 ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-100'}`}
+                            >
+                              <span className="text-3xl">🔒</span>
+                              <p className={`text-xs font-medium mt-1 ${subTextClass}`}>{badge.split(' ').slice(1).join(' ')}</p>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Goals at a Glance Section */}
+                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+                  <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
+                    <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>🎯 Goals at a Glance</h3>
+                  </div>
+                  <div className="p-5">
+                    {preferences.financial_goals && preferences.financial_goals.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {preferences.financial_goals.slice(0, 6).map((goal, index) => (
+                          <span 
+                            key={index}
+                            className={`px-3 py-1.5 rounded-full text-sm font-medium ${display.dark_mode ? 'bg-gold/20 text-gold' : 'bg-gold/10 text-navy-900'}`}
+                          >
+                            {goal}
+                          </span>
+                        ))}
+                        {preferences.financial_goals.length > 6 && (
+                          <span className={`px-3 py-1.5 rounded-full text-sm ${subTextClass}`}>
+                            +{preferences.financial_goals.length - 6} more
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className={`text-center py-4 ${subTextClass}`}>
+                        <p className="text-sm">No financial goals set yet</p>
+                        <button
+                          onClick={() => setActiveSection('preferences')}
+                          className="mt-2 text-gold hover:text-yellow-400 text-sm font-medium"
+                        >
+                          + Add Goals
+                        </button>
+                      </div>
+                    )}
+                    {/* Daily Goal */}
+                    <div className={`mt-4 pt-4 border-t ${display.dark_mode ? 'border-gray-600' : 'border-gray-200'}`}>
+                      <div className="flex items-center justify-between">
+                        <span className={`text-sm ${subTextClass}`}>Daily Learning Goal</span>
+                        <span className={`font-bold ${display.dark_mode ? 'text-gold' : 'text-navy-900'}`}>
+                          {preferences.daily_goal_minutes} min/day
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Account Info Section */}
+                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+                  <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
+                    <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>📅 Account Info</h3>
+                  </div>
+                  <div className="p-5">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className={`text-xs ${subTextClass}`}>Member Since</p>
+                        <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
+                          {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className={`text-xs ${subTextClass}`}>Last Active</p>
+                        <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
+                          {user.last_login ? new Date(user.last_login).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Today'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className={`text-xs ${subTextClass}`}>Account Type</p>
+                        <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
+                          {user.account_status === 'active' ? '✓ Active' : user.account_status || 'Free'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className={`text-xs ${subTextClass}`}>User Type</p>
+                        <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
+                          {user.user_type || 'Standard'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social & Sharing Section - Coming Soon */}
+                <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} opacity-75`}>
+                  <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
+                    <div className="flex items-center justify-between">
+                      <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>🔗 Social & Sharing</h3>
+                      <span className="text-xs bg-gray-500 text-white px-2 py-0.5 rounded-full">Coming Soon</span>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <div className="grid grid-cols-2 gap-3 opacity-50">
+                      <div className={`p-3 rounded-lg text-center ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                        <span className="text-2xl">👥</span>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Invite Friends</p>
+                      </div>
+                      <div className={`p-3 rounded-lg text-center ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                        <span className="text-2xl">📤</span>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Share Progress</p>
+                      </div>
+                      <div className={`p-3 rounded-lg text-center ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                        <span className="text-2xl">👨‍👩‍👧</span>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Family Connect</p>
+                      </div>
+                      <div className={`p-3 rounded-lg text-center ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                        <span className="text-2xl">🎁</span>
+                        <p className={`text-xs mt-1 ${subTextClass}`}>Referral Code</p>
+                      </div>
                     </div>
                   </div>
                 </div>
