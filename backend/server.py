@@ -487,12 +487,13 @@ async def generate_uid(user_type: str, life_stage: str, created_at: datetime) ->
     
     - PHASE: POC, B1, B2, B3, COM (phase of app)
     - LIFE_STAGE: ES, JH, HS, CL, UN, AD (educational level short code)
-    - SEQ: Sequential number starting from 0
-    - MMDDYYYYHHMM: Date and time of account creation
+    - SEQ: Sequential number (1-indexed) - order of account creation
+    - MMDDYYYYHHMM: Date and time in PST (Pacific Standard Time), military time
     - RANDOM4: 4-digit alphanumeric for uniqueness (tie breaker)
     """
     import random
     import string
+    from zoneinfo import ZoneInfo
     
     # Map life_stage to short code
     life_stage_map = {
@@ -512,17 +513,24 @@ async def generate_uid(user_type: str, life_stage: str, created_at: datetime) ->
     }
     short_life_stage = life_stage_map.get(life_stage, 'AD')
     
-    # Get and increment SEQ counter (starts at 0)
+    # Get and increment SEQ counter (1-indexed)
     counter = await db.seq_counter.find_one_and_update(
         {"_id": "uid_seq"},
         {"$inc": {"seq": 1}},
         upsert=True,
         return_document=True
     )
-    seq = counter.get("seq", 1) - 1  # Start from 0
+    seq = counter.get("seq", 1)  # 1-indexed
     
-    # Format datetime: MMDDYYYYHHMM
-    datetime_block = created_at.strftime("%m%d%Y%H%M")
+    # Convert to PST timezone (always use PST regardless of user location)
+    pst = ZoneInfo('America/Los_Angeles')
+    if created_at.tzinfo is None:
+        # If naive datetime, assume UTC
+        created_at = created_at.replace(tzinfo=ZoneInfo('UTC'))
+    created_at_pst = created_at.astimezone(pst)
+    
+    # Format datetime in PST: MMDDYYYYHHMM (military time)
+    datetime_block = created_at_pst.strftime("%m%d%Y%H%M")
     
     # Generate random 4-character alphanumeric (uppercase + digits)
     random_chars = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
