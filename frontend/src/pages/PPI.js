@@ -185,11 +185,15 @@ function PPI({ token, user, onPPIComplete }) {
         };
       });
 
+      console.log('Submitting PPI with', formattedAnswers.length, 'answers');
+      
       const response = await axios.post(
         `${API}/ppi/submit`,
         { answers: formattedAnswers },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
+      console.log('PPI submission response:', response.data);
       
       // Clear saved progress after successful submission
       await clearProgress();
@@ -199,7 +203,8 @@ function PPI({ token, user, onPPIComplete }) {
         onPPIComplete({
           ppi_completed: true,
           financial_dna: response.data.dna,
-          lpi_plan: response.data.lpi_plan
+          lpi_plan: response.data.lpi_plan,
+          via_results: response.data.via_results || response.data.trait_scores
         });
       }
       
@@ -213,10 +218,13 @@ function PPI({ token, user, onPPIComplete }) {
         );
       }
 
+      // Navigate to dashboard after successful submission
+      console.log('PPI completed, navigating to dashboard');
       navigate('/dashboard');
     } catch (error) {
       console.error('Failed to submit PPI:', error);
-      alert('Failed to submit. Please try again.');
+      console.error('Error details:', error.response?.data);
+      alert('Failed to submit. Please try again. Error: ' + (error.response?.data?.detail || error.message));
       setSubmitting(false);
     }
   };
