@@ -59,9 +59,24 @@ function AnalyticsDashboard({ token }) {
     setLoading(true);
     await Promise.all([
       loadTelemetryStats(),
-      loadAnalytics()
+      loadAnalytics(),
+      loadFeedbackCount()
     ]);
     setLoading(false);
+  };
+
+  const loadFeedbackCount = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/feedback`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTelemetry(prev => ({
+        ...prev,
+        feedbackCount: response.data.feedback?.length || 0
+      }));
+    } catch (error) {
+      console.error('Failed to load feedback count:', error);
+    }
   };
 
   const loadTelemetryStats = async () => {
