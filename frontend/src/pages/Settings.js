@@ -1020,7 +1020,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                       )}
                       
                       {/* VIA Trait Vector */}
-                      {ppiResults.traitVector?.top_traits && (
+                      {ppiResults.traitVector?.top_traits && ppiResults.traitVector.top_traits.length > 0 && (
                         <div>
                           <p className={`text-xs ${subTextClass} mb-2`}>Top VIA Character Strengths</p>
                           <div className="space-y-2">
@@ -1037,7 +1037,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                                 <div className="flex-1">
                                   <div className="flex justify-between items-center">
                                     <span className={`text-sm font-medium ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
-                                      {trait.trait.replace(/_/g, ' ')}
+                                      {getTraitName(trait.trait)}
                                     </span>
                                     <span className={`text-xs ${subTextClass}`}>{(trait.score * 100).toFixed(0)}%</span>
                                   </div>
