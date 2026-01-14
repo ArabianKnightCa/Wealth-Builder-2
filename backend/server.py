@@ -486,12 +486,30 @@ async def generate_uid(user_type: str, life_stage: str, created_at: datetime) ->
     Format: POC-JH-011420261312-2N6H
     
     - PHASE: POC, B1, B2, B3, COM (phase of app)
-    - LIFE_STAGE: ES, JH, HS, CL, UN, AD (educational level)
+    - LIFE_STAGE: ES, JH, HS, CL, UN, AD (educational level short code)
     - MMDDYYYYHHMM: Date and time of account creation
     - RANDOM4: 4-digit alphanumeric for uniqueness (tie breaker)
     """
     import random
     import string
+    
+    # Map life_stage to short code
+    life_stage_map = {
+        'early_career': 'AD',
+        'mid_career': 'AD', 
+        'late_career': 'AD',
+        'retired': 'AD',
+        'student': 'CL',
+        'professional': 'AD',
+        'established_professional': 'AD',
+        'ES': 'ES',
+        'JH': 'JH',
+        'HS': 'HS',
+        'CL': 'CL',
+        'UN': 'UN',
+        'AD': 'AD'
+    }
+    short_life_stage = life_stage_map.get(life_stage, 'AD')
     
     # Format datetime: MMDDYYYYHHMM
     datetime_block = created_at.strftime("%m%d%Y%H%M")
@@ -500,7 +518,7 @@ async def generate_uid(user_type: str, life_stage: str, created_at: datetime) ->
     random_chars = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
     
     # Construct UID
-    uid = f"{user_type}-{life_stage}-{datetime_block}-{random_chars}"
+    uid = f"{user_type}-{short_life_stage}-{datetime_block}-{random_chars}"
     
     return uid
 
