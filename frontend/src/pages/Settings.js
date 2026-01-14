@@ -78,6 +78,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   // Profile Settings
   const [profile, setProfile] = useState({
     first_name: user.first_name || '',
+    email: user.email || '',
     avatar: user.avatar || '👤',
     profile_picture_url: user.profile_picture_url || null
   });
