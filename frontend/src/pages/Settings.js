@@ -606,6 +606,20 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
     setPreferences(prev => ({ ...prev, financial_goals: newGoals }));
   };
 
+  // VIA Character Strength trait name mapping
+  const TRAIT_NAMES = {
+    'T01': 'Creativity', 'T02': 'Curiosity', 'T03': 'Judgment',
+    'T04': 'Love of Learning', 'T05': 'Perspective', 'T06': 'Bravery',
+    'T07': 'Perseverance', 'T08': 'Honesty', 'T09': 'Zest',
+    'T10': 'Love', 'T11': 'Kindness', 'T12': 'Social Intelligence',
+    'T13': 'Teamwork', 'T14': 'Fairness', 'T15': 'Leadership',
+    'T16': 'Forgiveness', 'T17': 'Humility', 'T18': 'Prudence',
+    'T19': 'Self-Regulation', 'T20': 'Appreciation of Beauty',
+    'T21': 'Gratitude', 'T22': 'Hope', 'T23': 'Humor', 'T24': 'Spirituality'
+  };
+  
+  const getTraitName = (traitCode) => TRAIT_NAMES[traitCode] || traitCode;
+
   // Get experience level label
   const getExperienceLabel = (level) => {
     const found = experienceLevels.find(l => l.value === level);
