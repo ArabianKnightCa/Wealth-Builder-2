@@ -956,6 +956,86 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                   </div>
                 </div>
 
+                {/* PPI/VIA Results Section (Testing Phase Only) */}
+                {ppiResults && (
+                  <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+                    <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
+                      <div className="flex items-center justify-between">
+                        <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>🧠 PPI Results</h3>
+                        <span className="text-xs bg-orange-500 text-white px-2 py-0.5 rounded-full">Testing Only</span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      {/* Financial DNA Profile */}
+                      {ppiResults.profile && (
+                        <div className={`mb-4 p-3 rounded-lg ${display.dark_mode ? 'bg-gray-800' : 'bg-blue-50'}`}>
+                          <p className={`text-xs ${subTextClass} mb-1`}>Financial DNA Profile</p>
+                          <p className={`font-bold text-lg ${display.dark_mode ? 'text-blue-400' : 'text-blue-600'}`}>
+                            {ppiResults.profile}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {/* Financial DNA Weights */}
+                      {ppiResults.financialDna?.weights && (
+                        <div className="mb-4">
+                          <p className={`text-xs ${subTextClass} mb-2`}>DNA Weights</p>
+                          <div className="grid grid-cols-3 gap-2">
+                            {Object.entries(ppiResults.financialDna.weights).map(([key, value]) => (
+                              <div key={key} className={`text-center p-2 rounded ${display.dark_mode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                                <p className="text-lg font-bold text-gold">{typeof value === 'number' ? value.toFixed(2) : value}</p>
+                                <p className={`text-xs capitalize ${subTextClass}`}>{key}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* VIA Trait Vector */}
+                      {ppiResults.traitVector?.top_traits && (
+                        <div>
+                          <p className={`text-xs ${subTextClass} mb-2`}>Top VIA Character Strengths</p>
+                          <div className="space-y-2">
+                            {ppiResults.traitVector.top_traits.slice(0, 5).map((trait, idx) => (
+                              <div key={trait.trait} className="flex items-center gap-2">
+                                <span className={`w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold ${
+                                  idx === 0 ? 'bg-gold text-navy-900' : 
+                                  idx === 1 ? 'bg-gray-300 text-gray-700' :
+                                  idx === 2 ? 'bg-orange-300 text-orange-800' :
+                                  'bg-gray-100 text-gray-600'
+                                }`}>
+                                  {idx + 1}
+                                </span>
+                                <div className="flex-1">
+                                  <div className="flex justify-between items-center">
+                                    <span className={`text-sm font-medium ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
+                                      {trait.trait.replace(/_/g, ' ')}
+                                    </span>
+                                    <span className={`text-xs ${subTextClass}`}>{(trait.score * 100).toFixed(0)}%</span>
+                                  </div>
+                                  <div className={`h-1.5 rounded-full mt-1 ${display.dark_mode ? 'bg-gray-600' : 'bg-gray-200'}`}>
+                                    <div 
+                                      className="h-full bg-gold rounded-full"
+                                      style={{ width: `${trait.score * 100}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Generated timestamp */}
+                      {ppiResults.generatedAt && (
+                        <p className={`text-xs ${subTextClass} mt-4 text-right`}>
+                          Generated: {new Date(ppiResults.generatedAt).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Goals at a Glance Section */}
                 <div className={`rounded-xl overflow-hidden shadow-lg border ${display.dark_mode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
                   <div className={`px-5 py-3 border-b ${display.dark_mode ? 'border-gray-600 bg-gray-800' : 'border-gray-100 bg-gray-50'}`}>
