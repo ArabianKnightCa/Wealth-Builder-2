@@ -27,7 +27,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Configuration
-BACKEND_URL = "https://wealth-wisdom-49.preview.emergentagent.com/api"
+BACKEND_URL = "https://ppi-dashboard.preview.emergentagent.com/api"
 
 class TAP32Tester:
     def __init__(self):
