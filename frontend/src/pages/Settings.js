@@ -149,7 +149,7 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
   const [uploadingPicture, setUploadingPicture] = useState(false);
   const [showFontPicker, setShowFontPicker] = useState(false);
 
-  // Calculate age
+  // Calculate age from DOB or dob_month/dob_year
   const calculateAge = (dob) => {
     if (!dob) return null;
     const today = new Date();
@@ -162,7 +162,24 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
     return age;
   };
   
-  const userAge = calculateAge(personalInfo.date_of_birth || user.date_of_birth);
+  // Calculate age - try date_of_birth first, then dob_month/dob_year
+  const getUserAge = () => {
+    if (personalInfo.date_of_birth || user.date_of_birth) {
+      return calculateAge(personalInfo.date_of_birth || user.date_of_birth);
+    }
+    // Fallback to dob_month and dob_year
+    if (user.dob_year) {
+      const today = new Date();
+      let age = today.getFullYear() - user.dob_year;
+      if (user.dob_month && today.getMonth() + 1 < user.dob_month) {
+        age--;
+      }
+      return age;
+    }
+    return null;
+  };
+  
+  const userAge = getUserAge();
 
   const languageOptions = [
     { code: 'en', name: 'English' },
