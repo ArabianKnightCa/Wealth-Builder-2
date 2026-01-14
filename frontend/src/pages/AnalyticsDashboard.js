@@ -250,7 +250,13 @@ function AnalyticsDashboard({ token }) {
                 <StatCard title="Topics Completed" value={telemetry.topicsCompleted} icon="📚" color="purple" />
                 <StatCard title="Quiz Attempts" value={telemetry.quizAttempts} icon="✅" color="orange" />
                 <StatCard title="Active Sessions" value={telemetry.sessions} icon="🔥" color="red" />
-                <StatCard title="Feedback Entries" value="See Feedback Tab" icon="💬" color="yellow" />
+                <div 
+                  onClick={() => setActiveTab('feedback')} 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  title="Click to view feedback"
+                >
+                  <StatCard title="Feedback Entries" value={telemetry.feedbackCount} icon="💬" color="yellow" />
+                </div>
               </div>
             )}
 
