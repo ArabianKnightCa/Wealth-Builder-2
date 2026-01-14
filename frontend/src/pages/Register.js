@@ -328,7 +328,7 @@ function Register({ onLogin }) {
                   required
                   data-testid="email-input"
                 />
-                {fieldErrors.email && (
+                {fieldErrors.email && !error.includes('email') && (
                   <p className="text-red-600 text-sm mt-1">⚠️ Please enter your email</p>
                 )}
               </div>
