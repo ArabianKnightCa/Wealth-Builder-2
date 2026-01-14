@@ -152,6 +152,8 @@ function LPIChapter({ token, user }) {
   };
 
   const handleBackToDashboard = () => {
+    // Store current chapter as the most recent for Dashboard to scroll to
+    localStorage.setItem('lastViewedChapter', chapterId);
     navigate('/dashboard');
   };
 
