@@ -286,7 +286,7 @@ function Register({ onLogin }) {
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-white mb-2" data-testid="register-title">Start Your Journey</h2>
             <p className="text-gray-300">Create an account to begin learning</p>
-            <p className="text-gold mt-2">Step 1 of 4</p>
+            <p className="text-gold mt-2">Step 1 of 3</p>
           </div>
 
           <div className="card">
@@ -427,7 +427,7 @@ function Register({ onLogin }) {
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-white mb-2">Tell Us About You</h2>
             <p className="text-gray-300">Help us personalize your experience</p>
-            <p className="text-gold mt-2">Step 2 of 4</p>
+            <p className="text-gold mt-2">Step 2 of 3</p>
           </div>
 
           <div className="card">
