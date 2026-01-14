@@ -25,16 +25,17 @@ function GlobalHUD({ user, token, onLogout }) {
     setFeedbackSubmitting(true);
     try {
       await axios.post(`${API}/feedback`, {
-        user_id: user.id,
-        user_email: user.email,
-        feedback: feedback,
-        submitted_at: new Date().toISOString()
+        context_page: window.location.pathname,
+        feedback_text: feedback
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       alert('✅ Thank you for your feedback!');
       setFeedback('');
       setShowFeedback(false);
     } catch (error) {
+      console.error('Feedback error:', error);
       alert('❌ Failed to submit feedback. Please try again.');
     } finally {
       setFeedbackSubmitting(false);
