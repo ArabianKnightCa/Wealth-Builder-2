@@ -1109,29 +1109,41 @@ function Settings({ user, token, onUserUpdate, darkMode, setDarkMode }) {
                     <h3 className={`font-bold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>📅 Account Info</h3>
                   </div>
                   <div className="p-5">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className={`text-xs ${subTextClass}`}>Member Since</p>
                         <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
-                          {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A'}
+                          {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          }) : 'N/A'}
                         </p>
                       </div>
                       <div>
-                        <p className={`text-xs ${subTextClass}`}>Last Active</p>
+                        <p className={`text-xs ${subTextClass}`}>Last Active (PST)</p>
                         <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
-                          {user.last_login ? new Date(user.last_login).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Today'}
+                          {user.last_login ? new Date(user.last_login).toLocaleString('en-US', { 
+                            timeZone: 'America/Los_Angeles',
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: false
+                          }) + ' PST' : 'Now'}
                         </p>
                       </div>
                       <div>
-                        <p className={`text-xs ${subTextClass}`}>Account Type</p>
+                        <p className={`text-xs ${subTextClass}`}>Total Learning Time</p>
                         <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
-                          {user.account_status === 'active' ? '✓ Active' : user.account_status || 'Free'}
+                          {progressStats.totalLearningMinutes} minutes
                         </p>
                       </div>
                       <div>
-                        <p className={`text-xs ${subTextClass}`}>User Type</p>
+                        <p className={`text-xs ${subTextClass}`}>Lessons Completed</p>
                         <p className={`font-semibold ${display.dark_mode ? 'text-white' : 'text-gray-800'}`}>
-                          {user.user_type || 'Standard'}
+                          {progressStats.chaptersCompleted * 4} lessons
                         </p>
                       </div>
                     </div>
